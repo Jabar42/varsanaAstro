@@ -1,0 +1,68 @@
+---
+import '@/src/index.css';
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Hola Mundo con Astro</title>
+	</head>
+	<body class="bg-zinc-950 text-zinc-100 min-h-screen flex items-center justify-center selection:bg-orange-500/30">
+		<main class="max-w-2xl w-full p-8 text-center space-y-8">
+			<div class="space-y-4">
+				<h1 class="text-6xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-orange-400 to-rose-600 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+					¡Hola Mundo!
+				</h1>
+				<p class="text-zinc-400 text-xl md:text-2xl font-medium tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+					Construido con <span class="text-orange-400">Astro</span> y <span class="text-rose-500">Tailwind CSS</span>
+				</p>
+			</div>
+
+			<div class="flex flex-wrap justify-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500">
+				<a 
+					href="https://docs.astro.build" 
+					target="_blank" 
+					class="px-6 py-3 bg-zinc-100 text-zinc-950 font-bold rounded-full hover:scale-105 transition-transform active:scale-95"
+				>
+					Documentación
+				</a>
+				<a 
+					href="https://astro.new" 
+					target="_blank" 
+					class="px-6 py-3 bg-zinc-900 border border-zinc-800 text-zinc-100 font-bold rounded-full hover:bg-zinc-800 transition-colors"
+				>
+					Empezar
+				</a>
+			</div>
+
+			<div class="pt-12 border-t border-zinc-900 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-700">
+				<p class="text-zinc-500 text-sm font-mono uppercase tracking-widest">
+					Velocidad por defecto. Islas de interactividad.
+				</p>
+			</div>
+		</main>
+	</body>
+</html>
+
+<style>
+	@keyframes fade-in {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
+	@keyframes slide-in-from-bottom {
+		from { transform: translateY(1rem); }
+		to { transform: translateY(0); }
+	}
+	.animate-in {
+		animation-fill-mode: both;
+	}
+	.fade-in {
+		animation-name: fade-in;
+	}
+	.slide-in-from-bottom-4 {
+		animation-name: slide-in-from-bottom;
+	}
+</style>
