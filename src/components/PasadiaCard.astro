@@ -1,0 +1,86 @@
+---
+import { getCurrentPrice } from '@/src/lib/pasadias';
+import { Clock, MapPin } from 'lucide-react';
+
+interface Price {
+  label: string;
+  amount: number;
+  deadline?: Date;
+  stripePriceId?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  image: string;
+  prices: Price[];
+  duration: string;
+  meeting_point: string;
+  category: string;
+}
+
+const { title, description, image, prices, duration, meeting_point, category, slug } = Astro.props;
+
+const currentPrice = getCurrentPrice(prices);
+
+---
+
+<a href={`/pasadias/${slug}`} class="bg-white rounded-[20px] shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
+  <div class="aspect-[16/10] overflow-hidden relative">
+    <img 
+      src={image} 
+      alt={title} 
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      referrerpolicy="no-referrer"
+    />
+    {currentPrice?.label && currentPrice.label !== 'General' && (
+      <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded-full text-xs font-bold shadow-sm text-rausch">
+        {currentPrice.label}
+      </div>
+    )}
+  </div>
+  
+  <div class="p-6 flex flex-col flex-grow space-y-3">
+    <div class="space-y-1">
+      <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{title}</h3>
+    </div>
+    
+    {/* Metadata: duration and meeting point */}
+    <div class="flex flex-col gap-1 text-sm text-gray-500">
+      <div class="flex items-center gap-2">
+        <Clock size={14} class="text-saffron" />
+        <span>{duration}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <MapPin size={14} class="text-saffron" />
+        <span class="truncate">{meeting_point}</span>
+      </div>
+    </div>
+    
+    <p class="text-gray-600 line-clamp-2 text-[15px] leading-relaxed">
+      {description}
+    </p>
+    
+    <div class="pt-4 mt-auto border-t border-gray-100">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs text-saffron uppercase font-bold tracking-widest">
+            {currentPrice?.label || 'Precio'}
+          </p>
+          <p class="text-xl font-bold tracking-tightest">
+            ${currentPrice?.amount.toLocaleString('es-CO') || '0'}
+          </p>
+        </div>
+        <button class="bg-rausch text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#e00b41] transition-colors shadow-sm">
+          Reservar
+        </button>
+      </div>
+    </div>
+  </div>
+</a>
+
+<style>
+  h3 {
+    letter-spacing: -0.02em;
+  }
+</style>
