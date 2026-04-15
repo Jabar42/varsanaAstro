@@ -1,0 +1,77 @@
+---
+import { getCurrentPrice } from '@/src/lib/events';
+
+interface Price {
+  label: string;
+  amount: number;
+  deadline?: Date;
+  stripePriceId?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  event_date: Date;
+  image: string;
+  prices: Price[];
+}
+
+const { title, description, event_date, image, prices, slug } = Astro.props;
+
+const currentPrice = getCurrentPrice(prices);
+
+const formattedDate = event_date.toLocaleDateString('es-ES', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
+---
+
+<a href={`/events/${slug}`} class="bg-white rounded-[20px] shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
+  <div class="aspect-[16/10] overflow-hidden relative">
+    <img 
+      src={image} 
+      alt={title} 
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      referrerpolicy="no-referrer"
+    />
+    {currentPrice?.label && currentPrice.label !== 'General' && (
+      <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded-full text-xs font-bold shadow-sm text-rausch">
+        {currentPrice.label}
+      </div>
+    )}
+  </div>
+  
+  <div class="p-6 flex flex-col flex-grow space-y-3">
+    <div class="space-y-1">
+      <p class="text-saffron font-semibold text-sm uppercase tracking-wider">{formattedDate}</p>
+      <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{title}</h3>
+    </div>
+    
+    <p class="text-gray-600 line-clamp-2 text-[15px] leading-relaxed">
+      {description}
+    </p>
+    
+    <div class="pt-4 mt-auto border-t border-gray-100">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs text-saffron uppercase font-bold tracking-widest">
+            {currentPrice?.label || 'Precio'}
+          </p>
+          <p class="text-xl font-bold tracking-tightest">
+            ${currentPrice?.amount.toLocaleString('es-CO') || '0'}
+          </p>
+        </div>
+        <button class="bg-rausch text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#e00b41] transition-colors shadow-sm">
+          Reservar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  h3 {
+    letter-spacing: -0.02em;
+  }
+</style>

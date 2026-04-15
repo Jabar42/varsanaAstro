@@ -1,0 +1,35 @@
+---
+import { Leaf, Flower2, Tent, Users, Calendar, Heart, Map, Compass } from 'lucide-react';
+
+const categories = [
+  { name: 'Yoga', icon: Heart, href: '/' },
+  { name: 'Meditación', icon: Flower2, href: '/' },
+  { name: 'Hospedaje', icon: Tent, href: '/' },
+  { name: 'Voluntariado', icon: Users, href: '/voluntariado' },
+  { name: 'Pasadias', icon: Map, href: '/' },
+  { name: 'Eventos', icon: Calendar, href: '/events' },
+  { name: 'Naturaleza', icon: Leaf, href: '/' },
+  { name: 'Retiros', icon: Compass, href: '/' },
+];
+---
+
+<div class="sticky top-[73px] z-40 bg-white border-b border-gray-100 px-6 py-4 md:px-12 lg:px-20 overflow-x-auto no-scrollbar">
+  <div class="max-w-7xl mx-auto flex items-center gap-8 md:gap-12">
+    {categories.map((cat, i) => (
+      <a href={cat.href} class={`flex flex-col items-center gap-2 min-w-fit group cursor-pointer border-b-2 transition-all pb-2 ${cat.name === 'Yoga' ? 'border-near-black opacity-100' : 'border-transparent opacity-60 hover:opacity-100 hover:border-gray-300'}`}>
+        <cat.icon size={24} strokeWidth={1.5} />
+        <span class="text-xs font-semibold whitespace-nowrap">{cat.name}</span>
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
