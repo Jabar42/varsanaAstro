@@ -8,7 +8,7 @@ The foundation shifts from pure white to **Sacred Sand** (`#FAF9F6`) — a warme
 
 **Key Characteristics:**
 - **Sacred Sand Canvas** (`#FAF9F6`) for a softer, more organic feel.
-- **Dual Typography**: Elegant Serif headings for "Wisdom" and Sans-serif for "Clarity".
+- **Dual Typography**: Bold Display headings for "Wisdom" and Sans-serif for "Clarity".
 - **Spiritual Accents**: Saffron (#FF9933) and Forest Green (#2D5A27).
 - **Organic Geometry**: 32px+ border-radius and subtle "squircle" shapes.
 - **Breathable Spacing**: Increased whitespace to promote a sense of calm.
@@ -33,15 +33,15 @@ The foundation shifts from pure white to **Sacred Sand** (`#FAF9F6`) — a warme
 ## 3. Typography Rules
 
 ### Font Family
-- **Headings (Wisdom)**: `Cormorant Garamond` (Serif) — Elegant, traditional, and soulful.
+- **Headings (Wisdom)**: `Proza Libre` (Sans-serif) — Bold, professional, and soulful.
 - **UI & Body (Clarity)**: `Inter` (Sans-serif) — Clean, modern, and highly legible.
 
 ### Hierarchy
 
 | Role | Font | Size | Weight | Letter Spacing | Notes |
 |------|------|------|--------|----------------|-------|
-| Hero Heading | Serif | 64px+ | 600 | -0.01em | Soulful and grand |
-| Section Title | Serif | 36px | 600 | normal | Traditional feel |
+| Hero Heading | Display | 64px+ | 700 | -0.01em | Soulful and grand |
+| Section Title | Display | 36px | 700 | normal | Professional feel |
 | Card Title | Sans | 20px | 600 | -0.02em | Modern clarity |
 | Body Text | Sans | 16px | 400 | normal | Standard reading |
 | Metadata | Sans | 14px | 500 | 0.02em | Slightly tracked |
@@ -55,7 +55,7 @@ The foundation shifts from pure white to **Sacred Sand** (`#FAF9F6`) — a warme
 ### Buttons
 - **Primary**: Rausch Red, 16px radius, bold sans-serif.
 - **Secondary**: Forest Green or Saffron, 16px radius.
-- **Ghost**: Near-black border, serif text for a "boutique" feel.
+- **Ghost**: Near-black border, display text for a "boutique" feel.
 
 ### Icons
 - Use **Lucide-react** but prioritize organic shapes: `Leaf`, `Flower2`, `Sun`, `Moon`, `Heart`.
