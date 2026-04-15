@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "prices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "stripePriceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "amount"
+        ]
+      }
+    },
+    "duration": {
+      "type": "string"
+    },
+    "meeting_point": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "included_services": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "image",
+    "prices",
+    "duration",
+    "meeting_point",
+    "category"
+  ]
+}

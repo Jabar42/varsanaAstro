@@ -1,0 +1,47 @@
+---
+import '@/src/styles/global.css';
+import Header from '@/src/components/Header.astro';
+import PasadiaCard from '@/src/components/PasadiaCard.astro';
+import Footer from '@/src/components/Footer.astro';
+import { getAllPasadias } from '@/src/lib/pasadias';
+
+const allPasadias = await getAllPasadias();
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Pasadías | Varsana Eco Yoga Aldea</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-white text-near-black font-sans antialiased">
+    <Header />
+
+		<main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-16">
+      <div class="mb-12">
+        <h1 class="text-5xl font-bold tracking-tightest mb-4">Pasadías</h1>
+        <p class="text-gray-500 text-xl">Descubre nuestras experiencias de día completo en contacto con la naturaleza y la espiritualidad.</p>
+      </div>
+      
+      {allPasadias.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+          {allPasadias.map((pasadia) => (
+            <PasadiaCard {...pasadia.data} slug={pasadia.id} />
+          ))}
+        </div>
+      ) : (
+        <div class="py-20 text-center bg-gray-50 rounded-3xl">
+          <p class="text-2xl font-medium text-gray-400">No hay pasadías disponibles en este momento.</p>
+          <a href="/" class="mt-6 inline-block text-rausch font-bold underline">Volver al inicio</a>
+        </div>
+      )}
+		</main>
+
+    <Footer />
+	</body>
+</html>
