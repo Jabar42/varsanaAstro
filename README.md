@@ -18,3 +18,9 @@ View your app in AI Studio: https://ai.studio/apps/cd5c0ee8-8341-4299-9986-e6c56
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+## Content Formatting Guidelines
+
+For events and pasadías, follow the formatting standards documented in [`.roo/event-content-formatting.md`](.roo/event-content-formatting.md). These guidelines ensure legible, well‑structured content with proper tables, spacing, and frontmatter consistency.
+
+Refer to the existing examples (e.g., [`src/content/events/holi-fest-2026.md`](src/content/events/holi-fest-2026.md)) as a model.
