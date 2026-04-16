@@ -1,8 +1,6 @@
 ---
-import '@/src/styles/global.css';
+import Layout from '@/src/layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
-import Header from '@/src/components/Header.astro';
-import Footer from '@/src/components/Footer.astro';
 import { getCurrentPrice } from '@/src/lib/pasadias';
 import { Calendar, MapPin, Clock, Users, Info, Star, Check } from 'lucide-react';
 
@@ -20,174 +18,157 @@ const { Content } = await render(pasadia);
 
 const currentPrice = getCurrentPrice(prices);
 
-
 // SEO Data
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.com');
 ---
 
-<html lang="es">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		
+<Layout title={`${title} | Varsana Eco Yoga Aldea`} description={description}>
+  <Fragment slot="head">
     <!-- SEO / OpenGraph -->
-    <title>{title} | Varsana Eco Yoga Aldea</title>
-    <meta name="description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={image} />
     <meta name="twitter:card" content="summary_large_image" />
+  </Fragment>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-	</head>
-	<body class="bg-white text-near-black font-sans antialiased">
-    <Header />
+  <main class="max-w-7xl mx-auto px-0 md:px-12 lg:px-20 py-0 md:py-8">
+    <!-- Photography-first Header -->
+    <div class="md:rounded-[24px] overflow-hidden relative h-[300px] md:h-[500px] lg:h-[600px] shadow-airbnb">
+      <img 
+        src={image} 
+        alt={title} 
+        class="w-full h-full object-cover"
+        referrerpolicy="no-referrer"
+      />
+    </div>
 
-		<main class="max-w-7xl mx-auto px-0 md:px-12 lg:px-20 py-0 md:py-8">
-      <!-- Photography-first Header -->
-      <div class="md:rounded-[24px] overflow-hidden relative h-[300px] md:h-[500px] lg:h-[600px] shadow-airbnb">
-        <img 
-          src={image} 
-          alt={title} 
-          class="w-full h-full object-cover"
-          referrerpolicy="no-referrer"
-        />
-      </div>
-
-      <div class="px-6 md:px-0 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <!-- Main Content Column -->
-        <div class="lg:col-span-2 space-y-8">
-          <div class="border-b border-gray-200 pb-8">
-            <h1 class="text-4xl md:text-6xl font-bold tracking-tightest mb-4 font-display">{title}</h1>
-            <div class="flex flex-wrap gap-6 text-sm font-medium">
-              <div class="flex items-center gap-2">
-                <Clock size={18} className="text-saffron" />
-                <span>{duration}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <MapPin size={18} className="text-saffron" />
-                <span>{meeting_point}</span>
-              </div>
+    <div class="px-6 md:px-0 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <!-- Main Content Column -->
+      <div class="lg:col-span-2 space-y-8">
+        <div class="border-b border-gray-200 pb-8">
+          <h1 class="text-4xl md:text-6xl font-bold tracking-tightest mb-4 font-display">{title}</h1>
+          <div class="flex flex-wrap gap-6 text-sm font-medium">
+            <div class="flex items-center gap-2">
+              <Clock size={18} className="text-saffron" />
+              <span>{duration}</span>
             </div>
-          </div>
-
-          <!-- Host Info -->
-          <div class="flex items-center justify-between border-b border-gray-200 pb-8">
-            <div class="space-y-1">
-              <h2 class="text-2xl font-bold font-display">Experiencia organizada por Varsana</h2>
-              <p class="text-gray-500 text-sm">Comunidad intencional · 15 años de sabiduría</p>
-            </div>
-            <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
-               <img src="https://picsum.photos/seed/host/100/100" alt="Host" class="w-full h-full object-cover" />
-            </div>
-          </div>
-
-          <!-- Description -->
-          <div class="prose prose-zinc max-w-none text-gray-700 leading-relaxed text-lg">
-            <Content />
-          </div>
-
-          <!-- Included Services -->
-          {included_services && included_services.length > 0 && (
-            <div class="border-t border-gray-200 pt-8">
-              <h3 class="text-2xl font-bold mb-6 font-display">Servicios incluidos</h3>
-              <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {included_services.map((service, idx) => (
-                  <li class="flex items-center gap-3">
-                    <Check size={18} className="text-saffron flex-shrink-0" />
-                    <span>{service}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <!-- Features -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-gray-200 pt-8">
-            <div class="flex gap-4">
-              <Users size={24} strokeWidth={1.5} />
-              <div>
-                <h4 class="font-bold">Ambiente Comunitario</h4>
-                <p class="text-gray-500 text-sm">Comparte con personas que buscan el mismo camino de paz.</p>
-              </div>
-            </div>
-            <div class="flex gap-4">
-              <Info size={24} strokeWidth={1.5} />
-              <div>
-                <h4 class="font-bold">Todo Incluido</h4>
-                <p class="text-gray-500 text-sm">Alimentación vegetariana consciente y hospedaje ecológico.</p>
-              </div>
+            <div class="flex items-center gap-2">
+              <MapPin size={18} className="text-saffron" />
+              <span>{meeting_point}</span>
             </div>
           </div>
         </div>
 
-        <!-- Sticky Price Card Column -->
-        <div class="relative">
-          <div class="sticky top-28 bg-white border border-gray-200 rounded-[24px] p-6 shadow-airbnb space-y-6">
-            <div class="flex justify-between items-end">
-              <div>
-                <span class="text-3xl font-bold tracking-tightest font-display">${currentPrice?.amount.toLocaleString('es-CO')}</span>
-                <span class="text-gray-500 text-base font-normal"> / persona</span>
-              </div>
-              <div class="flex items-center gap-1 text-sm font-semibold">
-                <Star size={14} fill="currentColor" className="text-saffron" />
-                <span>4.98</span>
-              </div>
-            </div>
+        <!-- Host Info -->
+        <div class="flex items-center justify-between border-b border-gray-200 pb-8">
+          <div class="space-y-1">
+            <h2 class="text-2xl font-bold font-display">Experiencia organizada por Varsana</h2>
+            <p class="text-gray-500 text-sm">Comunidad intencional · 15 años de sabiduría</p>
+          </div>
+          <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+             <img src="https://picsum.photos/seed/host/100/100" alt="Host" class="w-full h-full object-cover" />
+          </div>
+        </div>
 
-            <!-- Booking Details Box -->
-            <div class="border border-gray-400 rounded-xl overflow-hidden">
-              <div class="grid grid-cols-1 border-b border-gray-400">
-                <div class="p-3">
-                  <p class="text-[10px] font-bold uppercase">Duración</p>
-                  <p class="text-sm">{duration}</p>
-                </div>
-              </div>
+        <!-- Description -->
+        <div class="prose prose-zinc max-w-none text-gray-700 leading-relaxed text-lg">
+          <Content />
+        </div>
+
+        <!-- Included Services -->
+        {included_services && included_services.length > 0 && (
+          <div class="border-t border-gray-200 pt-8">
+            <h3 class="text-2xl font-bold mb-6 font-display">Servicios incluidos</h3>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {included_services.map((service, idx) => (
+                <li class="flex items-center gap-3">
+                  <Check size={18} className="text-saffron flex-shrink-0" />
+                  <span>{service}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- Features -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-gray-200 pt-8">
+          <div class="flex gap-4">
+            <Users size={24} strokeWidth={1.5} />
+            <div>
+              <h4 class="font-bold">Ambiente Comunitario</h4>
+              <p class="text-gray-500 text-sm">Comparte con personas que buscan el mismo camino de paz.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <Info size={24} strokeWidth={1.5} />
+            <div>
+              <h4 class="font-bold">Todo Incluido</h4>
+              <p class="text-gray-500 text-sm">Alimentación vegetariana consciente y hospedaje ecológico.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky Price Card Column -->
+      <div class="relative">
+        <div class="sticky top-28 bg-white border border-gray-200 rounded-[24px] p-6 shadow-airbnb space-y-6">
+          <div class="flex justify-between items-end">
+            <div>
+              <span class="text-3xl font-bold tracking-tightest font-display">${currentPrice?.amount.toLocaleString('es-CO')}</span>
+              <span class="text-gray-500 text-base font-normal"> / persona</span>
+            </div>
+            <div class="flex items-center gap-1 text-sm font-semibold">
+              <Star size={14} fill="currentColor" className="text-saffron" />
+              <span>4.98</span>
+            </div>
+          </div>
+
+          <!-- Booking Details Box -->
+          <div class="border border-gray-400 rounded-xl overflow-hidden">
+            <div class="grid grid-cols-1 border-b border-gray-400">
               <div class="p-3">
-                <p class="text-[10px] font-bold uppercase">Tipo de Entrada</p>
-                <p class="text-sm font-medium text-saffron">{currentPrice?.label || 'General'}</p>
+                <p class="text-[10px] font-bold uppercase">Duración</p>
+                <p class="text-sm">{duration}</p>
               </div>
             </div>
+            <div class="p-3">
+              <p class="text-[10px] font-bold uppercase">Tipo de Entrada</p>
+              <p class="text-sm font-medium text-saffron">{currentPrice?.label || 'General'}</p>
+            </div>
+          </div>
 
-            <!-- Payment Button -->
-            <button 
-              class="w-full bg-rausch hover:bg-[#e00b41] text-white py-3.5 rounded-xl font-bold text-lg transition-all active:scale-[0.98] shadow-sm"
-              data-price-id={currentPrice?.stripePriceId}
-            >
-              Reservar ahora
-            </button>
+          <!-- Payment Button -->
+          <button 
+            class="w-full bg-rausch hover:bg-[#e00b41] text-white py-3.5 rounded-xl font-bold text-lg transition-all active:scale-[0.98] shadow-sm"
+            data-price-id={currentPrice?.stripePriceId}
+          >
+            Reservar ahora
+          </button>
 
-            <p class="text-center text-gray-500 text-xs">Asegura tu cupo con anticipación</p>
+          <p class="text-center text-gray-500 text-xs">Asegura tu cupo con anticipación</p>
 
-            <!-- Price Breakdown -->
-            <div class="space-y-3 pt-4">
-              <div class="flex justify-between text-gray-600">
-                <span class="underline">Inscripción {currentPrice?.label}</span>
-                <span>${currentPrice?.amount.toLocaleString('es-CO')}</span>
-              </div>
-              <div class="flex justify-between text-gray-600">
-                <span class="underline">Servicio de aldea</span>
-                <span>$0</span>
-              </div>
-              <div class="pt-4 border-t border-gray-200 flex justify-between font-bold text-lg">
-                <span>Total</span>
-                <span>${currentPrice?.amount.toLocaleString('es-CO')}</span>
-              </div>
+          <!-- Price Breakdown -->
+          <div class="space-y-3 pt-4">
+            <div class="flex justify-between text-gray-600">
+              <span class="underline">Inscripción {currentPrice?.label}</span>
+              <span>${currentPrice?.amount.toLocaleString('es-CO')}</span>
+            </div>
+            <div class="flex justify-between text-gray-600">
+              <span class="underline">Servicio de aldea</span>
+              <span>$0</span>
+            </div>
+            <div class="pt-4 border-t border-gray-200 flex justify-between font-bold text-lg">
+              <span>Total</span>
+              <span>${currentPrice?.amount.toLocaleString('es-CO')}</span>
             </div>
           </div>
         </div>
       </div>
-		</main>
-
-    <Footer />
-	</body>
-</html>
+    </div>
+  </main>
+</Layout>
 
 <style>
   h1, h2, h3, h4 {
