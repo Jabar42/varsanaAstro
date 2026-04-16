@@ -1,8 +1,6 @@
 ---
-import '@/src/styles/global.css';
-import Header from '@/src/components/Header.astro';
+import Layout from '@/src/layouts/Layout.astro';
 import CategoryBar from '@/src/components/CategoryBar.astro';
-import Footer from '@/src/components/Footer.astro';
 import { Leaf, Users, Heart, Coffee, Home, Info, CheckCircle2 } from 'lucide-react';
 
 const activities = [
@@ -21,122 +19,107 @@ const includes = [
 ];
 ---
 
-<html lang="es">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Programa de Voluntariado | Varsana Eco Yoga Aldea</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-	</head>
-	<body class="bg-white text-near-black font-sans antialiased">
-    <Header />
-    <CategoryBar />
+<Layout title="Programa de Voluntariado | Varsana Eco Yoga Aldea">
+  <CategoryBar />
 
-		<main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12">
-      <!-- Hero Section -->
-      <section class="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div class="space-y-6">
-          <h1 class="text-4xl md:text-6xl font-bold tracking-tightest leading-tight">
-            Programa de Voluntariado Cerca a Bogotá
-          </h1>
-          <p class="text-gray-500 text-xl leading-relaxed">
-            Una experiencia especial para quienes desean vivir en una eco-aldea, conectar con la naturaleza y descubrir nuevas habilidades.
-          </p>
-          <div class="flex flex-wrap gap-4 pt-4">
-            <button class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
-              Inscribirme ahora
-            </button>
-            <button class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors">
-              Ver actividades
-            </button>
-          </div>
+  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12">
+    <!-- Hero Section -->
+    <section class="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-6">
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tightest leading-tight">
+          Programa de Voluntariado Cerca a Bogotá
+        </h1>
+        <p class="text-gray-500 text-xl leading-relaxed">
+          Una experiencia especial para quienes desean vivir en una eco-aldea, conectar con la naturaleza y descubrir nuevas habilidades.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-4">
+          <button class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
+            Inscribirme ahora
+          </button>
+          <button class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors">
+            Ver actividades
+          </button>
         </div>
-        <div class="relative aspect-[4/3] rounded-[32px] overflow-hidden shadow-airbnb">
-          <img 
-            src="https://picsum.photos/seed/voluntariado/1200/900" 
-            alt="Voluntarios en Varsana" 
-            class="w-full h-full object-cover"
-            referrerpolicy="no-referrer"
-          />
-        </div>
-      </section>
+      </div>
+      <div class="relative aspect-[4/3] rounded-[32px] overflow-hidden shadow-airbnb">
+        <img 
+          src="https://picsum.photos/seed/voluntariado/1200/900" 
+          alt="Voluntarios en Varsana" 
+          class="w-full h-full object-cover"
+          referrerpolicy="no-referrer"
+        />
+      </div>
+    </section>
 
-      <!-- Activities Grid -->
-      <section class="mb-24">
-        <div class="mb-12">
-          <h2 class="text-3xl font-bold tracking-tightest mb-4">¿Qué harás como voluntario?</h2>
-          <p class="text-gray-500 text-lg">Participa en actividades sostenibles y descubre el ritmo de la vida consciente.</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {activities.map((act) => (
-            <div class="p-8 bg-white border border-gray-100 rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
-              <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
-                <act.icon size={24} />
-              </div>
-              <h3 class="text-xl font-bold tracking-tightest">{act.title}</h3>
-              <p class="text-gray-500 text-sm leading-relaxed">{act.description}</p>
+    <!-- Activities Grid -->
+    <section class="mb-24">
+      <div class="mb-12">
+        <h2 class="text-3xl font-bold tracking-tightest mb-4">¿Qué harás como voluntario?</h2>
+        <p class="text-gray-500 text-lg">Participa en actividades sostenibles y descubre el ritmo de la vida consciente.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {activities.map((act) => (
+          <div class="p-8 bg-white border border-gray-100 rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
+            <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
+              <act.icon size={24} />
             </div>
+            <h3 class="text-xl font-bold tracking-tightest">{act.title}</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">{act.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- What's Included -->
+    <section class="mb-24 bg-light-surface rounded-[40px] p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-8">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">Tu estancia incluye</h2>
+        <ul class="space-y-4">
+          {includes.map((item) => (
+            <li class="flex items-center gap-4 text-lg font-medium">
+              <CheckCircle2 className="text-rausch shrink-0" size={24} />
+              <span>{item}</span>
+            </li>
           ))}
+        </ul>
+        <div class="pt-4">
+          <div class="flex items-center gap-4 p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
+            <Info className="text-rausch shrink-0" size={32} />
+            <p class="text-sm text-gray-600">
+              Buscamos voluntarios comprometidos, con ganas de aprender y compartir en un ambiente de respeto y espiritualidad.
+            </p>
+          </div>
         </div>
-      </section>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <img src="https://picsum.photos/seed/garden2/600/800" class="rounded-3xl shadow-md" alt="Huerta" referrerpolicy="no-referrer" />
+        <img src="https://picsum.photos/seed/community2/600/800" class="rounded-3xl shadow-md mt-8" alt="Comunidad" referrerpolicy="no-referrer" />
+      </div>
+    </section>
 
-      <!-- What's Included -->
-      <section class="mb-24 bg-light-surface rounded-[40px] p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div class="space-y-8">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">Tu estancia incluye</h2>
-          <ul class="space-y-4">
-            {includes.map((item) => (
-              <li class="flex items-center gap-4 text-lg font-medium">
-                <CheckCircle2 className="text-rausch shrink-0" size={24} />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-          <div class="pt-4">
-            <div class="flex items-center gap-4 p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
-              <Info className="text-rausch shrink-0" size={32} />
-              <p class="text-sm text-gray-600">
-                Buscamos voluntarios comprometidos, con ganas de aprender y compartir en un ambiente de respeto y espiritualidad.
-              </p>
-            </div>
-          </div>
+    <!-- FAQ / Info Section -->
+    <section class="max-w-3xl mx-auto mb-24 space-y-12">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold tracking-tightest mb-4">Preguntas Frecuentes</h2>
+        <p class="text-gray-500">Todo lo que necesitas saber antes de venir.</p>
+      </div>
+      <div class="space-y-6">
+        <div class="border-b border-gray-200 pb-6">
+          <h4 class="font-bold text-lg mb-2">¿Qué debo traer?</h4>
+          <p class="text-gray-600">Ropa cómoda para trabajo de campo, botas de caucho, linterna, artículos de aseo personal biodegradables y muchas ganas de aprender.</p>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <img src="https://picsum.photos/seed/garden2/600/800" class="rounded-3xl shadow-md" alt="Huerta" referrerpolicy="no-referrer" />
-          <img src="https://picsum.photos/seed/community2/600/800" class="rounded-3xl shadow-md mt-8" alt="Comunidad" referrerpolicy="no-referrer" />
+        <div class="border-b border-gray-200 pb-6">
+          <h4 class="font-bold text-lg mb-2">¿Hay requisitos de alimentación?</h4>
+          <p class="text-gray-600">En Varsana seguimos una dieta vegetariana consciente. No se permite el consumo de carne, huevos, alcohol ni tabaco dentro de la aldea.</p>
         </div>
-      </section>
-
-      <!-- FAQ / Info Section -->
-      <section class="max-w-3xl mx-auto mb-24 space-y-12">
-        <div class="text-center">
-          <h2 class="text-3xl font-bold tracking-tightest mb-4">Preguntas Frecuentes</h2>
-          <p class="text-gray-500">Todo lo que necesitas saber antes de venir.</p>
+        <div class="border-b border-gray-200 pb-6">
+          <h4 class="font-bold text-lg mb-2">¿Cuál es la duración mínima?</h4>
+          <p class="text-gray-600">Recomendamos una estancia mínima de una semana para poder integrarte plenamente en las actividades y el ritmo de la comunidad.</p>
         </div>
-        <div class="space-y-6">
-          <div class="border-b border-gray-200 pb-6">
-            <h4 class="font-bold text-lg mb-2">¿Qué debo traer?</h4>
-            <p class="text-gray-600">Ropa cómoda para trabajo de campo, botas de caucho, linterna, artículos de aseo personal biodegradables y muchas ganas de aprender.</p>
-          </div>
-          <div class="border-b border-gray-200 pb-6">
-            <h4 class="font-bold text-lg mb-2">¿Hay requisitos de alimentación?</h4>
-            <p class="text-gray-600">En Varsana seguimos una dieta vegetariana consciente. No se permite el consumo de carne, huevos, alcohol ni tabaco dentro de la aldea.</p>
-          </div>
-          <div class="border-b border-gray-200 pb-6">
-            <h4 class="font-bold text-lg mb-2">¿Cuál es la duración mínima?</h4>
-            <p class="text-gray-600">Recomendamos una estancia mínima de una semana para poder integrarte plenamente en las actividades y el ritmo de la comunidad.</p>
-          </div>
-        </div>
-      </section>
-		</main>
-
-    <Footer />
-	</body>
-</html>
+      </div>
+    </section>
+  </main>
+</Layout>
 
 <style>
   h1, h2, h3, h4 {

@@ -1,0 +1,36 @@
+---
+import '@/src/styles/global.css';
+import Header from '@/src/components/Header.astro';
+import Footer from '@/src/components/Footer.astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <SpeedInsights />
+    <slot name="head" />
+  </head>
+  <body class="bg-white text-near-black font-sans antialiased">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
