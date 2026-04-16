@@ -73,11 +73,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
             <h1 class="text-4xl md:text-6xl font-bold tracking-tightest mb-4 font-display">{title}</h1>
             <div class="flex flex-wrap gap-6 text-sm font-medium">
               <div class="flex items-center gap-2">
-                <Calendar size={18} class="text-saffron" />
+                <Calendar size={18} className="text-saffron" />
                 <span>{formattedDate}</span>
               </div>
               <div class="flex items-center gap-2">
-                <MapPin size={18} class="text-saffron" />
+                <MapPin size={18} className="text-saffron" />
                 <span>Granada, Cundinamarca</span>
               </div>
             </div>
@@ -128,7 +128,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
                 <span class="text-gray-500 text-base font-normal"> / persona</span>
               </div>
               <div class="flex items-center gap-1 text-sm font-semibold">
-                <Star size={14} fill="currentColor" class="text-saffron" />
+                <Star size={14} fill="currentColor" className="text-saffron" />
                 <span>4.98</span>
               </div>
             </div>
