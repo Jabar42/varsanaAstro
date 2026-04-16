@@ -1,11 +1,14 @@
 ---
 import '@/src/styles/global.css';
+import { inject } from '@vercel/analytics';
 import Header from '@/src/components/Header.astro';
 import CategoryBar from '@/src/components/CategoryBar.astro';
 import EventCard from '@/src/components/EventCard.astro';
 import PhotoGallery from '@/src/components/PhotoGallery.astro';
 import Footer from '@/src/components/Footer.astro';
 import { getUpcomingEvents } from '@/src/lib/events';
+
+inject();
 
 const upcomingEvents = await getUpcomingEvents();
 const featuredEvents = upcomingEvents.slice(0, 3);
@@ -21,6 +24,10 @@ const featuredEvents = upcomingEvents.slice(0, 3);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+		<script>
+			window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+		</script>
+		<script defer src="/_vercel/insights/script.js"></script>
 	</head>
 	<body class="bg-white text-near-black font-sans antialiased">
     <Header />

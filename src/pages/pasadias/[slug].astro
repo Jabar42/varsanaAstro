@@ -1,10 +1,13 @@
 ---
 import '@/src/styles/global.css';
+import { inject } from '@vercel/analytics';
 import { getCollection, render } from 'astro:content';
 import Header from '@/src/components/Header.astro';
 import Footer from '@/src/components/Footer.astro';
 import { getCurrentPrice } from '@/src/lib/pasadias';
 import { Calendar, MapPin, Clock, Users, Info, Star, Check } from 'lucide-react';
+
+inject();
 
 export async function getStaticPaths() {
   const pasadias = await getCollection('pasadias');
@@ -45,6 +48,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+		<script>
+			window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+		</script>
+		<script defer src="/_vercel/insights/script.js"></script>
 	</head>
 	<body class="bg-white text-near-black font-sans antialiased">
     <Header />

@@ -1,9 +1,12 @@
 ---
 import '@/src/styles/global.css';
+import { inject } from '@vercel/analytics';
 import Header from '@/src/components/Header.astro';
 import PasadiaCard from '@/src/components/PasadiaCard.astro';
 import Footer from '@/src/components/Footer.astro';
 import { getAllPasadias } from '@/src/lib/pasadias';
+
+inject();
 
 const allPasadias = await getAllPasadias();
 ---
@@ -18,6 +21,10 @@ const allPasadias = await getAllPasadias();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+		<script>
+			window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+		</script>
+		<script defer src="/_vercel/insights/script.js"></script>
 	</head>
 	<body class="bg-white text-near-black font-sans antialiased">
     <Header />
