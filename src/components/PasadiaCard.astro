@@ -17,6 +17,7 @@ interface Props {
   duration: string;
   meeting_point: string;
   category: string;
+  slug: string;
 }
 
 const { title, description, image, prices, duration, meeting_point, category, slug } = Astro.props;
@@ -48,11 +49,11 @@ const currentPrice = getCurrentPrice(prices);
     {/* Metadata: duration and meeting point */}
     <div class="flex flex-col gap-1 text-sm text-gray-500">
       <div class="flex items-center gap-2">
-        <Clock size={14} class="text-saffron" />
+        <Clock size={14} className="text-saffron" />
         <span>{duration}</span>
       </div>
       <div class="flex items-center gap-2">
-        <MapPin size={14} class="text-saffron" />
+        <MapPin size={14} className="text-saffron" />
         <span class="truncate">{meeting_point}</span>
       </div>
     </div>

@@ -67,11 +67,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
             <h1 class="text-4xl md:text-6xl font-bold tracking-tightest mb-4 font-display">{title}</h1>
             <div class="flex flex-wrap gap-6 text-sm font-medium">
               <div class="flex items-center gap-2">
-                <Clock size={18} class="text-saffron" />
+                <Clock size={18} className="text-saffron" />
                 <span>{duration}</span>
               </div>
               <div class="flex items-center gap-2">
-                <MapPin size={18} class="text-saffron" />
+                <MapPin size={18} className="text-saffron" />
                 <span>{meeting_point}</span>
               </div>
             </div>
@@ -99,8 +99,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
               <h3 class="text-2xl font-bold mb-6 font-display">Servicios incluidos</h3>
               <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {included_services.map((service, idx) => (
-                  <li key={idx} class="flex items-center gap-3">
-                    <Check size={18} class="text-saffron flex-shrink-0" />
+                  <li class="flex items-center gap-3">
+                    <Check size={18} className="text-saffron flex-shrink-0" />
                     <span>{service}</span>
                   </li>
                 ))}
@@ -136,7 +136,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
                 <span class="text-gray-500 text-base font-normal"> / persona</span>
               </div>
               <div class="flex items-center gap-1 text-sm font-semibold">
-                <Star size={14} fill="currentColor" class="text-saffron" />
+                <Star size={14} fill="currentColor" className="text-saffron" />
                 <span>4.98</span>
               </div>
             </div>
