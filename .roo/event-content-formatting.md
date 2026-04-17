@@ -18,11 +18,11 @@ Use clear heading levels to separate sections. The recommended order is:
 **Styling:** Add Tailwind spacing classes directly to the heading tags for consistent vertical rhythm:
 
 ```html
-<h2 class="mt-8 mb-4">¡El festival más colorido del planeta!</h2>
-<h3 class="mt-6 mb-3">Actividades Destacadas</h3>
+<h2 class="mt-10 mb-5">¡El festival más colorido del planeta!</h2>
+<h3 class="mt-8 mb-4">Actividades Destacadas</h3>
 ```
 
-> **Why:** The classes `mt-8 mb-4` (H2) and `mt-6 mb-3` (H3) create a balanced visual separation that matches the site’s design system.
+> **Why:** The classes `mt-10 mb-5` (H2) and `mt-8 mb-4` (H3) create a balanced visual separation that matches the site’s design system.
 
 ---
 
@@ -35,23 +35,23 @@ Convert any list of features, pricing tiers, schedules, service descriptions, et
 Wrap every table in a responsive container:
 
 ```html
-<div class="overflow-x-auto my-6">
-  <table class="w-full table-auto border-collapse border border-gray-200 rounded-lg">
+<div class="overflow-x-auto my-8">
+  <table class="w-full table-auto border-collapse border border-sacred-sand rounded-3xl shadow-airbnb">
     <thead>
       <tr>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Column 1</th>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Column 2</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Column 1</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Column 2</th>
         <!-- add more columns as needed -->
       </tr>
     </thead>
     <tbody>
-      <tr class="even:bg-gray-50">
-        <td class="p-3 border-t border-gray-100">Row 1, Cell 1</td>
-        <td class="p-3 border-t border-gray-100">Row 1, Cell 2</td>
+      <tr class="even:bg-sacred-sand">
+        <td class="p-4 border-t border-sacred-sand">Row 1, Cell 1</td>
+        <td class="p-4 border-t border-sacred-sand">Row 1, Cell 2</td>
       </tr>
-      <tr class="even:bg-gray-50">
-        <td class="p-3 border-t border-gray-100">Row 2, Cell 1</td>
-        <td class="p-3 border-t border-gray-100">Row 2, Cell 2</td>
+      <tr class="even:bg-sacred-sand">
+        <td class="p-4 border-t border-sacred-sand">Row 2, Cell 1</td>
+        <td class="p-4 border-t border-sacred-sand">Row 2, Cell 2</td>
       </tr>
     </tbody>
   </table>
@@ -60,11 +60,11 @@ Wrap every table in a responsive container:
 
 **Key details:**
 - `overflow-x-auto` ensures the table scrolls on small screens.
-- `border-collapse border border-gray-200 rounded-lg` gives a clean, bordered look.
-- `bg-gray-50` for header background, `font-semibold` for header text.
-- `even:bg-gray-50` alternates row colors for better readability.
-- `p-3` provides consistent padding inside cells.
-- `border-t border-gray-100` adds a subtle separator between rows.
+- `border-collapse border border-sacred-sand rounded-3xl shadow-airbnb` gives a clean, bordered look.
+- `bg-sacred-sand` for header background, `font-semibold` for header text.
+- `even:bg-sacred-sand` alternates row colors for better readability.
+- `p-4` provides consistent padding inside cells.
+- `border-t border-sacred-sand` adds a subtle separator between rows.
 
 ### When to Use Tables
 - Comparing multiple items (e.g., pricing tiers with different inclusions).
@@ -80,13 +80,13 @@ Consistent spacing between elements makes the content feel organized and easy to
 
 | Element | Recommended HTML & Classes |
 |---------|----------------------------|
-| **Paragraph** | `<p class="mb-4">…</p>` |
-| **Blockquote** | `<blockquote class="my-6">…</blockquote>` |
-| **Unordered/Ordered List** | `<ul class="mb-4 list-disc pl-5">…</ul>` |
-| **Image** | `<img class="my-6 rounded-lg" …>` |
-| **Horizontal Rule** | `<hr class="my-8 border-gray-300">` |
+| **Paragraph** | `<p class="mb-5">…</p>` |
+| **Blockquote** | `<blockquote class="my-8">…</blockquote>` |
+| **Unordered/Ordered List** | `<ul class="mb-5 list-disc pl-5">…</ul>` |
+| **Image** | `<img class="my-8 rounded-3xl shadow-airbnb" …>` |
+| **Horizontal Rule** | `<hr class="my-8 border-sacred-sand">` |
 
-**Rule of thumb:** Use `my-6` for block‑level separators (blockquotes, tables, images) and `mb-4` for inter‑paragraph spacing. Avoid adding extra `<br>` tags; rely on margin classes instead.
+**Rule of thumb:** Use `my-8` for block‑level separators (blockquotes, tables, images) and `mb-5` for inter‑paragraph spacing. Avoid adding extra `<br>` tags; rely on margin classes instead.
 
 ---
 
@@ -150,18 +150,18 @@ included_services:
 
 ### Example 1 – Activities Table (from Holi Fest)
 ```html
-<div class="overflow-x-auto my-6">
-  <table class="w-full table-auto border-collapse border border-gray-200 rounded-lg">
+<div class="overflow-x-auto my-8">
+  <table class="w-full table-auto border-collapse border border-sacred-sand rounded-3xl shadow-airbnb">
     <thead>
       <tr>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Actividad</th>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Descripción</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Actividad</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Descripción</th>
       </tr>
     </thead>
     <tbody>
-      <tr class="even:bg-gray-50">
-        <td class="p-3 border-t border-gray-100">✅ <strong>DJs y shows en vivo</strong></td>
-        <td class="p-3 border-t border-gray-100">Ritmos vibrantes que llenan el ambiente de energía y alegría.</td>
+      <tr class="even:bg-sacred-sand">
+        <td class="p-4 border-t border-sacred-sand">✅ <strong>DJs y shows en vivo</strong></td>
+        <td class="p-4 border-t border-sacred-sand">Ritmos vibrantes que llenan el ambiente de energía y alegría.</td>
       </tr>
       <!-- more rows -->
     </tbody>
@@ -171,19 +171,19 @@ included_services:
 
 ### Example 2 – Practical Information Table
 ```html
-<h3 class="mt-6 mb-3">Información Práctica</h3>
-<div class="overflow-x-auto my-6">
-  <table class="w-full table-auto border-collapse border border-gray-200 rounded-lg">
+<h3 class="mt-10 mb-5">Información Práctica</h3>
+<div class="overflow-x-auto my-8">
+  <table class="w-full table-auto border-collapse border border-sacred-sand rounded-3xl shadow-airbnb">
     <thead>
       <tr>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Detalle</th>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Información</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Detalle</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Información</th>
       </tr>
     </thead>
     <tbody>
-      <tr class="even:bg-gray-50">
-        <td class="p-3 border-t border-gray-100"><strong>Fecha</strong></td>
-        <td class="p-3 border-t border-gray-100">Domingo, 18 de abril de 2026</td>
+      <tr class="even:bg-sacred-sand">
+        <td class="p-4 border-t border-sacred-sand"><strong>Fecha</strong></td>
+        <td class="p-4 border-t border-sacred-sand">Domingo, 18 de abril de 2026</td>
       </tr>
       <!-- more rows -->
     </tbody>
@@ -193,23 +193,23 @@ included_services:
 
 ### Example 3 – Pricing Table with Multiple Columns
 ```html
-<h3 class="mt-8 mb-4">Precios y Categorías</h3>
-<div class="overflow-x-auto my-6">
-  <table class="w-full table-auto border-collapse border border-gray-200 rounded-lg">
+<h3 class="mt-10 mb-5">Precios y Categorías</h3>
+<div class="overflow-x-auto my-8">
+  <table class="w-full table-auto border-collapse border border-sacred-sand rounded-3xl shadow-airbnb">
     <thead>
       <tr>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Categoría</th>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Preventa</th>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Taquilla</th>
-        <th class="bg-gray-50 text-left p-3 font-semibold">Incluye</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Categoría</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Preventa</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Taquilla</th>
+        <th class="bg-sacred-sand text-left p-4 font-semibold">Incluye</th>
       </tr>
     </thead>
     <tbody>
-      <tr class="even:bg-gray-50">
-        <td class="p-3 border-t border-gray-100"><strong>VIP</strong></td>
-        <td class="p-3 border-t border-gray-100">$120.000</td>
-        <td class="p-3 border-t border-gray-100">$130.000</td>
-        <td class="p-3 border-t border-gray-100">• Entrada<br>• Bebidas ilimitadas…</td>
+      <tr class="even:bg-sacred-sand">
+        <td class="p-4 border-t border-sacred-sand"><strong>VIP</strong></td>
+        <td class="p-4 border-t border-sacred-sand">$120.000</td>
+        <td class="p-4 border-t border-sacred-sand">$130.000</td>
+        <td class="p-4 border-t border-sacred-sand">• Entrada<br>• Bebidas ilimitadas…</td>
       </tr>
     </tbody>
   </table>
@@ -233,11 +233,11 @@ Before saving a new or updated event/pasadía markdown file, verify:
 
 ### Content Body
 - [ ] Headings follow the hierarchy (H2 → H3, no skipping).
-- [ ] Headings include spacing classes (`mt-8 mb-4` for H2, `mt-6 mb-3` for H3).
-- [ ] Paragraphs are wrapped in `<p class="mb-4">`.
+- [ ] Headings include spacing classes (`mt-10 mb-5` for H2, `mt-8 mb-4` for H3).
+- [ ] Paragraphs are wrapped in `<p class="mb-5">`.
 - [ ] Lists of comparable items are converted into tables using the provided table template.
-- [ ] Tables are wrapped in `<div class="overflow‑x‑auto my‑6">`.
-- [ ] Blockquotes use `<blockquote class="my‑6">`.
+- [ ] Tables are wrapped in `<div class="overflow‑x‑auto my‑8">`.
+- [ ] Blockquotes use `<blockquote class="my‑8">`.
 - [ ] Language is clear, sentence‑cased, and free of unnecessary all‑caps.
 - [ ] No stray Markdown syntax (e.g., unclosed HTML tags, misplaced asterisks).
 
