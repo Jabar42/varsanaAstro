@@ -2,10 +2,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-rausch: #ff385c;
+  --color-rausch: #52185B;
   --color-near-black: #222222;
-  --color-saffron: #FF9933;
-  --color-forest: #2D5A27;
+  --color-saffron: #F7941E;
+  --color-forest: #779B05;
   --color-sacred-sand: #FAF9F6;
   --shadow-airbnb: 0 0 0 1px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.1);
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;

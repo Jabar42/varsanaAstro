@@ -1,9 +1,14 @@
 # Color Palette & Roles
 
 ## Primary Brand
-- **Rausch Red** (`#ff385c`): Primary CTA, brand accent.
-- **Saffron Wisdom** (`#FF9933`): Secondary accent for spiritual highlights, yoga tags.
-- **Forest Prana** (`#2D5A27`): Accent for nature‑based activities, volunteering.
+- **Rausch Red** (`#52185B`): Primary CTA, brand accent.
+- **Saffron Wisdom** (`#F7941E`): Secondary accent for spiritual highlights, yoga tags.
+- **Forest Prana** (`#779B05`): Accent for nature‑based activities, volunteering.
+
+## Light Tones (For Gradients)
+- **Rausch Red Light** (`#97448E`): Lighter purple for gradients and hover states.
+- **Saffron Wisdom Light** (`#FAAF3E`): Lighter orange for gradients and highlights.
+- **Forest Prana Light** (`#95AD02`): Lighter green for gradients and accents.
 
 ## Neutral Scale
 - **Near Black** (`#222222`): Primary text — warm and grounded.

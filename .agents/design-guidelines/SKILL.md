@@ -17,7 +17,7 @@ The Varsana design system evolves the warm, photography‑forward foundation of 
 **Key Characteristics:**
 - **Sacred Sand Canvas** (`#FAF9F6`) for a softer, more organic feel.
 - **Dual Typography**: Bold Display headings for "Wisdom" and Sans‑serif for "Clarity".
-- **Spiritual Accents**: Saffron (`#FF9933`) and Forest Green (`#2D5A27`).
+- **Spiritual Accents**: Saffron (`#F7941E`) and Forest Green (`#779B05`).
 - **Organic Geometry**: 32px+ border‑radius and subtle "squircle" shapes.
 - **Breathable Spacing**: Increased whitespace to promote a sense of calm.
 - **Tactile Textures**: Subtle grain or paper‑like overlays on large surfaces.
@@ -35,7 +35,7 @@ For a detailed breakdown of colors, typography, components, and layout, see the 
 
 | Aspect | Key Values |
 |--------|------------|
-| Primary Brand | Rausch Red (`#ff385c`), Saffron Wisdom (`#FF9933`), Forest Prana (`#2D5A27`) |
+| Primary Brand | Rausch Red (`#52185B`), Saffron Wisdom (`#F7941E`), Forest Prana (`#779B05`) |
 | Neutral Scale | Near Black (`#222222`), Secondary Gray (`#6a6a6a`), Sacred Sand (`#FAF9F6`), Lotus White (`#FFFFFF`) |
 | Fonts | **Headings:** Proza Libre, **UI & Body:** Inter |
 | Card Radius | 24px–32px |

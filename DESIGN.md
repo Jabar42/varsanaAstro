@@ -4,12 +4,12 @@
 
 The Varsana design system evolves the warm, photography-forward foundation of Airbnb into a **Spiritual Sanctuary**. It maintains the clean, airy feel of a travel magazine but infuses it with a "soulful" atmosphere inspired by Hindu tradition, yoga, and wellness.
 
-The foundation shifts from pure white to **Sacred Sand** (`#FAF9F6`) — a warmer, more organic off-white that reduces digital glare and feels like natural linen. The iconic **Rausch Red** (`#ff385c`) remains for primary actions, but is now complemented by **Saffron Wisdom** (`#FF9933`) and **Forest Prana** (`#2D5A27`) to represent spiritual energy and nature.
+The foundation shifts from pure white to **Sacred Sand** (`#FAF9F6`) — a warmer, more organic off-white that reduces digital glare and feels like natural linen. The iconic **Rausch Red** (`#52185B`) remains for primary actions, but is now complemented by **Saffron Wisdom** (`#F7941E`) and **Forest Prana** (`#779B05`) to represent spiritual energy and nature.
 
 **Key Characteristics:**
 - **Sacred Sand Canvas** (`#FAF9F6`) for a softer, more organic feel.
 - **Dual Typography**: Bold Display headings for "Wisdom" and Sans-serif for "Clarity".
-- **Spiritual Accents**: Saffron (#FF9933) and Forest Green (#2D5A27).
+- **Spiritual Accents**: Saffron (#F7941E) and Forest Green (#779B05).
 - **Organic Geometry**: 32px+ border-radius and subtle "squircle" shapes.
 - **Breathable Spacing**: Increased whitespace to promote a sense of calm.
 - **Tactile Textures**: Subtle grain or paper-like overlays on large surfaces.
@@ -17,9 +17,14 @@ The foundation shifts from pure white to **Sacred Sand** (`#FAF9F6`) — a warme
 ## 2. Color Palette & Roles
 
 ### Primary Brand
-- **Rausch Red** (`#ff385c`): Primary CTA, brand accent.
-- **Saffron Wisdom** (`#FF9933`): Secondary accent for spiritual highlights, yoga tags.
-- **Forest Prana** (`#2D5A27`): Accent for nature-based activities, volunteering.
+- **Rausch Red** (`#52185B`): Primary CTA, brand accent.
+- **Saffron Wisdom** (`#F7941E`): Secondary accent for spiritual highlights, yoga tags.
+- **Forest Prana** (`#779B05`): Accent for nature-based activities, volunteering.
+
+### Light Tones (For Gradients)
+- **Rausch Red Light** (`#97448E`): Lighter purple for gradients and hover states.
+- **Saffron Wisdom Light** (`#FAAF3E`): Lighter orange for gradients and highlights.
+- **Forest Prana Light** (`#95AD02`): Lighter green for gradients and accents.
 
 ### Neutral Scale
 - **Near Black** (`#222222`): Primary text — warm and grounded.

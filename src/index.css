@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-rausch: #ff385c;
-  --color-rausch-dark: #e00b41;
+  --color-rausch: #52185B;
+  --color-rausch-dark: #3A1241;
   --color-near-black: #222222;
   --color-secondary-gray: #6a6a6a;
   --color-border-gray: #dddddd;
