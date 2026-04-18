@@ -1,0 +1,56 @@
+## Ejemplos
+
+### Frontmatter mínimo
+```yaml
+---
+title: "Pasadía de Bienestar"
+description: "Una jornada de reconexión interior a través del yoga y la meditación."
+image: "https://picsum.photos/seed/bienestar/1600/1000"
+prices:
+  - label: "General"
+    amount: 45000
+duration: "4 horas"
+meeting_point: "Salón principal de Varsana, Granada, Cundinamarca"
+category: "bienestar"
+---
+```
+
+### Ejemplo completo (frontmatter + cuerpo)
+```markdown
+---
+title: "Caminata Ecológica por la Montaña"
+description: "Una jornada de conexión con la naturaleza a través de senderos ancestrales."
+image: "https://picsum.photos/seed/caminata/1600/1000"
+prices:
+  - label: "Preventa"
+    amount: 65000
+    deadline: 2026-05-10
+  - label: "General"
+    amount: 75000
+duration: "8 horas"
+meeting_point: "Entrada principal de Varsana, Granada, Cundinamarca"
+category: "naturaleza"
+included_services:
+  - "Guía especializado"
+  - "Almuerzo vegetariano"
+  - "Materiales para la caminata"
+---
+## Una experiencia que te conecta con la tierra
+
+Sumérgete en los senderos ancestrales de la montaña sagrada de Varsana. Esta caminata ecológica está diseñada para quienes buscan un contacto profundo con la naturaleza, lejos del ruido urbano.
+
+### Itinerario aproximado
+
+- **8:00 a. m.** – Encuentro en la entrada principal.
+- **8:30 a. m.** – Inicio de la caminata con una ceremonia de gratitud a la tierra.
+- **10:00 a. m.** – Parada en el mirador “El Colibrí” para meditación guiada.
+- **12:00 p. m.** – Almuerzo vegetariano preparado con ingredientes locales.
+- **2:00 p. m.** – Continuación del recorrido hasta la cascada “Agua Clara”.
+- **4:00 p. m.** – Regreso al punto de encuentro y cierre con círculo de compartir.
+
+### ¿Qué incluye?
+
+- Guía especializado en ecoturismo y sabiduría ancestral.
+- Almuerzo vegetariano completo (plato principal, bebida y postre).
+- Bastones de trekking y botella de agua reutilizable.
+- Seguro de asistencia médica durante la actividad.

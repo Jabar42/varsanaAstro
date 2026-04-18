@@ -1,0 +1,20 @@
+# Frontmatter template for a new pasadía
+# Copy this YAML block into your Markdown file and replace the placeholder values.
+
+---
+title: "Title of the pasadía"
+description: "A short, compelling description for SEO and cards."
+image: "https://picsum.photos/seed/pasadia/1600/1000"
+prices:
+  - label: "Early Bird"
+    amount: 50000
+    deadline: YYYY-MM-DD
+  - label: "General"
+    amount: 70000
+duration: "8 hours"
+meeting_point: "Location address"
+category: "category"
+included_services:
+  - "Service 1"
+  - "Service 2"
+---
