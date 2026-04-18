@@ -1,0 +1,22 @@
+# Frontmatter template for a new event
+# Copy this YAML block into your Markdown file and replace the placeholder values.
+
+---
+title: "Title of the event"
+description: "A short, compelling description for SEO and cards."
+event_date: YYYY-MM-DD
+image: "https://picsum.photos/seed/event/1600/1000"
+prices:
+  - label: "Early Bird"
+    amount: 50000
+    deadline: YYYY-MM-DD
+  - label: "General"
+    amount: 70000
+# Optional fields (uncomment if needed)
+# duration: "8 hours"
+# meeting_point: "Location address"
+# category: "wellness"
+# included_services:
+#   - "Service 1"
+#   - "Service 2"
+---

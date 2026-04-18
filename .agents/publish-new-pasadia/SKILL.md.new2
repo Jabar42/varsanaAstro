@@ -1,0 +1,54 @@
+---
+name: publish-new-pasadia
+description: Step-by-step instructions for publishing a new pasadía (day-trip) in the Astro content collection. Use when the user wants to add a new pasadía to the Varsana website.
+---
+# Cómo Publicar un Nuevo Pasadía
+
+## Visión general
+
+Los pasadías en este proyecto Astro son **servicios fijos sin fecha específica**. A diferencia de los eventos, que tienen una fecha única (`event_date`), los pasadías están disponibles de forma permanente y se pueden reservar en cualquier momento. Cada pasadía es un archivo Markdown ubicado en `src/content/pasadias/` con un esquema de frontmatter definido. El sistema automáticamente:
+
+- Lista todos los pasadías en la página principal de pasadías (`/pasadias`) usando el helper `getAllPasadias`.
+- Genera una página de detalle para cada pasadía en `/pasadias/[slug]`.
+- Selecciona el precio activo según los deadlines (si existen) mediante `getCurrentPrice` (la misma lógica que para los eventos).
+
+El esquema de frontmatter se define en `src/content.config.ts` e incluye `title`, `description`, `image`, `prices`, `duration`, `meeting_point`, `category` y `included_services`.
+
+## Instrucciones paso a paso
+
+Para una guía detallada paso a paso, consulta [Instrucciones paso a paso](references/instrucciones-paso-a-paso.md).
+
+## Ejemplos
+
+Puedes ver ejemplos de frontmatter mínimo y completo en [Ejemplos](references/ejemplos.md).
+
+## Detalles de integración
+
+Para detalles técnicos sobre inclusión automática, lógica de precios y generación de páginas, consulta [Detalles de integración](references/detalles-integracion.md).
+
+
+## Errores comunes y consejos
+
+Consulta la lista de errores frecuentes y recomendaciones en [Errores comunes y consejos](references/errores-consejos.md).
+
+## Validación
+
+Después de crear el archivo de tu pasadía, verifica que todo funcione como se espera:
+
+1. **Revisa el listado de pasadías** – Ejecuta el servidor de desarrollo (`npm run dev`) y visita `/pasadias`. Tu nuevo pasadía debería aparecer en la cuadrícula.
+
+2. **Visita la página de detalle** – Haz clic en la tarjeta del pasadía o navega directamente a `/pasadias/[tu‑slug]`. Confirma que:
+   - El título, la descripción y la imagen se muestren correctamente.
+   - El cuerpo Markdown se renderice adecuadamente.
+   - La tarjeta de precio muestre el nivel activo esperado.
+   - La duración, el punto de encuentro, la categoría y los servicios incluidos se visualicen.
+
+3. **Prueba la selección de precio** – Si incluiste deadlines, verifica que el precio activo cambie según lo previsto cuando el deadline pase (puedes ajustar temporalmente el reloj del sistema o crear un pasadía de prueba con un deadline cercano).
+
+4. **Construye el sitio** – Ejecuta `npm run build` para asegurarte de que no haya errores de validación del esquema.
+
+Si algún paso falla, revisa el frontmatter en busca de errores tipográficos, comprueba la indentación YAML y consulta la consola de desarrollo del navegador para ver mensajes de error.
+
+---
+
+*Esta guía se basa en la implementación del proyecto a abril de 2026. Para actualizaciones, consulta los archivos más recientes `src/content.config.ts` y `src/lib/pasadias.ts`.*
