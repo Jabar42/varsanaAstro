@@ -51,4 +51,6 @@ Si algún paso falla, revisa el frontmatter en busca de errores tipográficos, c
 
 ---
 
+**Ver también:** [`design‑guidelines`](../design-guidelines/SKILL.md).
+
 *Esta guía se basa en la implementación del proyecto a abril de 2026. Para actualizaciones, consulta los archivos más recientes `src/content.config.ts` y `src/lib/pasadias.ts`.*

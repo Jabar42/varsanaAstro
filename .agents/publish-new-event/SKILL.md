@@ -92,4 +92,6 @@ If any step fails, review the frontmatter for typos, check the YAML indentation,
 
 ---
 
+**See also:** [`design‑guidelines`](../design-guidelines/SKILL.md).
+
 *This guide is based on the project’s implementation as of April 2026. For updates, refer to the latest `src/content.config.ts` and `src/lib/events.ts`.*
