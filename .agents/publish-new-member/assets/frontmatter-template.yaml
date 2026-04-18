@@ -1,0 +1,36 @@
+# Plantilla de frontmatter para un nuevo miembro
+# Copia este bloque YAML en tu archivo Markdown y reemplaza los valores de ejemplo.
+
+---
+nombre: "Nombre Completo"
+rol: "Rol en el equipo"
+descripcion: "Una descripción breve que aparecerá en la tarjeta del miembro."
+imagen: "/team/nombre-foto.jpg"
+orden: 0
+activo: true
+enlaces_sociales:
+  - plataforma: "Instagram"
+    url: "https://instagram.com/usuario"
+  - plataforma: "LinkedIn"
+    url: "https://linkedin.com/in/usuario"
+  # Puedes agregar más plataformas: Twitter, Facebook, YouTube, etc.
+correo: "correo@example.com"
+telefono: "+57 300 123 4567"
+---
+
+# Tu contenido Markdown aquí
+
+Escribe la biografía completa del miembro usando Markdown.
+
+## Ejemplo de estructura
+
+### Formación
+- Detalle 1
+- Detalle 2
+
+### Experiencia
+- Detalle 1
+- Detalle 2
+
+### Filosofía personal
+Texto explicativo...

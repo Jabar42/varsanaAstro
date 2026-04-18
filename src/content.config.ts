@@ -40,7 +40,28 @@ const pasadiasCollection = defineCollection({
   }),
 });
 
+const nosotrosCollection = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/nosotros" }),
+  schema: z.object({
+    nombre: z.string(),
+    rol: z.string(),
+    descripcion: z.string(),
+    imagen: z.string(),
+    orden: z.number().int().min(0).optional().default(0),
+    activo: z.boolean().optional().default(true),
+    enlaces_sociales: z.array(
+      z.object({
+        plataforma: z.string(),
+        url: z.string().url(),
+      })
+    ).optional().default([]),
+    correo: z.string().email().optional(),
+    telefono: z.string().optional(),
+  }),
+});
+
 export const collections = {
   events: eventsCollection,
   pasadias: pasadiasCollection,
+  nosotros: nosotrosCollection,
 };
