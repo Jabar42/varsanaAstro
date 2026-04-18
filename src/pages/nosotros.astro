@@ -1,6 +1,5 @@
 ---
 import Layout from '@/src/layouts/Layout.astro';
-import CategoryBar from '@/src/components/CategoryBar.astro';
 import MemberCard from '@/src/components/MemberCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -10,7 +9,6 @@ const sortedMembers = activeMembers.sort((a, b) => a.data.orden - b.data.orden);
 ---
 
 <Layout title="Nuestro Equipo | Varsana Eco Yoga Aldea">
-  <CategoryBar />
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-16">
     <div class="mb-12">

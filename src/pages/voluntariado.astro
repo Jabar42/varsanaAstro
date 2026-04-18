@@ -1,11 +1,10 @@
 ---
 import Layout from '@/src/layouts/Layout.astro';
-import CategoryBar from '@/src/components/CategoryBar.astro';
 import { Leaf, Users, Heart, Coffee, Home, Info, CheckCircle2 } from 'lucide-react';
 
 const activities = [
   { title: "Agricultura Orgánica", description: "Participa en la siembra, cuidado y cosecha de alimentos saludables en nuestra huerta.", icon: Leaf },
-  { title: "Cocina Vegetariana", description: "Aprende el arte de la cocina consciente y saludable preparando alimentos para la comunidad.", icon: Coffee },
+  { title: "Cocina Vegetariana", description: "Aprende el arte de la cocina consciente y saludable preparando alimentos para la community.", icon: Coffee },
   { title: "Mantenimiento y Bioconstrucción", description: "Ayuda en el mejoramiento de las instalaciones usando técnicas sostenibles.", icon: Home },
   { title: "Proyectos Especiales", description: "Si tienes habilidades en diseño, comunicaciones o artes, puedes aportar a la visibilidad de la aldea.", icon: Heart },
 ];
@@ -20,7 +19,6 @@ const includes = [
 ---
 
 <Layout title="Programa de Voluntariado | Varsana Eco Yoga Aldea">
-  <CategoryBar />
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12">
     <!-- Hero Section -->
