@@ -77,3 +77,5 @@ The new collection is fully integrated into the Astro content layer and can be q
 - [`.astro/collections/events.schema.json`](../.astro/collections/events.schema.json) – generated JSON‑Schema
 
 Use these references as templates when creating your own collection.
+
+**See also:** [`design‑guidelines`](../design-guidelines/SKILL.md).
