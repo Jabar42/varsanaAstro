@@ -89,4 +89,4 @@ After saving, the site will automatically rebuild and the new content will appea
 
 **Last updated:** 2026‑04‑16  
 **Based on:** [`holi‑fest‑2026.md`](../src/content/events/holi-fest-2026.md)  
-**See also:** [`.roo/how‑to‑a‑new‑event.md`](../publish-new-event/SKILL.md), [`.roo/how‑to‑a‑new‑pasadia.md`](../publish-new-pasadia/SKILL.md)
+**See also:** [`.roo/how‑to‑a‑new‑event.md`](../publish-new-event/SKILL.md), [`.roo/how‑to‑a‑new‑pasadia.md`](../publish-new-pasadia/SKILL.md), [`design‑guidelines`](../design-guidelines/SKILL.md)
