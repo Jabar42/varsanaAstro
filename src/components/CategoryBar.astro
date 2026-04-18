@@ -1,10 +1,11 @@
 ---
-import { Leaf, Flower2, Tent, Users, Calendar, Heart, Map, Compass } from 'lucide-react';
+import { Leaf, Flower2, Tent, Users, Info, Calendar, Heart, Map, Compass } from 'lucide-react';
 
 const categories = [
   { name: 'Yoga', icon: Heart, href: '/' },
   { name: 'Meditación', icon: Flower2, href: '/' },
   { name: 'Hospedaje', icon: Tent, href: '/' },
+  { name: 'Nosotros', icon: Info, href: '/nosotros' },
   { name: 'Voluntariado', icon: Users, href: '/voluntariado' },
   { name: 'Pasadias', icon: Map, href: '/pasadias' },
   { name: 'Eventos', icon: Calendar, href: '/events' },
@@ -16,7 +17,7 @@ const categories = [
 <div class="sticky top-[73px] z-40 bg-white border-b border-gray-100 px-8 py-5 md:px-16 lg:px-24 overflow-x-auto no-scrollbar">
   <div class="max-w-7xl mx-auto flex items-center gap-8 md:gap-12">
     {categories.map((cat, i) => (
-      <a href={cat.href} class={`flex flex-col items-center gap-2 min-w-fit group cursor-pointer border-b-2 transition-all duration-600 pb-2 ${cat.name === 'Yoga' ? 'border-near-black opacity-100' : 'border-transparent opacity-60 hover:opacity-100 hover:border-saffron'}`}>
+      <a href={cat.href} class={`flex flex-col items-center gap-2 min-w-fit group cursor-pointer border-b-2 transition-all duration-600 pb-2 ${cat.name === 'Yoga' || (cat.name === 'Nosotros' && Astro.url.pathname.startsWith('/nosotros')) ? 'border-near-black opacity-100' : 'border-transparent opacity-60 hover:opacity-100 hover:border-saffron'}`}>
         <cat.icon size={24} strokeWidth={1.5} />
         <span class="text-xs font-semibold whitespace-nowrap">{cat.name}</span>
       </a>

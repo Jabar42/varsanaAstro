@@ -1,0 +1,95 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Instagram, Twitter, Linkedin, Facebook, Youtube, Mail, Phone, Globe } from 'lucide-react';
+
+type Props = {
+  member: CollectionEntry<'nosotros'>;
+};
+
+const { member } = Astro.props;
+const { nombre, rol, descripcion, imagen, enlaces_sociales, correo, telefono } = member.data;
+
+// Function to get appropriate icon for social platform
+const getSocialIcon = (platform: string) => {
+  const normalized = platform.toLowerCase();
+  switch (normalized) {
+    case 'instagram':
+      return Instagram;
+    case 'twitter':
+    case 'x':
+      return Twitter;
+    case 'linkedin':
+      return Linkedin;
+    case 'facebook':
+      return Facebook;
+    case 'youtube':
+      return Youtube;
+    default:
+      return Globe;
+  }
+};
+---
+
+<article class="bg-white rounded-[20px] shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
+  <div class="aspect-square overflow-hidden relative">
+    <img
+      src={imagen}
+      alt={nombre}
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      referrerpolicy="no-referrer"
+    />
+  </div>
+
+  <div class="p-6 flex flex-col flex-grow space-y-3">
+    <div class="space-y-1">
+      <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{nombre}</h3>
+      <p class="text-sm text-saffron font-semibold uppercase tracking-wider">{rol}</p>
+    </div>
+
+    <p class="text-gray-600 line-clamp-3 text-[15px] leading-relaxed">
+      {descripcion.slice(0, 150)}{descripcion.length > 150 ? '...' : ''}
+    </p>
+
+    {/* Social links */}
+    {enlaces_sociales && enlaces_sociales.length > 0 && (
+      <div class="flex items-center gap-3 pt-2">
+        {enlaces_sociales.map((enlace) => {
+          const Icon = getSocialIcon(enlace.plataforma);
+          return (
+            <a
+              href={enlace.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-gray-400 hover:text-saffron transition-colors"
+              title={enlace.plataforma}
+            >
+              <Icon size={18} />
+            </a>
+          );
+        })}
+      </div>
+    )}
+
+    {/* Contact info */}
+    <div class="pt-4 mt-auto border-t border-gray-100 space-y-2">
+      {correo && (
+        <div class="flex items-center gap-2 text-sm text-gray-600">
+          <Mail size={14} className="text-saffron" />
+          <a href={`mailto:${correo}`} class="hover:text-saffron">{correo}</a>
+        </div>
+      )}
+      {telefono && (
+        <div class="flex items-center gap-2 text-sm text-gray-600">
+          <Phone size={14} className="text-saffron" />
+          <a href={`tel:${telefono}`} class="hover:text-saffron">{telefono}</a>
+        </div>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  h3 {
+    letter-spacing: -0.02em;
+  }
+</style>
