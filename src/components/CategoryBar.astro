@@ -8,7 +8,7 @@ const alignmentClasses = {
   end: 'justify-end',
 } as const;
 const alignmentClass = alignmentClasses[align] || 'justify-end';
-const containerClass = `max-w-7xl mx-auto flex flex-nowrap items-center ${alignmentClass} gap-8 md:gap-12`;
+const containerClass = `max-w-7xl mx-auto flex items-center ${alignmentClass} gap-8 md:gap-12`;
 
 const categories = [
   { name: 'Yoga', icon: Heart, href: '/' },
@@ -40,7 +40,7 @@ const isActive = (href: string, index: number) => {
     {categories.map((cat, i) => (
       <a
         href={cat.href}
-        class={`flex flex-col items-center gap-2 min-w-fit flex-shrink-0 group cursor-pointer border-b-2 transition-all duration-600 pb-2 ${
+        class={`flex flex-col items-center gap-2 min-w-fit group cursor-pointer border-b-2 transition-all duration-600 pb-2 ${
           isActive(cat.href, i)
             ? 'border-near-black opacity-100'
             : 'border-transparent opacity-60 hover:opacity-100 hover:border-saffron'
@@ -60,6 +60,5 @@ const isActive = (href: string, index: number) => {
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
   }
 </style>
