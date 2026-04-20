@@ -35,19 +35,19 @@ const isActive = (href: string, index: number) => {
 };
 ---
 
-<div class="bg-white border-t border-gray-100 py-4 overflow-x-auto no-scrollbar scroll-smooth">
+<div class="bg-white border-t border-gray-100 py-2 overflow-x-auto no-scrollbar scroll-smooth">
   <div class={containerClass}>
     {categories.map((cat, i) => (
       <a
         href={cat.href}
-        class={`flex flex-col items-center gap-1 min-w-fit flex-shrink-0 group cursor-pointer border-b-2 transition-all duration-600 pb-1 ${
+        class={`flex flex-col items-center gap-0 min-w-fit flex-shrink-0 group cursor-pointer border-b transition-all duration-600 pb-0 ${
           isActive(cat.href, i)
             ? 'border-near-black opacity-100'
             : 'border-transparent opacity-60 hover:opacity-100 hover:border-saffron'
         }`}
       >
         <cat.icon size={20} strokeWidth={1.5} />
-        <span class="text-xs font-medium whitespace-nowrap">{cat.name}</span>
+        <span class="text-xs font-medium whitespace-nowrap leading-none">{cat.name}</span>
       </a>
     ))}
   </div>
