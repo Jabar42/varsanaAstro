@@ -1,5 +1,5 @@
 ---
-import { Leaf, Flower2, Tent, Users, Info, Calendar, Heart, Map, Compass } from 'lucide-react';
+import { Leaf, Flower2, Tent, Users, Info, Calendar, Heart, Map, Compass, House} from 'lucide-react';
 
 const { align = 'end' }: { align?: 'start' | 'center' | 'end' } = Astro.props;
 const alignmentClasses = {
@@ -11,13 +11,14 @@ const alignmentClass = alignmentClasses[align] || 'justify-end';
 const containerClass = `max-w-none md:max-w-7xl mx-auto flex flex-nowrap items-center ${alignmentClass} gap-8 md:gap-12 w-max md:w-auto`;
 
 const categories = [
+  { name: 'Inicio', icon: House, href: '/' },
+  { name: 'Nosotros', icon: Info, href: '/nosotros' },
+  { name: 'Eventos', icon: Calendar, href: '/events' },
+  { name: 'Hospedaje', icon: Tent, href: '/' },
+  { name: 'Pasadias', icon: Map, href: '/pasadias' },
+  { name: 'Voluntariado', icon: Users, href: '/voluntariado' },
   { name: 'Yoga', icon: Heart, href: '/' },
   { name: 'Meditación', icon: Flower2, href: '/' },
-  { name: 'Hospedaje', icon: Tent, href: '/' },
-  { name: 'Nosotros', icon: Info, href: '/nosotros' },
-  { name: 'Voluntariado', icon: Users, href: '/voluntariado' },
-  { name: 'Pasadias', icon: Map, href: '/pasadias' },
-  { name: 'Eventos', icon: Calendar, href: '/events' },
   { name: 'Naturaleza', icon: Leaf, href: '/' },
   { name: 'Retiros', icon: Compass, href: '/' },
 ];
