@@ -75,32 +75,38 @@ const isActive = (href: string, index: number) => {
       if (scrollWidth > clientWidth) {
         let direction = 1;
         let position = 0;
-        const step = 0.5;
-        const limit = 40;
+        const step = 0.2; // slower movement
+        const limit = 30; // smaller distance
         let paused = false;
+        let animationId = null;
 
         function animate() {
           if (paused) {
-            requestAnimationFrame(animate);
+            animationId = requestAnimationFrame(animate);
             return;
           }
           position += direction * step;
           if (position >= limit || position <= 0) {
             direction *= -1;
             paused = true;
-            setTimeout(() => { paused = false; }, 2000);
+            setTimeout(() => { paused = false; }, 3000); // longer pause at ends
           }
           container.scrollLeft = position;
-          requestAnimationFrame(animate);
+          animationId = requestAnimationFrame(animate);
         }
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
 
-        // Pause on interaction
-        const pause = () => { paused = true; };
-        const resume = () => { setTimeout(() => { paused = false; }, 10000); };
-        container.addEventListener('mouseenter', pause);
-        container.addEventListener('touchstart', pause);
-        container.addEventListener('touchend', resume);
+        function stopAnimation() {
+          if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+          }
+          container.removeEventListener('mouseenter', stopAnimation);
+          container.removeEventListener('touchstart', stopAnimation);
+        }
+
+        container.addEventListener('mouseenter', stopAnimation);
+        container.addEventListener('touchstart', stopAnimation);
       }
     }
   }
