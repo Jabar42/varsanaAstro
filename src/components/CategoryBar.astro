@@ -69,39 +69,39 @@ const isActive = (href: string, index: number) => {
   // Auto‑scroll hint for mobile
   if (typeof window !== 'undefined' && window.innerWidth < 768) {
     const container = document.querySelector('.overflow-x-auto');
-    if (!container) return;
+    if (container) {
+      const scrollWidth = container.scrollWidth;
+      const clientWidth = container.clientWidth;
+      if (scrollWidth > clientWidth) {
+        let direction = 1;
+        let position = 0;
+        const step = 0.5;
+        const limit = 40;
+        let paused = false;
 
-    const scrollWidth = container.scrollWidth;
-    const clientWidth = container.clientWidth;
-    if (scrollWidth <= clientWidth) return; // No overflow
-
-    let direction = 1;
-    let position = 0;
-    const step = 0.5;
-    const limit = 40;
-    let paused = false;
-
-    function animate() {
-      if (paused) {
+        function animate() {
+          if (paused) {
+            requestAnimationFrame(animate);
+            return;
+          }
+          position += direction * step;
+          if (position >= limit || position <= 0) {
+            direction *= -1;
+            paused = true;
+            setTimeout(() => { paused = false; }, 2000);
+          }
+          container.scrollLeft = position;
+          requestAnimationFrame(animate);
+        }
         requestAnimationFrame(animate);
-        return;
-      }
-      position += direction * step;
-      if (position >= limit || position <= 0) {
-        direction *= -1;
-        paused = true;
-        setTimeout(() => { paused = false; }, 2000);
-      }
-      container.scrollLeft = position;
-      requestAnimationFrame(animate);
-    }
-    requestAnimationFrame(animate);
 
-    // Pause on interaction
-    const pause = () => { paused = true; };
-    const resume = () => { setTimeout(() => { paused = false; }, 10000); };
-    container.addEventListener('mouseenter', pause);
-    container.addEventListener('touchstart', pause);
-    container.addEventListener('touchend', resume);
+        // Pause on interaction
+        const pause = () => { paused = true; };
+        const resume = () => { setTimeout(() => { paused = false; }, 10000); };
+        container.addEventListener('mouseenter', pause);
+        container.addEventListener('touchstart', pause);
+        container.addEventListener('touchend', resume);
+      }
+    }
   }
 </script>
