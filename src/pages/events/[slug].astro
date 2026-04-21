@@ -3,6 +3,7 @@ import Layout from '@/src/layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 import { getCurrentPrice } from '@/src/lib/events';
 import { Calendar, MapPin, Users, Info, Star } from 'lucide-react';
+import CheckoutButton from '@/src/components/CheckoutButton';
 
 export async function getStaticPaths() {
   const events = await getCollection('events');
@@ -137,12 +138,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
           </div>
 
           <!-- Payment Button -->
-          <button 
-            class="w-full bg-rausch hover:bg-[#e00b41] text-white py-3.5 rounded-xl font-bold text-lg transition-all active:scale-[0.98] shadow-sm"
-            data-price-id={currentPrice?.stripePriceId}
-          >
-            Reservar ahora
-          </button>
+          {currentPrice && (
+            <CheckoutButton
+              client:load
+              itemId={event.id}
+              itemTitle={title}
+              unitPrice={currentPrice.amount}
+              quantity={1}
+            />
+          )}
 
           <p class="text-center text-gray-500 text-xs">Asegura tu cupo con anticipación</p>
 
