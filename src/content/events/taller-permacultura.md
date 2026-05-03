@@ -1,8 +1,10 @@
 ---
+id: "taller-permacultura-2026"
 title: "Taller de Permacultura y Vida Sostenible"
 description: "Aprende las bases del diseño regenerativo y cómo aplicarlas en tu hogar. Un taller práctico en nuestra huerta orgánica."
 event_date: 2026-07-10
 image: "https://picsum.photos/seed/permaculture-varsana/1600/1000"
+stock_max: 25
 prices:
   - label: "Pronto Pago"
     amount: 180000

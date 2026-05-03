@@ -3,9 +3,11 @@
 Before saving a new or updated event/pasadía markdown file, verify:
 
 ### Frontmatter
+- [ ] `id` (for events) is a unique, persistent identifier in kebab‑case.
 - [ ] `title` and `description` are filled and compelling.
 - [ ] `event_date` (for events) is in `YYYY‑MM‑DD` format.
 - [ ] `image` URL points to a high‑quality landscape image (or a valid placeholder).
+- [ ] `stock_max` (for events) is a positive integer representing maximum capacity.
 - [ ] `prices` array is present, with at least one price object.
 - [ ] Price `amount` is a number without currency symbols.
 - [ ] `deadline` (if used) is in `YYYY‑MM‑DD` and correctly placed.

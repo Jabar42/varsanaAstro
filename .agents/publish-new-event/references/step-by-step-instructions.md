@@ -10,10 +10,12 @@ Every event must include the following frontmatter fields:
 
 ```yaml
 ---
+id: "my-event-id"
 title: "Event Title"
 description: "A short, compelling description for SEO and cards."
 event_date: YYYY-MM-DD
 image: "https://picsum.photos/seed/your‑event/1600/1000"
+stock_max: 100
 prices:
   - label: "Early Bird"
     amount: 50000
@@ -24,10 +26,12 @@ prices:
 ```
 
 #### Field details
+- **`id`** (string): A unique, persistent identifier for the event. This ID is used by the payment gateway and will not change even if the file is renamed. Use kebab‑case (e.g., `retiro-silencio-2026`).
 - **`title`** (string): The event’s display name.
 - **`description`** (string): A one‑ or two‑sentence summary used in meta tags and cards.
 - **`event_date`** (date): The date of the event in `YYYY‑MM‑DD` format.
 - **`image`** (string): A high‑quality image URL. The project currently uses `picsum.photos` placeholders; replace with a real image when available.
+- **`stock_max`** (integer): Maximum capacity / number of available spots for the event. Must be a positive integer.
 - **`prices`** (array): A list of price objects.
 
 ### 3. Price object structure
@@ -38,7 +42,6 @@ Each price object can have:
 | `label` | string | Yes | Display name of the price tier (e.g., “Early Bird”, “VIP”). |
 | `amount` | number | Yes | Price in Colombian pesos (without decimal places). |
 | `deadline` | date | No | Cut‑off date for this tier in `YYYY‑MM‑DD`. If omitted, the price is always available. |
-| `stripePriceId` | string | No | Stripe Price ID for payment integration (optional). |
 
 **Important ordering:** The price list is evaluated from first to last. The first price with a future `deadline` becomes the active price. If no deadlines are in the future, the **last** price in the array is used as the fallback. Therefore, place your “regular” or “default” price at the end.
 

@@ -1,8 +1,10 @@
 ---
+id: "ceremonia-equinoccio-2026"
 title: "Ceremonia de Equinoccio"
 description: "Ritual ancestral de agradecimiento y armonización con los ciclos de la tierra."
 event_date: 2026-09-21
 image: "https://picsum.photos/seed/ceremony/1600/1000"
+stock_max: 50
 prices:
   - label: "General"
     amount: 50000

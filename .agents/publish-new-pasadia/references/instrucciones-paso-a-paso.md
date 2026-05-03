@@ -41,12 +41,11 @@ Cada objeto de precio puede tener:
 
 | Campo | Tipo | Obligatorio | Descripción |
 |-------|------|-------------|-------------|
-| `label` | string | Sí | Nombre visible del nivel de precio (ej. “Preventa”, “General”, “VIP”). |
+| `label` | string | Sí | Nombre visible del nivel de precio (ej. "Preventa", "General", "VIP"). |
 | `amount` | number | Sí | Precio en pesos colombianos **sin decimales** (ej. `35000`). |
 | `deadline` | date | No | Fecha límite para este precio en formato `YYYY‑MM‑DD`. Si se omite, el precio está siempre disponible. |
-| `stripePriceId` | string | No | ID de precio de Stripe para la integración de pagos (opcional). |
 
-**Orden importante:** La lista de precios se evalúa de primero a último. El primer precio con un `deadline` futuro se convierte en el precio activo. Si ningún deadline está en el futuro, se usa el **último** precio del array como fallback. Por tanto, coloca tu precio “regular” o “por defecto” al final.
+**Orden importante:** La lista de precios se evalúa de primero a último. El primer precio con un `deadline` futuro se convierte en el precio activo. Si ningún deadline está en el futuro, se usa el **último** precio del array como fallback. Por tanto, coloca tu precio "regular" o "por defecto" al final.
 
 ### 4. Escribir el cuerpo en Markdown
 Debajo del frontmatter, escribe la descripción completa del pasadía en Markdown.

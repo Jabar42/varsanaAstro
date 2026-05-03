@@ -4,16 +4,17 @@ import { glob } from 'astro/loaders';
 const eventsCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/events" }),
   schema: z.object({
+    id: z.string(),
     title: z.string(),
     description: z.string(),
     event_date: z.date(),
     image: z.string(),
+    stock_max: z.number().int().positive(),
     prices: z.array(
       z.object({
         label: z.string(),
         amount: z.number(),
         deadline: z.date().optional(),
-        stripePriceId: z.string().optional(),
       })
     ),
   }),
@@ -30,7 +31,6 @@ const pasadiasCollection = defineCollection({
         label: z.string(),
         amount: z.number(),
         deadline: z.date().optional(),
-        stripePriceId: z.string().optional(),
       })
     ),
     duration: z.string(),

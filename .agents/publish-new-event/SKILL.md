@@ -12,7 +12,7 @@ Events in this Astro project are managed through **content collections**. Each e
 - Generates a dedicated detail page for each event at `/[slug]`.
 - Selects the currently active price based on deadlines (if any) via `getCurrentPrice`.
 
-The frontmatter schema is defined in `src/content.config.ts` and includes `title`, `description`, `event_date`, `image`, and an array of `prices`.
+The frontmatter schema is defined in `src/content.config.ts` and includes `id`, `title`, `description`, `event_date`, `image`, `stock_max`, and an array of `prices`.
 
 ## Step‑by‑Step Instructions
 
@@ -27,6 +27,20 @@ For minimal and complete examples, see [Examples](references/examples.md).
 ### Automatic inclusion in the upcoming events list
 The helper `getUpcomingEvents` (in `src/lib/events.ts`) fetches all events, filters out past dates, and sorts them chronologically. Your new event will appear on the main events page (`/events`) as soon as the site is rebuilt.
 
+### Event identification (`id`)
+Each event has a unique `id` field in its frontmatter. This ID is persistent and independent of the filename — it will not change even if the file is renamed. This is **critical** for payment gateway integration and future database migration, as the payment system will reference events by their `id` rather than the URL slug.
+
+- Use a descriptive, kebab-case string (e.g. `retiro-silencio-2026`).
+- The `id` must be unique across all events.
+- Choose the `id` carefully — once the event is published and linked to payment records, changing it would break those associations.
+
+### Stock management (`stock_max`)
+The `stock_max` field defines the maximum capacity (number of available spots) for the event. This value will be used to control reservations and prevent overbooking when the payment gateway is integrated.
+
+- Must be a positive integer.
+- Set realistically based on the venue capacity and logistics.
+- Example: `stock_max: 30` for an intimate retreat, `stock_max: 500` for a large festival.
+
 ### Price selection logic (`getCurrentPrice`)
 The function `getCurrentPrice` determines which price tier is currently active:
 
@@ -38,7 +52,7 @@ The function `getCurrentPrice` determines which price tier is currently active:
 **UTC midnight caveat:** The comparison uses `new Date(price.deadline) > now`. Because `deadline` is parsed as UTC midnight, a deadline of `2026-04-15` means “until the end of 2026‑04‑15 UTC”. If your local timezone is ahead of UTC (e.g., America/Bogota is UTC‑5), the deadline may be considered passed 5 hours earlier than you expect. Plan accordingly.
 
 ### Event detail page generation
-The file `src/pages/events/[slug].astro` dynamically generates a page for each event. It uses the event’s frontmatter for the title, description, image, and prices, and renders the Markdown body as HTML. The page also displays the active price tier and a “Reservar ahora” button (Stripe integration ready).
+The file `src/pages/events/[slug].astro` dynamically generates a page for each event. It uses the event’s frontmatter for the title, description, image, and prices, and renders the Markdown body as HTML. The page also displays the active price tier and a “Reservar ahora” button ready for payment gateway integration.
 
 ## Common Pitfalls & Tips
 

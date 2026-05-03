@@ -1,8 +1,10 @@
 ---
+id: "festival-bhakti-2026"
 title: "Festival de Bhakti Yoga"
 description: "Una celebración de amor, música y devoción. Únete a nosotros para un día lleno de kirtan, danza y sabiduría ancestral."
 event_date: 2026-06-20
 image: "https://picsum.photos/seed/bhakti-varsana/1600/1000"
+stock_max: 200
 prices:
   - label: "Preventa"
     amount: 150000

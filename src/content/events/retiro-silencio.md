@@ -1,8 +1,10 @@
 ---
+id: "retiro-silencio-2026"
 title: "Retiro de Silencio y Meditación"
 description: "Un fin de semana dedicado a la introspección profunda y el silencio sagrado en el corazón de la montaña."
 event_date: 2026-05-15
 image: "https://picsum.photos/seed/meditation-varsana/1600/1000"
+stock_max: 30
 prices:
   - label: "Pronto Pago"
     amount: 280000
