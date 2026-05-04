@@ -1,11 +1,22 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+/**
+ * Shared title validator: enforces sentence case and no emoji characters.
+ */
+const titleSchema = z.string().trim()
+  .refine(val => !/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u.test(val), {
+    message: 'Title must not contain emoji characters',
+  })
+  .refine(val => val.length === 0 || val[0] === val[0].toUpperCase(), {
+    message: 'Title must start with an uppercase letter (sentence case)',
+  });
+
 const eventsCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/events" }),
   schema: z.object({
     id: z.string(),
-    title: z.string(),
+    title: titleSchema,
     description: z.string(),
     event_date: z.date(),
     image: z.string(),
@@ -23,7 +34,8 @@ const eventsCollection = defineCollection({
 const pasadiasCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/pasadias" }),
   schema: z.object({
-    title: z.string(),
+    id: z.string(),
+    title: titleSchema,
     description: z.string(),
     image: z.string(),
     prices: z.array(
@@ -43,6 +55,7 @@ const pasadiasCollection = defineCollection({
 const nosotrosCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/nosotros" }),
   schema: z.object({
+    id: z.string(),
     nombre: z.string(),
     rol: z.string(),
     descripcion: z.string(),

@@ -1,15 +1,15 @@
 ## Instrucciones paso a paso
 
-### 1. Elige un nombre de archivo y slug
+### 1. Elige un nombre de archivo
 - Crea un nuevo archivo `.md` dentro de `src/content/nosotros/`.
-- El nombre del archivo se convertirá en el slug de la URL (por ejemplo, `maria-lopez.md` → `/nosotros/maria-lopez`).
-- Usa **kebab‑case**, minúsculas y evita caracteres especiales.
+- El nombre del archivo determina el ID de entrada. Usa **kebab‑case**, minúsculas y evita caracteres especiales.
 
 ### 2. Campos obligatorios del frontmatter
 Cada miembro debe incluir los siguientes campos en el frontmatter:
 
 ```yaml
 ---
+id: "nombre-miembro"
 nombre: "Nombre Completo"
 rol: "Rol en el equipo"
 descripcion: "Una descripción breve que aparecerá en la tarjeta del miembro."
@@ -20,8 +20,9 @@ activo: true
 ```
 
 #### Detalles de cada campo
+- **`id`** (string): Un identificador único y persistente para el miembro. Este ID se usará para referencias internas y no cambiará aunque se renombre el archivo. Usa kebab‑case (ej. `ana-garcia`).
 - **`nombre`** (string): El nombre completo del miembro.
-- **`rol`** (string): El cargo o responsabilidad dentro de Varsana (ej. “Fundadora”, “Coordinador de Proyectos”).
+- **`rol`** (string): El cargo o responsabilidad dentro de Varsana (ej. "Fundadora", "Coordinador de Proyectos").
 - **`descripcion`** (string): Un resumen de una o dos líneas que se muestra en la tarjeta. Debe ser conciso pero atractivo.
 - **`imagen`** (string): Ruta relativa a la imagen dentro de la carpeta `public`. Las imágenes de los miembros se almacenan en `public/team/`. El valor debe comenzar con `/team/` (ej. `/team/ana-garcia.jpg`).
 - **`orden`** (number): Un número entero no negativo que determina la posición en la página. Los miembros se ordenan de menor a mayor (0 → primero). Si no se especifica, el valor por defecto es `0`.
@@ -55,7 +56,7 @@ enlaces_sociales:
 
 ### 4. Ubicación de la imagen
 - Sube o coloca la foto del miembro en la carpeta `public/team/`.
-- El nombre del archivo de imagen debe ser descriptivo y coincidir con el slug del miembro (ej. `maria-lopez.jpg`).
+- El nombre del archivo de imagen debe ser descriptivo y coincidir con el ID del miembro (ej. `maria-lopez.jpg`).
 - La imagen debe tener una relación de aspecto **cuadrada (1:1)** para que el recorte en `MemberCard` sea uniforme.
 - En el frontmatter, la ruta debe ser **relativa a `public`**, es decir, `/team/nombre‑de‑la‑foto.jpg`.
 
@@ -65,7 +66,7 @@ Debajo del frontmatter, escribe la biografía completa del miembro usando Markdo
 **Estructura recomendada:**
 - Comienza con un título de nivel 1 (`#`) o 2 (`##`) con el nombre o un saludo.
 - Usa párrafos cortos y listas con viñetas para mejorar la legibilidad.
-- Incluye secciones como “Formación”, “Experiencia”, “Filosofía personal”, “Logros”, etc.
+- Incluye secciones como "Formación", "Experiencia", "Filosofía personal", "Logros", etc.
 - Mantén un tono cálido y cercano, acorde a la identidad de Varsana.
 
 **Ejemplo de cuerpo:**
@@ -90,7 +91,7 @@ Para María, el yoga es un camino de autodescubrimiento y conexión con la natur
 
 ## Frase favorita
 
-> “El yoga no es tocar tus pies, es lo que aprendes en el camino hacia abajo.”
+> "El yoga no es tocar tus pies, es lo que aprendes en el camino hacia abajo."
 
 ## Contacto
 
@@ -103,7 +104,7 @@ Guarda el archivo en `src/content/nosotros/`. El cargador de la colección de co
 ### 7. Verificación rápida
 Antes de terminar, revisa que:
 
-- Todos los campos obligatorios están presentes.
+- Todos los campos obligatorios están presentes (`id`, `nombre`, `rol`, `descripcion`, `imagen`, `orden`, `activo`).
 - La ruta de la imagen es correcta y el archivo existe en `public/team/`.
 - Los enlaces sociales tienen `plataforma` y `url` con formato válido.
 - El correo es una dirección de email válida.

@@ -1,4 +1,5 @@
 ---
+id: "caminata-ecologica"
 title: "Caminata Ecológica por la Montaña"
 description: "Una jornada de conexión con la naturaleza a través de senderos ancestrales."
 image: "https://picsum.photos/seed/caminata/1600/1000"
@@ -25,9 +26,9 @@ Sumérgete en los senderos ancestrales de la montaña sagrada de Varsana. Esta c
 
 - **8:00 a. m.** – Encuentro en la entrada principal.
 - **8:30 a. m.** – Inicio de la caminata con una ceremonia de gratitud a la tierra.
-- **10:00 a. m.** – Parada en el mirador “El Colibrí” para meditación guiada.
+- **10:00 a. m.** – Parada en el mirador "El Colibrí" para meditación guiada.
 - **12:00 p. m.** – Almuerzo vegetariano preparado con ingredientes locales.
-- **2:00 p. m.** – Continuación del recorrido hasta la cascada “Agua Clara”.
+- **2:00 p. m.** – Continuación del recorrido hasta la cascada "Agua Clara".
 - **4:00 p. m.** – Regreso al punto de encuentro y cierre con círculo de compartir.
 
 ### ¿Qué incluye?

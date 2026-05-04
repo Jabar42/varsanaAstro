@@ -4,6 +4,7 @@
 
 ```yaml
 ---
+id: "ana-garcia"
 nombre: "Ana García"
 rol: "Fundadora"
 descripcion: "Ana es la fundadora de Varsana, con más de 10 años de experiencia en comunidades sostenibles y espiritualidad."
@@ -17,6 +18,7 @@ activo: true
 
 ```yaml
 ---
+id: "juan-perez"
 nombre: "Juan Pérez"
 rol: "Coordinador de Proyectos"
 descripcion: "Juan es el responsable de coordinar las actividades y proyectos de Varsana, con amplia experiencia en gestión comunitaria."
@@ -37,6 +39,7 @@ telefono: "+57 301 987 6543"
 
 ```markdown
 ---
+id: "maria-lopez"
 nombre: "María López"
 rol: "Facilitadora de Yoga"
 descripcion: "María es instructora certificada de Hatha Yoga y meditación, con más de 8 años guiando retiros."
@@ -72,7 +75,7 @@ María cree que el yoga es para todos, sin importar la edad, condición física 
 
 ## Frase favorita
 
-> “El yoga no es tocar tus pies, es lo que aprendes en el camino hacia abajo.”
+> "El yoga no es tocar tus pies, es lo que aprendes en el camino hacia abajo."
 
 ## Contacto
 

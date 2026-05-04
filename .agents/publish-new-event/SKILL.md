@@ -9,7 +9,7 @@ description: Step-by-step instructions for publishing a new event in the Astro c
 Events in this Astro project are managed through **content collections**. Each event is a Markdown file placed in `src/content/events/` with a defined frontmatter schema. The system automatically:
 
 - Lists upcoming events on the main events page (`/events`) using the `getUpcomingEvents` helper.
-- Generates a dedicated detail page for each event at `/[slug]`.
+- Generates a dedicated detail page for each event at `/events/[slug]`, where the URL is derived from the entry ID (the filename without extension).
 - Selects the currently active price based on deadlines (if any) via `getCurrentPrice`.
 
 The frontmatter schema is defined in `src/content.config.ts` and includes `id`, `title`, `description`, `event_date`, `image`, `stock_max`, and an array of `prices`.
@@ -28,7 +28,7 @@ For minimal and complete examples, see [Examples](references/examples.md).
 The helper `getUpcomingEvents` (in `src/lib/events.ts`) fetches all events, filters out past dates, and sorts them chronologically. Your new event will appear on the main events page (`/events`) as soon as the site is rebuilt.
 
 ### Event identification (`id`)
-Each event has a unique `id` field in its frontmatter. This ID is persistent and independent of the filename — it will not change even if the file is renamed. This is **critical** for payment gateway integration and future database migration, as the payment system will reference events by their `id` rather than the URL slug.
+Each event has a unique `id` field in its frontmatter. This ID is **persistent** and independent of the filename — it will not change even if the file is renamed. This is **critical** for payment gateway integration and future database migration, as the payment system will reference events by their `id` rather than the URL.
 
 - Use a descriptive, kebab-case string (e.g. `retiro-silencio-2026`).
 - The `id` must be unique across all events.
@@ -49,26 +49,26 @@ The function `getCurrentPrice` determines which price tier is currently active:
 3. The **first** price with a future deadline is selected.
 4. If none have a future deadline (or no deadlines are defined), the **last** price in the array is used.
 
-**UTC midnight caveat:** The comparison uses `new Date(price.deadline) > now`. Because `deadline` is parsed as UTC midnight, a deadline of `2026-04-15` means “until the end of 2026‑04‑15 UTC”. If your local timezone is ahead of UTC (e.g., America/Bogota is UTC‑5), the deadline may be considered passed 5 hours earlier than you expect. Plan accordingly.
+**UTC midnight caveat:** The comparison uses `new Date(price.deadline) > now`. Because `deadline` is parsed as UTC midnight, a deadline of `2026-04-15` means "until the end of 2026‑04‑15 UTC". If your local timezone is ahead of UTC (e.g., America/Bogota is UTC‑5), the deadline may be considered passed 5 hours earlier than you expect. Plan accordingly.
 
 ### Event detail page generation
-The file `src/pages/events/[slug].astro` dynamically generates a page for each event. It uses the event’s frontmatter for the title, description, image, and prices, and renders the Markdown body as HTML. The page also displays the active price tier and a “Reservar ahora” button ready for payment gateway integration.
+The file `src/pages/events/[slug].astro` dynamically generates a page for each event. It uses the event's frontmatter for the title, description, image, and prices, and renders the Markdown body as HTML. The page also displays the active price tier and a "Reservar ahora" button ready for payment gateway integration.
 
 ## Common Pitfalls & Tips
 
 ### Date formats
-- **Always** use `YYYY‑MM‑DD`. Other formats (like `DD/MM/YYYY`) will cause parsing errors.
+- **Always** use `YYYY-MM-DD` (with standard ASCII hyphens). Other formats (like `DD/MM/YYYY`) will cause parsing errors.
 - The `event_date` and `deadline` fields are parsed as `Date` objects by the schema.
 
 ### Image placeholders
-- The project currently uses `https://picsum.photos/seed/…/1600/1000` as a placeholder. Replace with a real image URL when the event’s visual asset is ready.
+- The project currently uses `https://picsum.photos/seed/…/1600/1000` as a placeholder. Replace with a real image URL when the event's visual asset is ready.
 - Ensure the image is high‑quality and landscape‑oriented (16:10 ratio works well).
 
 ### Deadline timezone issue
-- As noted above, deadlines are evaluated at UTC midnight. If you want a deadline to be effective until the end of a certain day in Colombia, set the deadline **one day later** (e.g., if the cutoff is April 15 Colombia time, write `deadline: 2026-04-16`).
+- As noted above, deadlines are evaluated at UTC midnight. If you want a deadline to be effective until the end of a certain day in Colombia, set the deadline **one day later** (e.g., if the cutoff is April 15 Colombia time, write `deadline: 2026-04-16`).
 
 ### Price ordering
-- Place price tiers in the order you want them evaluated. The last price is the fallback, so put your “regular” or “default” price at the end.
+- Place price tiers in the order you want them evaluated. The last price is the fallback, so put your "regular" or "default" price at the end.
 - Example:
   ```yaml
   prices:
@@ -93,7 +93,7 @@ After creating your event file, verify that everything works as expected:
 
 1. **Check the events list** – Run the development server (`npm run dev`) and visit `/events`. Your new event should appear in the upcoming events grid.
 
-2. **Visit the detail page** – Click on the event card or navigate directly to `/[your‑slug]`. Confirm that:
+2. **Visit the detail page** – Click on the event card or navigate directly to `/events/[entry-id]`. Confirm that:
    - The title, description, and image are displayed correctly.
    - The Markdown body renders properly.
    - The price card shows the expected active tier.
@@ -102,10 +102,10 @@ After creating your event file, verify that everything works as expected:
 
 4. **Build the site** – Run `npm run build` to ensure there are no schema validation errors.
 
-If any step fails, review the frontmatter for typos, check the YAML indentation, and consult the browser’s developer console for errors.
+If any step fails, review the frontmatter for typos, check the YAML indentation, and consult the browser's developer console for errors.
 
 ---
 
 **See also:** [`design‑guidelines`](../design-guidelines/SKILL.md).
 
-*This guide is based on the project’s implementation as of April 2026. For updates, refer to the latest `src/content.config.ts` and `src/lib/events.ts`.*
+*This guide is based on the project's implementation as of April 2026. For updates, refer to the latest `src/content.config.ts` and `src/lib/events.ts`.*

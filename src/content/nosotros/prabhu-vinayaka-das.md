@@ -1,4 +1,5 @@
 ---
+id: "prabhu-vinayaka-das"
 nombre: "Prabhu Vinayaka Das"
 rol: "Líder Monástico y Guía Espiritual"
 descripcion: "Líder monástico y guía espiritual, custodia la esencia de Varsana a través de la formación y el cuidado de nuevos devotos."

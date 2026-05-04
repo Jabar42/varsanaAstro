@@ -1,9 +1,8 @@
 ## Step‑by‑Step Instructions
 
-### 1. Choose a filename and slug
+### 1. Choose a filename
 - Create a new `.md` file inside `src/content/events/`.
-- The filename will become the URL slug (e.g., `my-event.md` → `/my-event`).
-- Use kebab‑case, lowercase, and avoid special characters.
+- The filename determines the entry ID (used as the URL slug). Use kebab‑case, lowercase, and avoid special characters.
 
 ### 2. Required frontmatter fields
 Every event must include the following frontmatter fields:
@@ -26,8 +25,8 @@ prices:
 ```
 
 #### Field details
-- **`id`** (string): A unique, persistent identifier for the event. This ID is used by the payment gateway and will not change even if the file is renamed. Use kebab‑case (e.g., `retiro-silencio-2026`).
-- **`title`** (string): The event’s display name.
+- **`id`** (string): A unique, persistent identifier for the event. This ID is used by the payment gateway and will not change even if the file is renamed. The URL path for the event's detail page is derived from this ID (e.g., `id: "retiro-silencio-2026"` → `/events/retiro-silencio-2026`). Use kebab‑case.
+- **`title`** (string): The event's display name. Must be in **sentence case** (only the first letter capitalized; e.g., `"Retiro de silencio y meditación"`). Do **not** use ALL CAPS or emoji characters.
 - **`description`** (string): A one‑ or two‑sentence summary used in meta tags and cards.
 - **`event_date`** (date): The date of the event in `YYYY‑MM‑DD` format.
 - **`image`** (string): A high‑quality image URL. The project currently uses `picsum.photos` placeholders; replace with a real image when available.
@@ -39,19 +38,19 @@ Each price object can have:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `label` | string | Yes | Display name of the price tier (e.g., “Early Bird”, “VIP”). |
+| `label` | string | Yes | Display name of the price tier (e.g., "Early Bird", "VIP"). |
 | `amount` | number | Yes | Price in Colombian pesos (without decimal places). |
 | `deadline` | date | No | Cut‑off date for this tier in `YYYY‑MM‑DD`. If omitted, the price is always available. |
 
-**Important ordering:** The price list is evaluated from first to last. The first price with a future `deadline` becomes the active price. If no deadlines are in the future, the **last** price in the array is used as the fallback. Therefore, place your “regular” or “default” price at the end.
+**Important ordering:** The price list is evaluated from first to last. The first price with a future `deadline` becomes the active price. If no deadlines are in the future, the **last** price in the array is used as the fallback. Therefore, place your "regular" or "default" price at the end.
 
 ### 4. Writing the markdown body
-Below the frontmatter, write the event’s full description in Markdown.
+Below the frontmatter, write the event's full description in Markdown.
 
 **Recommended structure:**
 - Start with an engaging headline (H2).
 - Use short paragraphs and bullet lists for readability.
-- Include subsections such as “What to Expect”, “Schedule”, “Location”, “What to Bring”, etc.
+- Include subsections such as "What to Expect", "Schedule", "Location", "What to Bring", etc.
 - Maintain a friendly, inspirational tone that matches the Varsana brand.
 
 **Example body snippet:**

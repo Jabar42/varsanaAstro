@@ -1,7 +1,7 @@
 ## Errores comunes y consejos
 
 ### Formatos de fecha
-- **Siempre** usa `YYYY‑MM‑DD`. Otros formatos (como `DD/MM/YYYY`) provocarán errores de análisis.
+- **Siempre** usa `YYYY-MM-DD` (con guiones ASCII estándar). Otros formatos (como `DD/MM/YYYY`) provocarán errores de análisis.
 - Los campos `deadline` (en los precios) se analizan como objetos `Date` en el esquema.
 
 ### Placeholders de imagen
@@ -9,7 +9,7 @@
 - Asegúrate de que la imagen sea de alta calidad y en orientación horizontal (la proporción 16:10 funciona bien).
 
 ### Problema de zona horaria en los deadlines
-- Como se mencionó arriba, los deadlines se evalúan a medianoche UTC. Si quieres que un deadline sea efectivo hasta el final de un día determinado en Colombia, establece el deadline **un día después** (ej. si el corte es el 15 de abril hora Colombia, escribe `deadline: 2026‑04‑16`).
+- Como se mencionó arriba, los deadlines se evalúan a medianoche UTC. Si quieres que un deadline sea efectivo hasta el final de un día determinado en Colombia, establece el deadline **un día después** (ej. si el corte es el 15 de abril hora Colombia, escribe `deadline: 2026-04-16`).
 
 ### Orden de los precios
 - Coloca los niveles de precio en el orden en que quieres que sean evaluados. El último precio es el fallback, así que pon tu precio “regular” o “por defecto” al final.

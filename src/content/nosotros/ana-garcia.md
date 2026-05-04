@@ -1,4 +1,5 @@
 ---
+id: "ana-garcia"
 nombre: "Ana García"
 rol: "Fundadora"
 descripcion: "Ana es la fundadora de Varsana, con más de 10 años de experiencia en comunidades sostenibles y espiritualidad."

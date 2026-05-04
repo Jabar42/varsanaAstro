@@ -80,7 +80,7 @@ Before saving a new or updated event/pasadía markdown file, verify the checklis
 
 ## 8. Where to Place Files
 
-- **Events:** `src/content/events/` – filename becomes the URL slug (use kebab‑case).
+- **Events:** `src/content/events/` – filename determines the URL (the slug); use kebab‑case.
 - **Pasadías:** `src/content/pasadias/` – same naming convention.
 
 After saving, the site will automatically rebuild and the new content will appear on the respective listing pages (`/events`, `/pasadias`) and its dedicated detail page.

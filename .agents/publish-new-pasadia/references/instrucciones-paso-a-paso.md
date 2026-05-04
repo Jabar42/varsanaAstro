@@ -1,9 +1,8 @@
 ## Instrucciones paso a paso
 
-### 1. Elegir un nombre de archivo y slug
+### 1. Elegir un nombre de archivo
 - Crea un nuevo archivo `.md` dentro de `src/content/pasadias/`.
-- El nombre del archivo se convertirá en el slug de la URL (ej. `mi-pasadia.md` → `/mi-pasadia`).
-- Usa **kebab‑case**, minúsculas y evita caracteres especiales.
+- El nombre del archivo determina el ID de entrada (que se usa como slug de la URL). Usa **kebab‑case**, minúsculas y evita caracteres especiales.
 - Recomendación: usar un nombre descriptivo en español, como `caminata-ecologica.md` o `pasadia-basico.md`.
 
 ### 2. Campos obligatorios del frontmatter
@@ -11,6 +10,7 @@ Cada pasadía debe incluir los siguientes campos en el frontmatter:
 
 ```yaml
 ---
+id: "mi-pasadia-id"
 title: "Título del pasadía"
 description: "Una descripción corta y atractiva para SEO y tarjetas."
 image: "https://picsum.photos/seed/tu-pasadia/1600/1000"
@@ -27,7 +27,8 @@ included_services:
 ```
 
 #### Detalles de cada campo
-- **`title`** (string): Nombre visible del pasadía.
+- **`id`** (string): Un identificador único y persistente para el pasadía. Este ID se usará para la integración con la pasarela de pagos y no cambiará aunque se renombre el archivo. La URL de la página de detalle se deriva de este ID (ej. `id: "caminata-ecologica"` → `/pasadias/caminata-ecologica`). Usa kebab‑case.
+- **`title`** (string): Nombre visible del pasadía. Debe estar en **minúscula con la primera letra mayúscula** (sentence case; ej. `"Caminata ecológica por la montaña"`). **No** uses MAYÚSCULAS SOSTENIDAS ni caracteres emoji.
 - **`description`** (string): Resumen de una o dos frases que se usará en las meta‑etiquetas y en las tarjetas de listado.
 - **`image`** (string): URL de una imagen de alta calidad. Actualmente el proyecto usa placeholders de `picsum.photos`; reemplázala con una imagen real cuando esté disponible.
 - **`prices`** (array): Lista de objetos de precio (misma estructura que los eventos).
@@ -53,7 +54,7 @@ Debajo del frontmatter, escribe la descripción completa del pasadía en Markdow
 **Estructura recomendada:**
 - Comienza con un titular atractivo (H2).
 - Usa párrafos cortos y listas con viñetas para mejorar la legibilidad.
-- Incluye secciones como “Itinerario aproximado”, “¿Qué incluye?”, “Recomendaciones”, “Punto de encuentro”, “Políticas de cancelación”, etc.
+- Incluye secciones como "Itinerario aproximado", "¿Qué incluye?", "Recomendaciones", "Punto de encuentro", "Políticas de cancelación", etc.
 - Mantén un tono amigable e inspirador que coincida con la marca Varsana.
 
 **Fragmento de ejemplo:**
@@ -67,9 +68,9 @@ Sumérgete en los senderos ancestrales de la montaña sagrada de Varsana. Esta c
 
 - **8:00 a. m.** – Encuentro en la entrada principal.
 - **8:30 a. m.** – Inicio de la caminata con una ceremonia de gratitud a la tierra.
-- **10:00 a. m.** – Parada en el mirador “El Colibrí” para meditación guiada.
+- **10:00 a. m.** – Parada en el mirador "El Colibrí" para meditación guiada.
 - **12:00 p. m.** – Almuerzo vegetariano preparado con ingredientes locales.
-- **2:00 p. m.** – Continuación del recorrido hasta la cascada “Agua Clara”.
+- **2:00 p. m.** – Continuación del recorrido hasta la cascada "Agua Clara".
 - **4:00 p. m.** – Regreso al punto de encuentro y cierre con círculo de compartir.
 
 ### ¿Qué incluye?

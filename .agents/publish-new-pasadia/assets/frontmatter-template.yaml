@@ -2,6 +2,7 @@
 # Copy this YAML block into your Markdown file and replace the placeholder values.
 
 ---
+id: "unique-pasadia-id"
 title: "Title of the pasadía"
 description: "A short, compelling description for SEO and cards."
 image: "https://picsum.photos/seed/pasadia/1600/1000"

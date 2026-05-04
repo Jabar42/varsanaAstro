@@ -1,4 +1,5 @@
 ---
+id: "juan-perez"
 nombre: "Juan Pérez"
 rol: "Coordinador de Proyectos"
 descripcion: "Juan es el responsable de coordinar las actividades y proyectos de Varsana, con amplia experiencia en gestión comunitaria."

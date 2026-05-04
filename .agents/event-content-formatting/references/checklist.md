@@ -1,10 +1,11 @@
 ## Checklist for Content Creators
 
-Before saving a new or updated event/pasadía markdown file, verify:
+Before saving a new or updated event/pasadía/member markdown file, verify:
 
 ### Frontmatter
-- [ ] `id` (for events) is a unique, persistent identifier in kebab‑case.
-- [ ] `title` and `description` are filled and compelling.
+- [ ] `id` is a unique, persistent identifier in kebab‑case (all collections). The URL is derived from this ID.
+- [ ] `title` is in **sentence case** (only first letter capitalized) and contains **no emoji characters**.
+- [ ] `description` is filled and compelling.
 - [ ] `event_date` (for events) is in `YYYY‑MM‑DD` format.
 - [ ] `image` URL points to a high‑quality landscape image (or a valid placeholder).
 - [ ] `stock_max` (for events) is a positive integer representing maximum capacity.
@@ -12,6 +13,7 @@ Before saving a new or updated event/pasadía markdown file, verify:
 - [ ] Price `amount` is a number without currency symbols.
 - [ ] `deadline` (if used) is in `YYYY‑MM‑DD` and correctly placed.
 - [ ] For pasadías: `duration`, `meeting_point`, `category`, and `included_services` are filled.
+- [ ] For members: `nombre`, `rol`, `descripcion`, `imagen`, `orden`, and `activo` are filled.
 
 ### Content Body
 - [ ] Headings follow the hierarchy (H2 → H3, no skipping).

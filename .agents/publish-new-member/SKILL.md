@@ -12,7 +12,7 @@ Los miembros del equipo en este proyecto Astro son gestionados a través de la *
 - Filtra a los miembros inactivos (`activo: false`).
 - Muestra cada miembro mediante el componente `MemberCard.astro`, que incluye imagen, rol, descripción, enlaces sociales y datos de contacto.
 
-El esquema de frontmatter se define en `src/content.config.ts` e incluye `nombre`, `rol`, `descripcion`, `imagen`, `orden`, `activo`, `enlaces_sociales`, `correo` y `telefono`.
+El esquema de frontmatter se define en `src/content.config.ts` e incluye `id`, `nombre`, `rol`, `descripcion`, `imagen`, `orden`, `activo`, `enlaces_sociales`, `correo` y `telefono`.
 
 ## Instrucciones paso a paso
 

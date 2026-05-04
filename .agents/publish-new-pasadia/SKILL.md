@@ -9,10 +9,10 @@ description: Step-by-step instructions for publishing a new pasadía (day-trip) 
 Los pasadías en este proyecto Astro son **servicios fijos sin fecha específica**. A diferencia de los eventos, que tienen una fecha única (`event_date`), los pasadías están disponibles de forma permanente y se pueden reservar en cualquier momento. Cada pasadía es un archivo Markdown ubicado en `src/content/pasadias/` con un esquema de frontmatter definido. El sistema automáticamente:
 
 - Lista todos los pasadías en la página principal de pasadías (`/pasadias`) usando el helper `getAllPasadias`.
-- Genera una página de detalle para cada pasadía en `/pasadias/[slug]`.
+- Genera una página de detalle para cada pasadía en `/pasadias/[slug]`, donde la URL se deriva del ID de entrada (el nombre del archivo sin extensión).
 - Selecciona el precio activo según los deadlines (si existen) mediante `getCurrentPrice` (la misma lógica que para los eventos).
 
-El esquema de frontmatter se define en `src/content.config.ts` e incluye `title`, `description`, `image`, `prices`, `duration`, `meeting_point`, `category` y `included_services`.
+El esquema de frontmatter se define en `src/content.config.ts` e incluye `id`, `title`, `description`, `image`, `prices`, `duration`, `meeting_point`, `category` y `included_services`.
 
 ## Instrucciones paso a paso
 
@@ -37,7 +37,7 @@ Después de crear el archivo de tu pasadía, verifica que todo funcione como se 
 
 1. **Revisa el listado de pasadías** – Ejecuta el servidor de desarrollo (`npm run dev`) y visita `/pasadias`. Tu nuevo pasadía debería aparecer en la cuadrícula.
 
-2. **Visita la página de detalle** – Haz clic en la tarjeta del pasadía o navega directamente a `/pasadias/[tu‑slug]`. Confirma que:
+2. **Visita la página de detalle** – Haz clic en la tarjeta del pasadía o navega directamente a `/pasadias/[entry-id]`. Confirma que:
    - El título, la descripción y la imagen se muestren correctamente.
    - El cuerpo Markdown se renderice adecuadamente.
    - La tarjeta de precio muestre el nivel activo esperado.

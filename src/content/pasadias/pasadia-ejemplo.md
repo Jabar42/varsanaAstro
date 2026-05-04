@@ -1,4 +1,5 @@
 ---
+id: "pasadia-ejemplo"
 title: "Retiro de Yoga y Meditación"
 description: "Un día dedicado a la conexión interior a través del yoga, la meditación y la naturaleza. Ideal para quienes buscan desconectar del estrés y reconectar con su esencia."
 image: "https://picsum.photos/seed/pasadia-ejemplo/1600/1000"

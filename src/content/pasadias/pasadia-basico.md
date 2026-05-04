@@ -1,4 +1,5 @@
 ---
+id: "pasadia-basico"
 title: "Pasadia basico"
 description: "Disfruta de una jornada de conexión con la naturaleza y el bienestar. Comenzamos con un recorrido ecológico por la aldea, donde explorarás la belleza del entorno y su biodiversidad. Luego, relájate y recarga energías con un delicioso almuerzo vegetariano, ideal para nutrir cuerpo y espíritu en un ambiente sereno."
 image: "https://picsum.photos/seed/pasadia-basico/1600/1000"

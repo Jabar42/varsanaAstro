@@ -56,7 +56,7 @@ export async function getUpcomingWorkshops() {
 ## 7. Test the New Collection
 
 1. Create a sample markdown file in `src/content/workshops/` (e.g., `yoga‑inicial.md`) with front‑matter that matches your schema.
-2. Start the development server (`npm run dev`) and navigate to `/workshops` (if you created a listing page) or directly to the slug.
+2. Start the development server (`npm run dev`) and navigate to `/workshops` (if you created a listing page) or directly to the entry ID.
 3. Verify that the data is loaded correctly and that the pages render without errors.
 
 ## 8. Summary
