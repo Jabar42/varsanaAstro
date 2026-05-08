@@ -13,6 +13,7 @@
   "dependencies": {
     "@astrojs/check": "^0.9.8",
     "@astrojs/react": "^5.0.3",
+    "@astrojs/vercel": "^10.0.6",
     "@google/genai": "^1.29.0",
     "@supabase/supabase-js": "^2.105.3",
     "@tailwindcss/vite": "^4.1.14",
