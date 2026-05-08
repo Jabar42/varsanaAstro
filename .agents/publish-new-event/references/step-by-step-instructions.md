@@ -30,7 +30,7 @@ prices:
 - **`description`** (string): A one‑ or two‑sentence summary used in meta tags and cards.
 - **`event_date`** (date): The date of the event in `YYYY‑MM‑DD` format.
 - **`image`** (string): A high‑quality image URL. The project currently uses `picsum.photos` placeholders; replace with a real image when available.
-- **`stock_max`** (integer): Maximum capacity / number of available spots for the event. Must be a positive integer.
+- **`stock_max`** (integer): Maximum capacity / number of available spots for the event. Must be a positive integer. **This value seeds the inventory table** — it controls how many reservations are accepted before the event sells out. Stock is managed via Supabase; see [`payment-integration-bold`](../../payment-integration-bold/SKILL.md) for details.
 - **`prices`** (array): A list of price objects.
 
 ### 3. Price object structure

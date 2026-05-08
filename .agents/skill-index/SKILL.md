@@ -26,6 +26,7 @@ Skills are grouped by their primary domain:
 | [publish‑new‑event](../publish-new-event/SKILL.md) | Step‑by‑step instructions for publishing a new event in the Astro content collection. | Use when the user wants to add a new event to the Varsana website. | Content Management |
 | [publish‑new‑member](../publish-new-member/SKILL.md) | Step‑by‑step instructions for adding a new member to the nosotros collection. | Use when the user wants to add a new team member to the Varsana website. | Content Management |
 | [publish‑new‑pasadia](../publish-new-pasadia/SKILL.md) | Step‑by‑step instructions for publishing a new pasadía (day‑trip) in the Astro content collection. | Use when the user wants to add a new pasadía to the Varsana website. | Content Management |
+| [payment‑integration‑bold](../payment-integration-bold/SKILL.md) | Complete reference for the Bold Payment Gateway integration — checkout flow, database schema, webhook handling, and inventory management. | Use when working with payments, debugging checkout issues, or understanding the Bold integration. | Development |
 | [find‑skills](../../../.agents/skills/find-skills/SKILL.md) | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", etc. | Use when the user is looking for functionality that might exist as an installable skill. | Agent Tools |
 
 ## How to Use This Index

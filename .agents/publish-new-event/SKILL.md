@@ -106,6 +106,19 @@ If any step fails, review the frontmatter for typos, check the YAML indentation,
 
 ---
 
-**See also:** [`design‑guidelines`](../design-guidelines/SKILL.md).
+## Bold Payment Gateway Integration
 
-*This guide is based on the project's implementation as of April 2026. For updates, refer to the latest `src/content.config.ts` and `src/lib/events.ts`.*
+This project uses **Bold Payment Gateway** for online payments. When you publish a new event:
+
+1. **`stock_max` is critical** — This value seeds the inventory table. It controls how many reservations are accepted before the event sells out. Choose it carefully.
+2. **The `id` field is persistent** — Payment orders reference events by `id`, not filename. Never change an event's `id` after it has been published and linked to payment records.
+3. **Prices come from frontmatter** — The checkout API reads prices from the Markdown file, not from user input. This prevents price manipulation.
+4. **Lazy inventory init** — If no inventory row exists for your event when the first checkout is attempted, one will be created automatically from the frontmatter `stock_max`.
+
+For full details on the payment integration, see [`payment-integration-bold`](../payment-integration-bold/SKILL.md).
+
+---
+
+**See also:** [`design‑guidelines`](../design-guidelines/SKILL.md), [`payment-integration-bold`](../payment-integration-bold/SKILL.md).
+
+*This guide is based on the project's implementation as of May 2026. For updates, refer to the latest `src/content.config.ts`, `src/lib/events.ts`, and [`payment-integration-bold`](../payment-integration-bold/SKILL.md).*

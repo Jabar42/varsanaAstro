@@ -1,0 +1,108 @@
+---
+import Layout from '@/src/layouts/Layout.astro';
+import { CheckCircle, XCircle, Clock, ArrowLeft } from 'lucide-react';
+
+const boldOrderId = Astro.url.searchParams.get('bold-order-id');
+const boldTxStatus = Astro.url.searchParams.get('bold-tx-status');
+
+interface ResultConfig {
+  icon: typeof CheckCircle;
+  title: string;
+  message: string;
+  color: string;
+  bgColor: string;
+  borderColor: string;
+}
+
+const resultConfigs: Record<string, ResultConfig> = {
+  approved: {
+    icon: CheckCircle,
+    title: '¡Pago exitoso!',
+    message: 'Pronto recibirás un correo de confirmación con los detalles de tu reserva. Si no lo ves en tu bandeja de entrada, revisa la carpeta de spam.',
+    color: 'text-green-700',
+    bgColor: 'bg-green-50',
+    borderColor: 'border-green-200',
+  },
+  declined: {
+    icon: XCircle,
+    title: 'Pago rechazado',
+    message: 'El pago no pudo completarse. Esto puede deberse a fondos insuficientes o a un error temporal. Intenta nuevamente con otro medio de pago.',
+    color: 'text-red-700',
+    bgColor: 'bg-red-50',
+    borderColor: 'border-red-200',
+  },
+  failed: {
+    icon: XCircle,
+    title: 'Pago fallido',
+    message: 'Ocurrió un error al procesar el pago. Por favor, intenta nuevamente.',
+    color: 'text-red-700',
+    bgColor: 'bg-red-50',
+    borderColor: 'border-red-200',
+  },
+  pending: {
+    icon: Clock,
+    title: 'Pago en proceso',
+    message: 'Tu pago está siendo procesado. Te notificaremos cuando se confirme. No cierres esta página.',
+    color: 'text-amber-700',
+    bgColor: 'bg-amber-50',
+    borderColor: 'border-amber-200',
+  },
+};
+
+const config: ResultConfig | null = boldTxStatus ? resultConfigs[boldTxStatus] ?? null : null;
+
+const ResultIcon = config?.icon || Clock;
+---
+
+<Layout title="Resultado del pago | Varsana Eco Yoga Aldea" description="Resultado de tu transacción de pago">
+  <main class="min-h-[70vh] flex items-center justify-center px-4 py-16">
+    <div class={`w-full max-w-md rounded-[24px] border ${config?.borderColor || 'border-gray-200'} ${config?.bgColor || 'bg-white'} p-8 shadow-airbnb text-center space-y-6`}>
+      
+      <!-- Icon -->
+      <div class="flex justify-center">
+        <ResultIcon size={56} className={config?.color || 'text-gray-400'} strokeWidth={1.5} />
+      </div>
+
+      <!-- Title -->
+      <h1 class={`text-2xl font-bold font-display ${config?.color || 'text-gray-800'}`}>
+        {config?.title || (boldOrderId ? 'Procesando...' : 'Sin información de pago')}
+      </h1>
+
+      <!-- Message -->
+      <p class="text-gray-600 text-sm leading-relaxed">
+        {config?.message || (
+          boldOrderId
+            ? 'Tu transacción está siendo procesada. Te contactaremos cuando tengamos una actualización.'
+            : 'No se encontró información de una transacción reciente. Si realizaste un pago, por favor contáctanos.'
+        )}
+      </p>
+
+      <!-- Order Reference -->
+      {boldOrderId && (
+        <div class="border-t border-gray-200 pt-4">
+          <p class="text-xs text-gray-400 uppercase tracking-wide font-semibold">Referencia</p>
+          <p class="text-sm font-mono text-gray-600 mt-1 break-all">{boldOrderId}</p>
+        </div>
+      )}
+
+      <!-- CTA Buttons -->
+      <div class="space-y-3 pt-2">
+        {(!boldTxStatus || boldTxStatus === 'declined' || boldTxStatus === 'failed') && (
+          <a
+            href="javascript:history.back()"
+            class="block w-full rounded-xl bg-sacred-900 px-4 py-3 font-semibold text-white text-center transition-colors hover:bg-sacred-900/90"
+          >
+            Intentar nuevamente
+          </a>
+        )}
+        <a
+          href="/"
+          class="flex items-center justify-center gap-2 w-full rounded-xl border border-sacred-sand px-4 py-3 font-medium text-sacred-900 transition-colors hover:bg-sacred-sand/50"
+        >
+          <ArrowLeft size={16} />
+          Volver al inicio
+        </a>
+      </div>
+    </div>
+  </main>
+</Layout>

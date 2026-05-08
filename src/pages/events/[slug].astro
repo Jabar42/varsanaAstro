@@ -2,6 +2,7 @@
 import Layout from '@/src/layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 import { getCurrentPrice } from '@/src/lib/events';
+import BoldPaymentButton from '@/src/components/BoldPaymentButton';
 import { Calendar, MapPin, Users, Info, Star } from 'lucide-react';
 
 export async function getStaticPaths() {
@@ -135,6 +136,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
               <p class="text-sm font-medium text-saffron">{currentPrice?.label || 'General'}</p>
             </div>
           </div>
+
+          <!-- Payment Button -->
+          <BoldPaymentButton
+            client:load
+            contentType="event"
+            contentId={event.data.id}
+            amount={currentPrice?.amount}
+            description={title}
+          />
 
           <p class="text-center text-gray-500 text-xs">Asegura tu cupo con anticipación</p>
 

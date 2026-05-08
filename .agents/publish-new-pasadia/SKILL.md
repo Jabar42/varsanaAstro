@@ -51,6 +51,19 @@ Si algún paso falla, revisa el frontmatter en busca de errores tipográficos, c
 
 ---
 
-**Ver también:** [`design‑guidelines`](../design-guidelines/SKILL.md).
+## Integración con Bold Payment Gateway
 
-*Esta guía se basa en la implementación del proyecto a abril de 2026. Para actualizaciones, consulta los archivos más recientes `src/content.config.ts` y `src/lib/pasadias.ts`.*
+Este proyecto utiliza **Bold Payment Gateway** para pagos en línea. Al publicar un nuevo pasadía:
+
+1. **Los precios vienen del frontmatter** — La API de checkout lee los precios del archivo Markdown, no de la entrada del usuario. Esto previene la manipulación de precios.
+2. **Los pasadías no tienen `stock_max`** — A diferencia de los eventos, los pasadías no tienen límite de stock. Si necesitas limitar la capacidad, agrega `stock_max: N` al frontmatter.
+3. **El `id` es persistente** — Las órdenes de pago referencian los pasadías por su `id`, no por el nombre del archivo. No cambies el `id` después de publicar.
+4. **Inventario lazy** — Si no existe una fila de inventario para tu pasadía cuando se intente el primer checkout, se creará automáticamente con `stock_max: 999` (ilimitado).
+
+Para detalles completos de la integración de pagos, consulta [`payment-integration-bold`](../payment-integration-bold/SKILL.md).
+
+---
+
+**Ver también:** [`design‑guidelines`](../design-guidelines/SKILL.md), [`payment-integration-bold`](../payment-integration-bold/SKILL.md).
+
+*Esta guía se basa en la implementación del proyecto a mayo de 2026. Para actualizaciones, consulta los archivos más recientes `src/content.config.ts`, `src/lib/pasadias.ts` y [`payment-integration-bold`](../payment-integration-bold/SKILL.md).*
