@@ -8,6 +8,11 @@ export const prerender = false;
 
 // ---------------------------------------------------------------------------
 // Signature Verification
+// Following Bold's updated documentation:
+//   1. Get raw request body
+//   2. Convert body to Base64:  Buffer.from(body).toString('base64')
+//   3. Generate HMAC-SHA256 using BOLD_SECRET_KEY (empty string in test mode)
+//   4. Compare result with the x-bold-signature header
 // ---------------------------------------------------------------------------
 
 function verifyWebhookSignature(
@@ -15,8 +20,12 @@ function verifyWebhookSignature(
   signatureHeader: string,
   secret: string,
 ): boolean {
+  // Step 2: Convert raw body to Base64
+  const base64Body = Buffer.from(rawBody).toString('base64');
+
+  // Step 3: Generate HMAC-SHA256 using the secret key
   const expectedSignature = createHmac('sha256', secret)
-    .update(rawBody)
+    .update(base64Body)
     .digest('hex');
 
   const expectedBuffer = Buffer.from(expectedSignature, 'utf-8');
@@ -59,29 +68,23 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const signatureHeader = request.headers.get('Bold-Signature') || '';
+  const signatureHeader = request.headers.get('x-bold-signature') || '';
 
   // ------------------------------------------------------------------
   // 2. Signature Verification (MANDATORY)
+  //    Uses BOLD_SECRET_KEY; falls back to empty string in test mode.
   // ------------------------------------------------------------------
-  const webhookSecret = import.meta.env.BOLD_WEBHOOK_SECRET as string | undefined;
-  if (!webhookSecret) {
-    console.error(`[webhook:${requestId}] BOLD_WEBHOOK_SECRET is not configured`);
-    return new Response(JSON.stringify({ error: 'Server configuration error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
+  const boldSecretKey = (import.meta.env.BOLD_SECRET_KEY as string) || '';
 
   if (!signatureHeader) {
-    console.warn(`[webhook:${requestId}] Missing Bold-Signature header`);
+    console.warn(`[webhook:${requestId}] Missing x-bold-signature header`);
     return new Response(JSON.stringify({ error: 'Missing signature' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },
     });
   }
 
-  const isValid = verifyWebhookSignature(rawBody, signatureHeader, webhookSecret);
+  const isValid = verifyWebhookSignature(rawBody, signatureHeader, boldSecretKey);
   if (!isValid) {
     console.warn(`[webhook:${requestId}] Invalid signature — rejecting`);
     return new Response(JSON.stringify({ error: 'Invalid signature' }), {
