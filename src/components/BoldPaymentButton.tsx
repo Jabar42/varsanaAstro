@@ -228,7 +228,7 @@ export default function BoldPaymentButton({
             setPhase('idle');
             setErrorMsg(null);
           }}
-          className="w-full cursor-pointer rounded-lg bg-sacred-sand px-4 py-3 font-semibold text-sacred-900 transition-colors hover:bg-sacred-sand/80"
+          className="w-full cursor-pointer rounded-lg bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/80"
         >
           Intentar nuevamente
         </button>
@@ -253,7 +253,7 @@ export default function BoldPaymentButton({
     return (
       <div className="flex items-center justify-center gap-3 rounded-lg bg-sacred-sand/50 px-4 py-3">
         <svg
-          className="h-5 w-5 animate-spin text-sacred-900"
+          className="h-5 w-5 animate-spin text-near-black"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -265,7 +265,7 @@ export default function BoldPaymentButton({
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
           />
         </svg>
-        <span className="text-sm font-medium text-sacred-900">Verificando disponibilidad...</span>
+        <span className="text-sm font-medium text-near-black">Verificando disponibilidad...</span>
       </div>
     );
   }
@@ -275,7 +275,7 @@ export default function BoldPaymentButton({
       <div className="space-y-3">
         <div className="flex items-center justify-center gap-3 rounded-lg bg-sacred-sand/50 px-4 py-3">
           <svg
-            className="h-5 w-5 animate-spin text-sacred-900"
+            className="h-5 w-5 animate-spin text-near-black"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -287,7 +287,7 @@ export default function BoldPaymentButton({
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
             />
           </svg>
-          <span className="text-sm font-medium text-sacred-900">Iniciando pasarela de pago...</span>
+          <span className="text-sm font-medium text-near-black">Iniciando pasarela de pago...</span>
         </div>
         {/* Bold renders its embedded checkout inside this container */}
         <div ref={boldContainerRef} className="min-h-[100px]" />
@@ -301,14 +301,14 @@ export default function BoldPaymentButton({
       {/* Customer data form — shown before payment */}
       {showForm ? (
         <div className="space-y-3 rounded-lg border border-sacred-sand bg-white p-4">
-          <h4 className="text-sm font-semibold text-sacred-900">Tus datos</h4>
+          <h4 className="text-sm font-semibold text-near-black">Tus datos</h4>
           <input
             type="email"
             placeholder="Correo electrónico *"
             required
             value={customerData.email}
             onChange={(e) => setCustomerData((prev) => ({ ...prev, email: e.target.value }))}
-            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-sacred-900 focus:outline-none"
+            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
           />
           <input
             type="text"
@@ -316,14 +316,14 @@ export default function BoldPaymentButton({
             required
             value={customerData.fullName}
             onChange={(e) => setCustomerData((prev) => ({ ...prev, fullName: e.target.value }))}
-            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-sacred-900 focus:outline-none"
+            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
           />
           <input
             type="tel"
             placeholder="Teléfono (opcional)"
             value={customerData.phone || ''}
             onChange={(e) => setCustomerData((prev) => ({ ...prev, phone: e.target.value }))}
-            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-sacred-900 focus:outline-none"
+            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
           />
 
           {errorMsg && (
@@ -333,14 +333,14 @@ export default function BoldPaymentButton({
           <div className="flex gap-2">
             <button
               onClick={() => setShowForm(false)}
-              className="flex-1 cursor-pointer rounded-lg border border-sacred-sand px-4 py-2.5 text-sm font-medium text-sacred-900 transition-colors hover:bg-sacred-sand/50"
+              className="flex-1 cursor-pointer rounded-lg border border-sacred-sand px-4 py-2.5 text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50"
             >
               Cancelar
             </button>
             <button
               onClick={handleReserve}
               disabled={!customerData.email || !customerData.fullName || !scriptReady}
-              className="flex-1 cursor-pointer rounded-lg bg-sacred-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-sacred-900/90 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex-1 cursor-pointer rounded-lg bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Reservar ahora
             </button>
@@ -350,7 +350,7 @@ export default function BoldPaymentButton({
         <button
           onClick={() => setShowForm(true)}
           disabled={!scriptReady}
-          className="w-full cursor-pointer rounded-lg bg-sacred-900 px-4 py-3 font-semibold text-white transition-colors hover:bg-sacred-900/90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full cursor-pointer rounded-lg bg-rausch px-4 py-3 font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {scriptReady ? 'Reservar ahora' : 'Cargando...'}
         </button>

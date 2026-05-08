@@ -55,7 +55,8 @@ export const POST: APIRoute = async ({ request }) => {
   // ------------------------------------------------------------------
   // 2. Read Markdown — source of truth for price & stock
   // ------------------------------------------------------------------
-  const entry = await getEntry(contentType as 'events' | 'pasadias', contentId);
+  const collection = contentType === 'event' ? 'events' : 'pasadias';
+  const entry = await getEntry(collection, contentId);
   if (!entry) {
     return new Response(JSON.stringify({ error: 'Content not found' }), {
       status: 404,
