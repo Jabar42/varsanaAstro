@@ -180,7 +180,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (normalizedStatus === 'DECLINED' || normalizedStatus === 'FAILED') {
     // --- Payment failed — release stock + mark order as failed ---
-    const { contentType, contentId, quantity } = existingOrder;
+    const { content_type: contentType, content_id: contentId, quantity } = existingOrder;
 
     try {
       await releaseStock(contentType, contentId, quantity || 1);
