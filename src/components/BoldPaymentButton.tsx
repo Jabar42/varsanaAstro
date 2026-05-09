@@ -336,7 +336,7 @@ export default function BoldPaymentButton({
         )}
         {/* Bold renders its embedded checkout inside this container */}
         {/* Key prop ensures React preserves this DOM node across re-renders */}
-        <div key="bold-container" ref={boldContainerRef} className="min-h-[100px]" />
+        <div key="bold-container" ref={boldContainerRef} className="flex justify-center min-h-[100px]" />
         {/* Debug panel */}
         {debugInfo.length > 0 && (
           <details open={!boldRendered} className="text-xs text-gray-500">
