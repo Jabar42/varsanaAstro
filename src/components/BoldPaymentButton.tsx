@@ -71,6 +71,7 @@ export default function BoldPaymentButton({
   const [embeddingError, setEmbeddingError] = useState<string | null>(null);
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
   const [showForm, setShowForm] = useState(false);
+  const [boldRendered, setBoldRendered] = useState(false);
 
   // Debug state
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
@@ -78,9 +79,7 @@ export default function BoldPaymentButton({
   const boldContainerRef = useRef<HTMLDivElement>(null);
   const payloadRef = useRef<CheckoutPayload | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
-  const timeoutRef = useRef<number | null>(null);
   const renderCountRef = useRef(0);
-  const configElRef = useRef<HTMLScriptElement | null>(null);
 
   const addDebug = useCallback((msg: string) => {
     setDebugInfo(prev => [...prev, `[${new Date().toISOString().slice(11, 19)}] ${msg}`]);
@@ -89,14 +88,8 @@ export default function BoldPaymentButton({
   // --- Cleanup ---
   useEffect(() => {
     return () => {
-      if (boldContainerRef.current) {
-        boldContainerRef.current.innerHTML = '';
-      }
       if (observerRef.current) {
         observerRef.current.disconnect();
-      }
-      if (timeoutRef.current !== null) {
-        clearTimeout(timeoutRef.current);
       }
     };
   }, []);
@@ -132,7 +125,7 @@ export default function BoldPaymentButton({
   //   2. THEN inject the Bold library into <head>
   //
   // The Bold library scans the DOM at init time, finds the script tag
-  // with data-bold-button, and replaces it with the checkout iframe.
+  // with data-bold-button, and replaces it with the checkout iframe/button.
   // ---------------------------------------------------------------------------
   const renderBoldButton = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
     if (!boldContainerRef.current) {
@@ -143,6 +136,9 @@ export default function BoldPaymentButton({
     renderCountRef.current += 1;
     const renderId = renderCountRef.current;
     addDebug(`renderBoldButton #${renderId} starting`);
+
+    // Reset Bold-rendered flag for this render
+    setBoldRendered(false);
 
     // Clear any previous Bold-rendered elements
     boldContainerRef.current.innerHTML = '';
@@ -170,7 +166,6 @@ export default function BoldPaymentButton({
     );
 
     boldContainerRef.current.appendChild(configEl);
-    configElRef.current = configEl;
     addDebug(`config script appended to container (id=${payload.orderId})`);
 
     // 2. Set up a MutationObserver to detect when Bold modifies the container
@@ -178,52 +173,21 @@ export default function BoldPaymentButton({
       observerRef.current.disconnect();
     }
 
-    let boldModified = false;
-    observerRef.current = new MutationObserver((mutations) => {
-      addDebug(`Mutation detected: ${mutations.length} mutation(s)`);
-      for (const mutation of mutations) {
-        addDebug(`  type=${mutation.type}, added=${mutation.addedNodes.length}, removed=${mutation.removedNodes.length}`);
-        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-          boldModified = true;
-          // Check if any iframe was added
-          for (let i = 0; i < mutation.addedNodes.length; i++) {
-            const node = mutation.addedNodes[i];
-            if (node.nodeName === 'IFRAME') {
-              addDebug('BOLD IFRAME DETECTED! Checkout rendered successfully.');
-              if (timeoutRef.current !== null) {
-                clearTimeout(timeoutRef.current);
-                timeoutRef.current = null;
-              }
-            }
-          }
-        }
-      }
+    observerRef.current = new MutationObserver(() => {
+      // Bold has modified the container — hide the spinner
+      addDebug('Bold modified the container — hiding spinner');
+      setBoldRendered(true);
+      // Disconnect immediately; we don't need further observations
+      observerRef.current?.disconnect();
     });
 
     observerRef.current.observe(boldContainerRef.current, {
       childList: true,
       subtree: true,
-      attributes: true,
     });
     addDebug('MutationObserver started on container');
 
-    // 3. Set a 20-second timeout in case Bold never renders
-    if (timeoutRef.current !== null) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = window.setTimeout(() => {
-      if (!boldModified) {
-        addDebug('TIMEOUT: Bold did not modify the container within 20s');
-        // Check if the config tag is still in the DOM
-        const stillInDom = document.body.contains(configElRef.current);
-        addDebug(`config tag still in DOM: ${stillInDom}`);
-        addDebug(`boldLibraryInjected: ${boldLibraryInjected}`);
-        setPhase('error');
-        setEmbeddingError('La pasarela de pago no respondió. Recarga la página e intenta nuevamente.');
-      }
-    }, 20000);
-
-    // 4. NOW inject the Bold library into <head>
+    // 3. NOW inject the Bold library into <head>
     addDebug('injecting Bold library into <head>...');
     injectBoldLibrary()
       .then(() => {
@@ -251,6 +215,7 @@ export default function BoldPaymentButton({
 
     setPhase('loading');
     setEmbeddingError(null);
+    setBoldRendered(false);
     setDebugInfo([]);
     addDebug('Starting reservation...');
 
@@ -323,6 +288,7 @@ export default function BoldPaymentButton({
           onClick={() => {
             setPhase('idle');
             setEmbeddingError(null);
+            setBoldRendered(false);
           }}
           className="w-full cursor-pointer rounded-lg bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/80"
         >
@@ -353,23 +319,27 @@ export default function BoldPaymentButton({
   if (phase === 'embedding') {
     return (
       <div className="space-y-3">
-        <div className="flex items-center justify-center gap-3 rounded-lg bg-sacred-sand/50 px-4 py-3">
-          <svg
-            className="h-5 w-5 animate-spin text-near-black"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <span className="text-sm font-medium text-near-black">Iniciando pasarela de pago...</span>
-        </div>
+        {/* Spinner — hidden once Bold has modified the container */}
+        {!boldRendered && (
+          <div className="flex items-center justify-center gap-3 rounded-lg bg-sacred-sand/50 px-4 py-3">
+            <svg
+              className="h-5 w-5 animate-spin text-near-black"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            <span className="text-sm font-medium text-near-black">Iniciando pasarela de pago...</span>
+          </div>
+        )}
         {/* Bold renders its embedded checkout inside this container */}
-        <div ref={boldContainerRef} className="min-h-[100px]" />
+        {/* Key prop ensures React preserves this DOM node across re-renders */}
+        <div key="bold-container" ref={boldContainerRef} className="min-h-[100px]" />
         {/* Debug panel */}
         {debugInfo.length > 0 && (
-          <details open className="text-xs text-gray-500">
+          <details open={!boldRendered} className="text-xs text-gray-500">
             <summary className="cursor-pointer">Diagnóstico ({debugInfo.length} eventos)</summary>
             <pre className="mt-1 max-h-40 overflow-y-auto whitespace-pre-wrap rounded bg-gray-100 p-2">
               {debugInfo.join('\n')}
