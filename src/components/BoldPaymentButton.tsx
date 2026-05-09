@@ -71,11 +71,12 @@ export default function BoldPaymentButton({
   const [embeddingError, setEmbeddingError] = useState<string | null>(null);
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
   const [showForm, setShowForm] = useState(false);
-  const [boldRendered, setBoldRendered] = useState(false);
+  const [checkoutReady, setCheckoutReady] = useState(false);
 
   const boldContainerRef = useRef<HTMLDivElement>(null);
   const payloadRef = useRef<CheckoutPayload | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
+  const boldClickedRef = useRef(false);
 
   // --- Cleanup ---
   useEffect(() => {
@@ -110,20 +111,23 @@ export default function BoldPaymentButton({
     }
   }, [onSuccess]);
 
-  // --- Render Bold button ---
+  // --- Render Bold checkout (hidden until checkout form is ready) ---
   //
   // Uses approach recommended by Bold docs for React:
   //   1. Append config <script data-bold-button> to the container div
   //   2. THEN inject the Bold library into <head>
   //
-  // The Bold library scans the DOM at init time, finds the script tag
-  // with data-bold-button, and replaces it with the checkout iframe/button.
+  // The container is kept hidden (CSS invisible) until Bold has rendered
+  // the checkout form. The intermediate Bold "Pagar" button is auto-clicked
+  // while hidden, so the user sees only:
+  //   "Reservar ahora" → spinner → embedded checkout form (no flicker)
   // ---------------------------------------------------------------------------
-  const renderBoldButton = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
+  const renderBoldCheckout = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
     if (!boldContainerRef.current) return;
 
-    // Reset Bold-rendered flag for this render
-    setBoldRendered(false);
+    // Reset state for this render
+    setCheckoutReady(false);
+    boldClickedRef.current = false;
 
     // Clear any previous Bold-rendered elements
     boldContainerRef.current.innerHTML = '';
@@ -152,16 +156,31 @@ export default function BoldPaymentButton({
 
     boldContainerRef.current.appendChild(configEl);
 
-    // 2. Set up a MutationObserver to detect when Bold modifies the container
+    // 2. Set up a two-phase MutationObserver:
+    //    Phase 1 — Bold renders the button → auto-click it (hidden)
+    //    Phase 2 — Bold renders the checkout form → show container
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
 
     observerRef.current = new MutationObserver(() => {
-      // Bold has modified the container — hide the spinner
-      setBoldRendered(true);
-      // Disconnect immediately; we don't need further observations
-      observerRef.current?.disconnect();
+      if (!boldClickedRef.current) {
+        // Phase 1: Bold has rendered its button — auto-click immediately
+        boldClickedRef.current = true;
+
+        // Use requestAnimationFrame to wait for DOM to settle after mutation
+        requestAnimationFrame(() => {
+          const btn = boldContainerRef.current?.querySelector('button');
+          if (btn) {
+            btn.click();
+          }
+        });
+      } else {
+        // Phase 2: Bold has rendered the checkout form (after click) — show it
+        setCheckoutReady(true);
+        // Disconnect; we're done
+        observerRef.current?.disconnect();
+      }
     });
 
     observerRef.current.observe(boldContainerRef.current, {
@@ -177,12 +196,12 @@ export default function BoldPaymentButton({
     });
   }, [onError]);
 
-  // --- Once the "embedding" phase is committed, render the Bold button ---
+  // --- Once the "embedding" phase is committed, render the Bold checkout ---
   useEffect(() => {
     if (phase === 'embedding' && payloadRef.current) {
-      renderBoldButton(payloadRef.current, customerData);
+      renderBoldCheckout(payloadRef.current, customerData);
     }
-  }, [phase, customerData, renderBoldButton]);
+  }, [phase, customerData, renderBoldCheckout]);
 
   // --- Handle "Reservar ahora" click ---
   const handleReserve = useCallback(async () => {
@@ -190,7 +209,6 @@ export default function BoldPaymentButton({
 
     setPhase('loading');
     setEmbeddingError(null);
-    setBoldRendered(false);
 
     try {
       const response = await fetch('/api/checkout', {
@@ -249,7 +267,6 @@ export default function BoldPaymentButton({
           onClick={() => {
             setPhase('idle');
             setEmbeddingError(null);
-            setBoldRendered(false);
           }}
           className="w-full cursor-pointer rounded-lg bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/80"
         >
@@ -280,8 +297,8 @@ export default function BoldPaymentButton({
   if (phase === 'embedding') {
     return (
       <div className="space-y-3">
-        {/* Spinner — hidden once Bold has modified the container */}
-        {!boldRendered && (
+        {/* Spinner — hidden once checkout is ready */}
+        {!checkoutReady && (
           <div className="flex items-center justify-center gap-3 rounded-lg bg-sacred-sand/50 px-4 py-3">
             <svg
               className="h-5 w-5 animate-spin text-near-black"
@@ -295,9 +312,12 @@ export default function BoldPaymentButton({
             <span className="text-sm font-medium text-near-black">Iniciando pasarela de pago...</span>
           </div>
         )}
-        {/* Bold renders its embedded checkout inside this container */}
-        {/* Key prop ensures React preserves this DOM node across re-renders */}
-        <div key="bold-container" ref={boldContainerRef} className="flex justify-center min-h-[100px]" />
+        {/* Bold checkout container — hidden until checkout form is ready */}
+        <div
+          key="bold-container"
+          ref={boldContainerRef}
+          className={`flex justify-center min-h-[100px] ${!checkoutReady ? 'invisible' : ''}`}
+        />
       </div>
     );
   }
