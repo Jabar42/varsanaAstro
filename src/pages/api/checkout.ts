@@ -186,7 +186,9 @@ export const POST: APIRoute = async ({ request }) => {
   // ------------------------------------------------------------------
   // 8. Return signed payload to the frontend
   // ------------------------------------------------------------------
-  const siteUrl = (import.meta.env.PUBLIC_SITE_URL as string) || 'https://varsana.co';
+  let siteUrl = (import.meta.env.PUBLIC_SITE_URL as string) || 'https://varsana.co';
+  // Remove trailing slash to avoid double slashes in redirect URL
+  siteUrl = siteUrl.replace(/\/+$/, '');
 
   const payload = {
     orderId,
