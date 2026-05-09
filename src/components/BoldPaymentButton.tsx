@@ -73,17 +73,9 @@ export default function BoldPaymentButton({
   const [showForm, setShowForm] = useState(false);
   const [boldRendered, setBoldRendered] = useState(false);
 
-  // Debug state
-  const [debugInfo, setDebugInfo] = useState<string[]>([]);
-
   const boldContainerRef = useRef<HTMLDivElement>(null);
   const payloadRef = useRef<CheckoutPayload | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
-  const renderCountRef = useRef(0);
-
-  const addDebug = useCallback((msg: string) => {
-    setDebugInfo(prev => [...prev, `[${new Date().toISOString().slice(11, 19)}] ${msg}`]);
-  }, []);
 
   // --- Cleanup ---
   useEffect(() => {
@@ -128,14 +120,7 @@ export default function BoldPaymentButton({
   // with data-bold-button, and replaces it with the checkout iframe/button.
   // ---------------------------------------------------------------------------
   const renderBoldButton = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
-    if (!boldContainerRef.current) {
-      addDebug('ERROR: container ref is null');
-      return;
-    }
-
-    renderCountRef.current += 1;
-    const renderId = renderCountRef.current;
-    addDebug(`renderBoldButton #${renderId} starting`);
+    if (!boldContainerRef.current) return;
 
     // Reset Bold-rendered flag for this render
     setBoldRendered(false);
@@ -166,7 +151,6 @@ export default function BoldPaymentButton({
     );
 
     boldContainerRef.current.appendChild(configEl);
-    addDebug(`config script appended to container (id=${payload.orderId})`);
 
     // 2. Set up a MutationObserver to detect when Bold modifies the container
     if (observerRef.current) {
@@ -175,7 +159,6 @@ export default function BoldPaymentButton({
 
     observerRef.current = new MutationObserver(() => {
       // Bold has modified the container — hide the spinner
-      addDebug('Bold modified the container — hiding spinner');
       setBoldRendered(true);
       // Disconnect immediately; we don't need further observations
       observerRef.current?.disconnect();
@@ -185,29 +168,21 @@ export default function BoldPaymentButton({
       childList: true,
       subtree: true,
     });
-    addDebug('MutationObserver started on container');
 
     // 3. NOW inject the Bold library into <head>
-    addDebug('injecting Bold library into <head>...');
-    injectBoldLibrary()
-      .then(() => {
-        addDebug('Bold library loaded successfully');
-      })
-      .catch((err: Error) => {
-        addDebug(`Bold library FAILED to load: ${err.message}`);
-        setPhase('error');
-        setEmbeddingError('No se pudo cargar la pasarela de pago. Verifica tu conexión e intenta nuevamente.');
-        onError?.(err);
-      });
-  }, [onError, addDebug]);
+    injectBoldLibrary().catch((err: Error) => {
+      setPhase('error');
+      setEmbeddingError('No se pudo cargar la pasarela de pago. Verifica tu conexión e intenta nuevamente.');
+      onError?.(err);
+    });
+  }, [onError]);
 
   // --- Once the "embedding" phase is committed, render the Bold button ---
   useEffect(() => {
     if (phase === 'embedding' && payloadRef.current) {
-      addDebug('embedding phase detected in useEffect');
       renderBoldButton(payloadRef.current, customerData);
     }
-  }, [phase, customerData, renderBoldButton, addDebug]);
+  }, [phase, customerData, renderBoldButton]);
 
   // --- Handle "Reservar ahora" click ---
   const handleReserve = useCallback(async () => {
@@ -216,8 +191,6 @@ export default function BoldPaymentButton({
     setPhase('loading');
     setEmbeddingError(null);
     setBoldRendered(false);
-    setDebugInfo([]);
-    addDebug('Starting reservation...');
 
     try {
       const response = await fetch('/api/checkout', {
@@ -231,8 +204,6 @@ export default function BoldPaymentButton({
         }),
       });
 
-      addDebug(`API response: ${response.status}`);
-
       if (!response.ok) {
         const errBody = await response.json().catch(() => ({ error: 'Error del servidor' }));
         throw new Error(errBody.error || `HTTP ${response.status}`);
@@ -240,17 +211,15 @@ export default function BoldPaymentButton({
 
       const payload: CheckoutPayload = await response.json();
       payloadRef.current = payload;
-      addDebug(`Checkout payload received. orderId=${payload.orderId}, amount=${payload.amount}`);
 
       setPhase('embedding');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error inesperado';
-      addDebug(`Error: ${message}`);
       setPhase('error');
       setEmbeddingError(message);
       onError?.(err instanceof Error ? err : new Error(message));
     }
-  }, [contentType, contentId, customerData, phase, onError, addDebug]);
+  }, [contentType, contentId, customerData, phase, onError]);
 
   // ==========================================================================
   // Render
@@ -276,14 +245,6 @@ export default function BoldPaymentButton({
           <p className="text-red-800 font-semibold">Error</p>
           <p className="text-red-600 text-sm mt-1">{embeddingError || 'Ocurrió un error inesperado.'}</p>
         </div>
-        {debugInfo.length > 0 && (
-          <details className="text-xs text-gray-500">
-            <summary className="cursor-pointer">Diagnóstico ({debugInfo.length} eventos)</summary>
-            <pre className="mt-1 max-h-40 overflow-y-auto whitespace-pre-wrap rounded bg-gray-100 p-2">
-              {debugInfo.join('\n')}
-            </pre>
-          </details>
-        )}
         <button
           onClick={() => {
             setPhase('idle');
@@ -298,7 +259,7 @@ export default function BoldPaymentButton({
     );
   }
 
-  // --- Loading / Embedding phases (spinner + status) ---
+  // --- Loading / Embedding phases ---
   if (phase === 'loading') {
     return (
       <div className="flex items-center justify-center gap-3 rounded-lg bg-sacred-sand/50 px-4 py-3">
@@ -337,15 +298,6 @@ export default function BoldPaymentButton({
         {/* Bold renders its embedded checkout inside this container */}
         {/* Key prop ensures React preserves this DOM node across re-renders */}
         <div key="bold-container" ref={boldContainerRef} className="flex justify-center min-h-[100px]" />
-        {/* Debug panel */}
-        {debugInfo.length > 0 && (
-          <details open={!boldRendered} className="text-xs text-gray-500">
-            <summary className="cursor-pointer">Diagnóstico ({debugInfo.length} eventos)</summary>
-            <pre className="mt-1 max-h-40 overflow-y-auto whitespace-pre-wrap rounded bg-gray-100 p-2">
-              {debugInfo.join('\n')}
-            </pre>
-          </details>
-        )}
       </div>
     );
   }
