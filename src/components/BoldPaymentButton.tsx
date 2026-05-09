@@ -79,6 +79,7 @@ export default function BoldPaymentButton({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
   const [showForm, setShowForm] = useState(false);
+  const [pendingRender, setPendingRender] = useState(false);
 
   const boldContainerRef = useRef<HTMLDivElement>(null);
   const payloadRef = useRef<CheckoutPayload | null>(null);
@@ -161,6 +162,14 @@ export default function BoldPaymentButton({
     boldContainerRef.current.appendChild(scriptEl);
   }, []);
 
+  // --- After the "embedding" phase DOM is committed, render the Bold button ---
+  useEffect(() => {
+    if (pendingRender && payloadRef.current) {
+      renderBoldButton(payloadRef.current, customerData);
+      setPendingRender(false);
+    }
+  }, [pendingRender, customerData, renderBoldButton]);
+
   // --- Handle "Reservar ahora" click ---
   const handleReserve = useCallback(async () => {
     if (phase === 'loading') return;
@@ -188,16 +197,18 @@ export default function BoldPaymentButton({
       const payload: CheckoutPayload = await response.json();
       payloadRef.current = payload;
 
-      // Transition to embedding phase — render the Bold button
+      // Transition to embedding phase — React will re-render, creating the
+      // container div, THEN the useEffect above will call renderBoldButton
+      // once the DOM is ready (avoids null ref issue).
       setPhase('embedding');
-      renderBoldButton(payload, customerData);
+      setPendingRender(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error inesperado';
       setPhase('error');
       setErrorMsg(message);
       onError?.(err instanceof Error ? err : new Error(message));
     }
-  }, [contentType, contentId, customerData, phase, renderBoldButton, onError]);
+  }, [contentType, contentId, customerData, phase, onError]);
 
   // ==========================================================================
   // Render
