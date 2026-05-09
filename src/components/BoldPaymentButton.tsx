@@ -31,21 +31,31 @@ interface BoldPaymentButtonProps {
 }
 
 // ---------------------------------------------------------------------------
-// Script loader singleton — ensures the Bold script is injected only once
+// Script loader — loads Bold library AFTER the button script tag is in the DOM
+// The Bold library scans the DOM at init time for [data-bold-button] elements,
+// so we must ensure the button script tag exists BEFORE loading the library.
 // ---------------------------------------------------------------------------
 
 let boldScriptPromise: Promise<void> | null = null;
+
+/**
+ * Removes any previously-loaded Bold library script from the DOM so that
+ * loading it again will trigger a fresh DOM scan for [data-bold-button].
+ */
+function resetBoldScript(): void {
+  const existing = document.querySelector(
+    'script[src="https://checkout.bold.co/library/boldPaymentButton.js"]',
+  );
+  if (existing) {
+    existing.remove();
+  }
+  boldScriptPromise = null;
+}
 
 function loadBoldScript(): Promise<void> {
   if (boldScriptPromise) return boldScriptPromise;
 
   boldScriptPromise = new Promise<void>((resolve, reject) => {
-    // Check if script is already present in the DOM
-    if (document.querySelector('script[src="https://checkout.bold.co/library/boldPaymentButton.js"]')) {
-      resolve();
-      return;
-    }
-
     const script = document.createElement('script');
     script.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
     script.async = true;
@@ -79,25 +89,13 @@ export default function BoldPaymentButton({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
   const [showForm, setShowForm] = useState(false);
-  const [pendingRender, setPendingRender] = useState(false);
 
   const boldContainerRef = useRef<HTMLDivElement>(null);
   const payloadRef = useRef<CheckoutPayload | null>(null);
 
-  // --- Load Bold script on mount ---
-  useEffect(() => {
-    loadBoldScript()
-      .then(() => setScriptReady(true))
-      .catch((err: Error) => {
-        setScriptError(err.message);
-        onError?.(err);
-      });
-  }, [onError]);
-
   // --- Cleanup: remove Bold-rendered elements when unmounting or re-rendering ---
   useEffect(() => {
     return () => {
-      // Bold may leave behind rendered DOM nodes; remove them
       if (boldContainerRef.current) {
         boldContainerRef.current.innerHTML = '';
       }
@@ -123,20 +121,20 @@ export default function BoldPaymentButton({
         );
       }
 
-      // Clean URL params to avoid re-triggering on re-renders
       const cleanUrl = window.location.pathname;
       window.history.replaceState({}, '', cleanUrl);
     }
   }, [onSuccess]);
 
-  // --- Render Bold button script tag in the container ---
+  // --- Render Bold button script tag, THEN load the library so it scans the DOM ---
   const renderBoldButton = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
     if (!boldContainerRef.current) return;
 
     // Clear any previous Bold-rendered elements
     boldContainerRef.current.innerHTML = '';
 
-    // Create the script element that Bold's library will detect and replace
+    // 1. Create the configuration script tag FIRST — this is what Bold's
+    //    library will detect and replace with the checkout iframe
     const scriptEl = document.createElement('script');
     scriptEl.setAttribute('data-bold-button', 'dark-L');
     scriptEl.setAttribute('data-api-key', payload.apiKey);
@@ -148,7 +146,6 @@ export default function BoldPaymentButton({
     scriptEl.setAttribute('data-redirection-url', payload.redirectionUrl);
     scriptEl.setAttribute('data-render-mode', 'embedded');
 
-    // Customer data — pre-fill the Bold payment form
     scriptEl.setAttribute(
       'data-customer-data',
       JSON.stringify({
@@ -160,15 +157,23 @@ export default function BoldPaymentButton({
     );
 
     boldContainerRef.current.appendChild(scriptEl);
-  }, []);
 
-  // --- After the "embedding" phase DOM is committed, render the Bold button ---
+    // 2. NOW load/reset the Bold library so it scans the DOM and finds the tag
+    resetBoldScript();
+    loadBoldScript()
+      .then(() => setScriptReady(true))
+      .catch((err: Error) => {
+        setScriptError(err.message);
+        onError?.(err);
+      });
+  }, [onError]);
+
+  // --- Once the "embedding" phase is committed, render the Bold button ---
   useEffect(() => {
-    if (pendingRender && payloadRef.current) {
+    if (phase === 'embedding' && payloadRef.current) {
       renderBoldButton(payloadRef.current, customerData);
-      setPendingRender(false);
     }
-  }, [pendingRender, customerData, renderBoldButton]);
+  }, [phase, customerData, renderBoldButton]);
 
   // --- Handle "Reservar ahora" click ---
   const handleReserve = useCallback(async () => {
@@ -197,11 +202,10 @@ export default function BoldPaymentButton({
       const payload: CheckoutPayload = await response.json();
       payloadRef.current = payload;
 
-      // Transition to embedding phase — React will re-render, creating the
-      // container div, THEN the useEffect above will call renderBoldButton
-      // once the DOM is ready (avoids null ref issue).
+      // Transition to embedding phase — React re-renders, creating the container
+      // div. The useEffect above will fire once the DOM is committed,
+      // ensuring boldContainerRef.current is set.
       setPhase('embedding');
-      setPendingRender(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error inesperado';
       setPhase('error');
