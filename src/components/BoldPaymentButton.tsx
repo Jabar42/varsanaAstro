@@ -126,7 +126,17 @@ export default function BoldPaymentButton({
     }
   }, [onSuccess]);
 
-  // --- Render Bold button script tag, THEN load the library so it scans the DOM ---
+  // --- Load Bold library on mount so the initial button shows "Reservar ahora" ---
+  useEffect(() => {
+    loadBoldScript()
+      .then(() => setScriptReady(true))
+      .catch((err: Error) => {
+        setScriptError(err.message);
+        onError?.(err);
+      });
+  }, [onError]);
+
+  // --- Render Bold button script tag, THEN reload the library so it scans the DOM ---
   const renderBoldButton = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
     if (!boldContainerRef.current) return;
 
