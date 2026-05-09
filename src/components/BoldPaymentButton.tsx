@@ -31,30 +31,6 @@ interface BoldPaymentButtonProps {
 }
 
 // ---------------------------------------------------------------------------
-// Helper — inject the Bold library script into <head> (idempotent)
-// ---------------------------------------------------------------------------
-
-let boldLibraryInjected = false;
-
-function injectBoldLibrary(): Promise<void> {
-  if (boldLibraryInjected) return Promise.resolve();
-
-  return new Promise<void>((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
-    script.async = true;
-    script.onload = () => {
-      boldLibraryInjected = true;
-      resolve();
-    };
-    script.onerror = () => {
-      reject(new Error('Failed to load Bold checkout script'));
-    };
-    document.head.appendChild(script);
-  });
-}
-
-// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -76,7 +52,6 @@ export default function BoldPaymentButton({
   const boldContainerRef = useRef<HTMLDivElement>(null);
   const payloadRef = useRef<CheckoutPayload | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
-  const boldClickedRef = useRef(false);
 
   // --- Cleanup ---
   useEffect(() => {
@@ -113,27 +88,27 @@ export default function BoldPaymentButton({
 
   // --- Render Bold checkout (hidden until checkout form is ready) ---
   //
-  // Uses approach recommended by Bold docs for React:
-  //   1. Append config <script data-bold-button> to the container div
-  //   2. THEN inject the Bold library into <head>
+  // Uses Bold docs Approach B: put the library src directly on the config
+  // <script data-bold-button> tag. The browser executes the script each
+  // time a fresh script element is added to the DOM, regardless of cache.
   //
-  // The container is kept hidden (CSS invisible) until Bold has rendered
-  // the checkout form. The intermediate Bold "Pagar" button is auto-clicked
+  // The container is kept hidden (CSS invisible) until the checkout form
+  // (iframe) appears. Any intermediate button rendered by Bold is auto-clicked
   // while hidden, so the user sees only:
   //   "Reservar ahora" → spinner → embedded checkout form (no flicker)
   // ---------------------------------------------------------------------------
   const renderBoldCheckout = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
     if (!boldContainerRef.current) return;
 
-    // Reset state for this render
+    // Reset state
     setCheckoutReady(false);
-    boldClickedRef.current = false;
 
     // Clear any previous Bold-rendered elements
     boldContainerRef.current.innerHTML = '';
 
-    // 1. Create and append the config script tag
+    // Create config script WITH src (Approach B)
     const configEl = document.createElement('script');
+    configEl.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
     configEl.setAttribute('data-bold-button', 'dark-L');
     configEl.setAttribute('data-api-key', payload.apiKey);
     configEl.setAttribute('data-amount', String(payload.amount));
@@ -156,29 +131,43 @@ export default function BoldPaymentButton({
 
     boldContainerRef.current.appendChild(configEl);
 
-    // 2. Set up a two-phase MutationObserver:
-    //    Phase 1 — Bold renders the button → auto-click it (hidden)
-    //    Phase 2 — Bold renders the checkout form → show container
+    // Set up a MutationObserver that handles all rendering scenarios:
+    //   A) Bold renders the checkout form (iframe) directly → show container
+    //   B) Bold renders a button → auto-click while hidden → show container when iframe appears
+    //   C) Bold renders other non-script content → show container
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
 
-    observerRef.current = new MutationObserver(() => {
-      if (!boldClickedRef.current) {
-        // Phase 1: Bold has rendered its button — auto-click immediately
-        boldClickedRef.current = true;
+    let autoClicked = false;
 
-        // Use requestAnimationFrame to wait for DOM to settle after mutation
-        requestAnimationFrame(() => {
-          const btn = boldContainerRef.current?.querySelector('button');
-          if (btn) {
-            btn.click();
-          }
-        });
-      } else {
-        // Phase 2: Bold has rendered the checkout form (after click) — show it
+    observerRef.current = new MutationObserver(() => {
+      if (!boldContainerRef.current) return;
+
+      // Prefer iframe detection (checkout form is ready)
+      const iframe = boldContainerRef.current.querySelector('iframe');
+      if (iframe) {
         setCheckoutReady(true);
-        // Disconnect; we're done
+        observerRef.current?.disconnect();
+        return;
+      }
+
+      // If a button exists and we haven't auto-clicked yet, do it now
+      if (!autoClicked) {
+        const btn = boldContainerRef.current.querySelector('button');
+        if (btn) {
+          autoClicked = true;
+          btn.click();
+          return; // Wait for next mutation (checkout form after click)
+        }
+      }
+
+      // If there's any rendered content that isn't the config script, show it
+      const hasContent = Array.from(boldContainerRef.current.children).some(
+        (child) => child.tagName !== 'SCRIPT',
+      );
+      if (hasContent) {
+        setCheckoutReady(true);
         observerRef.current?.disconnect();
       }
     });
@@ -187,14 +176,7 @@ export default function BoldPaymentButton({
       childList: true,
       subtree: true,
     });
-
-    // 3. NOW inject the Bold library into <head>
-    injectBoldLibrary().catch((err: Error) => {
-      setPhase('error');
-      setEmbeddingError('No se pudo cargar la pasarela de pago. Verifica tu conexión e intenta nuevamente.');
-      onError?.(err);
-    });
-  }, [onError]);
+  }, []);
 
   // --- Once the "embedding" phase is committed, render the Bold checkout ---
   useEffect(() => {
