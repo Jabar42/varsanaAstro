@@ -131,44 +131,104 @@ export default function BoldPaymentButton({
 
     boldContainerRef.current.appendChild(configEl);
 
-    // Set up a MutationObserver that handles all rendering scenarios:
-    //   A) Bold renders the checkout form (iframe) directly → show container
-    //   B) Bold renders a button → auto-click while hidden → show container when iframe appears
-    //   C) Bold renders other non-script content → show container
+    // Set up a MutationObserver that:
+    //   1) Detects when Bold has processed the config script (script tag removed)
+    //   2) Auto-clicks Bold's button (which may not be a <button> element)
+    //   3) Shows the container only when the checkout iframe appears
+    //
+    // The container stays invisible throughout — no flicker.
     if (observerRef.current) {
       observerRef.current.disconnect();
     }
 
+    let checkoutPoll: ReturnType<typeof setInterval> | null = null;
     let autoClicked = false;
+
+    // Poll for the checkout iframe after auto-clicking Bold's button
+    function pollForCheckout() {
+      if (checkoutPoll) return;
+      checkoutPoll = setInterval(() => {
+        if (!boldContainerRef.current) {
+          clearInterval(checkoutPoll!);
+          checkoutPoll = null;
+          return;
+        }
+        const iframe = boldContainerRef.current.querySelector('iframe');
+        if (iframe) {
+          clearInterval(checkoutPoll!);
+          checkoutPoll = null;
+          setCheckoutReady(true);
+          observerRef.current?.disconnect();
+        }
+      }, 200);
+      // Safety timeout: show container after 10s even if no iframe
+      setTimeout(() => {
+        if (checkoutPoll) {
+          clearInterval(checkoutPoll);
+          checkoutPoll = null;
+          setCheckoutReady(true);
+          observerRef.current?.disconnect();
+        }
+      }, 10000);
+    }
 
     observerRef.current = new MutationObserver(() => {
       if (!boldContainerRef.current) return;
 
-      // Prefer iframe detection (checkout form is ready)
+      // 1. If checkout iframe exists → show container (immediate success)
       const iframe = boldContainerRef.current.querySelector('iframe');
       if (iframe) {
+        if (checkoutPoll) {
+          clearInterval(checkoutPoll);
+          checkoutPoll = null;
+        }
         setCheckoutReady(true);
         observerRef.current?.disconnect();
         return;
       }
 
-      // If a button exists and we haven't auto-clicked yet, do it now
-      if (!autoClicked) {
-        const btn = boldContainerRef.current.querySelector('button');
-        if (btn) {
-          autoClicked = true;
-          btn.click();
-          return; // Wait for next mutation (checkout form after click)
+      // 2. Check if Bold has processed the config script (script tag removed/replaced)
+      const configScript = boldContainerRef.current.querySelector(
+        'script[data-bold-button]',
+      );
+      const configScriptRemoved = !configScript;
+
+      if (configScriptRemoved && !autoClicked) {
+        // Bold replaced the config script with rendered content
+        autoClicked = true;
+
+        // Try to find and auto-click Bold's button.
+        // Bold may use <button>, <a>, <div role="button">, or a custom element.
+        const clickable = boldContainerRef.current.querySelector<HTMLElement>(
+          'button, a, [role="button"], [tabindex="0"]',
+        );
+        if (clickable) {
+          clickable.click();
+          // Start polling for the checkout iframe
+          pollForCheckout();
+        } else {
+          // No clickable element found — show container after a delay
+          setTimeout(() => {
+            setCheckoutReady(true);
+            observerRef.current?.disconnect();
+          }, 500);
         }
+        return;
       }
 
-      // If there's any rendered content that isn't the config script, show it
-      const hasContent = Array.from(boldContainerRef.current.children).some(
-        (child) => child.tagName !== 'SCRIPT',
-      );
-      if (hasContent) {
-        setCheckoutReady(true);
-        observerRef.current?.disconnect();
+      // 3. If config script is gone and we've already auto-clicked,
+      //    check if checkout appeared (handles edge case where observer
+      //    fires again but iframe wasn't in the first query)
+      if (configScriptRemoved && autoClicked) {
+        const hasChildren = boldContainerRef.current.children.length > 0;
+        if (hasChildren && boldContainerRef.current.querySelector('iframe')) {
+          if (checkoutPoll) {
+            clearInterval(checkoutPoll);
+            checkoutPoll = null;
+          }
+          setCheckoutReady(true);
+          observerRef.current?.disconnect();
+        }
       }
     });
 
