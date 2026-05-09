@@ -31,46 +31,6 @@ interface BoldPaymentButtonProps {
 }
 
 // ---------------------------------------------------------------------------
-// Script loader — loads Bold library AFTER the button script tag is in the DOM
-// The Bold library scans the DOM at init time for [data-bold-button] elements,
-// so we must ensure the button script tag exists BEFORE loading the library.
-// ---------------------------------------------------------------------------
-
-let boldScriptPromise: Promise<void> | null = null;
-
-/**
- * Removes any previously-loaded Bold library script from the DOM so that
- * loading it again will trigger a fresh DOM scan for [data-bold-button].
- */
-function resetBoldScript(): void {
-  const existing = document.querySelector(
-    'script[src="https://checkout.bold.co/library/boldPaymentButton.js"]',
-  );
-  if (existing) {
-    existing.remove();
-  }
-  boldScriptPromise = null;
-}
-
-function loadBoldScript(): Promise<void> {
-  if (boldScriptPromise) return boldScriptPromise;
-
-  boldScriptPromise = new Promise<void>((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => {
-      boldScriptPromise = null; // Allow retry on failure
-      reject(new Error('Failed to load Bold checkout script'));
-    };
-    document.head.appendChild(script);
-  });
-
-  return boldScriptPromise;
-}
-
-// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -83,8 +43,6 @@ export default function BoldPaymentButton({
   onError,
 }: BoldPaymentButtonProps) {
   // --- State ---
-  const [scriptReady, setScriptReady] = useState(false);
-  const [scriptError, setScriptError] = useState<string | null>(null);
   const [phase, setPhase] = useState<'idle' | 'loading' | 'embedding' | 'success' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
@@ -126,26 +84,30 @@ export default function BoldPaymentButton({
     }
   }, [onSuccess]);
 
-  // --- Load Bold library on mount so the initial button shows "Reservar ahora" ---
-  useEffect(() => {
-    loadBoldScript()
-      .then(() => setScriptReady(true))
-      .catch((err: Error) => {
-        setScriptError(err.message);
-        onError?.(err);
-      });
-  }, [onError]);
-
-  // --- Render Bold button script tag, THEN reload the library so it scans the DOM ---
+  // --- Render Bold button: append a single <script> with both src and data-* attrs ---
+  //
+  // Bold docs recommend two approaches for React/frameworks:
+  //   A) Add the config <script data-bold-button> to DOM, THEN inject the
+  //      Bold library into <head>.
+  //   B) Put src="https://checkout.bold.co/library/boldPaymentButton.js"
+  //      directly on the <script data-bold-button> tag itself.
+  //
+  // We use approach B because it's simpler — the browser loads the library,
+  // it executes, scans the DOM, finds the data-bold-button attribute on its
+  // own script tag, and replaces it with the checkout iframe.
+  // ---------------------------------------------------------------------------
   const renderBoldButton = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
     if (!boldContainerRef.current) return;
 
     // Clear any previous Bold-rendered elements
     boldContainerRef.current.innerHTML = '';
 
-    // 1. Create the configuration script tag FIRST — this is what Bold's
-    //    library will detect and replace with the checkout iframe
+    // Create a single script tag with src pointing to the Bold library
+    // AND all the data-* configuration attributes. When the browser loads
+    // this script, the Bold library executes, scans the DOM, finds this
+    // tag (data-bold-button), and replaces it with the checkout iframe.
     const scriptEl = document.createElement('script');
+    scriptEl.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
     scriptEl.setAttribute('data-bold-button', 'dark-L');
     scriptEl.setAttribute('data-api-key', payload.apiKey);
     scriptEl.setAttribute('data-amount', String(payload.amount));
@@ -166,16 +128,14 @@ export default function BoldPaymentButton({
       }),
     );
 
-    boldContainerRef.current.appendChild(scriptEl);
+    // Error handling: if the script fails to load, notify the user
+    scriptEl.onerror = () => {
+      setPhase('error');
+      setErrorMsg('No se pudo cargar la pasarela de pago. Verifica tu conexión e intenta nuevamente.');
+      onError?.(new Error('Failed to load Bold checkout script'));
+    };
 
-    // 2. NOW load/reset the Bold library so it scans the DOM and finds the tag
-    resetBoldScript();
-    loadBoldScript()
-      .then(() => setScriptReady(true))
-      .catch((err: Error) => {
-        setScriptError(err.message);
-        onError?.(err);
-      });
+    boldContainerRef.current.appendChild(scriptEl);
   }, [onError]);
 
   // --- Once the "embedding" phase is committed, render the Bold button ---
@@ -257,18 +217,6 @@ export default function BoldPaymentButton({
         >
           Intentar nuevamente
         </button>
-      </div>
-    );
-  }
-
-  // --- Script failed to load ---
-  if (scriptError) {
-    return (
-      <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-center">
-        <p className="text-red-800 font-semibold">Error de conexión</p>
-        <p className="text-red-600 text-sm mt-1">
-          No se pudo cargar la pasarela de pago. Por favor, recarga la página.
-        </p>
       </div>
     );
   }
@@ -364,7 +312,7 @@ export default function BoldPaymentButton({
             </button>
             <button
               onClick={handleReserve}
-              disabled={!customerData.email || !customerData.fullName || !scriptReady}
+              disabled={!customerData.email || !customerData.fullName}
               className="flex-1 cursor-pointer rounded-lg bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Reservar ahora
@@ -374,10 +322,9 @@ export default function BoldPaymentButton({
       ) : (
         <button
           onClick={() => setShowForm(true)}
-          disabled={!scriptReady}
-          className="w-full cursor-pointer rounded-lg bg-rausch px-4 py-3 font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full cursor-pointer rounded-lg bg-rausch px-4 py-3 font-semibold text-white transition-colors hover:bg-rausch/90"
         >
-          {scriptReady ? 'Reservar ahora' : 'Cargando...'}
+          Reservar ahora
         </button>
       )}
     </div>
