@@ -132,8 +132,8 @@ export default function BoldPaymentButton({
     boldContainerRef.current.appendChild(configEl);
 
     // Set up a MutationObserver that:
-    //   1) Detects when Bold has processed the config script (script tag removed)
-    //   2) Auto-clicks Bold's button (which may not be a <button> element)
+    //   1) Detects when Bold renders content (any non-<script> child)
+    //   2) Auto-clicks Bold's button while the container stays invisible
     //   3) Shows the container only when the checkout iframe appears
     //
     // The container stays invisible throughout — no flicker.
@@ -142,7 +142,7 @@ export default function BoldPaymentButton({
     }
 
     let checkoutPoll: ReturnType<typeof setInterval> | null = null;
-    let autoClicked = false;
+    let contentDetected = false;
 
     // Poll for the checkout iframe after auto-clicking Bold's button
     function pollForCheckout() {
@@ -187,48 +187,46 @@ export default function BoldPaymentButton({
         return;
       }
 
-      // 2. Check if Bold has processed the config script (script tag removed/replaced)
-      const configScript = boldContainerRef.current.querySelector(
-        'script[data-bold-button]',
-      );
-      const configScriptRemoved = !configScript;
+      // 2. Detect if Bold has rendered content (non-<script> children).
+      //    With Approach B (src on script tag), Bold may keep the
+      //    <script data-bold-button> in the DOM and insert its rendered
+      //    content alongside it. So we check for ANY non-script child.
+      if (!contentDetected) {
+        const renderedContent = Array.from(boldContainerRef.current.children)
+          .some((child) => child.tagName !== 'SCRIPT');
 
-      if (configScriptRemoved && !autoClicked) {
-        // Bold replaced the config script with rendered content
-        autoClicked = true;
+        if (renderedContent) {
+          contentDetected = true;
 
-        // Try to find and auto-click Bold's button.
-        // Bold may use <button>, <a>, <div role="button">, or a custom element.
-        const clickable = boldContainerRef.current.querySelector<HTMLElement>(
-          'button, a, [role="button"], [tabindex="0"]',
-        );
-        if (clickable) {
-          clickable.click();
-          // Start polling for the checkout iframe
-          pollForCheckout();
-        } else {
-          // No clickable element found — show container after a delay
-          setTimeout(() => {
-            setCheckoutReady(true);
-            observerRef.current?.disconnect();
-          }, 500);
+          // Try to find and auto-click Bold's button.
+          // Bold may use <button>, <a>, <div role="button">, etc.
+          const clickable = boldContainerRef.current.querySelector<HTMLElement>(
+            'button, a, [role="button"], [tabindex="0"]',
+          );
+          if (clickable) {
+            clickable.click();
+            // Start polling for the checkout iframe
+            pollForCheckout();
+          } else {
+            // No clickable element — show container after a delay
+            setTimeout(() => {
+              setCheckoutReady(true);
+              observerRef.current?.disconnect();
+            }, 500);
+          }
         }
         return;
       }
 
-      // 3. If config script is gone and we've already auto-clicked,
-      //    check if checkout appeared (handles edge case where observer
-      //    fires again but iframe wasn't in the first query)
-      if (configScriptRemoved && autoClicked) {
-        const hasChildren = boldContainerRef.current.children.length > 0;
-        if (hasChildren && boldContainerRef.current.querySelector('iframe')) {
-          if (checkoutPoll) {
-            clearInterval(checkoutPoll);
-            checkoutPoll = null;
-          }
-          setCheckoutReady(true);
-          observerRef.current?.disconnect();
+      // 3. After content was detected (and auto-clicked if applicable),
+      //    check for iframe on subsequent mutations
+      if (contentDetected && boldContainerRef.current.querySelector('iframe')) {
+        if (checkoutPoll) {
+          clearInterval(checkoutPoll);
+          checkoutPoll = null;
         }
+        setCheckoutReady(true);
+        observerRef.current?.disconnect();
       }
     });
 
