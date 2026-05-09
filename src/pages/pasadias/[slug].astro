@@ -146,7 +146,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
           <BoldPaymentButton
             client:load
             contentType="pasadia"
-            contentId={pasadia.data.id}
+            contentId={pasadia.id}
             amount={currentPrice?.amount}
             description={title}
           />
