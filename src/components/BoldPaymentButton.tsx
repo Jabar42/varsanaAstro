@@ -31,6 +31,30 @@ interface BoldPaymentButtonProps {
 }
 
 // ---------------------------------------------------------------------------
+// Helper — inject the Bold library script into <head>
+// ---------------------------------------------------------------------------
+
+let boldScriptLoaded = false;
+
+function injectBoldLibrary(): Promise<void> {
+  if (boldScriptLoaded) return Promise.resolve();
+
+  return new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
+    script.async = true;
+    script.onload = () => {
+      boldScriptLoaded = true;
+      resolve();
+    };
+    script.onerror = () => {
+      reject(new Error('Failed to load Bold checkout script'));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -44,14 +68,14 @@ export default function BoldPaymentButton({
 }: BoldPaymentButtonProps) {
   // --- State ---
   const [phase, setPhase] = useState<'idle' | 'loading' | 'embedding' | 'success' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [embeddingError, setEmbeddingError] = useState<string | null>(null);
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
   const [showForm, setShowForm] = useState(false);
 
   const boldContainerRef = useRef<HTMLDivElement>(null);
   const payloadRef = useRef<CheckoutPayload | null>(null);
 
-  // --- Cleanup: remove Bold-rendered elements when unmounting or re-rendering ---
+  // --- Cleanup ---
   useEffect(() => {
     return () => {
       if (boldContainerRef.current) {
@@ -72,7 +96,7 @@ export default function BoldPaymentButton({
         onSuccess?.(boldOrderId);
       } else {
         setPhase('error');
-        setErrorMsg(
+        setEmbeddingError(
           boldTxStatus === 'declined' || boldTxStatus === 'failed'
             ? 'El pago no pudo completarse. Intenta nuevamente.'
             : `Estado: ${boldTxStatus}. Te notificaremos cuando se confirme.`,
@@ -84,17 +108,18 @@ export default function BoldPaymentButton({
     }
   }, [onSuccess]);
 
-  // --- Render Bold button: append a single <script> with both src and data-* attrs ---
+  // --- Render Bold button (approach A from Bold docs) ---
   //
-  // Bold docs recommend two approaches for React/frameworks:
-  //   A) Add the config <script data-bold-button> to DOM, THEN inject the
-  //      Bold library into <head>.
-  //   B) Put src="https://checkout.bold.co/library/boldPaymentButton.js"
-  //      directly on the <script data-bold-button> tag itself.
+  // The Bold docs explicitly say for React/frameworks:
+  //   "debes asegurarte de inyectar en el head una vez el script del botón
+  //    se encuentre en el DOM."
   //
-  // We use approach B because it's simpler — the browser loads the library,
-  // it executes, scans the DOM, finds the data-bold-button attribute on its
-  // own script tag, and replaces it with the checkout iframe.
+  // So we:
+  //   1. Append the config <script data-bold-button> to the container div
+  //   2. THEN inject the Bold library script into <head>
+  //
+  // The Bold library scans the DOM at init time, finds the data-bold-button
+  // tag, and replaces it with the embedded checkout iframe.
   // ---------------------------------------------------------------------------
   const renderBoldButton = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
     if (!boldContainerRef.current) return;
@@ -102,23 +127,19 @@ export default function BoldPaymentButton({
     // Clear any previous Bold-rendered elements
     boldContainerRef.current.innerHTML = '';
 
-    // Create a single script tag with src pointing to the Bold library
-    // AND all the data-* configuration attributes. When the browser loads
-    // this script, the Bold library executes, scans the DOM, finds this
-    // tag (data-bold-button), and replaces it with the checkout iframe.
-    const scriptEl = document.createElement('script');
-    scriptEl.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
-    scriptEl.setAttribute('data-bold-button', 'dark-L');
-    scriptEl.setAttribute('data-api-key', payload.apiKey);
-    scriptEl.setAttribute('data-amount', String(payload.amount));
-    scriptEl.setAttribute('data-currency', payload.currency);
-    scriptEl.setAttribute('data-order-id', payload.orderId);
-    scriptEl.setAttribute('data-integrity-signature', payload.integritySignature);
-    scriptEl.setAttribute('data-description', payload.description);
-    scriptEl.setAttribute('data-redirection-url', payload.redirectionUrl);
-    scriptEl.setAttribute('data-render-mode', 'embedded');
+    // 1. Append the config script tag (WITHOUT src) to the container
+    const configEl = document.createElement('script');
+    configEl.setAttribute('data-bold-button', 'dark-L');
+    configEl.setAttribute('data-api-key', payload.apiKey);
+    configEl.setAttribute('data-amount', String(payload.amount));
+    configEl.setAttribute('data-currency', payload.currency);
+    configEl.setAttribute('data-order-id', payload.orderId);
+    configEl.setAttribute('data-integrity-signature', payload.integritySignature);
+    configEl.setAttribute('data-description', payload.description);
+    configEl.setAttribute('data-redirection-url', payload.redirectionUrl);
+    configEl.setAttribute('data-render-mode', 'embedded');
 
-    scriptEl.setAttribute(
+    configEl.setAttribute(
       'data-customer-data',
       JSON.stringify({
         email: customer.email,
@@ -128,14 +149,15 @@ export default function BoldPaymentButton({
       }),
     );
 
-    // Error handling: if the script fails to load, notify the user
-    scriptEl.onerror = () => {
-      setPhase('error');
-      setErrorMsg('No se pudo cargar la pasarela de pago. Verifica tu conexión e intenta nuevamente.');
-      onError?.(new Error('Failed to load Bold checkout script'));
-    };
+    boldContainerRef.current.appendChild(configEl);
 
-    boldContainerRef.current.appendChild(scriptEl);
+    // 2. NOW inject the Bold library into <head> so it scans the DOM and
+    //    finds the config script tag above
+    injectBoldLibrary().catch((err: Error) => {
+      setPhase('error');
+      setEmbeddingError('No se pudo cargar la pasarela de pago. Verifica tu conexión e intenta nuevamente.');
+      onError?.(err);
+    });
   }, [onError]);
 
   // --- Once the "embedding" phase is committed, render the Bold button ---
@@ -150,7 +172,7 @@ export default function BoldPaymentButton({
     if (phase === 'loading') return;
 
     setPhase('loading');
-    setErrorMsg(null);
+    setEmbeddingError(null);
 
     try {
       const response = await fetch('/api/checkout', {
@@ -179,7 +201,7 @@ export default function BoldPaymentButton({
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error inesperado';
       setPhase('error');
-      setErrorMsg(message);
+      setEmbeddingError(message);
       onError?.(err instanceof Error ? err : new Error(message));
     }
   }, [contentType, contentId, customerData, phase, onError]);
@@ -206,12 +228,12 @@ export default function BoldPaymentButton({
       <div className="space-y-3">
         <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-center">
           <p className="text-red-800 font-semibold">Error</p>
-          <p className="text-red-600 text-sm mt-1">{errorMsg || 'Ocurrió un error inesperado.'}</p>
+          <p className="text-red-600 text-sm mt-1">{embeddingError || 'Ocurrió un error inesperado.'}</p>
         </div>
         <button
           onClick={() => {
             setPhase('idle');
-            setErrorMsg(null);
+            setEmbeddingError(null);
           }}
           className="w-full cursor-pointer rounded-lg bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/80"
         >
@@ -299,8 +321,8 @@ export default function BoldPaymentButton({
             className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
           />
 
-          {errorMsg && (
-            <p className="text-xs text-red-600">{errorMsg}</p>
+          {embeddingError && (
+            <p className="text-xs text-red-600">{embeddingError}</p>
           )}
 
           <div className="flex gap-2">
