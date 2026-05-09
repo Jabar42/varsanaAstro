@@ -31,20 +31,20 @@ interface BoldPaymentButtonProps {
 }
 
 // ---------------------------------------------------------------------------
-// Helper — inject the Bold library script into <head>
+// Helper — inject the Bold library script into <head> (idempotent)
 // ---------------------------------------------------------------------------
 
-let boldScriptLoaded = false;
+let boldLibraryInjected = false;
 
 function injectBoldLibrary(): Promise<void> {
-  if (boldScriptLoaded) return Promise.resolve();
+  if (boldLibraryInjected) return Promise.resolve();
 
   return new Promise<void>((resolve, reject) => {
     const script = document.createElement('script');
     script.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
     script.async = true;
     script.onload = () => {
-      boldScriptLoaded = true;
+      boldLibraryInjected = true;
       resolve();
     };
     script.onerror = () => {
@@ -72,14 +72,31 @@ export default function BoldPaymentButton({
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
   const [showForm, setShowForm] = useState(false);
 
+  // Debug state
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+
   const boldContainerRef = useRef<HTMLDivElement>(null);
   const payloadRef = useRef<CheckoutPayload | null>(null);
+  const observerRef = useRef<MutationObserver | null>(null);
+  const timeoutRef = useRef<number | null>(null);
+  const renderCountRef = useRef(0);
+  const configElRef = useRef<HTMLScriptElement | null>(null);
+
+  const addDebug = useCallback((msg: string) => {
+    setDebugInfo(prev => [...prev, `[${new Date().toISOString().slice(11, 19)}] ${msg}`]);
+  }, []);
 
   // --- Cleanup ---
   useEffect(() => {
     return () => {
       if (boldContainerRef.current) {
         boldContainerRef.current.innerHTML = '';
+      }
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
       }
     };
   }, []);
@@ -108,26 +125,29 @@ export default function BoldPaymentButton({
     }
   }, [onSuccess]);
 
-  // --- Render Bold button (approach A from Bold docs) ---
+  // --- Render Bold button ---
   //
-  // The Bold docs explicitly say for React/frameworks:
-  //   "debes asegurarte de inyectar en el head una vez el script del botón
-  //    se encuentre en el DOM."
+  // Uses approach recommended by Bold docs for React:
+  //   1. Append config <script data-bold-button> to the container div
+  //   2. THEN inject the Bold library into <head>
   //
-  // So we:
-  //   1. Append the config <script data-bold-button> to the container div
-  //   2. THEN inject the Bold library script into <head>
-  //
-  // The Bold library scans the DOM at init time, finds the data-bold-button
-  // tag, and replaces it with the embedded checkout iframe.
+  // The Bold library scans the DOM at init time, finds the script tag
+  // with data-bold-button, and replaces it with the checkout iframe.
   // ---------------------------------------------------------------------------
   const renderBoldButton = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
-    if (!boldContainerRef.current) return;
+    if (!boldContainerRef.current) {
+      addDebug('ERROR: container ref is null');
+      return;
+    }
+
+    renderCountRef.current += 1;
+    const renderId = renderCountRef.current;
+    addDebug(`renderBoldButton #${renderId} starting`);
 
     // Clear any previous Bold-rendered elements
     boldContainerRef.current.innerHTML = '';
 
-    // 1. Append the config script tag (WITHOUT src) to the container
+    // 1. Create and append the config script tag
     const configEl = document.createElement('script');
     configEl.setAttribute('data-bold-button', 'dark-L');
     configEl.setAttribute('data-api-key', payload.apiKey);
@@ -150,22 +170,80 @@ export default function BoldPaymentButton({
     );
 
     boldContainerRef.current.appendChild(configEl);
+    configElRef.current = configEl;
+    addDebug(`config script appended to container (id=${payload.orderId})`);
 
-    // 2. NOW inject the Bold library into <head> so it scans the DOM and
-    //    finds the config script tag above
-    injectBoldLibrary().catch((err: Error) => {
-      setPhase('error');
-      setEmbeddingError('No se pudo cargar la pasarela de pago. Verifica tu conexión e intenta nuevamente.');
-      onError?.(err);
+    // 2. Set up a MutationObserver to detect when Bold modifies the container
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    let boldModified = false;
+    observerRef.current = new MutationObserver((mutations) => {
+      addDebug(`Mutation detected: ${mutations.length} mutation(s)`);
+      for (const mutation of mutations) {
+        addDebug(`  type=${mutation.type}, added=${mutation.addedNodes.length}, removed=${mutation.removedNodes.length}`);
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          boldModified = true;
+          // Check if any iframe was added
+          for (let i = 0; i < mutation.addedNodes.length; i++) {
+            const node = mutation.addedNodes[i];
+            if (node.nodeName === 'IFRAME') {
+              addDebug('BOLD IFRAME DETECTED! Checkout rendered successfully.');
+              if (timeoutRef.current !== null) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+              }
+            }
+          }
+        }
+      }
     });
-  }, [onError]);
+
+    observerRef.current.observe(boldContainerRef.current, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+    });
+    addDebug('MutationObserver started on container');
+
+    // 3. Set a 20-second timeout in case Bold never renders
+    if (timeoutRef.current !== null) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = window.setTimeout(() => {
+      if (!boldModified) {
+        addDebug('TIMEOUT: Bold did not modify the container within 20s');
+        // Check if the config tag is still in the DOM
+        const stillInDom = document.body.contains(configElRef.current);
+        addDebug(`config tag still in DOM: ${stillInDom}`);
+        addDebug(`boldLibraryInjected: ${boldLibraryInjected}`);
+        setPhase('error');
+        setEmbeddingError('La pasarela de pago no respondió. Recarga la página e intenta nuevamente.');
+      }
+    }, 20000);
+
+    // 4. NOW inject the Bold library into <head>
+    addDebug('injecting Bold library into <head>...');
+    injectBoldLibrary()
+      .then(() => {
+        addDebug('Bold library loaded successfully');
+      })
+      .catch((err: Error) => {
+        addDebug(`Bold library FAILED to load: ${err.message}`);
+        setPhase('error');
+        setEmbeddingError('No se pudo cargar la pasarela de pago. Verifica tu conexión e intenta nuevamente.');
+        onError?.(err);
+      });
+  }, [onError, addDebug]);
 
   // --- Once the "embedding" phase is committed, render the Bold button ---
   useEffect(() => {
     if (phase === 'embedding' && payloadRef.current) {
+      addDebug('embedding phase detected in useEffect');
       renderBoldButton(payloadRef.current, customerData);
     }
-  }, [phase, customerData, renderBoldButton]);
+  }, [phase, customerData, renderBoldButton, addDebug]);
 
   // --- Handle "Reservar ahora" click ---
   const handleReserve = useCallback(async () => {
@@ -173,6 +251,8 @@ export default function BoldPaymentButton({
 
     setPhase('loading');
     setEmbeddingError(null);
+    setDebugInfo([]);
+    addDebug('Starting reservation...');
 
     try {
       const response = await fetch('/api/checkout', {
@@ -186,6 +266,8 @@ export default function BoldPaymentButton({
         }),
       });
 
+      addDebug(`API response: ${response.status}`);
+
       if (!response.ok) {
         const errBody = await response.json().catch(() => ({ error: 'Error del servidor' }));
         throw new Error(errBody.error || `HTTP ${response.status}`);
@@ -193,18 +275,17 @@ export default function BoldPaymentButton({
 
       const payload: CheckoutPayload = await response.json();
       payloadRef.current = payload;
+      addDebug(`Checkout payload received. orderId=${payload.orderId}, amount=${payload.amount}`);
 
-      // Transition to embedding phase — React re-renders, creating the container
-      // div. The useEffect above will fire once the DOM is committed,
-      // ensuring boldContainerRef.current is set.
       setPhase('embedding');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error inesperado';
+      addDebug(`Error: ${message}`);
       setPhase('error');
       setEmbeddingError(message);
       onError?.(err instanceof Error ? err : new Error(message));
     }
-  }, [contentType, contentId, customerData, phase, onError]);
+  }, [contentType, contentId, customerData, phase, onError, addDebug]);
 
   // ==========================================================================
   // Render
@@ -230,6 +311,14 @@ export default function BoldPaymentButton({
           <p className="text-red-800 font-semibold">Error</p>
           <p className="text-red-600 text-sm mt-1">{embeddingError || 'Ocurrió un error inesperado.'}</p>
         </div>
+        {debugInfo.length > 0 && (
+          <details className="text-xs text-gray-500">
+            <summary className="cursor-pointer">Diagnóstico ({debugInfo.length} eventos)</summary>
+            <pre className="mt-1 max-h-40 overflow-y-auto whitespace-pre-wrap rounded bg-gray-100 p-2">
+              {debugInfo.join('\n')}
+            </pre>
+          </details>
+        )}
         <button
           onClick={() => {
             setPhase('idle');
@@ -254,11 +343,7 @@ export default function BoldPaymentButton({
           viewBox="0 0 24 24"
         >
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-          />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
         </svg>
         <span className="text-sm font-medium text-near-black">Verificando disponibilidad...</span>
       </div>
@@ -276,16 +361,21 @@ export default function BoldPaymentButton({
             viewBox="0 0 24 24"
           >
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-            />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
           <span className="text-sm font-medium text-near-black">Iniciando pasarela de pago...</span>
         </div>
         {/* Bold renders its embedded checkout inside this container */}
         <div ref={boldContainerRef} className="min-h-[100px]" />
+        {/* Debug panel */}
+        {debugInfo.length > 0 && (
+          <details open className="text-xs text-gray-500">
+            <summary className="cursor-pointer">Diagnóstico ({debugInfo.length} eventos)</summary>
+            <pre className="mt-1 max-h-40 overflow-y-auto whitespace-pre-wrap rounded bg-gray-100 p-2">
+              {debugInfo.join('\n')}
+            </pre>
+          </details>
+        )}
       </div>
     );
   }
@@ -293,7 +383,6 @@ export default function BoldPaymentButton({
   // --- Idle state: show customer form + "Reservar ahora" button ---
   return (
     <div className="space-y-4">
-      {/* Customer data form — shown before payment */}
       {showForm ? (
         <div className="space-y-3 rounded-lg border border-sacred-sand bg-white p-4">
           <h4 className="text-sm font-semibold text-near-black">Tus datos</h4>
