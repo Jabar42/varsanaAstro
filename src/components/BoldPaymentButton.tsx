@@ -233,7 +233,7 @@ export default function BoldPaymentButton({
     );
   }
 
-  if (phase === 'error' && phase !== 'idle') {
+  if (phase === 'error') {
     return (
       <div className="space-y-3">
         <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-center">
