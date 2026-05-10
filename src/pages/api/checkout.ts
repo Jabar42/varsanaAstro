@@ -3,7 +3,6 @@ import { getEntry } from 'astro:content';
 import { createHash } from 'node:crypto';
 import { getAdminClient } from '@/src/lib/supabase';
 import { getAvailableStock, reserveStock } from '@/src/lib/db';
-import { getCurrentPrice } from '@/src/lib/events';
 
 /** Ensure this route runs on the server (not pre-rendered). */
 export const prerender = false;
@@ -22,10 +21,10 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const { contentType, contentId, quantity, customerData } = body as {
+  const { contentType, contentId, tickets, customerData } = body as {
     contentType?: string;
     contentId?: string;
-    quantity?: number;
+    tickets?: { label: string; quantity: number }[];
     customerData?: { email?: string; fullName?: string; phone?: string; dialCode?: string };
   };
 
@@ -50,10 +49,18 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const qty = Math.max(1, quantity ?? 1);
+  // ------------------------------------------------------------------
+  // 2. Validate tickets
+  // ------------------------------------------------------------------
+  if (!tickets || tickets.length === 0) {
+    return new Response(JSON.stringify({ error: 'At least one ticket is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 
   // ------------------------------------------------------------------
-  // 2. Read Markdown — source of truth for price & stock
+  // 3. Read Markdown — source of truth for price & stock
   // ------------------------------------------------------------------
   const collection = contentType === 'event' ? 'events' : 'pasadias';
   const entry = await getEntry(collection, contentId);
@@ -76,23 +83,38 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const currentPrice = getCurrentPrice(prices);
-  if (!currentPrice) {
-    return new Response(JSON.stringify({ error: 'No valid price available' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
+  // Validate each ticket label against frontmatter prices (source of truth)
+  for (const ticket of tickets) {
+    const priceDef = prices.find(p => p.label === ticket.label);
+    if (!priceDef) {
+      return new Response(
+        JSON.stringify({ error: `Invalid ticket label: "${ticket.label}". Valid labels: ${prices.map(p => p.label).join(', ')}` }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+    if (!Number.isInteger(ticket.quantity) || ticket.quantity < 1) {
+      return new Response(
+        JSON.stringify({ error: `Invalid quantity for "${ticket.label}": must be a positive integer` }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
   }
 
-  const amount = currentPrice.amount; // Integer COP, as expected by Bold
-  const description = (entry.data as Record<string, unknown>).title as string;
+  // Calculate total server-side (prevents price manipulation)
+  const totalAmount = tickets.reduce((sum, t) => {
+    const priceDef = prices.find(p => p.label === t.label)!;
+    return sum + priceDef.amount * t.quantity;
+  }, 0);
+
+  // Total quantity for stock reservation (per-event stock, not per-ticket-type)
+  const totalQuantity = tickets.reduce((sum, t) => sum + t.quantity, 0);
 
   // stock_max only exists in the events schema; pasadias have no stock limit
   const stockMax = (entry.data as Record<string, unknown>).stock_max as number | undefined;
   const effectiveStockMax = stockMax ?? 999; // pasadias default to effectively unlimited
 
   // ------------------------------------------------------------------
-  // 3. Validate stock with lazy inventory initialization
+  // 4. Validate stock with lazy inventory initialization
   // ------------------------------------------------------------------
   const admin = getAdminClient();
   const stock = await getAvailableStock(contentType, contentId);
@@ -116,7 +138,7 @@ export const POST: APIRoute = async ({ request }) => {
         headers: { 'Content-Type': 'application/json' },
       });
     }
-  } else if (stock.available < qty) {
+  } else if (stock.available < totalQuantity) {
     return new Response(JSON.stringify({ error: 'Insufficient stock' }), {
       status: 409,
       headers: { 'Content-Type': 'application/json' },
@@ -124,12 +146,12 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 4. Generate order-id
+  // 5. Generate order-id
   // ------------------------------------------------------------------
   const orderId = `${contentType}-${contentId}-${Date.now()}`;
 
   // ------------------------------------------------------------------
-  // 5. Generate integrity-signature (SHA256)
+  // 6. Generate integrity-signature (SHA256)
   //    Formula: SHA256(orderId + amount + currency + BOLD_SECRET_KEY)
   // ------------------------------------------------------------------
   const boldSecretKey = import.meta.env.BOLD_SECRET_KEY as string | undefined;
@@ -141,14 +163,14 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const signatureInput = `${orderId}${amount}COP${boldSecretKey}`;
+  const signatureInput = `${orderId}${totalAmount}COP${boldSecretKey}`;
   const integritySignature = createHash('sha256').update(signatureInput).digest('hex');
 
   // ------------------------------------------------------------------
-  // 6. Reserve stock atomically (row-level lock via decrement_stock RPC)
+  // 7. Reserve stock atomically (row-level lock via decrement_stock RPC)
   // ------------------------------------------------------------------
   try {
-    await reserveStock(contentType, contentId, qty);
+    await reserveStock(contentType, contentId, totalQuantity);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Stock reservation failed';
     return new Response(JSON.stringify({ error: message }), {
@@ -158,7 +180,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 7. Insert order row (status: 'pending')
+  // 8. Insert order row (status: 'pending') with ticket_details
   // ------------------------------------------------------------------
   const { error: insertError } = await admin.from('orders').insert({
     bold_order_id: orderId,
@@ -166,10 +188,15 @@ export const POST: APIRoute = async ({ request }) => {
     content_id: contentId,
     customer_email: customerData.email,
     customer_name: customerData.fullName,
-    amount,
+    amount: totalAmount,
     currency: 'COP',
     status: 'pending',
-    quantity: qty,
+    quantity: totalQuantity,
+    ticket_details: tickets.map(t => ({
+      label: t.label,
+      amount: prices.find(p => p.label === t.label)!.amount,
+      quantity: t.quantity,
+    })),
   });
 
   if (insertError) {
@@ -184,15 +211,17 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 8. Return signed payload to the frontend
+  // 9. Return signed payload to the frontend
   // ------------------------------------------------------------------
   let siteUrl = (import.meta.env.PUBLIC_SITE_URL as string) || 'https://varsana.co';
   // Remove trailing slash to avoid double slashes in redirect URL
   siteUrl = siteUrl.replace(/\/+$/, '');
 
+  const description = (entry.data as Record<string, unknown>).title as string;
+
   const payload = {
     orderId,
-    amount,
+    amount: totalAmount,
     currency: 'COP',
     integritySignature,
     apiKey: import.meta.env.BOLD_API_KEY as string,

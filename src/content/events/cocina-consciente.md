@@ -2,7 +2,7 @@
 id: "taller-cocina-2026"
 title: "Taller de Cocina Consciente"
 description: "Descubre el arte de nutrir tu cuerpo y alma con ingredientes de nuestra huerta orgánica."
-event_date: 2026-06-05
+event_start: 2026-06-05
 image: "https://picsum.photos/seed/cooking/1600/1000"
 stock_max: 20
 prices:

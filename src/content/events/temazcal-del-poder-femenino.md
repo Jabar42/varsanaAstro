@@ -2,7 +2,7 @@
 id: "temazcal-femenino-2026"
 title: "Temazcal del poder femenino"
 description: "Fuerza que se honra, poder que se expande. Reconecta con tu origen. Reclama tu poder. Habita tu sabiduría."
-event_date: 2026-03-29
+event_start: 2026-03-29
 image: "https://picsum.photos/seed/temazcal-femenino/1600/1000"
 stock_max: 20
 prices:

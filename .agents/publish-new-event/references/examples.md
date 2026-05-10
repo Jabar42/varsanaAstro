@@ -6,7 +6,7 @@
 id: "taller-mindfulness"
 title: "Taller de Mindfulness"
 description: "Aprende técnicas de atención plena en un entorno natural."
-event_date: 2026-05-10
+event_start: 2026-05-10
 image: "https://picsum.photos/seed/mindfulness/1600/1000"
 stock_max: 20
 prices:
@@ -21,7 +21,8 @@ prices:
 id: "retiro-silencio"
 title: "Retiro de Silencio"
 description: "Un fin de semana de introspección y reconexión en completo silencio."
-event_date: 2026-06-15
+event_start: 2026-06-15
+event_end: 2026-06-17
 image: "https://picsum.photos/seed/silence/1600/1000"
 stock_max: 30
 prices:

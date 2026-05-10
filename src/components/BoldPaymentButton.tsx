@@ -21,11 +21,27 @@ interface CheckoutPayload {
   redirectionUrl: string;
 }
 
+interface TicketSelection {
+  label: string;
+  amount: number;
+  quantity: number;
+}
+
 interface BoldPaymentButtonProps {
   contentType: 'event' | 'pasadia';
   contentId: string;
+  prices: { label: string; amount: number }[];
   onSuccess?: (orderId: string) => void;
   onError?: (error: Error) => void;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Format COP amounts with locale formatting */
+function formatCOP(amount: number): string {
+  return '$' + amount.toLocaleString('es-CO');
 }
 
 // ---------------------------------------------------------------------------
@@ -35,18 +51,32 @@ interface BoldPaymentButtonProps {
 export default function BoldPaymentButton({
   contentType,
   contentId,
+  prices,
   onSuccess,
   onError,
 }: BoldPaymentButtonProps) {
   const [phase, setPhase] = useState<'idle' | 'loading' | 'embedding' | 'success' | 'error'>('idle');
   const [embeddingError, setEmbeddingError] = useState<string | null>(null);
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
-  const [showForm, setShowForm] = useState(false);
   const [checkoutReady, setCheckoutReady] = useState(false);
+
+  // Initialize ticket selections from prices prop
+  const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>(
+    () => prices.map(p => ({ label: p.label, amount: p.amount, quantity: 0 })),
+  );
 
   const boldContainerRef = useRef<HTMLDivElement>(null);
   const payloadRef = useRef<CheckoutPayload | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
+
+  // Derived values
+  const totalAmount = ticketSelections.reduce(
+    (sum, t) => sum + t.amount * t.quantity, 0,
+  );
+  const totalQuantity = ticketSelections.reduce(
+    (sum, t) => sum + t.quantity, 0,
+  );
+  const selectedTickets = ticketSelections.filter(t => t.quantity > 0);
 
   // Cleanup observer on unmount
   useEffect(() => {
@@ -153,7 +183,12 @@ export default function BoldPaymentButton({
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contentType, contentId, quantity: 1, customerData }),
+        body: JSON.stringify({
+          contentType,
+          contentId,
+          tickets: selectedTickets.map(t => ({ label: t.label, quantity: t.quantity })),
+          customerData,
+        }),
       });
 
       if (!response.ok) {
@@ -170,7 +205,18 @@ export default function BoldPaymentButton({
       setEmbeddingError(message);
       onError?.(err instanceof Error ? err : new Error(message));
     }
-  }, [contentType, contentId, customerData, phase, onError]);
+  }, [contentType, contentId, selectedTickets, customerData, phase, onError]);
+
+  // Update ticket quantity
+  const updateQuantity = useCallback((label: string, delta: number) => {
+    setTicketSelections(prev =>
+      prev.map(t =>
+        t.label === label
+          ? { ...t, quantity: Math.max(0, t.quantity + delta) }
+          : t,
+      ),
+    );
+  }, []);
 
   // ==========================================================================
   // Render
@@ -187,7 +233,7 @@ export default function BoldPaymentButton({
     );
   }
 
-  if (phase === 'error' && !showForm) {
+  if (phase === 'error' && phase !== 'idle') {
     return (
       <div className="space-y-3">
         <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-center">
@@ -233,60 +279,104 @@ export default function BoldPaymentButton({
     );
   }
 
-  // Idle state: customer form + "Reservar ahora" button
+  // Idle state: ticket selector + customer form + "Reservar ahora" button
   return (
     <div className="space-y-4">
-      {showForm ? (
-        <div className="space-y-3 rounded-lg border border-sacred-sand bg-white p-4">
-          <h4 className="text-sm font-semibold text-near-black">Tus datos</h4>
-          <input
-            type="email"
-            placeholder="Correo electrónico *"
-            required
-            value={customerData.email}
-            onChange={(e) => setCustomerData((prev) => ({ ...prev, email: e.target.value }))}
-            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
-          />
-          <input
-            type="text"
-            placeholder="Nombre completo *"
-            required
-            value={customerData.fullName}
-            onChange={(e) => setCustomerData((prev) => ({ ...prev, fullName: e.target.value }))}
-            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
-          />
-          <input
-            type="tel"
-            placeholder="Teléfono (opcional)"
-            value={customerData.phone || ''}
-            onChange={(e) => setCustomerData((prev) => ({ ...prev, phone: e.target.value }))}
-            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
-          />
-          {embeddingError && <p className="text-xs text-red-600">{embeddingError}</p>}
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowForm(false)}
-              className="flex-1 cursor-pointer rounded-lg border border-sacred-sand px-4 py-2.5 text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleReserve}
-              disabled={!customerData.email || !customerData.fullName}
-              className="flex-1 cursor-pointer rounded-lg bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Reservar ahora
-            </button>
+      {/* Ticket Selection Grid */}
+      {prices.length > 1 && (
+        <div className="space-y-2">
+          <h4 className="text-sm font-semibold text-near-black">Selecciona tus boletos</h4>
+          <div className="space-y-2">
+            {ticketSelections.map(ticket => (
+              <div
+                key={ticket.label}
+                className="flex items-center justify-between rounded-lg border border-sacred-sand bg-white px-3 py-2"
+              >
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-near-black">{ticket.label}</p>
+                  <p className="text-xs text-gray-500">{formatCOP(ticket.amount)} c/u</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => updateQuantity(ticket.label, -1)}
+                    disabled={ticket.quantity === 0}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50 disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    −
+                  </button>
+                  <span className="w-6 text-center text-sm font-semibold tabular-nums">
+                    {ticket.quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => updateQuantity(ticket.label, 1)}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      ) : (
-        <button
-          onClick={() => setShowForm(true)}
-          className="w-full cursor-pointer rounded-lg bg-rausch px-4 py-3 font-semibold text-white transition-colors hover:bg-rausch/90"
-        >
-          Reservar ahora
-        </button>
       )}
+
+      {/* Single price: hide selector, show info */}
+      {prices.length === 1 && (
+        <div className="rounded-lg border border-sacred-sand bg-white px-3 py-2">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-near-black">
+              {prices[0].label} &middot; {formatCOP(prices[0].amount)}
+            </p>
+            <span className="text-sm font-semibold tabular-nums">× 1</span>
+          </div>
+        </div>
+      )}
+
+      {/* Running Total */}
+      {totalAmount > 0 && (
+        <div className="flex items-center justify-between border-t border-sacred-sand pt-2">
+          <span className="text-sm font-medium text-near-black">Total</span>
+          <span className="text-lg font-bold text-near-black">{formatCOP(totalAmount)}</span>
+        </div>
+      )}
+
+      {/* Customer Form */}
+      <div className="space-y-3 rounded-lg border border-sacred-sand bg-white p-4">
+        <h4 className="text-sm font-semibold text-near-black">Tus datos</h4>
+        <input
+          type="email"
+          placeholder="Correo electrónico *"
+          required
+          value={customerData.email}
+          onChange={(e) => setCustomerData((prev) => ({ ...prev, email: e.target.value }))}
+          className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
+        />
+        <input
+          type="text"
+          placeholder="Nombre completo *"
+          required
+          value={customerData.fullName}
+          onChange={(e) => setCustomerData((prev) => ({ ...prev, fullName: e.target.value }))}
+          className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
+        />
+        <input
+          type="tel"
+          placeholder="Teléfono (opcional)"
+          value={customerData.phone || ''}
+          onChange={(e) => setCustomerData((prev) => ({ ...prev, phone: e.target.value }))}
+          className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
+        />
+        {embeddingError && <p className="text-xs text-red-600">{embeddingError}</p>}
+        <button
+          onClick={handleReserve}
+          disabled={!customerData.email || !customerData.fullName || totalQuantity === 0}
+          className="w-full cursor-pointer rounded-lg bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {totalQuantity === 0 ? 'Selecciona al menos un boleto' : 'Reservar ahora'}
+        </button>
+      </div>
     </div>
   );
 }

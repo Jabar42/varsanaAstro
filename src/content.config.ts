@@ -18,7 +18,8 @@ const eventsCollection = defineCollection({
     id: z.string(),
     title: titleSchema,
     description: z.string(),
-    event_date: z.date(),
+    event_start: z.date(),
+    event_end: z.date().optional(),
     image: z.string(),
     stock_max: z.number().int().positive(),
     prices: z.array(

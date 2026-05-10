@@ -12,7 +12,7 @@ Events in this Astro project are managed through **content collections**. Each e
 - Generates a dedicated detail page for each event at `/events/[slug]`, where the URL is derived from the entry ID (the filename without extension).
 - Selects the currently active price based on deadlines (if any) via `getCurrentPrice`.
 
-The frontmatter schema is defined in `src/content.config.ts` and includes `id`, `title`, `description`, `event_date`, `image`, `stock_max`, and an array of `prices`.
+The frontmatter schema is defined in `src/content.config.ts` and includes `id`, `title`, `description`, `event_start`, `event_end` (optional), `image`, `stock_max`, and an array of `prices`.
 
 ## Step‑by‑Step Instructions
 
@@ -27,12 +27,13 @@ For minimal and complete examples, see [Examples](references/examples.md).
 ### Automatic inclusion in the upcoming events list
 The helper `getUpcomingEvents` (in `src/lib/events.ts`) fetches all events, filters out past dates, and sorts them chronologically. Your new event will appear on the main events page (`/events`) as soon as the site is rebuilt.
 
-### Event identification (`id`)
-Each event has a unique `id` field in its frontmatter. This ID is **persistent** and independent of the filename — it will not change even if the file is renamed. This is **critical** for payment gateway integration and future database migration, as the payment system will reference events by their `id` rather than the URL.
+### Event identification (`id` vs filename)
+Each event has a unique `id` field in its frontmatter, but the **entry ID** (filename without extension) is what Astro uses for routing (`/events/[entry-id]`) and for payment order references. The frontmatter `id` is a persistent human-readable identifier that should match the filename for consistency, but the system uses the **filename** as the canonical key.
 
-- Use a descriptive, kebab-case string (e.g. `retiro-silencio-2026`).
-- The `id` must be unique across all events.
-- Choose the `id` carefully — once the event is published and linked to payment records, changing it would break those associations.
+- The URL path is derived from the **filename**, not the frontmatter `id`. Example: `retiro-silencio.md` → `/events/retiro-silencio`.
+- Payment orders reference events by their **entry ID** (filename), not the frontmatter `id`.
+- Keep the frontmatter `id` identical to the filename (without extension) to avoid confusion.
+- Choose both carefully — once published and linked to payment records, changing the filename would break associations.
 
 ### Stock management (`stock_max`)
 The `stock_max` field defines the maximum capacity (number of available spots) for the event. This value will be used to control reservations and prevent overbooking when the payment gateway is integrated.
@@ -41,13 +42,18 @@ The `stock_max` field defines the maximum capacity (number of available spots) f
 - Set realistically based on the venue capacity and logistics.
 - Example: `stock_max: 30` for an intimate retreat, `stock_max: 500` for a large festival.
 
-### Price selection logic (`getCurrentPrice`)
-The function `getCurrentPrice` determines which price tier is currently active:
+### Price deadline logic (`getAvailablePrices` and `getCurrentPrice`)
+There are two functions for price selection:
 
+**`getAvailablePrices(prices, eventStart)`** — Returns all prices whose effective deadline is still in the future. The effective deadline for each price is:
+- The explicit `deadline` if present.
+- `event_start` if no deadline is set (tickets must be purchased before the event begins).
+
+**`getCurrentPrice(prices, eventStart?)`** — Determines the single active price tier:
 1. It iterates through the `prices` array.
-2. For each price that has a `deadline`, it checks whether the deadline is still in the future (compared to the current UTC date).
+2. For each price, it checks if its effective deadline is still in the future.
 3. The **first** price with a future deadline is selected.
-4. If none have a future deadline (or no deadlines are defined), the **last** price in the array is used.
+4. If none have a future deadline, the **last** price in the array is used as fallback.
 
 **UTC midnight caveat:** The comparison uses `new Date(price.deadline) > now`. Because `deadline` is parsed as UTC midnight, a deadline of `2026-04-15` means "until the end of 2026‑04‑15 UTC". If your local timezone is ahead of UTC (e.g., America/Bogota is UTC‑5), the deadline may be considered passed 5 hours earlier than you expect. Plan accordingly.
 
@@ -58,7 +64,9 @@ The file `src/pages/events/[slug].astro` dynamically generates a page for each e
 
 ### Date formats
 - **Always** use `YYYY-MM-DD` (with standard ASCII hyphens). Other formats (like `DD/MM/YYYY`) will cause parsing errors.
-- The `event_date` and `deadline` fields are parsed as `Date` objects by the schema.
+- The `event_start`, `event_end` (optional), and `deadline` fields are parsed as `Date` objects by the schema.
+- For single-day events, omit `event_end`. For multi-day events, add `event_end`.
+- If a price has no explicit `deadline`, its effective deadline defaults to `event_start` (the ticket is available until the event starts).
 
 ### Image placeholders
 - The project currently uses `https://picsum.photos/seed/…/1600/1000` as a placeholder. Replace with a real image URL when the event's visual asset is ready.
@@ -111,8 +119,8 @@ If any step fails, review the frontmatter for typos, check the YAML indentation,
 This project uses **Bold Payment Gateway** for online payments. When you publish a new event:
 
 1. **`stock_max` is critical** — This value seeds the inventory table. It controls how many reservations are accepted before the event sells out. Choose it carefully.
-2. **The `id` field is persistent** — Payment orders reference events by `id`, not filename. Never change an event's `id` after it has been published and linked to payment records.
-3. **Prices come from frontmatter** — The checkout API reads prices from the Markdown file, not from user input. This prevents price manipulation.
+2. **The entry ID (filename) is the key** — Payment orders reference events by the entry ID (the filename without extension). Never rename an event file after it has been published and linked to payment records.
+3. **Prices come from frontmatter** — The checkout API reads prices from the Markdown file, not from user input. The API validates ticket labels against the frontmatter and calculates amounts server-side to prevent price manipulation.
 4. **Lazy inventory init** — If no inventory row exists for your event when the first checkout is attempted, one will be created automatically from the frontmatter `stock_max`.
 
 For full details on the payment integration, see [`payment-integration-bold`](../payment-integration-bold/SKILL.md).

@@ -11,7 +11,11 @@
     "description": {
       "type": "string"
     },
-    "event_date": {
+    "event_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "event_end": {
       "type": "string",
       "format": "date-time"
     },
@@ -53,7 +57,7 @@
     "id",
     "title",
     "description",
-    "event_date",
+    "event_start",
     "image",
     "stock_max",
     "prices"

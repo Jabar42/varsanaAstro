@@ -2,7 +2,7 @@
 id: "holi-fest-2026"
 title: "Holi Fest 2026"
 description: "¡El festival más colorido del planeta aterriza en Colombia!"
-event_date: 2026-04-18
+event_start: 2026-04-18
 image: "https://picsum.photos/seed/holi-fest/1600/1000"
 stock_max: 500
 prices:

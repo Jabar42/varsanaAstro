@@ -2,7 +2,7 @@
 id: "retiro-yoga-sonido-2026"
 title: "Retiro de Yoga y Sonido Ancestral"
 description: "Una inmersión profunda en la práctica de Hatha Yoga combinada con terapias de sonido vibracional y cuencos tibetanos en el bosque de Varsana."
-event_date: 2026-10-12
+event_start: 2026-10-12
 image: "https://picsum.photos/seed/yoga-sound/1600/1000"
 stock_max: 25
 prices:
