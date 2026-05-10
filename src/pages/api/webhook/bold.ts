@@ -86,7 +86,9 @@ export const POST: APIRoute = async ({ request }) => {
 
   const isValid = verifyWebhookSignature(rawBody, signatureHeader, boldSecretKey);
   if (!isValid) {
-    console.warn(`[webhook:${requestId}] Invalid signature — rejecting`);
+    // Log preview of body for debugging (safe: no PII in orderId)
+    const bodyPreview = rawBody.length > 200 ? rawBody.slice(0, 200) + '...' : rawBody;
+    console.warn(`[webhook:${requestId}] Invalid signature — rejecting. body=${bodyPreview} sig=${signatureHeader.slice(0, 20)}... key=${boldSecretKey ? 'present' : 'EMPTY'}`);
     return new Response(JSON.stringify({ error: 'Invalid signature' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' },

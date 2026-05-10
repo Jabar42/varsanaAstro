@@ -106,3 +106,23 @@ const ResultIcon = config?.icon || Clock;
     </div>
   </main>
 </Layout>
+
+<!-- Verify payment status with backend — fallback in case webhook hasn't arrived yet -->
+{boldOrderId && boldTxStatus && (
+  <script>
+    (async function verifyPayment() {
+      const orderId = '{boldOrderId}';
+      const txStatus = '{boldTxStatus}';
+      try {
+        await fetch('/api/verify-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ boldOrderId: orderId, boldTxStatus: txStatus }),
+        });
+      } catch (err) {
+        // Silently fail — webhook will eventually update the order
+        console.error('Payment verification fallback failed:', err);
+      }
+    })();
+  </script>
+)}
