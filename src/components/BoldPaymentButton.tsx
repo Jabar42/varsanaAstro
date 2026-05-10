@@ -24,8 +24,6 @@ interface CheckoutPayload {
 interface BoldPaymentButtonProps {
   contentType: 'event' | 'pasadia';
   contentId: string;
-  amount?: number;
-  description?: string;
   onSuccess?: (orderId: string) => void;
   onError?: (error: Error) => void;
 }
@@ -37,8 +35,6 @@ interface BoldPaymentButtonProps {
 export default function BoldPaymentButton({
   contentType,
   contentId,
-  amount: _amount,
-  description: _description,
   onSuccess,
   onError,
 }: BoldPaymentButtonProps) {
