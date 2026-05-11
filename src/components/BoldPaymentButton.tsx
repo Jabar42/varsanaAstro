@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -39,9 +39,58 @@ interface BoldPaymentButtonProps {
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Format COP amounts with locale formatting */
 function formatCOP(amount: number): string {
   return '$' + amount.toLocaleString('es-CO');
+}
+
+/**
+ * Dynamically load the Bold checkout script and resolve when BoldCheckout is
+ * available on `window`.  Based on Bold's "Inicializar el script sólo en el
+ * momento que lo necesites" pattern from the personalised-button docs.
+ */
+function loadBoldScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // Already available
+    if (typeof (window as any).BoldCheckout !== 'undefined') {
+      resolve();
+      return;
+    }
+
+    // Script tag already present – wait for it to finish
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[src="https://checkout.bold.co/library/boldPaymentButton.js"]',
+    );
+    if (existing) {
+      const check = setInterval(() => {
+        if (typeof (window as any).BoldCheckout !== 'undefined') {
+          clearInterval(check);
+          resolve();
+        }
+      }, 100);
+      return;
+    }
+
+    // Create & inject a fresh script tag
+    const script = document.createElement('script');
+    script.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
+
+    script.onload = () => {
+      // Small guard – give the browser a tick to expose the constructor
+      const check = setInterval(() => {
+        if (typeof (window as any).BoldCheckout !== 'undefined') {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+      // Safety timeout – reject after 5 s even if not ready
+      setTimeout(() => { clearInterval(check); reject(new Error('BoldCheckout not available after load')); }, 5000);
+    };
+    script.onerror = () => {
+      reject(new Error('Failed to load Bold checkout script'));
+    };
+
+    document.head.appendChild(script);
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -55,19 +104,15 @@ export default function BoldPaymentButton({
   onSuccess,
   onError,
 }: BoldPaymentButtonProps) {
-  const [phase, setPhase] = useState<'idle' | 'loading' | 'embedding' | 'success' | 'error'>('idle');
-  const [embeddingError, setEmbeddingError] = useState<string | null>(null);
+  const [phase, setPhase] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
-  const [checkoutReady, setCheckoutReady] = useState(false);
+  const [boldReady, setBoldReady] = useState(false);
 
   // Initialize ticket selections from prices prop
   const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>(
     () => prices.map(p => ({ label: p.label, amount: p.amount, quantity: 0 })),
   );
-
-  const boldContainerRef = useRef<HTMLDivElement>(null);
-  const payloadRef = useRef<CheckoutPayload | null>(null);
-  const observerRef = useRef<MutationObserver | null>(null);
 
   // Derived values
   const totalAmount = ticketSelections.reduce(
@@ -78,14 +123,23 @@ export default function BoldPaymentButton({
   );
   const selectedTickets = ticketSelections.filter(t => t.quantity > 0);
 
-  // Cleanup observer on unmount
+  // ------------------------------------------------------------------
+  // 1. Load Bold script on mount
+  // ------------------------------------------------------------------
   useEffect(() => {
-    return () => {
-      if (observerRef.current) observerRef.current.disconnect();
-    };
+    loadBoldScript()
+      .then(() => setBoldReady(true))
+      .catch((err) => {
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        console.error('Bold script load failed:', msg);
+        setErrorMsg('No se pudo cargar la pasarela de pago. Intenta recargar la página.');
+      });
   }, []);
 
-  // Handle payment result from redirection URL params
+  // ------------------------------------------------------------------
+  // 2. Handle payment result from redirection URL params
+  //    (when user lands back on this page after a redirect checkout)
+  // ------------------------------------------------------------------
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const boldOrderId = params.get('bold-order-id');
@@ -97,7 +151,7 @@ export default function BoldPaymentButton({
         onSuccess?.(boldOrderId);
       } else {
         setPhase('error');
-        setEmbeddingError(
+        setErrorMsg(
           boldTxStatus === 'declined' || boldTxStatus === 'failed'
             ? 'El pago no pudo completarse. Intenta nuevamente.'
             : `Estado: ${boldTxStatus}. Te notificaremos cuando se confirme.`,
@@ -109,75 +163,18 @@ export default function BoldPaymentButton({
     }
   }, [onSuccess]);
 
-  // Render Bold checkout using Approach B (src directly on the config script tag).
-  // The browser executes the script each time a fresh <script> element is added
-  // to the DOM, even if the file is cached.
-  // ---------------------------------------------------------------------------
-  const renderBoldCheckout = useCallback((payload: CheckoutPayload, customer: CustomerData) => {
-    if (!boldContainerRef.current) return;
-
-    setCheckoutReady(false);
-    boldContainerRef.current.innerHTML = '';
-
-    // 1. Create the config script tag with src (Approach B)
-    const script = document.createElement('script');
-    script.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
-    script.setAttribute('data-bold-button', 'dark-L');
-    script.setAttribute('data-api-key', payload.apiKey);
-    script.setAttribute('data-amount', String(payload.amount));
-    script.setAttribute('data-currency', payload.currency);
-    script.setAttribute('data-order-id', payload.orderId);
-    script.setAttribute('data-integrity-signature', payload.integritySignature);
-    script.setAttribute('data-description', payload.description);
-    script.setAttribute('data-redirection-url', payload.redirectionUrl);
-    script.setAttribute('data-render-mode', 'embedded');
-    script.setAttribute(
-      'data-customer-data',
-      JSON.stringify({
-        email: customer.email,
-        fullName: customer.fullName,
-        ...(customer.phone && { phone: customer.phone }),
-        ...(customer.dialCode && { dialCode: customer.dialCode }),
-      }),
-    );
-
-    boldContainerRef.current.appendChild(script);
-
-    // 2. Observe the container for Bold-rendered content.
-    //    When Bold adds any non-<script> element, the checkout is visible.
-    if (observerRef.current) observerRef.current.disconnect();
-
-    observerRef.current = new MutationObserver(() => {
-      if (!boldContainerRef.current) return;
-
-      const hasRenderedContent = Array.from(boldContainerRef.current.children)
-        .some((child) => child.tagName !== 'SCRIPT');
-
-      if (hasRenderedContent) {
-        setCheckoutReady(true);
-        observerRef.current?.disconnect();
-      }
-    });
-
-    observerRef.current.observe(boldContainerRef.current, {
-      childList: true,
-      subtree: true,
-    });
-  }, []);
-
-  // Once the "embedding" phase is committed, render Bold into the container
-  useEffect(() => {
-    if (phase === 'embedding' && payloadRef.current) {
-      renderBoldCheckout(payloadRef.current, customerData);
-    }
-  }, [phase, customerData, renderBoldCheckout]);
-
-  // Handle "Reservar ahora" click: call the API then transition to embedding
+  // ------------------------------------------------------------------
+  // 3. Handle "Reservar ahora" click → API → BoldCheckout.open()
+  // ------------------------------------------------------------------
   const handleReserve = useCallback(async () => {
     if (phase === 'loading') return;
+    if (!boldReady) {
+      setErrorMsg('La pasarela de pago aún no está lista. Intenta de nuevo en un momento.');
+      return;
+    }
 
     setPhase('loading');
-    setEmbeddingError(null);
+    setErrorMsg(null);
 
     try {
       const response = await fetch('/api/checkout', {
@@ -197,17 +194,46 @@ export default function BoldPaymentButton({
       }
 
       const payload: CheckoutPayload = await response.json();
-      payloadRef.current = payload;
-      setPhase('embedding');
+
+      // Create a BoldCheckout instance and open it immediately (embedded)
+      const BoldCheckoutCtor = (window as any).BoldCheckout;
+      if (!BoldCheckoutCtor) {
+        throw new Error('BoldCheckout no está disponible. Recarga la página.');
+      }
+
+      const checkout = new BoldCheckoutCtor({
+        orderId: payload.orderId,
+        currency: payload.currency,
+        amount: String(payload.amount),
+        apiKey: payload.apiKey,
+        integritySignature: payload.integritySignature,
+        description: payload.description,
+        redirectionUrl: payload.redirectionUrl,
+        renderMode: 'embedded',
+        customerData: JSON.stringify({
+          email: customerData.email,
+          fullName: customerData.fullName,
+          ...(customerData.phone && { phone: customerData.phone }),
+          ...(customerData.dialCode && { dialCode: customerData.dialCode }),
+        }),
+      });
+
+      // Open the Bold checkout modal/iframe
+      checkout.open();
+
+      // Go back to idle so the underlying form is visible behind the modal
+      setPhase('idle');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error inesperado';
       setPhase('error');
-      setEmbeddingError(message);
+      setErrorMsg(message);
       onError?.(err instanceof Error ? err : new Error(message));
     }
-  }, [contentType, contentId, selectedTickets, customerData, phase, onError]);
+  }, [contentType, contentId, selectedTickets, customerData, phase, boldReady, onError]);
 
-  // Update ticket quantity
+  // ------------------------------------------------------------------
+  // 4. Update ticket quantity
+  // ------------------------------------------------------------------
   const updateQuantity = useCallback((label: string, delta: number) => {
     setTicketSelections(prev =>
       prev.map(t =>
@@ -218,9 +244,9 @@ export default function BoldPaymentButton({
     );
   }, []);
 
-  // ==========================================================================
+  // ==================================================================
   // Render
-  // ==========================================================================
+  // ==================================================================
 
   if (phase === 'success') {
     return (
@@ -238,10 +264,10 @@ export default function BoldPaymentButton({
       <div className="space-y-3">
         <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-center">
           <p className="text-red-800 font-semibold">Error</p>
-          <p className="text-red-600 text-sm mt-1">{embeddingError || 'Ocurrió un error inesperado.'}</p>
+          <p className="text-red-600 text-sm mt-1">{errorMsg || 'Ocurrió un error inesperado.'}</p>
         </div>
         <button
-          onClick={() => { setPhase('idle'); setEmbeddingError(null); }}
+          onClick={() => { setPhase('idle'); setErrorMsg(null); }}
           className="w-full cursor-pointer rounded-lg bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/80"
         >
           Intentar nuevamente
@@ -262,24 +288,9 @@ export default function BoldPaymentButton({
     );
   }
 
-  if (phase === 'embedding') {
-    return (
-      <div className="space-y-3">
-        {!checkoutReady && (
-          <div className="flex items-center justify-center gap-3 rounded-lg bg-sacred-sand/50 px-4 py-3">
-            <svg className="h-5 w-5 animate-spin text-near-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            <span className="text-sm font-medium text-near-black">Iniciando pasarela de pago...</span>
-          </div>
-        )}
-        <div key="bold-container" ref={boldContainerRef} className="flex justify-center min-h-[100px]" />
-      </div>
-    );
-  }
-
-  // Idle state: ticket selector + customer form + "Reservar ahora" button
+  // ------------------------------------------------------------------
+  // Idle state: ticket selector + customer form + "Reservar ahora"
+  // ------------------------------------------------------------------
   return (
     <div className="space-y-4">
       {/* Ticket Selection Grid */}
@@ -368,13 +379,17 @@ export default function BoldPaymentButton({
           onChange={(e) => setCustomerData((prev) => ({ ...prev, phone: e.target.value }))}
           className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
         />
-        {embeddingError && <p className="text-xs text-red-600">{embeddingError}</p>}
+        {errorMsg && <p className="text-xs text-red-600">{errorMsg}</p>}
         <button
           onClick={handleReserve}
           disabled={!customerData.email || !customerData.fullName || totalQuantity === 0}
           className="w-full cursor-pointer rounded-lg bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {totalQuantity === 0 ? 'Selecciona al menos un boleto' : 'Reservar ahora'}
+          {!boldReady
+            ? 'Cargando pasarela de pago...'
+            : totalQuantity === 0
+              ? 'Selecciona al menos un boleto'
+              : 'Reservar ahora'}
         </button>
       </div>
     </div>
