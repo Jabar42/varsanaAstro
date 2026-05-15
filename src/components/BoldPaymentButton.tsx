@@ -337,14 +337,36 @@ export default function BoldPaymentButton({
         </div>
       )}
 
-      {/* Single price: hide selector, show info */}
+      {/* Single price: show label + quantity selector */}
       {prices.length === 1 && (
-        <div className="rounded-lg border border-sacred-sand bg-white px-3 py-2">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-near-black">
-              {prices[0].label} &middot; {formatCOP(prices[0].amount)}
-            </p>
-            <span className="text-sm font-semibold tabular-nums">× 1</span>
+        <div className="space-y-2">
+          <div className="rounded-lg border border-sacred-sand bg-white px-3 py-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-near-black">{prices[0].label}</p>
+                <p className="text-xs text-gray-500">{formatCOP(prices[0].amount)} c/u</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => updateQuantity(prices[0].label, -1)}
+                  disabled={ticketSelections[0]?.quantity === 0}
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50 disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  −
+                </button>
+                <span className="w-6 text-center text-sm font-semibold tabular-nums">
+                  {ticketSelections[0]?.quantity ?? 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => updateQuantity(prices[0].label, 1)}
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50"
+                >
+                  +
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
