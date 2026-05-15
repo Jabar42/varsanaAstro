@@ -198,9 +198,9 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
   } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error('Stock reservation error:', err);
-    return new Response(JSON.stringify({ error: message }), {
+    const message = err instanceof Error ? err.message : JSON.stringify(err);
+    console.error('Stock reservation error:', message);
+    return new Response(JSON.stringify({ error: 'Error interno del servidor' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

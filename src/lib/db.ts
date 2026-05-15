@@ -49,7 +49,7 @@ export async function ensureInventoryAndReserve(
     p_stock_max: stockMax,
     p_quantity: quantity,
   });
-  if (error) throw error;
+  if (error) throw new Error(`RPC failed: ${error.message || JSON.stringify(error)}`);
   return data as { success: boolean; available?: number; requested?: number };
 }
 
