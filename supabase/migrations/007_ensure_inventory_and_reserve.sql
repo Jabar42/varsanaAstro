@@ -2,6 +2,10 @@
 -- Replaces the previous 3-step pattern (getAvailableStock → upsert → decrement_stock)
 -- with a single function call that holds a FOR UPDATE lock for the entire operation.
 
+-- Drop any previous versions (different signatures) to avoid ambiguity
+DROP FUNCTION IF EXISTS ensure_inventory_and_reserve(text, text, text, integer, integer);
+DROP FUNCTION IF EXISTS ensure_inventory_and_reserve(text, text, date, integer, integer);
+
 CREATE OR REPLACE FUNCTION ensure_inventory_and_reserve(
   p_content_type text,
   p_content_id text,
