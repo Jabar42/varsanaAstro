@@ -31,6 +31,7 @@ interface BoldPaymentButtonProps {
   contentType: 'event' | 'pasadia';
   contentId: string;
   prices: { label: string; amount: number }[];
+  fixedDate?: string; // events have a fixed date; pasadias let the user pick
   onSuccess?: (orderId: string) => void;
   onError?: (error: Error) => void;
 }
@@ -101,6 +102,7 @@ export default function BoldPaymentButton({
   contentType,
   contentId,
   prices,
+  fixedDate,
   onSuccess,
   onError,
 }: BoldPaymentButtonProps) {
@@ -108,6 +110,8 @@ export default function BoldPaymentButton({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
   const [boldReady, setBoldReady] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(fixedDate || '');
+  const needsDatePicker = contentType === 'pasadia' && !fixedDate;
 
   // Initialize ticket selections from prices prop
   const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>(
@@ -126,6 +130,9 @@ export default function BoldPaymentButton({
     (sum, t) => sum + t.quantity, 0,
   );
   const selectedTickets = ticketSelections.filter(t => t.quantity > 0);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().slice(0, 10);
 
   // ------------------------------------------------------------------
   // 1. Load Bold script on mount
@@ -187,6 +194,7 @@ export default function BoldPaymentButton({
         body: JSON.stringify({
           contentType,
           contentId,
+          eventDate: selectedDate || undefined,
           tickets: selectedTickets.map(t => ({ label: t.label, quantity: t.quantity })),
           customerData,
         }),
@@ -297,6 +305,20 @@ export default function BoldPaymentButton({
   // ------------------------------------------------------------------
   return (
     <div className="space-y-4">
+      {/* Date Picker — pasadias only */}
+      {needsDatePicker && (
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-near-black">Elige la fecha</label>
+          <input
+            type="date"
+            min={minDate}
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
+          />
+        </div>
+      )}
+
       {/* Ticket Selection Grid */}
       {prices.length > 1 && (
         <div className="space-y-2">
@@ -408,14 +430,16 @@ export default function BoldPaymentButton({
         {errorMsg && <p className="text-xs text-red-600">{errorMsg}</p>}
         <button
           onClick={handleReserve}
-          disabled={!customerData.email || !customerData.fullName || totalQuantity === 0}
+          disabled={!customerData.email || !customerData.fullName || totalQuantity === 0 || (needsDatePicker && !selectedDate)}
           className="w-full cursor-pointer rounded-lg bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {!boldReady
             ? 'Cargando pasarela de pago...'
-            : totalQuantity === 0
-              ? 'Selecciona al menos un boleto'
-              : 'Reservar ahora'}
+            : needsDatePicker && !selectedDate
+              ? 'Elige una fecha'
+              : totalQuantity === 0
+                ? 'Selecciona al menos un boleto'
+                : 'Reservar ahora'}
         </button>
       </div>
     </div>

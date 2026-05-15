@@ -17,6 +17,7 @@ image: "https://picsum.photos/seed/tu-pasadia/1600/1000"
 prices:
   - label: "General"
     amount: 50000
+stock_max: 30
 duration: "8 horas"
 meeting_point: "Lugar de encuentro (dirección completa)"
 category: "naturaleza"
@@ -32,6 +33,7 @@ included_services:
 - **`description`** (string): Resumen de una o dos frases que se usará en las meta‑etiquetas y en las tarjetas de listado.
 - **`image`** (string): URL de una imagen de alta calidad. Actualmente el proyecto usa placeholders de `picsum.photos`; reemplázala con una imagen real cuando esté disponible.
 - **`prices`** (array): Lista de objetos de precio (misma estructura que los eventos).
+- **`stock_max`** (number): Cupo máximo de personas **por día**. El inventario se gestiona por fecha: cada día tiene su propio cupo independiente.
 - **`duration`** (string): Duración aproximada en formato legible, ej. `"8 horas"`, `"4–5 horas"`, `"medio día"`.
 - **`meeting_point`** (string): Punto de encuentro donde los participantes deben presentarse. Incluye dirección completa o referencias claras.
 - **`category`** (string): Categoría temática del pasadía. Se usa para filtros en la interfaz. Los valores existentes son `"naturaleza"`, `"ecologico"`, `"bienestar"`, etc. Mantén la consistencia con las categorías ya usadas.

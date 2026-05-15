@@ -10,6 +10,7 @@ image: "https://picsum.photos/seed/bienestar/1600/1000"
 prices:
   - label: "General"
     amount: 45000
+stock_max: 30
 duration: "4 horas"
 meeting_point: "Salón principal de Varsana, Granada, Cundinamarca"
 category: "bienestar"
@@ -29,6 +30,7 @@ prices:
     deadline: 2026-05-10
   - label: "General"
     amount: 75000
+stock_max: 20
 duration: "8 horas"
 meeting_point: "Entrada principal de Varsana, Granada, Cundinamarca"
 category: "naturaleza"

@@ -36,6 +36,11 @@
         ]
       }
     },
+    "stock_max": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 9007199254740991
+    },
     "duration": {
       "type": "string"
     },
@@ -62,6 +67,7 @@
     "description",
     "image",
     "prices",
+    "stock_max",
     "duration",
     "meeting_point",
     "category"

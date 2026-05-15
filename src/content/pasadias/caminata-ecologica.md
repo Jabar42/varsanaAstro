@@ -9,6 +9,7 @@ prices:
   - label: "Preventa"
     amount: 65000
     deadline: 2026-05-10
+stock_max: 20
 duration: "8 horas"
 meeting_point: "Entrada principal de Varsana, Granada, Cundinamarca"
 category: "naturaleza"

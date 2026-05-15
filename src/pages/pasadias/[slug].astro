@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { pasadia } = Astro.props;
-const { title, description, image, prices, duration, meeting_point, category, included_services } = pasadia.data;
+const { title, description, image, prices, stock_max, duration, meeting_point, category, included_services } = pasadia.data;
 const { Content } = await render(pasadia);
 
 const currentPrice = getCurrentPrice(prices);
@@ -130,10 +130,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
 
           <!-- Booking Details Box -->
           <div class="border border-gray-400 rounded-xl overflow-hidden">
-            <div class="grid grid-cols-1 border-b border-gray-400">
-              <div class="p-3">
+            <div class="grid grid-cols-2 border-b border-gray-400">
+              <div class="p-3 border-r border-gray-400">
                 <p class="text-[10px] font-bold uppercase">Duración</p>
                 <p class="text-sm">{duration}</p>
+              </div>
+              <div class="p-3">
+                <p class="text-[10px] font-bold uppercase">Cupos por día</p>
+                <p class="text-sm">{stock_max} personas</p>
               </div>
             </div>
             <div class="p-3">

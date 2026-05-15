@@ -46,6 +46,7 @@ const pasadiasCollection = defineCollection({
         deadline: z.date().optional(),
       })
     ),
+    stock_max: z.number().int().positive(),
     duration: z.string(),
     meeting_point: z.string(),
     category: z.string(),

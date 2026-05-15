@@ -21,9 +21,10 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const { contentType, contentId, tickets, customerData } = body as {
+  const { contentType, contentId, eventDate: rawEventDate, tickets, customerData } = body as {
     contentType?: string;
     contentId?: string;
+    eventDate?: string;
     tickets?: { label: string; quantity: number }[];
     customerData?: { email?: string; fullName?: string; phone?: string; dialCode?: string };
   };
@@ -50,7 +51,31 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 2. Validate tickets
+  // 2. Determine eventDate
+  //    - Events: derived from Markdown event_start
+  //    - Pasadias: must be provided by the user
+  // ------------------------------------------------------------------
+  let eventDate = '';
+
+  if (contentType === 'pasadia') {
+    if (!rawEventDate || !/^\d{4}-\d{2}-\d{2}$/.test(rawEventDate)) {
+      return new Response(JSON.stringify({ error: 'eventDate is required for pasadias (YYYY-MM-DD)' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const parsed = new Date(rawEventDate + 'T00:00:00');
+    if (isNaN(parsed.getTime())) {
+      return new Response(JSON.stringify({ error: 'Invalid eventDate format' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    eventDate = rawEventDate;
+  }
+
+  // ------------------------------------------------------------------
+  // 3. Validate tickets
   // ------------------------------------------------------------------
   if (!tickets || tickets.length === 0) {
     return new Response(JSON.stringify({ error: 'At least one ticket is required' }), {
@@ -69,6 +94,18 @@ export const POST: APIRoute = async ({ request }) => {
       status: 404,
       headers: { 'Content-Type': 'application/json' },
     });
+  }
+
+  // For events, eventDate comes from the Markdown
+  if (contentType === 'event') {
+    const eventStart = (entry.data as Record<string, unknown>).event_start as Date | undefined;
+    if (!eventStart) {
+      return new Response(JSON.stringify({ error: 'Event has no start date' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    eventDate = eventStart.toISOString().slice(0, 10);
   }
 
   // Prices array exists in both schemas
@@ -106,29 +143,35 @@ export const POST: APIRoute = async ({ request }) => {
     return sum + priceDef.amount * t.quantity;
   }, 0);
 
-  // Total quantity for stock reservation (per-event stock, not per-ticket-type)
+  // Total quantity for stock reservation
   const totalQuantity = tickets.reduce((sum, t) => sum + t.quantity, 0);
 
-  // stock_max only exists in the events schema; pasadias have no stock limit
+  // stock_max is required in both events and pasadias schemas
   const stockMax = (entry.data as Record<string, unknown>).stock_max as number | undefined;
-  const effectiveStockMax = stockMax ?? 999; // pasadias default to effectively unlimited
+  if (!stockMax) {
+    return new Response(JSON.stringify({ error: 'Content has no stock_max defined' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 
   // ------------------------------------------------------------------
   // 4. Validate stock with lazy inventory initialization
   // ------------------------------------------------------------------
   const admin = getAdminClient();
-  const stock = await getAvailableStock(contentType, contentId);
+  const stock = await getAvailableStock(contentType, contentId, eventDate);
 
   if (stock === null) {
-    // First access — upsert inventory row from Markdown data
+    // First access for this date — upsert inventory row from Markdown data
     const { error: upsertError } = await admin.from('inventory').upsert(
       {
         content_type: contentType,
         content_id: contentId,
-        stock_max: effectiveStockMax,
+        event_date: eventDate,
+        stock_max: stockMax,
         stock_reserved: 0,
       },
-      { onConflict: 'content_type, content_id' },
+      { onConflict: 'content_type, content_id, event_date' },
     );
 
     if (upsertError) {
@@ -170,7 +213,7 @@ export const POST: APIRoute = async ({ request }) => {
   // 7. Reserve stock atomically (row-level lock via decrement_stock RPC)
   // ------------------------------------------------------------------
   try {
-    await reserveStock(contentType, contentId, totalQuantity);
+    await reserveStock(contentType, contentId, totalQuantity, eventDate);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Stock reservation failed';
     return new Response(JSON.stringify({ error: message }), {
@@ -186,6 +229,7 @@ export const POST: APIRoute = async ({ request }) => {
     bold_order_id: orderId,
     content_type: contentType,
     content_id: contentId,
+    event_date: eventDate,
     customer_email: customerData.email,
     customer_name: customerData.fullName,
     amount: totalAmount,

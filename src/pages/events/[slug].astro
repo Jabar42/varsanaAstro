@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { event } = Astro.props;
-const { title, description, event_start, event_end, image, prices } = event.data;
+const { title, description, event_start, event_end, image, prices, stock_max } = event.data;
 const { Content } = await render(event);
 
 const availablePrices = getAvailablePrices(prices, event_start);
@@ -137,7 +137,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
               </div>
               <div class="p-3">
                 <p class="text-[10px] font-bold uppercase">Cupos</p>
-                <p class="text-sm">Disponibles</p>
+                <p class="text-sm">{stock_max} personas</p>
               </div>
             </div>
           </div>
@@ -148,6 +148,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
             contentType="event"
             contentId={event.id}
             prices={availablePrices}
+            fixedDate={event_start.toISOString().slice(0, 10)}
           />
 
           <p class="text-center text-gray-500 text-xs">Asegura tu cupo con anticipación</p>

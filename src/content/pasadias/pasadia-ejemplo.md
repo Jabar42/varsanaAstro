@@ -6,6 +6,7 @@ image: "https://picsum.photos/seed/pasadia-ejemplo/1600/1000"
 prices:
   - label: "General"
     amount: 200000
+stock_max: 25
 duration: "6 horas"
 meeting_point: "Varsana Eco Aldea – Yoga Village, Km 28 Vía Melgar"
 category: "Bienestar"

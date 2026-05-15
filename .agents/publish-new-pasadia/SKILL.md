@@ -6,13 +6,15 @@ description: Step-by-step instructions for publishing a new pasadía (day-trip) 
 
 ## Visión general
 
-Los pasadías en este proyecto Astro son **servicios fijos sin fecha específica**. A diferencia de los eventos, que tienen una fecha única (`event_date`), los pasadías están disponibles de forma permanente y se pueden reservar en cualquier momento. Cada pasadía es un archivo Markdown ubicado en `src/content/pasadias/` con un esquema de frontmatter definido. El sistema automáticamente:
+Los pasadías en este proyecto Astro son **servicios disponibles todo el año con cupo limitado por día**. A diferencia de los eventos, que tienen una fecha fija (`event_start`), los pasadías permiten al usuario elegir la fecha que desea reservar. Cada pasadía es un archivo Markdown ubicado en `src/content/pasadias/` con un esquema de frontmatter definido. El sistema automáticamente:
 
 - Lista todos los pasadías en la página principal de pasadías (`/pasadias`) usando el helper `getAllPasadias`.
 - Genera una página de detalle para cada pasadía en `/pasadias/[slug]`, donde la URL se deriva del ID de entrada (el nombre del archivo sin extensión).
 - Selecciona el precio activo según los deadlines (si existen) mediante `getCurrentPrice` (la misma lógica que para los eventos).
+- Muestra un selector de fecha en el botón de pago para que el usuario elija el día de su visita.
+- Gestiona el inventario por fecha: cada día tiene su propio cupo de `stock_max` personas.
 
-El esquema de frontmatter se define en `src/content.config.ts` e incluye `id`, `title`, `description`, `image`, `prices`, `duration`, `meeting_point`, `category` y `included_services`.
+El esquema de frontmatter se define en `src/content.config.ts` e incluye `id`, `title`, `description`, `image`, `prices`, `stock_max`, `duration`, `meeting_point`, `category` y `included_services`.
 
 ## Instrucciones paso a paso
 
@@ -41,11 +43,14 @@ Después de crear el archivo de tu pasadía, verifica que todo funcione como se 
    - El título, la descripción y la imagen se muestren correctamente.
    - El cuerpo Markdown se renderice adecuadamente.
    - La tarjeta de precio muestre el nivel activo esperado.
-   - La duración, el punto de encuentro, la categoría y los servicios incluidos se visualicen.
+   - La duración, el punto de encuentro, la categoría, el stock máximo y los servicios incluidos se visualicen.
+   - El selector de fecha esté visible en el botón de pago.
 
-3. **Prueba la selección de precio** – Si incluiste deadlines, verifica que el precio activo cambie según lo previsto cuando el deadline pase (puedes ajustar temporalmente el reloj del sistema o crear un pasadía de prueba con un deadline cercano).
+3. **Prueba el selector de fecha** – Verifica que solo permita seleccionar fechas a partir de mañana. Sin fecha seleccionada, el botón debe mostrar "Elige una fecha" y estar deshabilitado.
 
-4. **Construye el sitio** – Ejecuta `npm run build` para asegurarte de que no haya errores de validación del esquema.
+4. **Prueba la selección de precio** – Si incluiste deadlines, verifica que el precio activo cambie según lo previsto cuando el deadline pase (puedes ajustar temporalmente el reloj del sistema o crear un pasadía de prueba con un deadline cercano).
+
+5. **Construye el sitio** – Ejecuta `npm run build` para asegurarte de que no haya errores de validación del esquema.
 
 Si algún paso falla, revisa el frontmatter en busca de errores tipográficos, comprueba la indentación YAML y consulta la consola de desarrollo del navegador para ver mensajes de error.
 
@@ -56,9 +61,10 @@ Si algún paso falla, revisa el frontmatter en busca de errores tipográficos, c
 Este proyecto utiliza **Bold Payment Gateway** para pagos en línea. Al publicar un nuevo pasadía:
 
 1. **Los precios vienen del frontmatter** — La API de checkout lee los precios del archivo Markdown, no de la entrada del usuario. Esto previene la manipulación de precios.
-2. **Los pasadías no tienen `stock_max`** — A diferencia de los eventos, los pasadías no tienen límite de stock. Si necesitas limitar la capacidad, agrega `stock_max: N` al frontmatter.
-3. **El `id` es persistente** — Las órdenes de pago referencian los pasadías por su `id`, no por el nombre del archivo. No cambies el `id` después de publicar.
-4. **Inventario lazy** — Si no existe una fila de inventario para tu pasadía cuando se intente el primer checkout, se creará automáticamente con `stock_max: 999` (ilimitado).
+2. **`stock_max` es requerido** — Cada pasadía debe definir un cupo máximo por día. El control de stock es por fecha: el usuario elige la fecha al reservar y el inventario se gestiona por día.
+3. **El usuario elige la fecha** — A diferencia de los eventos (fecha fija), los pasadías muestran un selector de fecha en el botón de pago. El stock se reserva para la fecha seleccionada.
+4. **El `id` es persistente** — Las órdenes de pago referencian los pasadías por su `id`, no por el nombre del archivo. No cambies el `id` después de publicar.
+5. **Inventario lazy por fecha** — Si no existe una fila de inventario para la combinación pasadía+fecha cuando se intente el primer checkout, se creará automáticamente con el `stock_max` del frontmatter.
 
 Para detalles completos de la integración de pagos, consulta [`payment-integration-bold`](../payment-integration-bold/SKILL.md).
 

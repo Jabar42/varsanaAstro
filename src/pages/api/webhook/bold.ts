@@ -201,7 +201,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const { data: existingOrder } = await admin
     .from('orders')
-    .select('status, content_type, content_id, quantity')
+    .select('status, content_type, content_id, quantity, event_date')
     .eq('bold_order_id', orderId)
     .single();
 
@@ -256,10 +256,11 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (normalizedStatus === 'DECLINED' || normalizedStatus === 'FAILED') {
     // --- Payment failed — release stock + mark order as failed ---
-    const { content_type: contentType, content_id: contentId, quantity } = existingOrder;
+    const { content_type: contentType, content_id: contentId, quantity, event_date: eventDate } = existingOrder;
 
     try {
-      await releaseStock(contentType, contentId, quantity || 1);
+      const date = eventDate || new Date().toISOString().slice(0, 10);
+      await releaseStock(contentType, contentId, quantity || 1, date);
     } catch (releaseError) {
       const msg = releaseError instanceof Error ? releaseError.message : 'Unknown';
       console.error(`[webhook:${requestId}] Failed to release stock for ${orderId}:`, msg);
