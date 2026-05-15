@@ -198,9 +198,10 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Stock reservation failed';
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('Stock reservation error:', err);
     return new Response(JSON.stringify({ error: message }), {
-      status: 409,
+      status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
   }

@@ -5,7 +5,7 @@
 CREATE OR REPLACE FUNCTION ensure_inventory_and_reserve(
   p_content_type text,
   p_content_id text,
-  p_event_date text,
+  p_event_date date,
   p_stock_max integer,
   p_quantity integer
 ) RETURNS jsonb
