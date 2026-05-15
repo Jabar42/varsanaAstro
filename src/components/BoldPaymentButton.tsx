@@ -111,7 +111,11 @@ export default function BoldPaymentButton({
 
   // Initialize ticket selections from prices prop
   const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>(
-    () => prices.map(p => ({ label: p.label, amount: p.amount, quantity: 0 })),
+    () => prices.map(p => ({
+      label: p.label,
+      amount: p.amount,
+      quantity: prices.length === 1 ? 1 : 0,
+    })),
   );
 
   // Derived values
