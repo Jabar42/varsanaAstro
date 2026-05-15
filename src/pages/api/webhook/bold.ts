@@ -37,14 +37,78 @@ function verifyWebhookSignature(
 }
 
 // ---------------------------------------------------------------------------
-// Webhook Payload Types
+// Bold Webhook Event Types
+// Maps Bold's CloudEvents `type` field to our internal status values.
 // ---------------------------------------------------------------------------
 
-interface WebhookPayload {
-  orderId: string;
-  status: 'APPROVED' | 'DECLINED' | 'FAILED' | string;
-  paymentMethod?: string;
-  timestamp?: string;
+/**
+ * Bold sends events with the following CloudEvents structure:
+ * {
+ *   id: string,
+ *   type: 'SALE_APPROVED' | 'SALE_REJECTED' | 'VOID_APPROVED' | 'VOID_REJECTED',
+ *   subject: string,
+ *   source: string,
+ *   spec_version: string,
+ *   time: number,              // POSIX nanoseconds
+ *   data: {
+ *     payment_id: string,
+ *     merchant_id: string,
+ *     created_at: string,
+ *     amount: { currency, total, taxes, tip },
+ *     metadata: { reference: string | null },   // ← our orderId lives here
+ *     payment_method: string,
+ *     ...
+ *   },
+ *   datacontenttype?: string
+ * }
+ */
+
+interface BoldAmount {
+  currency: string;
+  total: number;
+  taxes: Array<{ base: number; type: string; value: number }>;
+  tip: number;
+}
+
+interface BoldData {
+  payment_id: string;
+  merchant_id: string;
+  created_at: string;
+  amount: BoldAmount;
+  metadata: {
+    reference: string | null;
+  };
+  payment_method: string;
+  [key: string]: unknown;
+}
+
+interface BoldWebhookPayload {
+  id: string;
+  type: string;
+  subject: string;
+  source: string;
+  spec_version: string;
+  time: number;
+  data: BoldData;
+  datacontenttype?: string;
+}
+
+/**
+ * Convert Bold's CloudEvents `type` to our internal status.
+ */
+function mapBoldStatus(boldType: string): string {
+  switch (boldType) {
+    case 'SALE_APPROVED':
+      return 'APPROVED';
+    case 'SALE_REJECTED':
+      return 'DECLINED';
+    case 'VOID_APPROVED':
+      return 'VOID';
+    case 'VOID_REJECTED':
+      return 'VOID_FAILED';
+    default:
+      return boldType; // pass through unknown types
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -98,11 +162,14 @@ export const POST: APIRoute = async ({ request }) => {
   console.log(`[webhook:${requestId}] Signature verified OK`);
 
   // ------------------------------------------------------------------
-  // 3. Parse webhook payload
+  // 3. Parse webhook payload (Bold CloudEvents format)
+  //    Bold sends events as CloudEvents: { type, subject, data: { metadata: { reference }, ... } }
+  //    Our orderId → data.metadata.reference
+  //    Our status   → type (SALE_APPROVED / SALE_REJECTED)
   // ------------------------------------------------------------------
-  let payload: WebhookPayload;
+  let boldPayload: BoldWebhookPayload;
   try {
-    payload = JSON.parse(rawBody) as WebhookPayload;
+    boldPayload = JSON.parse(rawBody) as BoldWebhookPayload;
   } catch {
     console.error(`[webhook:${requestId}] Invalid JSON payload`);
     return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
@@ -111,17 +178,21 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const { orderId, status } = payload;
+  // Extract our orderId from Bold's metadata.reference (what we sent via data-order-id)
+  // Fallback to subject (Bold's own transaction ID) if reference is null
+  const orderId = boldPayload.data?.metadata?.reference || boldPayload.subject || '';
+  // Map Bold's CloudEvents type (e.g. "SALE_APPROVED") → our internal status
+  const status = mapBoldStatus(boldPayload.type);
 
   if (!orderId || !status) {
-    console.warn(`[webhook:${requestId}] Missing orderId or status in payload`);
+    console.warn(`[webhook:${requestId}] Missing orderId or status. Parsed: type=${boldPayload.type} reference=${boldPayload.data?.metadata?.reference} subject=${boldPayload.subject}`);
     return new Response(JSON.stringify({ error: 'Missing orderId or status' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
   }
 
-  console.log(`[webhook:${requestId}] Processing order=${orderId} status=${status}`);
+  console.log(`[webhook:${requestId}] Processing order=${orderId} status=${status} (boldType=${boldPayload.type}, method=${boldPayload.data?.payment_method})`);
 
   // ------------------------------------------------------------------
   // 4. Idempotency Check — skip if already paid
