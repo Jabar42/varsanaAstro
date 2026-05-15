@@ -31,6 +31,29 @@ export async function reserveStock(contentType: string, contentId: string, quant
 }
 
 /**
+ * Atomic: initializes inventory row (if missing), validates stock, and reserves
+ * in a single RPC call. Returns { success, available?, requested? }.
+ */
+export async function ensureInventoryAndReserve(
+  contentType: string,
+  contentId: string,
+  eventDate: string,
+  stockMax: number,
+  quantity: number,
+) {
+  const admin = getAdminClient();
+  const { data, error } = await admin.rpc('ensure_inventory_and_reserve', {
+    p_content_type: contentType,
+    p_content_id: contentId,
+    p_event_date: eventDate,
+    p_stock_max: stockMax,
+    p_quantity: quantity,
+  });
+  if (error) throw error;
+  return data as { success: boolean; available?: number; requested?: number };
+}
+
+/**
  * Release reserved stock when a payment fails or is declined.
  * Atomically decrements stock_reserved by the given quantity.
  */

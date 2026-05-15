@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { getEntry } from 'astro:content';
 import { createHash } from 'node:crypto';
 import { getAdminClient } from '@/src/lib/supabase';
-import { getAvailableStock, reserveStock } from '@/src/lib/db';
+import { ensureInventoryAndReserve } from '@/src/lib/db';
 
 /** Ensure this route runs on the server (not pre-rendered). */
 export const prerender = false;
@@ -156,45 +156,12 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 4. Validate stock with lazy inventory initialization
-  // ------------------------------------------------------------------
-  const admin = getAdminClient();
-  const stock = await getAvailableStock(contentType, contentId, eventDate);
-
-  if (stock === null) {
-    // First access for this date — upsert inventory row from Markdown data
-    const { error: upsertError } = await admin.from('inventory').upsert(
-      {
-        content_type: contentType,
-        content_id: contentId,
-        event_date: eventDate,
-        stock_max: stockMax,
-        stock_reserved: 0,
-      },
-      { onConflict: 'content_type, content_id, event_date' },
-    );
-
-    if (upsertError) {
-      console.error('Inventory upsert error:', upsertError);
-      return new Response(JSON.stringify({ error: 'Failed to initialize inventory' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-  } else if (stock.available < totalQuantity) {
-    return new Response(JSON.stringify({ error: 'Insufficient stock' }), {
-      status: 409,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  // ------------------------------------------------------------------
-  // 5. Generate order-id
+  // 4. Generate order-id
   // ------------------------------------------------------------------
   const orderId = `${contentType}-${contentId}-${Date.now()}`;
 
   // ------------------------------------------------------------------
-  // 6. Generate integrity-signature (SHA256)
+  // 5. Generate integrity-signature (SHA256)
   //    Formula: SHA256(orderId + amount + currency + BOLD_SECRET_KEY)
   // ------------------------------------------------------------------
   const boldSecretKey = import.meta.env.BOLD_SECRET_KEY as string | undefined;
@@ -210,10 +177,26 @@ export const POST: APIRoute = async ({ request }) => {
   const integritySignature = createHash('sha256').update(signatureInput).digest('hex');
 
   // ------------------------------------------------------------------
-  // 7. Reserve stock atomically (row-level lock via decrement_stock RPC)
+  // 6. Atomic stock check + reserve (init lazily if first access)
   // ------------------------------------------------------------------
   try {
-    await reserveStock(contentType, contentId, totalQuantity, eventDate);
+    const result = await ensureInventoryAndReserve(
+      contentType,
+      contentId,
+      eventDate,
+      stockMax,
+      totalQuantity,
+    );
+    if (!result.success) {
+      return new Response(
+        JSON.stringify({
+          error: 'Insufficient stock',
+          available: result.available,
+          requested: result.requested,
+        }),
+        { status: 409, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Stock reservation failed';
     return new Response(JSON.stringify({ error: message }), {
@@ -223,8 +206,9 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 8. Insert order row (status: 'pending') with ticket_details
+  // 7. Insert order row (status: 'pending') with ticket_details
   // ------------------------------------------------------------------
+  const admin = getAdminClient();
   const { error: insertError } = await admin.from('orders').insert({
     bold_order_id: orderId,
     content_type: contentType,
@@ -255,7 +239,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 9. Return signed payload to the frontend
+  // 8. Return signed payload to the frontend
   // ------------------------------------------------------------------
   let siteUrl = (import.meta.env.PUBLIC_SITE_URL as string) || 'https://varsana.co';
   // Remove trailing slash to avoid double slashes in redirect URL
