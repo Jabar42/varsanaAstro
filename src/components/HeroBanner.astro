@@ -54,16 +54,24 @@ const hasMultiple = items.length > 1;
   ))}
 
   {hasMultiple && (
-    <div class="hero-banner__dots" data-hero-dots>
-      {items.map((_, i) => (
-        <button
-          type="button"
-          data-hero-dot={i}
-          class:list={['hero-banner__dot', { 'hero-banner__dot--active': i === 0 }]}
-          aria-label={`Ir al banner ${i + 1}`}
-        />
-      ))}
-    </div>
+    <>
+      <button type="button" data-hero-prev class="hero-banner__arrow hero-banner__arrow--prev" aria-label="Anterior">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <button type="button" data-hero-next class="hero-banner__arrow hero-banner__arrow--next" aria-label="Siguiente">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+      <div class="hero-banner__dots" data-hero-dots>
+        {items.map((_, i) => (
+          <button
+            type="button"
+            data-hero-dot={i}
+            class:list={['hero-banner__dot', { 'hero-banner__dot--active': i === 0 }]}
+            aria-label={`Ir al banner ${i + 1}`}
+          />
+        ))}
+      </div>
+    </>
   )}
 </div>
 
@@ -71,6 +79,8 @@ const hasMultiple = items.length > 1;
   function initHeroBanner(el: HTMLElement) {
     const slides = el.querySelectorAll<HTMLElement>('[data-hero-slide]');
     const dots = el.querySelectorAll<HTMLButtonElement>('[data-hero-dot]');
+    const prev = el.querySelector<HTMLButtonElement>('[data-hero-prev]');
+    const next = el.querySelector<HTMLButtonElement>('[data-hero-next]');
     const total = slides.length;
     if (total < 2) return;
 
@@ -89,22 +99,34 @@ const hasMultiple = items.length > 1;
       current = index;
     }
 
-    function next() {
+    function goNext() {
       show((current + 1) % total);
+    }
+
+    function goPrev() {
+      show((current - 1 + total) % total);
     }
 
     function startTimer() {
       if (reduced) return;
       stopTimer();
-      timer = setInterval(next, interval);
+      timer = setInterval(goNext, interval);
     }
 
     function stopTimer() {
       if (timer) { clearInterval(timer); timer = null; }
     }
 
+    function resetTimer() {
+      stopTimer();
+      startTimer();
+    }
+
+    if (prev) prev.addEventListener('click', () => { goPrev(); resetTimer(); });
+    if (next) next.addEventListener('click', () => { goNext(); resetTimer(); });
+
     dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => { show(i); stopTimer(); startTimer(); });
+      dot.addEventListener('click', () => { show(i); resetTimer(); });
     });
 
     const pauseZone = el.querySelector('.hero-banner__content');
@@ -146,11 +168,13 @@ const hasMultiple = items.length > 1;
     position: absolute;
     inset: 0;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 0.8s ease;
   }
 
   .hero-banner__slide--active {
     opacity: 1;
+    pointer-events: auto;
   }
 
   .hero-banner__image {
@@ -279,6 +303,51 @@ const hasMultiple = items.length > 1;
     display: flex;
     gap: 0.5rem;
     z-index: 10;
+  }
+
+  .hero-banner__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .hero-banner__arrow:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .hero-banner__arrow--prev {
+    left: 1rem;
+  }
+
+  .hero-banner__arrow--next {
+    right: 1rem;
+  }
+
+  @media (max-width: 767px) {
+    .hero-banner__arrow {
+      width: 40px;
+      height: 40px;
+    }
+    .hero-banner__arrow--prev {
+      left: 0.5rem;
+    }
+    .hero-banner__arrow--next {
+      right: 0.5rem;
+    }
   }
 
   .hero-banner__dot {
