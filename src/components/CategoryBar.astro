@@ -1,5 +1,5 @@
 ---
-import {Send, Tent, Users, Info, Calendar, Map, Compass, House} from 'lucide-react';
+import {Send, Megaphone, Store, Tent, Users, Calendar, Map, Compass, House} from 'lucide-react';
 
 const { align = 'end' }: { align?: 'start' | 'center' | 'end' } = Astro.props;
 const alignmentClasses = {
@@ -12,11 +12,11 @@ const containerClass = `max-w-none md:max-w-7xl mx-auto flex flex-nowrap items-c
 
 const categories = [
   { name: 'Inicio', icon: House, href: '/' },
-  { name: 'Nosotros', icon: Info, href: '/nosotros' },
-  { name: 'Eventos', icon: Calendar, href: '/events' },
+  { name: 'Nosotros', icon: Users, href: '/nosotros' },
+  { name: 'Experiencias', icon: Calendar, href: '/events' },
   { name: 'Hospedaje', icon: Tent, href: '/' },
-  { name: 'Pasadias', icon: Map, href: '/pasadias' },
-  { name: 'Voluntariado', icon: Users, href: '/voluntariado' },
+  { name: 'Tienda', icon: Store, href: '/tienda' },
+  { name: 'Blog', icon: Megaphone, href: '/blog' },
   { name: 'Contacto', icon: Send, href: '/contacto' },
 ];
 
