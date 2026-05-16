@@ -3,8 +3,13 @@ export const prerender = true;
 
 import Layout from '@/src/layouts/Layout.astro';
 import Slider from '@/src/components/Slider.astro';
+import EventCard from '@/src/components/EventCard.astro';
 import PhotoGallery from '@/src/components/PhotoGallery.astro';
+import { getUpcomingEvents } from '@/src/lib/events';
 import { getFeaturedItems } from '@/src/lib/slider';
+
+const upcomingEvents = await getUpcomingEvents();
+const featuredEvents = upcomingEvents.slice(0, 3);
 
 const featuredItems = await getFeaturedItems({
   collections: ['events', 'pasadias'],
@@ -42,11 +47,30 @@ const featuredItems = await getFeaturedItems({
       subtitle="Eventos y pasadias seleccionados para ti"
     />
 
-    <div class="text-center mt-6 mb-20">
-      <a href="/events" class="inline-block text-near-black font-semibold underline underline-offset-4 hover:text-rausch transition-colors">
-        Ver todos los eventos
-      </a>
-    </div>
+    <!-- Featured Events Grid -->
+    <section class="mb-20">
+      <div class="flex items-end justify-between mb-10">
+        <div class="space-y-2">
+          <h2 class="text-4xl md:text-5xl font-bold tracking-tightest font-display">Próximas Experiencias</h2>
+          <p class="text-gray-500 text-lg">Los eventos más cercanos para tu transformación.</p>
+        </div>
+        <a href="/events" class="hidden md:block text-near-black font-semibold underline underline-offset-4 hover:text-rausch transition-colors">
+          Ver todos los eventos
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {featuredEvents.map((event) => (
+          <EventCard {...event.data} slug={event.id} />
+        ))}
+      </div>
+
+      <div class="mt-12 text-center md:hidden">
+        <a href="/events" class="inline-block w-full py-4 border border-near-black rounded-xl font-bold hover:bg-gray-50 transition-colors">
+          Ver todos los eventos
+        </a>
+      </div>
+    </section>
 
     <!-- Photo Gallery Section -->
     <PhotoGallery />
