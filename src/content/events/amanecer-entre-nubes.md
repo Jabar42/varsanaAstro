@@ -4,6 +4,8 @@ title: "Amanecer entre nubes"
 description: "Una experiencia única al amanecer en las alturas de Varsana, rodeado de niebla matinal y naturaleza virgen."
 event_start: 2026-06-15
 image: "https://picsum.photos/seed/amanecer-nubes/1600/1000"
+destacado: true
+orden: 1
 stock_max: 30
 prices:
   - label: "Ticket estándar"

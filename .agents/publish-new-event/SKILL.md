@@ -68,9 +68,10 @@ The file `src/pages/events/[slug].astro` dynamically generates a page for each e
 - For single-day events, omit `event_end`. For multi-day events, add `event_end`.
 - If a price has no explicit `deadline`, its effective deadline defaults to `event_start` (the ticket is available until the event starts).
 
-### Image placeholders
-- The project currently uses `https://picsum.photos/seed/…/1600/1000` as a placeholder. Replace with a real image URL when the event's visual asset is ready.
-- Ensure the image is high‑quality and landscape‑oriented (16:10 ratio works well).
+### Imágenes
+- Usa la skill [`upload-image`](../upload-image/SKILL.md) para subir la imagen del evento al bucket `VarsanaImages` y obtener una URL pública.
+- Si el evento aún no tiene imagen, usa `https://picsum.photos/seed/<event-slug>/1600/1000` como placeholder temporal.
+- La imagen debe ser de alta calidad y orientación horizontal (16:10 funciona bien).
 
 ### Deadline timezone issue
 - As noted above, deadlines are evaluated at UTC midnight. If you want a deadline to be effective until the end of a certain day in Colombia, set the deadline **one day later** (e.g., if the cutoff is April 15 Colombia time, write `deadline: 2026-04-16`).
@@ -127,6 +128,6 @@ For full details on the payment integration, see [`payment-integration-bold`](..
 
 ---
 
-**See also:** [`design‑guidelines`](../design-guidelines/SKILL.md), [`payment-integration-bold`](../payment-integration-bold/SKILL.md).
+**See also:** [`upload-image`](../upload-image/SKILL.md), [`design‑guidelines`](../design-guidelines/SKILL.md), [`payment-integration-bold`](../payment-integration-bold/SKILL.md).
 
 *This guide is based on the project's implementation as of May 2026. For updates, refer to the latest `src/content.config.ts`, `src/lib/events.ts`, and [`payment-integration-bold`](../payment-integration-bold/SKILL.md).*

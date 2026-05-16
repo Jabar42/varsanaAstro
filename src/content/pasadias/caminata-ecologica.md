@@ -3,6 +3,8 @@ id: "caminata-ecologica"
 title: "Caminata Ecológica por la Montaña"
 description: "Una jornada de conexión con la naturaleza a través de senderos ancestrales."
 image: "https://picsum.photos/seed/caminata/1600/1000"
+destacado: true
+orden: 2
 prices:
   - label: "General"
     amount: 75000

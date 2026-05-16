@@ -31,9 +31,11 @@ included_services:
 - **`id`** (string): Un identificador único y persistente para el pasadía. Este ID se usará para la integración con la pasarela de pagos y no cambiará aunque se renombre el archivo. La URL de la página de detalle se deriva de este ID (ej. `id: "caminata-ecologica"` → `/pasadias/caminata-ecologica`). Usa kebab‑case.
 - **`title`** (string): Nombre visible del pasadía. Debe estar en **minúscula con la primera letra mayúscula** (sentence case; ej. `"Caminata ecológica por la montaña"`). **No** uses MAYÚSCULAS SOSTENIDAS ni caracteres emoji.
 - **`description`** (string): Resumen de una o dos frases que se usará en las meta‑etiquetas y en las tarjetas de listado.
-- **`image`** (string): URL de una imagen de alta calidad. Actualmente el proyecto usa placeholders de `picsum.photos`; reemplázala con una imagen real cuando esté disponible.
+- **`image`** (string): URL de una imagen de alta calidad. Usa la skill [`upload-image`](../../upload-image/SKILL.md) para subir la imagen al bucket `VarsanaImages` y obtener la URL pública. Si aún no tienes la imagen, usa `https://picsum.photos/seed/<pasadia-slug>/1600/1000` como placeholder temporal.
 - **`prices`** (array): Lista de objetos de precio (misma estructura que los eventos).
 - **`stock_max`** (number): Cupo máximo de personas **por día**. El inventario se gestiona por fecha: cada día tiene su propio cupo independiente.
+- **`destacado`** (boolean, opcional): Ponlo en `true` para que este pasadía aparezca en el slider de la homepage. Por defecto es `false`.
+- **`orden`** (number, opcional): Posición dentro del slider. Números más bajos aparecen primero. Por defecto es `0`.
 - **`duration`** (string): Duración aproximada en formato legible, ej. `"8 horas"`, `"4–5 horas"`, `"medio día"`.
 - **`meeting_point`** (string): Punto de encuentro donde los participantes deben presentarse. Incluye dirección completa o referencias claras.
 - **`category`** (string): Categoría temática del pasadía. Se usa para filtros en la interfaz. Los valores existentes son `"naturaleza"`, `"ecologico"`, `"bienestar"`, etc. Mantén la consistencia con las categorías ya usadas.

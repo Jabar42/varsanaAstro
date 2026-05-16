@@ -12,9 +12,24 @@ const titleSchema = z.string().trim()
     message: 'Title must start with an uppercase letter (sentence case)',
   });
 
+/** Shared schema for collections that can appear in the featured slider. */
+const destacableSchema = z.object({
+  destacado: z.boolean().optional().default(false),
+  orden: z.number().int().min(0).optional().default(0),
+});
+
+/** Reusable price tier schema. */
+const priceSchema = z.object({
+  label: z.string(),
+  amount: z.number(),
+  deadline: z.date().optional(),
+});
+
+const pricesSchema = z.array(priceSchema);
+
 const eventsCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/events" }),
-  schema: z.object({
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/events' }),
+  schema: destacableSchema.merge(z.object({
     id: z.string(),
     title: titleSchema,
     description: z.string(),
@@ -22,40 +37,28 @@ const eventsCollection = defineCollection({
     event_end: z.date().optional(),
     image: z.string(),
     stock_max: z.number().int().positive(),
-    prices: z.array(
-      z.object({
-        label: z.string(),
-        amount: z.number(),
-        deadline: z.date().optional(),
-      })
-    ),
-  }),
+    prices: pricesSchema,
+  })),
 });
 
 const pasadiasCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/pasadias" }),
-  schema: z.object({
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/pasadias' }),
+  schema: destacableSchema.merge(z.object({
     id: z.string(),
     title: titleSchema,
     description: z.string(),
     image: z.string(),
-    prices: z.array(
-      z.object({
-        label: z.string(),
-        amount: z.number(),
-        deadline: z.date().optional(),
-      })
-    ),
+    prices: pricesSchema,
     stock_max: z.number().int().positive(),
     duration: z.string(),
     meeting_point: z.string(),
     category: z.string(),
     included_services: z.array(z.string()).optional().default([]),
-  }),
+  })),
 });
 
 const nosotrosCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/nosotros" }),
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/nosotros' }),
   schema: z.object({
     id: z.string(),
     nombre: z.string(),
@@ -68,7 +71,7 @@ const nosotrosCollection = defineCollection({
       z.object({
         plataforma: z.string(),
         url: z.string().url(),
-      })
+      }),
     ).optional().default([]),
     correo: z.string().email().optional(),
     telefono: z.string().optional(),

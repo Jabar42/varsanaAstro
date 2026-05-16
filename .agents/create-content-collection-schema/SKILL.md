@@ -53,13 +53,24 @@ export async function getUpcomingWorkshops() {
 }
 ```
 
-## 7. Test the New Collection
+## 7. Integrar imágenes
+
+Si la colección nueva necesita imágenes (ej. un campo `image` en el frontmatter), define una convención de carpeta en el bucket `VarsanaImages`:
+
+```bash
+# Ejemplo para una colección "workshops"
+npx tsx scripts/upload-image.ts ./foto.jpg --folder talleres/<slug> --name portada
+```
+
+Añade la referencia a `upload-image` en el nuevo skill de publicación que crees para esta colección. La convención es usar el nombre de la colección en español en minúsculas como prefijo de carpeta (ej. `eventos/`, `pasadias/`, `nosotros/`, `talleres/`).
+
+## 8. Test the New Collection
 
 1. Create a sample markdown file in `src/content/workshops/` (e.g., `yoga‑inicial.md`) with front‑matter that matches your schema.
 2. Start the development server (`npm run dev`) and navigate to `/workshops` (if you created a listing page) or directly to the entry ID.
 3. Verify that the data is loaded correctly and that the pages render without errors.
 
-## 8. Summary
+## 9. Summary
 
 You have now:
 - Added a new schema definition in `src/content.config.ts`
@@ -78,4 +89,4 @@ The new collection is fully integrated into the Astro content layer and can be q
 
 Use these references as templates when creating your own collection.
 
-**See also:** [`design‑guidelines`](../design-guidelines/SKILL.md).
+**See also:** [`design‑guidelines`](../design-guidelines/SKILL.md), [`upload-image`](../upload-image/SKILL.md).

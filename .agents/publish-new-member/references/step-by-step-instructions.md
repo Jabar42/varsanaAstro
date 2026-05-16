@@ -24,7 +24,7 @@ activo: true
 - **`nombre`** (string): El nombre completo del miembro.
 - **`rol`** (string): El cargo o responsabilidad dentro de Varsana (ej. "Fundadora", "Coordinador de Proyectos").
 - **`descripcion`** (string): Un resumen de una o dos líneas que se muestra en la tarjeta. Debe ser conciso pero atractivo.
-- **`imagen`** (string): Ruta relativa a la imagen dentro de la carpeta `public`. Las imágenes de los miembros se almacenan en `public/team/`. El valor debe comenzar con `/team/` (ej. `/team/ana-garcia.jpg`).
+- **`imagen`** (string): URL de la foto del miembro. Puede ser una ruta local dentro de `public/` (ej. `/team/ana-garcia.jpg`) o una URL remota. La forma recomendada es usar la skill [`upload-image`](../../upload-image/SKILL.md) para subir la foto al bucket `VarsanaImages` y obtener una URL pública (ej. `https://avvgfkclrciwimctbgqy.supabase.co/storage/v1/object/public/VarsanaImages/nosotros/ana-garcia/perfil.webp`).
 - **`orden`** (number): Un número entero no negativo que determina la posición en la página. Los miembros se ordenan de menor a mayor (0 → primero). Si no se especifica, el valor por defecto es `0`.
 - **`activo`** (boolean): Si es `true`, el miembro aparecerá en la página de equipo. Si es `false`, se ocultará. Por defecto es `true`.
 
@@ -54,11 +54,19 @@ enlaces_sociales:
 - **`correo`** (string): Dirección de correo electrónico válida. Se validará con el esquema de contenido.
 - **`telefono`** (string): Número de teléfono en formato libre (se recomienda incluir código de país, ej. `+57 300 123 4567`).
 
-### 4. Ubicación de la imagen
-- Sube o coloca la foto del miembro en la carpeta `public/team/`.
-- El nombre del archivo de imagen debe ser descriptivo y coincidir con el ID del miembro (ej. `maria-lopez.jpg`).
-- La imagen debe tener una relación de aspecto **cuadrada (1:1)** para que el recorte en `MemberCard` sea uniforme.
-- En el frontmatter, la ruta debe ser **relativa a `public`**, es decir, `/team/nombre‑de‑la‑foto.jpg`.
+### 4. Subir la imagen
+
+**Método recomendado:** Usa la skill [`upload-image`](../../upload-image/SKILL.md):
+
+```bash
+npx tsx scripts/upload-image.ts ./foto.jpg --folder nosotros/<id-miembro> --name perfil
+```
+
+Esto devuelve una URL pública que puedes usar directamente en el campo `imagen`.
+
+**Alternativa local:** Coloca la foto en `public/team/` y usa una ruta relativa a `public` (ej. `/team/maria-lopez.jpg`).
+
+En ambos casos, la imagen debe tener una relación de aspecto **cuadrada (1:1)** para que el recorte en `MemberCard` sea uniforme.
 
 ### 5. Escribir el contenido Markdown (biografía)
 Debajo del frontmatter, escribe la biografía completa del miembro usando Markdown.

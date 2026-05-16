@@ -6,6 +6,8 @@ id: "unique-pasadia-id"
 title: "Title of the pasadía"
 description: "A short, compelling description for SEO and cards."
 image: "https://picsum.photos/seed/pasadia/1600/1000"
+destacado: false  # set to true to feature this pasadia in the homepage slider
+orden: 0          # sort order within the slider (lower = first)
 prices:
   - label: "Early Bird"
     amount: 50000

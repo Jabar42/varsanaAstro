@@ -82,6 +82,6 @@ Si algún paso falla, revisa el frontmatter en busca de errores tipográficos, c
 
 ---
 
-**Ver también:** [`design‑guidelines`](../design-guidelines/SKILL.md).
+**Ver también:** [`upload-image`](../upload-image/SKILL.md), [`design‑guidelines`](../design-guidelines/SKILL.md).
 
 *Esta guía se basa en la implementación del proyecto a abril de 2026. Para actualizaciones, consulta los archivos `src/content.config.ts` y `src/pages/nosotros.astro`.*

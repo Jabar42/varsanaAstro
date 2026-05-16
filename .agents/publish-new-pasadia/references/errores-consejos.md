@@ -4,8 +4,9 @@
 - **Siempre** usa `YYYY-MM-DD` (con guiones ASCII estándar). Otros formatos (como `DD/MM/YYYY`) provocarán errores de análisis.
 - Los campos `deadline` (en los precios) se analizan como objetos `Date` en el esquema.
 
-### Placeholders de imagen
-- El proyecto actualmente usa `https://picsum.photos/seed/…/1600/1000` como placeholder. Reemplázalo con una URL de imagen real cuando el activo visual del pasadía esté listo.
+### Imágenes
+- Usa la skill [`upload-image`](../upload-image/SKILL.md) para subir la imagen del pasadía al bucket `VarsanaImages` y obtener una URL pública.
+- Si el pasadía aún no tiene imagen, usa `https://picsum.photos/seed/<pasadia-slug>/1600/1000` como placeholder temporal.
 - Asegúrate de que la imagen sea de alta calidad y en orientación horizontal (la proporción 16:10 funciona bien).
 
 ### Problema de zona horaria en los deadlines

@@ -8,7 +8,10 @@
 ```ts
 const workshopsCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/workshops" }),
-  schema: z.object({
+  // .merge(destacableSchema) makes this collection eligible for the
+  // featured slider on the homepage. destacableSchema is defined at the
+  // top of content.config.ts alongside titleSchema.
+  schema: destacableSchema.merge(z.object({
     title: z.string(),
     description: z.string(),
     instructor: z.string(),
@@ -20,11 +23,10 @@ const workshopsCollection = defineCollection({
         label: z.string(),
         amount: z.number(),
         deadline: z.date().optional(),
-        stripePriceId: z.string().optional(),
       })
     ),
     prerequisites: z.array(z.string()).optional().default([]),
-  }),
+  })),
 });
 ```
 
