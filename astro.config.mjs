@@ -8,6 +8,9 @@ export default defineConfig({
   output: 'server',
   adapter: vercel(),
   integrations: [react()],
+  build: {
+    inlineStylesheets: 'always',
+  },
   server: {
     port: 3000,
     host: true,
