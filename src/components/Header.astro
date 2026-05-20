@@ -1,5 +1,5 @@
 ---
-import { Globe, Phone, Mail, MessageCircle, MapPin } from 'lucide-react';
+import { Globe, Heart, MessageCircle } from 'lucide-react';
 import CategoryBar from '@/src/components/CategoryBar.astro';
 ---
 
@@ -10,9 +10,9 @@ import CategoryBar from '@/src/components/CategoryBar.astro';
       <!-- Logo -->
       <a href="/" class="flex items-center  cursor-pointer group">
         <div class="h-6 w-auto overflow-hidden">
-          <img 
-            src="/logo/logovarsana.png" 
-            alt="Varsana Logo" 
+          <img
+            src="/logo/logovarsana.png"
+            alt="Varsana Logo"
             class="h-full w-auto object-contain transition-transform duration-700 group-hover:scale-105"
             referrerpolicy="no-referrer"
           />
@@ -22,31 +22,22 @@ import CategoryBar from '@/src/components/CategoryBar.astro';
 
       <!-- Contact Info -->
       <div class="flex items-center gap-4 md:gap-8">
-        <!-- Desktop contact info (hidden on mobile) -->
-        <div class="hidden md:flex flex-col md:flex-row items-end md:items-center gap-1 md:gap-6 text-sm font-semibold">
-          <a href="tel:+573214538242" class="flex items-center gap-2 hover:text-rausch transition-colors">
-            <Phone size={16} className="text-rausch" />
+        <!-- Contact info -->
+        <div class="flex flex-row items-center gap-2 md:gap-6 text-sm font-semibold">
+          <a href="https://wa.me/573214538242" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-rausch transition-colors">
+            <MessageCircle size={16} className="text-rausch" />
             <span class="hidden sm:inline">+57 321 4538242</span>
           </a>
-          <a href="mailto:contacto@varsana.com" class="flex items-center gap-2 hover:text-rausch transition-colors">
-            <Mail size={16} className="text-rausch" />
-            <span class="hidden sm:inline">contacto@varsana.com</span>
+
+          <a href="/donar" class="inline-flex items-center gap-2 bg-rausch text-white font-semibold rounded-2xl px-4 py-1 md:px-5  transition-all duration-300 hover:brightness-90 cursor-pointer">
+            <Heart size={16} />
+            <span>Donar</span>
           </a>
-        </div>
-        
-        <!-- Mobile-only icons (WhatsApp & Location) -->
-        <div class="flex md:hidden items-center gap-4">
-          <a href="https://wa.me/573214538242" target="_blank" rel="noopener" class="p-2 hover:bg-sacred-sand rounded-full cursor-pointer transition-colors">
-            <MessageCircle size={18} className="text-rausch" />
-          </a>
-          <a href="https://maps.google.com/?q=Varsana" target="_blank" rel="noopener" class="p-2 hover:bg-sacred-sand rounded-full cursor-pointer transition-colors">
-            <MapPin size={18} className="text-rausch" />
-          </a>
-        </div>
-        
-        <!-- Globe icon (hidden on mobile) -->
-        <div class="p-2 hover:bg-sacred-sand rounded-full cursor-pointer transition-colors hidden md:block">
-          <Globe size={18} />
+
+          <!-- Globe icon -->
+          <div class="p-2 hover:bg-sacred-sand rounded-full cursor-pointer transition-colors">
+            <Globe size={18} />
+          </div>
         </div>
       </div>
     </div>
