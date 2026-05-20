@@ -2,7 +2,10 @@
 
 @theme {
   --color-rausch: #52185B;
+  --color-rausch-dark: #3A1241;
   --color-near-black: #222222;
+  --color-secondary-gray: #6a6a6a;
+  --color-light-surface: #f7f7f7;
   --color-saffron: #F7941E;
   --color-forest: #779B05;
   --color-sacred-sand: #FAF9F6;
