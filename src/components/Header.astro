@@ -13,7 +13,11 @@ import CategoryBar from '@/src/components/CategoryBar.astro';
           <img
             src="/logo/logovarsana.png"
             alt="Varsana Logo"
-            class="h-full w-auto object-contain transition-transform duration-700 group-hover:scale-105"
+            width={92}
+            height={72}
+            loading="eager"
+            fetchpriority="high"
+            class="h-full w-auto object-contain group-hover:scale-105 group-hover:transition-transform group-hover:duration-700"
             referrerpolicy="no-referrer"
           />
         </div>
