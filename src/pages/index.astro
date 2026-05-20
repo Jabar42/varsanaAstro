@@ -3,7 +3,6 @@ export const prerender = true;
 
 import Layout from '@/src/layouts/Layout.astro';
 import HeroBanner from '@/src/components/HeroBanner.astro';
-import Slider from '@/src/components/Slider.astro';
 import EventCard from '@/src/components/EventCard.astro';
 import PhotoGallery from '@/src/components/PhotoGallery.astro';
 import { getUpcomingEvents } from '@/src/lib/events';
@@ -23,14 +22,23 @@ const featuredItems = await getFeaturedItems({
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pb-8">
 
-    
+    <!-- Brand Message -->
+    <section class="py-20 md:py-28 text-center">
+      <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold font-display text-near-black leading-tight max-w-4xl mx-auto px-4">
+        Mas que un lugar, <span class="text-saffron">es una forma de habitar el mundo</span>
+      </h2>
+      <p class="mt-6 text-lg md:text-xl text-gray-500 max-w-2xl mx-auto">
+        Un espacio donde la naturaleza, la conciencia y la comunidad se encuentran.
+      </p>
+      <a
+        href="/nosotros"
+        class="mt-10 inline-block bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-[#6a1f73] transition-all duration-300 hover:scale-105"
+      >
+        Conoce nuestra comunidad
+      </a>
+    </section>
 
-    <!-- Featured Slider Section -->
-    <Slider
-      items={featuredItems}
-      title="Experiencias Destacadas"
-      subtitle="Eventos y pasadias seleccionados para ti"
-    />
+  
 
     <!-- Featured Events Grid -->
     <section class="mb-20">
