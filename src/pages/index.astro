@@ -5,6 +5,7 @@ import Layout from '@/src/layouts/Layout.astro';
 import HeroBanner from '@/src/components/HeroBanner.astro';
 import EventCard from '@/src/components/EventCard.astro';
 import PhotoGallery from '@/src/components/PhotoGallery.astro';
+import { ArrowUpRight } from 'lucide-react';
 import { getUpcomingEvents } from '@/src/lib/events';
 import { getFeaturedItems } from '@/src/lib/slider';
 
@@ -16,6 +17,14 @@ const featuredItems = await getFeaturedItems({
 });
 
 const aboutVideoUrl = "https://www.youtube.com/embed/PLACEHOLDER";
+
+const discoveryCards = [
+  { title: 'Temazcal', slug: 'temazcal' },
+  { title: 'Yoga', slug: 'yoga' },
+  { title: 'Alimentación', slug: 'alimentacion' },
+  { title: 'Huerta', slug: 'huerta' },
+  { title: 'Cuevas', slug: 'cuevas' },
+];
 ---
 
 <Layout title="Varsana Eco Yoga Aldea | Eventos y Retiros">
@@ -40,7 +49,65 @@ const aboutVideoUrl = "https://www.youtube.com/embed/PLACEHOLDER";
       </a>
     </section>
 
-  
+    <!-- Discovery Cards -->
+    <section class="py-20 md:py-28">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display text-near-black text-center">
+        Descubre Varsana
+      </h2>
+      <p class="text-lg text-gray-500 text-center mt-3 mb-10 md:mb-14">
+        Experiencias que transforman
+      </p>
+
+      <!-- Mobile: horizontal slider -->
+      <div class="flex sm:hidden overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-6 px-6 py-2 touch-pan-x">
+        {discoveryCards.map((card) => (
+          <a
+            href={`/experiencias/${card.slug}`}
+            draggable="false"
+            class="group w-[45vw] flex-shrink-0 snap-start select-none"
+          >
+            <div class="aspect-[1/2] overflow-hidden rounded-[20px] relative shadow-airbnb hover:shadow-md transition-shadow duration-500">
+              <img
+                src={`https://picsum.photos/seed/${card.slug}/400/800`}
+                alt={card.title}
+                draggable="false"
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+              />
+              <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent pointer-events-none rounded-b-[20px]" />
+              <div class="absolute bottom-0 left-0 right-0 p-3 flex items-end justify-between">
+                <span class="text-white font-bold text-sm">{card.title}</span>
+                <ArrowUpRight class="text-white" size={18} strokeWidth={2.5} />
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <!-- Tablet/Desktop: responsive grid -->
+      <div class="hidden sm:grid grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+        {discoveryCards.map((card) => (
+          <a
+            href={`/experiencias/${card.slug}`}
+            class="group block"
+          >
+            <div class="aspect-[1/2] overflow-hidden rounded-2xl relative">
+              <img
+                src={`https://picsum.photos/seed/${card.slug}/400/800`}
+                alt={card.title}
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+              />
+              <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent pointer-events-none rounded-b-2xl" />
+              <div class="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
+                <span class="text-white font-bold text-lg">{card.title}</span>
+                <ArrowUpRight class="text-white" size={20} strokeWidth={2.5} />
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+
 
     <!-- Featured Events Grid -->
     <section class="mb-20">
