@@ -77,7 +77,7 @@ function menuItemClass(href: string) {
 
 <nav aria-label="Navegacion principal" class="bg-white border-t border-gray-100 py-2">
   <!-- ========== Mobile ========== -->
-  <div class="flex md:hidden items-center justify-between">
+  <div class="flex min-[900px]:hidden items-center justify-between">
     {mobilePrimary.map((item) => (
       item.children ? (
         <div class="relative">
@@ -148,7 +148,7 @@ function menuItemClass(href: string) {
   </div>
 
   <!-- ========== Desktop ========== -->
-  <div class="hidden md:flex items-center justify-end gap-8 lg:gap-12">
+  <div class="hidden min-[900px]:flex items-center justify-end gap-8 lg:gap-12">
     {desktopCategories.map((item) => (
       item.children ? (
         <div class="relative">

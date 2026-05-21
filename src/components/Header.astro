@@ -4,48 +4,62 @@ import CategoryBar from '@/src/components/CategoryBar.astro';
 ---
 
 <header class="sticky top-0 z-50 bg-white border-b border-gray-100">
-  <div class="max-w-7xl mx-auto px-8 pt-2 pb-0 md:px-16 lg:px-24">
-    <!-- Top row: logo & contact -->
-    <div class="flex items-center justify-between">
-      <!-- Logo -->
-      <a href="/" class="flex items-center  cursor-pointer group">
-        <div class="h-6 w-auto overflow-hidden">
-          <img
-            src="/logo/logovarsana.png"
-            alt="Varsana Logo"
-            width={92}
-            height={72}
-            loading="eager"
-            fetchpriority="high"
-            class="h-full w-auto object-contain group-hover:scale-105 group-hover:transition-transform group-hover:duration-700"
-            referrerpolicy="no-referrer"
-          />
-        </div>
-        <span class="text-2xl font-bold tracking-tightest block font-display text-forest">Varsana</span>
-      </a>
+  <div class="max-w-7xl mx-auto px-8 pt-2 pb-0 md:px-16 lg:px-24 flex items-center gap-4 md:gap-8">
+    <!-- Desktop logo: spans both rows, centered vertically -->
+    <a href="/" class="hidden min-[900px]:block flex-shrink-0">
+      <img
+        src="/logo/logocompleto.png"
+        alt="Varsana"
+        width={85}
+        height={55}
+        class="h-14 w-auto object-contain"
+        fetchpriority="high"
+      />
+    </a>
 
-      <!-- Contact Info -->
-      <div class="flex items-center gap-4 md:gap-8">
-        <!-- Contact info -->
-        <div class="flex flex-row items-center gap-2 md:gap-6 text-sm font-semibold">
-          <a href="https://wa.me/573214538242" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-rausch transition-colors">
-            <span class="hidden sm:inline">+57 321 4538242</span>
-          </a>
+    <!-- Two-row content -->
+    <div class="flex-1 min-w-0">
+      <!-- Top row: contact info -->
+      <div class="flex items-center justify-between">
+        <!-- Mobile logo -->
+        <a href="/" class="flex items-center cursor-pointer group min-[900px]:hidden">
+          <div class="h-6 w-auto overflow-hidden">
+            <img
+              src="/logo/logovarsana.png"
+              alt="Varsana Logo"
+              width={92}
+              height={72}
+              loading="eager"
+              fetchpriority="high"
+              class="h-full w-auto object-contain group-hover:scale-105 group-hover:transition-transform group-hover:duration-700"
+              referrerpolicy="no-referrer"
+            />
+          </div>
+          <span class="text-2xl font-bold tracking-tightest block font-display text-forest">Varsana</span>
+        </a>
 
-          <a href="/donar" class="inline-flex items-center gap-2 bg-rausch text-white font-semibold rounded-2xl px-4 py-1 md:px-5  transition-all duration-300 hover:brightness-90 cursor-pointer">
-            <Heart size={16} />
-            <span>Donar</span>
-          </a>
+        <!-- Contact Info -->
+        <div class="flex items-center gap-4 md:gap-8 ml-auto">
+          <div class="flex flex-row items-center gap-2 md:gap-6 text-sm font-semibold">
+            <a href="https://wa.me/573214538242" target="_blank" rel="noopener" class="flex items-center gap-2 hover:text-rausch transition-colors">
+              <span class="hidden sm:inline">+57 321 4538242</span>
+            </a>
 
-          <!-- Globe icon -->
-          <div class=" hover:bg-sacred-sand rounded-full cursor-pointer transition-colors">
-            <Globe size={18} />
+            <a href="/donar" class="inline-flex items-center gap-2 bg-rausch text-white font-semibold rounded-2xl px-4 py-1 md:px-5 transition-all duration-300 hover:brightness-90 cursor-pointer">
+              <Heart size={16} />
+              <span>Donar</span>
+            </a>
+
+            <!-- Globe icon -->
+            <div class="hover:bg-sacred-sand rounded-full cursor-pointer transition-colors">
+              <Globe size={18} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Navigation row -->
-    <CategoryBar />
+      <!-- Bottom row: navigation -->
+      <CategoryBar />
+    </div>
   </div>
 </header>
