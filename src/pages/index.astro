@@ -14,6 +14,8 @@ const featuredEvents = upcomingEvents.slice(0, 3);
 const featuredItems = await getFeaturedItems({
   collections: ['events', 'pasadias'],
 });
+
+const aboutVideoUrl = "https://www.youtube.com/embed/PLACEHOLDER";
 ---
 
 <Layout title="Varsana Eco Yoga Aldea | Eventos y Retiros">
@@ -62,6 +64,72 @@ const featuredItems = await getFeaturedItems({
         <a href="/events" class="inline-block w-full py-4 border border-near-black rounded-xl font-bold hover:bg-gray-50 transition-colors">
           Ver todos los eventos
         </a>
+      </div>
+    </section>
+
+    <!-- About Video Section -->
+    <section class="py-20 md:py-28">
+      <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+        <!-- Video -->
+        <div class="w-full lg:w-7/12 bg-white rounded-[32px] shadow-airbnb p-3 hover:scale-[1.02] hover:shadow-lg transition-all duration-700 ease-in-out">
+          <div class="aspect-video rounded-2xl overflow-hidden">
+            <iframe
+              src={aboutVideoUrl}
+              title="Sobre Varsana"
+              class="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- Text -->
+        <div class="w-full lg:w-5/12 space-y-6 lg:space-y-8">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display text-near-black leading-tight">
+            Más que un lugar, una forma de vivir
+          </h2>
+          <p class="text-lg text-gray-500 leading-relaxed max-w-lg">
+            Varsana es una ecoaldea dedicada al bienestar integral, la vida conciente y la conexión espiritual. Aquí cultivamos la tierra, el cuerpo, la mente y el alma.
+          </p>
+          <a
+            href="/nosotros"
+            class="inline-block bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-[#6a1f73] transition-all duration-300 hover:scale-105"
+          >
+            Conoce nuestra historia
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Huerta Split Banner -->
+    <section class="-mx-6 md:-mx-12 lg:-mx-20">
+      <div class="grid grid-cols-1 lg:grid-cols-2">
+        <!-- Text Panel -->
+        <div class="bg-[#FFF3E6] px-6 md:px-12 lg:px-20 py-16 lg:py-20 flex items-center">
+          <div class="space-y-6 max-w-lg">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold font-display text-near-black leading-tight">
+              Cultivamos alimentos,<br />cultivamos conciencia
+            </h2>
+            <p class="text-gray-500 text-lg leading-relaxed">
+              En nuestra huerta orgánica producimos alimentos frescos, con prácticas sostenibles que cuidan la tierra y nuestra comunidad.
+            </p>
+            <a
+              href="/huerta"
+              class="inline-block bg-forest text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-[#668a04] transition-all duration-300 hover:scale-105"
+            >
+              Ver la Huerta
+            </a>
+          </div>
+        </div>
+
+        <!-- Image Panel -->
+        <div class="aspect-[4/3] lg:aspect-auto lg:min-h-[500px] overflow-hidden">
+          <img
+            src="https://picsum.photos/seed/huerta/1200/900"
+            alt="Huerta orgánica de Varsana"
+            class="w-full h-full object-cover"
+          />
+        </div>
       </div>
     </section>
 
