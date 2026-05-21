@@ -1,5 +1,5 @@
 ---
-import { Menu, Send, House, Megaphone, HeartHandshake, Store, Tent, Users, Sparkles } from 'lucide-react';
+import { Menu, Send, House, Megaphone, Store, Tent, Users, Sparkles, Salad, ChevronDown } from 'lucide-react';
 
 interface NavChild {
   name: string;
@@ -14,6 +14,7 @@ interface NavItem {
 }
 
 const categories: NavItem[] = [
+  { name: 'Inicio', icon: House, href: '/' },
   { name: 'Nosotros', icon: Users, href: '/nosotros' },
   {
     name: 'Experiencias',
@@ -21,18 +22,33 @@ const categories: NavItem[] = [
     children: [
       { name: 'Eventos', href: '/events' },
       { name: 'Pasadias', href: '/pasadias' },
+      { name: 'Voluntariado', href: '/voluntariado' },
     ],
   },
   { name: 'Tienda', icon: Store, href: '/tienda' },
   { name: 'Hospedaje', icon: Tent, href: '/hospedaje' },
-  { name: 'Voluntariado', icon: HeartHandshake, href: '/voluntariado' },
+  { name: 'Alimentacion', icon: Salad, href: '/alimentacion' },
   { name: 'Blog', icon: Megaphone, href: '/blog' },
   { name: 'Contacto', icon: Send, href: '/contacto' },
 ];
 
-const MOBILE_PRIMARY_COUNT = 3;
-const mobilePrimary = categories.slice(0, MOBILE_PRIMARY_COUNT);
-const mobileOverflow = categories.slice(MOBILE_PRIMARY_COUNT);
+const mobilePrimary: NavItem[] = [
+  categories[1], // Nosotros
+  categories[2], // Experiencias
+  categories[3], // Tienda
+];
+const mobileOverflow = categories.filter(c => !mobilePrimary.includes(c) && c.name !== 'Inicio');
+
+const desktopCategories: NavItem[] = [
+  categories[0], // Inicio
+  categories[1], // Nosotros
+  categories[2], // Experiencias
+  categories[4], // Hospedaje
+  categories[5], // Alimentacion
+  categories[3], // Tienda
+  categories[6], // Blog
+  categories[7], // Contacto
+];
 
 const currentPath = Astro.url.pathname;
 
@@ -77,7 +93,7 @@ function menuItemClass(href: string) {
             }`}
           >
             <item.icon class={iconClasses} strokeWidth={1.5} />
-            <span class={labelClasses}>{item.name}</span>
+            <span class={`${labelClasses} inline-flex items-center gap-0.5`}>{item.name}<ChevronDown class="size-3" strokeWidth={1.5} /></span>
           </button>
           <div
             data-dropdown-menu
@@ -133,7 +149,7 @@ function menuItemClass(href: string) {
 
   <!-- ========== Desktop ========== -->
   <div class="hidden md:flex items-center justify-end gap-8 lg:gap-12">
-    {categories.map((item) => (
+    {desktopCategories.map((item) => (
       item.children ? (
         <div class="relative">
           <button
@@ -148,7 +164,7 @@ function menuItemClass(href: string) {
             }`}
           >
             <item.icon class={iconClasses} strokeWidth={1.5} />
-            <span class={labelClasses}>{item.name}</span>
+            <span class={`${labelClasses} inline-flex items-center gap-0.5`}>{item.name}<ChevronDown class="size-3" strokeWidth={1.5} /></span>
           </button>
           <div
             data-dropdown-menu
