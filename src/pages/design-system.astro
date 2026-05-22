@@ -1,0 +1,547 @@
+---
+export const prerender = true;
+import Layout from '@/src/layouts/Layout.astro';
+---
+
+<Layout title="Sistema de Diseño | Varsana">
+  <main class="max-w-5xl mx-auto px-6 md:px-12 lg:px-20 py-16 md:py-24 space-y-32">
+
+    <!-- Page Header -->
+    <section>
+      <h1 class="text-5xl md:text-6xl font-bold font-display text-near-black leading-tight">Sistema de Diseño</h1>
+      <p class="mt-4 text-lg text-secondary-gray max-w-2xl">
+        Un sistema de diseño para santuario espiritual — Lienzo de Arena Sagrada, tipografía dual (Proza Libre + Inter), geometría orgánica y espaciado generoso.
+      </p>
+    </section>
+
+    <!-- ================================ -->
+    <!-- COLORS                          -->
+    <!-- ================================ -->
+    <section>
+      <h2 class="text-3xl md:text-4xl font-bold font-display text-near-black mb-8">Colores</h2>
+      <p class="text-secondary-gray mb-10 max-w-2xl">
+        Tres colores de marca anclan la identidad. Los neutros usan una escala cálida — sin negro puro ni grises fríos.
+      </p>
+
+      <!-- Brand Colors -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Colores de Marca</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
+        <!-- Rausch -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-rausch"></div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Rausch</p>
+            <p class="text-sm text-secondary-gray">CTA principal, acento de marca</p>
+            <p class="text-sm font-mono text-secondary-gray">#52185B</p>
+          </div>
+        </div>
+        <!-- Rausch Oscuro -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-rausch-dark"></div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Rausch Oscuro</p>
+            <p class="text-sm text-secondary-gray">Estados hover, profundidad</p>
+            <p class="text-sm font-mono text-secondary-gray">#3A1241</p>
+          </div>
+        </div>
+        <!-- Rausch Claro -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-rausch-light"></div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Rausch Claro</p>
+            <p class="text-sm text-secondary-gray">Destellos hover, degradados</p>
+            <p class="text-sm font-mono text-secondary-gray">#97448E</p>
+          </div>
+        </div>
+        <!-- Saffron -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-saffron"></div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Saffron</p>
+            <p class="text-sm text-secondary-gray">Acento espiritual, destacados</p>
+            <p class="text-sm font-mono text-secondary-gray">#F7941E</p>
+          </div>
+        </div>
+        <!-- Azafrán Claro -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-saffron-light"></div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Azafrán Claro</p>
+            <p class="text-sm text-secondary-gray">Resplandor cálido, fondos de etiqueta</p>
+            <p class="text-sm font-mono text-secondary-gray">#FAAF3E</p>
+          </div>
+        </div>
+        <!-- Forest -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-forest"></div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Forest</p>
+            <p class="text-sm text-secondary-gray">Acento natural, eco/voluntariado</p>
+            <p class="text-sm font-mono text-secondary-gray">#779B05</p>
+          </div>
+        </div>
+        <!-- Bosque Oscuro -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden sm:col-span-2 lg:col-span-1">
+          <div class="h-24 bg-forest-dark"></div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Bosque Oscuro</p>
+            <p class="text-sm text-secondary-gray">Fondo de botón secundario</p>
+            <p class="text-sm font-mono text-secondary-gray">#5A7A04</p>
+          </div>
+        </div>
+        <!-- Bosque Claro -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden sm:col-span-2 lg:col-span-1">
+          <div class="h-24 bg-forest-light"></div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Bosque Claro</p>
+            <p class="text-sm text-secondary-gray">Hover, fondo etiqueta naturaleza</p>
+            <p class="text-sm font-mono text-secondary-gray">#95AD02</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Neutrals -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Neutros</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        <!-- Casi Negro -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-near-black flex items-end p-4">
+            <span class="text-white/60 text-xs font-mono">Texto sobre casi negro</span>
+          </div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Casi Negro</p>
+            <p class="text-sm text-secondary-gray">Texto principal</p>
+            <p class="text-sm font-mono text-secondary-gray">#222222</p>
+          </div>
+        </div>
+        <!-- Gris Secundario -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-secondary-gray flex items-end p-4">
+            <span class="text-white/70 text-xs font-mono">Texto sobre gris</span>
+          </div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Gris Secundario</p>
+            <p class="text-sm text-secondary-gray">Descripciones, metadatos</p>
+            <p class="text-sm font-mono text-secondary-gray">#6A6A6A</p>
+          </div>
+        </div>
+        <!-- Arena Sagrada -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-sacred-sand border border-gray-200 flex items-end p-4">
+            <span class="text-secondary-gray text-xs font-mono">Fondo de página</span>
+          </div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Arena Sagrada</p>
+            <p class="text-sm text-secondary-gray">Fondo de página — sin sombra</p>
+            <p class="text-sm font-mono text-secondary-gray">#FAF9F6</p>
+          </div>
+        </div>
+        <!-- Blanco Loto -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-lotus-white border border-gray-200 flex items-end p-4">
+            <span class="text-secondary-gray text-xs font-mono">Superficie de tarjeta</span>
+          </div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Blanco Loto</p>
+            <p class="text-sm text-secondary-gray">Superficies de tarjeta</p>
+            <p class="text-sm font-mono text-secondary-gray">#FFFFFF</p>
+          </div>
+        </div>
+        <!-- Superficie Clara -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+          <div class="h-24 bg-light-surface border border-gray-200 flex items-end p-4">
+            <span class="text-secondary-gray text-xs font-mono">Sección alterna</span>
+          </div>
+          <div class="p-5 space-y-1.5">
+            <p class="font-semibold text-near-black">Superficie Clara</p>
+            <p class="text-sm text-secondary-gray">Secciones alternas</p>
+            <p class="text-sm font-mono text-secondary-gray">#F7F7F7</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ -->
+    <!-- TYPOGRAPHY                      -->
+    <!-- ================================ -->
+    <section>
+      <h2 class="text-3xl md:text-4xl font-bold font-display text-near-black mb-8">Tipografía</h2>
+      <p class="text-secondary-gray mb-10 max-w-2xl">
+        Estrategia de fuente dual: <strong class="text-near-black">Proza Libre</strong> para encabezados (la "voz de la sabiduría") y <strong class="text-near-black">Inter</strong> para cuerpo e interfaz (la "voz de la claridad").
+      </p>
+
+      <div class="space-y-12">
+        <!-- Hero Heading -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
+          <div class="lg:w-48 flex-shrink-0">
+            <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Hero Heading</span>
+          </div>
+          <div class="flex-1 space-y-3">
+            <p class="text-6xl font-bold font-display leading-tight tracking-[-0.01em] text-near-black">
+              Transforma tu ser
+            </p>
+            <div class="text-sm text-secondary-gray font-mono space-y-0.5">
+              <p>Proza Libre · 64px · 700 · line-height 1.1 · tracking -0.01em</p>
+              <p>Uso: Hero de portada, banners</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Title -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
+          <div class="lg:w-48 flex-shrink-0">
+            <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Section Title</span>
+          </div>
+          <div class="flex-1 space-y-3">
+            <p class="text-4xl font-bold font-display leading-tight text-near-black">
+              Próximas Experiencias
+            </p>
+            <div class="text-sm text-secondary-gray font-mono space-y-0.5">
+              <p>Proza Libre · 36px · 700 · line-height 1.2</p>
+              <p>Uso: Secciones de página, títulos</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Title -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
+          <div class="lg:w-48 flex-shrink-0">
+            <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Card Title</span>
+          </div>
+          <div class="flex-1 space-y-3">
+            <p class="text-xl font-semibold font-sans leading-snug tracking-[-0.02em] text-near-black">
+              Retiro de Yoga y Meditación
+            </p>
+            <div class="text-sm text-secondary-gray font-mono space-y-0.5">
+              <p>Inter · 20px · 600 · line-height 1.3 · tracking -0.02em</p>
+              <p>Uso: Tarjetas de eventos, pasadías, información</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
+          <div class="lg:w-48 flex-shrink-0">
+            <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Body</span>
+          </div>
+          <div class="flex-1 space-y-3">
+            <p class="text-base font-normal font-sans leading-relaxed text-near-black max-w-xl">
+              Varsana es una ecoaldea dedicada al bienestar integral, la vida consciente y la conexión espiritual. Aquí cultivamos la tierra, el cuerpo, la mente y el alma en armonía con la naturaleza.
+            </p>
+            <div class="text-sm text-secondary-gray font-mono space-y-0.5">
+              <p>Inter · 16px · 400 · line-height 1.6</p>
+              <p>Uso: Párrafos, descripciones, texto largo</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metadata -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
+          <div class="lg:w-48 flex-shrink-0">
+            <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Metadata</span>
+          </div>
+          <div class="flex-1 space-y-3">
+            <p class="text-sm font-medium font-sans leading-snug tracking-[0.02em] text-secondary-gray">
+              15–18 Mayo 2026 &middot; $380.000 COP &middot; Granada, Cundinamarca
+            </p>
+            <div class="text-sm text-secondary-gray font-mono space-y-0.5">
+              <p>Inter · 14px · 500 · line-height 1.4 · tracking 0.02em</p>
+              <p>Uso: Fechas, precios, etiquetas, pies</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Button -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
+          <div class="lg:w-48 flex-shrink-0">
+            <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Button</span>
+          </div>
+          <div class="flex-1 space-y-3">
+            <p class="text-base font-semibold font-sans leading-tight text-near-black">
+              Reservar ahora &rarr;
+            </p>
+            <div class="text-sm text-secondary-gray font-mono space-y-0.5">
+              <p>Inter · 16px · 600 · line-height 1.2</p>
+              <p>Uso: Todos los botones y CTAs</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ -->
+    <!-- SPACING                         -->
+    <!-- ================================ -->
+    <section>
+      <h2 class="text-3xl md:text-4xl font-bold font-display text-near-black mb-8">Espaciado</h2>
+      <p class="text-secondary-gray mb-10 max-w-2xl">
+        Unidad base de 8px. El espaciado de secciones está inflado ~20% sobre el estándar para una sensación amplia.
+      </p>
+
+      <div class="space-y-8">
+        {([
+          { label: 'xs', value: '4px', px: 4 },
+          { label: 'base', value: '8px', px: 8 },
+          { label: 'sm', value: '12px', px: 12 },
+          { label: 'md', value: '24px', px: 24 },
+          { label: 'gutter', value: '24px', px: 24 },
+          { label: 'lg', value: '48px', px: 48 },
+          { label: 'xl', value: '64px', px: 64 },
+          { label: 'section', value: '80px', px: 80 },
+        ]).map(({ label, value, px }) => (
+          <div class="flex items-center gap-6">
+            <div class="w-28 text-sm font-semibold text-near-black text-right flex-shrink-0">{label}</div>
+            <div class="w-20 text-sm font-mono text-secondary-gray text-right flex-shrink-0">{value}</div>
+            <div class="flex-1 flex items-center">
+              <div class="h-6 bg-rausch rounded-sm" style={`width: ${px}px;`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ================================ -->
+    <!-- BORDER RADIUS                    -->
+    <!-- ================================ -->
+    <section>
+      <h2 class="text-3xl md:text-4xl font-bold font-display text-near-black mb-8">Bordes Redondeados</h2>
+      <p class="text-secondary-gray mb-10 max-w-2xl">
+        Radios generosos y consistentes suavizan la interfaz. Tarjetas usan 24–32px; botones siempre 16px.
+      </p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+        {([
+          { label: 'sm', value: '8px', class: 'rounded-sm', token: '--radius-sm' },
+          { label: 'DEFAULT', value: '16px', class: 'rounded-[16px]', token: '--radius-DEFAULT' },
+          { label: 'md', value: '24px', class: 'rounded-[24px]', token: '--radius-md' },
+          { label: 'lg', value: '32px', class: 'rounded-[32px]', token: '--radius-lg' },
+          { label: 'full', value: '9999px', class: 'rounded-full', token: '--radius-full' },
+        ]).map(({ label, value, class: cls, token }) => (
+          <div class="text-center space-y-3">
+            <div class={`${cls} aspect-square bg-rausch flex items-center justify-center`}>
+              <span class="text-white/80 text-xs font-mono">{value}</span>
+            </div>
+            <p class="text-sm font-semibold text-near-black">{label}</p>
+            <p class="text-xs font-mono text-secondary-gray">{token}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ================================ -->
+    <!-- ELEVATION / SHADOWS             -->
+    <!-- ================================ -->
+    <section>
+      <h2 class="text-3xl md:text-4xl font-bold font-display text-near-black mb-8">Elevation & Shadows</h2>
+      <p class="text-secondary-gray mb-10 max-w-2xl">
+        Una sombra tipo Airbnb en capas crea profundidad sin contornos duros. Las tarjetas se elevan al hover con un resplandor cálido de azafrán.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Base: Flat -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold font-display text-near-black">Base (flat)</h3>
+          <div class="bg-sacred-sand rounded-lg p-8 text-center text-secondary-gray text-sm">
+            Fondo de página — sin sombra — no shadow
+          </div>
+          <p class="text-xs font-mono text-secondary-gray">Arena Sagrada background, flat</p>
+        </div>
+
+        <!-- Elevated: Airbnb shadow -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold font-display text-near-black">Elevated (cards)</h3>
+          <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 text-center text-near-black text-sm">
+            Superficie de tarjeta — layered shadow
+          </div>
+        </div>
+
+        <!-- Interactive: Hover glow -->
+        <div class="md:col-span-2 space-y-4">
+          <h3 class="text-lg font-semibold font-display text-near-black">Interactive (hover)</h3>
+          <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 text-center text-near-black text-sm transition-all duration-600 ease-in-out hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(247,148,30,0.12),0_0_0_1px_rgba(0,0,0,0.02),0_2px_6px_rgba(0,0,0,0.04),0_4px_8px_rgba(0,0,0,0.10)] cursor-pointer">
+            Pasa el ratón — escala 1.02 + resplandor azafrán
+          </div>
+          <p class="text-xs font-mono text-secondary-gray">Sombra tipo Airbnb + resplandor de azafrán al hover</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ -->
+    <!-- COMPONENTS                       -->
+    <!-- ================================ -->
+    <section>
+      <h2 class="text-3xl md:text-4xl font-bold font-display text-near-black mb-8">Componentes</h2>
+
+      <!-- Cards -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Tarjetas</h3>
+      <p class="text-secondary-gray mb-8 max-w-2xl">
+        Fondo Blanco Loto, sombra Airbnb, radio 24–32px. Hover: scale(1.02), sombra más profunda, resplandor azafrán.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-14">
+        <!-- Base card -->
+        <div>
+          <p class="text-sm font-semibold text-secondary-gray mb-3">Estado base</p>
+          <div class="bg-lotus-white rounded-lg shadow-airbnb p-6 transition-all duration-600 ease-in-out">
+            <div class="h-40 bg-sacred-sand rounded-md mb-4 flex items-center justify-center text-secondary-gray text-sm">Placeholder de imagen</div>
+            <h4 class="text-xl font-semibold font-sans tracking-[-0.02em] text-near-black mb-2">Card Title</h4>
+            <p class="text-sm text-secondary-gray leading-relaxed mb-3">Descripción de tarjeta con metadatos y texto de apoyo. Limpio y amplio.</p>
+            <span class="inline-block bg-saffron-light text-near-black text-xs font-medium px-3 py-1 rounded-full">Tag</span>
+          </div>
+        </div>
+        <!-- Hover card -->
+        <div>
+          <p class="text-sm font-semibold text-secondary-gray mb-3">Estado hover</p>
+          <div class="bg-lotus-white rounded-lg shadow-airbnb p-6 transition-all duration-600 ease-in-out hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(247,148,30,0.12),0_0_0_1px_rgba(0,0,0,0.02),0_2px_6px_rgba(0,0,0,0.04),0_4px_8px_rgba(0,0,0,0.10)] cursor-pointer">
+            <div class="h-40 bg-sacred-sand rounded-md mb-4 flex items-center justify-center text-secondary-gray text-sm">Placeholder de imagen</div>
+            <h4 class="text-xl font-semibold font-sans tracking-[-0.02em] text-near-black mb-2">Card Title</h4>
+            <p class="text-sm text-secondary-gray leading-relaxed mb-3">Pasa el ratón — se eleva + resplandor azafrán</p>
+            <span class="inline-block bg-forest-light text-near-black text-xs font-medium px-3 py-1 rounded-full">Nature</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Botones</h3>
+      <p class="text-secondary-gray mb-8 max-w-2xl">
+        Todos los botones: radio 16px, Inter bold 600, padding 12px vertical / 24px horizontal.
+      </p>
+      <div class="space-y-6 mb-14">
+        <!-- Primario -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+          <div class="w-40 flex-shrink-0">
+            <span class="text-sm font-semibold text-near-black">Primario</span>
+            <p class="text-xs text-secondary-gray">CTAs principales, checkout</p>
+          </div>
+          <div class="flex gap-4 flex-wrap items-center">
+            <button class="bg-rausch text-lotus-white font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight transition-all duration-300 hover:bg-rausch-dark cursor-pointer">Reservar ahora</button>
+            <span class="text-xs font-mono text-secondary-gray">Fondo Rausch, texto Blanco Loto</span>
+          </div>
+        </div>
+        <!-- Secondary (Forest) -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+          <div class="w-40 flex-shrink-0">
+            <span class="text-sm font-semibold text-near-black">Secundario</span>
+            <p class="text-xs text-secondary-gray">Acciones secundarias</p>
+          </div>
+          <div class="flex gap-4 flex-wrap items-center">
+            <button class="bg-forest-dark text-lotus-white font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight transition-all duration-300 hover:bg-forest cursor-pointer">Ver la Huerta</button>
+            <span class="text-xs font-mono text-secondary-gray">Fondo Bosque Oscuro, texto Blanco Loto</span>
+          </div>
+        </div>
+        <!-- Saffron -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+          <div class="w-40 flex-shrink-0">
+            <span class="text-sm font-semibold text-near-black">Saffron</span>
+            <p class="text-xs text-secondary-gray">Acciones espirituales</p>
+          </div>
+          <div class="flex gap-4 flex-wrap items-center">
+            <button class="bg-saffron text-near-black font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight transition-all duration-300 hover:bg-saffron-light cursor-pointer">Conocer más</button>
+            <span class="text-xs font-mono text-secondary-gray">Fondo Azafrán, texto Casi Negro</span>
+          </div>
+        </div>
+        <!-- Ghost -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+          <div class="w-40 flex-shrink-0">
+            <span class="text-sm font-semibold text-near-black">Fantasma</span>
+            <p class="text-xs text-secondary-gray">Terciarias, "ver más"</p>
+          </div>
+          <div class="flex gap-4 flex-wrap items-center">
+            <button class="bg-transparent text-near-black border-2 border-near-black font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight transition-all duration-300 hover:bg-near-black hover:text-lotus-white cursor-pointer">Ver todos los eventos</button>
+            <span class="text-xs font-mono text-secondary-gray">Borde Casi Negro, hover fondo oscuro</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Etiquetas</h3>
+      <p class="text-secondary-gray mb-8 max-w-2xl">
+        Píldoras de radio completo, tipografía metadata (Inter 14px / 500), padding 4px vertical / 12px horizontal.
+      </p>
+      <div class="flex flex-wrap gap-4 mb-14">
+        <div class="flex flex-col items-start gap-2">
+          <span class="inline-block bg-saffron-light text-near-black text-sm font-medium px-3 py-1 rounded-full">Yoga & Meditación</span>
+          <span class="text-xs font-mono text-secondary-gray">Fondo azafrán claro — etiqueta espiritual</span>
+        </div>
+        <div class="flex flex-col items-start gap-2">
+          <span class="inline-block bg-forest-light text-near-black text-sm font-medium px-3 py-1 rounded-full">Voluntariado</span>
+          <span class="text-xs font-mono text-secondary-gray">Fondo bosque claro — etiqueta naturaleza</span>
+        </div>
+        <div class="flex flex-col items-start gap-2">
+          <span class="inline-block bg-sacred-sand text-near-black text-sm font-medium px-3 py-1 rounded-full border border-gray-200">Default tag</span>
+          <span class="text-xs font-mono text-secondary-gray">Fondo arena sagrada — neutro</span>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Enlaces</h3>
+      <p class="text-secondary-gray mb-8 max-w-2xl">
+        Color Rausch, tamaño Inter body, hover más claro. Subrayado con desplazamiento para claridad.
+      </p>
+      <div class="space-y-4 mb-14">
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-rausch font-sans text-base hover:text-rausch-light transition-colors underline underline-offset-4">Ver todos los eventos &rarr;</a>
+          <span class="text-xs font-mono text-secondary-gray">Color Rausch, hover más claro, subrayado</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="#" class="text-near-black font-sans text-base font-semibold hover:text-rausch transition-colors">Conoce nuestra comunidad</a>
+          <span class="text-xs font-mono text-secondary-gray">Color Casi Negro, hover Rausch</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ -->
+    <!-- Z-INDEX                         -->
+    <!-- ================================ -->
+    <section>
+      <h2 class="text-3xl md:text-4xl font-bold font-display text-near-black mb-8">Jerarquía Z</h2>
+      <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden">
+        <div class="divide-y divide-gray-100">
+          {([
+            { layer: 'Content', z: 'auto', usage: 'Contenido de página' },
+            { layer: 'Sticky header', z: 40, usage: 'Barra de navegación' },
+            { layer: 'Overlay', z: 50, usage: 'Modales, paneles, menús' },
+          ]).map(({ layer, z, usage }) => (
+            <div class="flex items-center gap-8 px-6 py-4">
+              <span class="w-36 text-sm font-semibold text-near-black">{layer}</span>
+              <span class="w-16 text-sm font-mono text-rausch font-semibold">z-{z}</span>
+              <span class="text-sm text-secondary-gray">{usage}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ -->
+    <!-- TRANSITIONS                     -->
+    <!-- ================================ -->
+    <section>
+      <h2 class="text-3xl md:text-4xl font-bold font-display text-near-black mb-8">Transiciones</h2>
+      <p class="text-secondary-gray mb-10 max-w-2xl">
+        Lentas, gráciles, deliberadas. Nunca más rápido de 0.3s — la marca respira.
+      </p>
+      <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 space-y-6">
+        <div class="flex items-center gap-6">
+          <div class="w-32 h-12 bg-rausch rounded-[16px] transition-all duration-300 hover:bg-rausch-dark hover:scale-105 flex items-center justify-center text-white text-xs font-semibold cursor-pointer">
+            ䷀ 300ms button
+          </div>
+          <span class="text-xs font-mono text-secondary-gray">Transición 300ms — botones y enlaces</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-600 ease-in-out hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(247,148,30,0.12),0_0_0_1px_rgba(0,0,0,0.02),0_2px_6px_rgba(0,0,0,0.04),0_4px_8px_rgba(0,0,0,0.10)] flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
+            ䷀ 600ms card hover
+          </div>
+          <span class="text-xs font-mono text-secondary-gray">Transición 600ms — tarjetas e imágenes</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-700 ease-in-out hover:scale-110 flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
+            ䷀ 700ms image zoom
+          </div>
+          <span class="text-xs font-mono text-secondary-gray">Transición 700ms — zoom de imagen al hover</span>
+        </div>
+      </div>
+    </section>
+
+    
+
+  </main>
+</Layout>
