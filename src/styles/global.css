@@ -35,21 +35,7 @@
 }
 
 @import "tailwindcss";
-
-@theme {
-  --color-rausch: #52185B;
-  --color-rausch-dark: #3A1241;
-  --color-near-black: #222222;
-  --color-secondary-gray: #6a6a6a;
-  --color-light-surface: #f7f7f7;
-  --color-saffron: #F7941E;
-  --color-forest: #779B05;
-  --color-sacred-sand: #FAF9F6;
-  --shadow-airbnb: 0 0 0 1px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.1);
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Proza Libre", sans-serif;
-  --header-height: 11rem;
-}
+@import "./design-tokens.css";
 
 @layer base {
   html, body {

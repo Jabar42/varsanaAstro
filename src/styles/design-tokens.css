@@ -1,0 +1,28 @@
+/* Generated from DESIGN.md — do not edit by hand */
+
+@theme {
+  --color-primary: #52185b;
+  --color-rausch: #52185b;
+  --color-rausch-dark: #3a1241;
+  --color-rausch-light: #97448e;
+  --color-secondary: #f7941e;
+  --color-saffron: #f7941e;
+  --color-saffron-light: #faaf3e;
+  --color-forest: #779b05;
+  --color-forest-dark: #5a7a04;
+  --color-forest-light: #95ad02;
+  --color-near-black: #222222;
+  --color-secondary-gray: #6a6a6a;
+  --color-sacred-sand: #faf9f6;
+  --color-lotus-white: #ffffff;
+  --color-light-surface: #f7f7f7;
+  --font-display: "Proza Libre", sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: 8px;
+  --radius-DEFAULT: 16px;
+  --radius-md: 24px;
+  --radius-lg: 32px;
+  --radius-full: 9999px;
+  --shadow-airbnb: 0 0 0 1px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.1);
+  --header-height: 11rem;
+}
