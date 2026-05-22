@@ -1,48 +1,59 @@
 @font-face {
-  font-family: 'Proza Libre';
+  font-family: "Proza Libre";
   font-style: normal;
   font-display: block;
   font-weight: 400;
-  src: url('/fonts/proza-libre/proza-libre-latin-400-normal.woff2') format('woff2');
+  src: url("/fonts/proza-libre/proza-libre-latin-400-normal.woff2")
+    format("woff2");
 }
 @font-face {
-  font-family: 'Proza Libre';
+  font-family: "Proza Libre";
   font-style: normal;
   font-display: block;
   font-weight: 500;
-  src: url('/fonts/proza-libre/proza-libre-latin-500-normal.woff2') format('woff2');
+  src: url("/fonts/proza-libre/proza-libre-latin-500-normal.woff2")
+    format("woff2");
 }
 @font-face {
-  font-family: 'Proza Libre';
+  font-family: "Proza Libre";
   font-style: normal;
   font-display: block;
   font-weight: 600;
-  src: url('/fonts/proza-libre/proza-libre-latin-600-normal.woff2') format('woff2');
+  src: url("/fonts/proza-libre/proza-libre-latin-600-normal.woff2")
+    format("woff2");
 }
 @font-face {
-  font-family: 'Proza Libre';
+  font-family: "Proza Libre";
   font-style: normal;
   font-display: block;
   font-weight: 700;
-  src: url('/fonts/proza-libre/proza-libre-latin-700-normal.woff2') format('woff2');
+  src: url("/fonts/proza-libre/proza-libre-latin-700-normal.woff2")
+    format("woff2");
 }
 @font-face {
-  font-family: 'Proza Libre';
+  font-family: "Proza Libre";
   font-style: normal;
   font-display: block;
   font-weight: 800;
-  src: url('/fonts/proza-libre/proza-libre-latin-800-normal.woff2') format('woff2');
+  src: url("/fonts/proza-libre/proza-libre-latin-800-normal.woff2")
+    format("woff2");
 }
 
 @import "tailwindcss";
 @import "./design-tokens.css";
 
 @layer base {
-  html, body {
+  html,
+  body {
     @apply bg-sacred-sand text-near-black font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display font-bold tracking-tight;
   }
 }
@@ -55,7 +66,7 @@
   height: 100%;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.08;
+  opacity: 0.1;
 }
 
 @layer utilities {
