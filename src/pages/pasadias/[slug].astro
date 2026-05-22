@@ -50,7 +50,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
     <div class="px-6 md:px-0 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
       <!-- Main Content Column -->
       <div class="lg:col-span-2 space-y-8">
-        <div class="border-b border-gray-200 pb-8">
+        <div class="border-b border-sacred-sand pb-8">
           <h1 class="text-4xl md:text-6xl font-bold tracking-tightest mb-4 font-display">{title}</h1>
           <div class="flex flex-wrap gap-6 text-sm font-medium">
             <div class="flex items-center gap-2">
@@ -65,7 +65,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
         </div>
 
         <!-- Host Info -->
-        <div class="flex items-center justify-between border-b border-gray-200 pb-8">
+        <div class="flex items-center justify-between border-b border-sacred-sand pb-8">
           <div class="space-y-1">
             <h2 class="text-2xl font-bold font-display">Experiencia organizada por Varsana</h2>
             <p class="text-gray-500 text-sm">Comunidad intencional · 15 años de sabiduría</p>
@@ -82,7 +82,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
 
         <!-- Included Services -->
         {included_services && included_services.length > 0 && (
-          <div class="border-t border-gray-200 pt-8">
+          <div class="border-t border-sacred-sand pt-8">
             <h3 class="text-2xl font-bold mb-6 font-display">Servicios incluidos</h3>
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
               {included_services.map((service, idx) => (
@@ -96,7 +96,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
         )}
 
         <!-- Features -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-gray-200 pt-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-sacred-sand pt-8">
           <div class="flex gap-4">
             <Users size={24} strokeWidth={1.5} />
             <div>
@@ -116,7 +116,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
 
       <!-- Sticky Price Card Column -->
       <div class="relative">
-        <div class="sticky top-28 bg-white border border-gray-200 rounded-[24px] p-6 shadow-airbnb space-y-6">
+        <div class="sticky top-28 bg-lotus-white border border-sacred-sand rounded-[24px] p-6 shadow-airbnb space-y-6">
           <div class="flex justify-between items-end">
             <div>
               <span class="text-3xl font-bold tracking-tightest font-display">${currentPrice?.amount.toLocaleString('es-CO')}</span>
@@ -132,16 +132,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
           <div class="border border-gray-400 rounded-xl overflow-hidden">
             <div class="grid grid-cols-2 border-b border-gray-400">
               <div class="p-3 border-r border-gray-400">
-                <p class="text-[10px] font-bold uppercase">Duración</p>
+                <p class="text-xs font-bold uppercase">Duración</p>
                 <p class="text-sm">{duration}</p>
               </div>
               <div class="p-3">
-                <p class="text-[10px] font-bold uppercase">Cupos por día</p>
+                <p class="text-xs font-bold uppercase">Cupos por día</p>
                 <p class="text-sm">{stock_max} personas</p>
               </div>
             </div>
             <div class="p-3">
-              <p class="text-[10px] font-bold uppercase">Tipo de Entrada</p>
+              <p class="text-xs font-bold uppercase">Tipo de Entrada</p>
               <p class="text-sm font-medium text-saffron">{currentPrice?.label || 'General'}</p>
             </div>
           </div>

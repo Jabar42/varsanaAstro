@@ -43,7 +43,7 @@ const hasNav = items.length > 1;
           <div class="slide-item">
             <a
               href={item.url}
-              class="block bg-white rounded-[20px] shadow-airbnb overflow-hidden transition-transform duration-300 hover:scale-[1.02] group h-full"
+              class="block bg-lotus-white rounded-lg shadow-airbnb overflow-hidden transition-transform duration-300 hover:scale-[1.02] group h-full"
             >
               <div class="aspect-[16/10] overflow-hidden">
                 <img
@@ -240,7 +240,7 @@ const hasNav = items.length > 1;
     border-radius: 50%;
     background: white;
     box-shadow: 0 0 0 1px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.12);
-    color: #222222;
+    color: var(--color-near-black);
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     border: none;
@@ -249,7 +249,7 @@ const hasNav = items.length > 1;
   .slider-arrow:hover {
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.16);
-    color: #52185B;
+    color: var(--color-rausch);
   }
 
   .slider-arrow--prev {
@@ -280,12 +280,12 @@ const hasNav = items.length > 1;
     border: none;
     cursor: pointer;
     padding: 0;
-    background: #d1d5db;
+    background: var(--color-light-surface);
     transition: all 0.3s ease;
   }
 
   .slider-dot.active {
-    background: #52185B;
+    background: var(--color-rausch);
     width: 28px;
     border-radius: 5px;
   }

@@ -327,7 +327,7 @@ export default function BoldPaymentButton({
             {ticketSelections.map(ticket => (
               <div
                 key={ticket.label}
-                className="flex items-center justify-between rounded-lg border border-sacred-sand bg-white px-3 py-2"
+                className="flex items-center justify-between rounded-lg border border-sacred-sand bg-lotus-white px-3 py-2"
               >
                 <div className="flex-1">
                   <p className="text-sm font-medium text-near-black">{ticket.label}</p>
@@ -362,7 +362,7 @@ export default function BoldPaymentButton({
       {/* Single price: show label + quantity selector */}
       {prices.length === 1 && (
         <div className="space-y-2">
-          <div className="rounded-lg border border-sacred-sand bg-white px-3 py-2">
+          <div className="rounded-lg border border-sacred-sand bg-lotus-white px-3 py-2">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-near-black">{prices[0].label}</p>
@@ -402,7 +402,7 @@ export default function BoldPaymentButton({
       )}
 
       {/* Customer Form */}
-      <div className="space-y-3 rounded-lg border border-sacred-sand bg-white p-4">
+      <div className="space-y-3 rounded-lg border border-sacred-sand bg-lotus-white p-4">
         <h4 className="text-sm font-semibold text-near-black">Tus datos</h4>
         <input
           type="email"

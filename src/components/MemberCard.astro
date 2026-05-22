@@ -30,7 +30,7 @@ const getSocialIcon = (platform: string) => {
 };
 ---
 
-<article class="bg-white rounded-[20px] shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
+<article class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
   <div class="aspect-square overflow-hidden relative">
     <img
       src={imagen}
@@ -46,7 +46,7 @@ const getSocialIcon = (platform: string) => {
       <p class="text-sm text-saffron font-semibold uppercase tracking-wider">{rol}</p>
     </div>
 
-    <p class="text-gray-600 line-clamp-3 text-[15px] leading-relaxed">
+    <p class="text-gray-600 line-clamp-3 text-sm leading-relaxed">
       {descripcion.slice(0, 150)}{descripcion.length > 150 ? '...' : ''}
     </p>
 
@@ -71,7 +71,7 @@ const getSocialIcon = (platform: string) => {
     )}
 
     {/* Contact info */}
-    <div class="pt-4 mt-auto border-t border-gray-100 space-y-2">
+    <div class="pt-4 mt-auto border-t border-sacred-sand space-y-2">
       {correo && (
         <div class="flex items-center gap-2 text-sm text-gray-600">
           <Mail size={14} className="text-saffron" />
