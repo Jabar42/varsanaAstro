@@ -3,6 +3,7 @@ import '@/src/styles/global.css';
 import Header from '@/src/components/Header.astro';
 import Footer from '@/src/components/Footer.astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
+import { ClientRouter } from 'astro:transitions';
 
 export interface Props {
   title?: string;
@@ -39,6 +40,7 @@ const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
     <link rel="preload" as="font" type="font/woff2" href="/fonts/proza-libre/proza-libre-latin-700-normal.woff2" crossorigin />
     <link rel="preload" as="image" href="/logo/logovarsana.png" />
     <SpeedInsights />
+    <ClientRouter />
     <slot name="head" />
   </head>
   <body class="bg-sacred-sand text-near-black font-sans antialiased">

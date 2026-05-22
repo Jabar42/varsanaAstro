@@ -8,6 +8,10 @@ export default defineConfig({
   output: 'server',
   adapter: vercel(),
   integrations: [react()],
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'viewport',
+  },
   build: {
     inlineStylesheets: 'always',
   },
