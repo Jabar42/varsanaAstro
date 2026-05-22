@@ -181,7 +181,7 @@ import Layout from '@/src/layouts/Layout.astro';
               Transforma tu ser
             </p>
             <div class="text-sm text-secondary-gray font-mono space-y-0.5">
-              <p>Proza Libre · 64px · 700 · line-height 1.1 · tracking -0.01em</p>
+              <p class="break-words">Proza Libre · 64px · 700 · line-height 1.1 · tracking -0.01em</p>
               <p>Uso: Hero de portada, banners</p>
             </div>
           </div>
@@ -197,7 +197,7 @@ import Layout from '@/src/layouts/Layout.astro';
               Próximas Experiencias
             </p>
             <div class="text-sm text-secondary-gray font-mono space-y-0.5">
-              <p>Proza Libre · 36px · 700 · line-height 1.2</p>
+              <p class="break-words">Proza Libre · 36px · 700 · line-height 1.2</p>
               <p>Uso: Secciones de página, títulos</p>
             </div>
           </div>
@@ -213,7 +213,7 @@ import Layout from '@/src/layouts/Layout.astro';
               Retiro de Yoga y Meditación
             </p>
             <div class="text-sm text-secondary-gray font-mono space-y-0.5">
-              <p>Inter · 20px · 600 · line-height 1.3 · tracking -0.02em</p>
+              <p class="break-words">Inter · 20px · 600 · line-height 1.3 · tracking -0.02em</p>
               <p>Uso: Tarjetas de eventos, pasadías, información</p>
             </div>
           </div>
@@ -229,7 +229,7 @@ import Layout from '@/src/layouts/Layout.astro';
               Varsana es una ecoaldea dedicada al bienestar integral, la vida consciente y la conexión espiritual. Aquí cultivamos la tierra, el cuerpo, la mente y el alma en armonía con la naturaleza.
             </p>
             <div class="text-sm text-secondary-gray font-mono space-y-0.5">
-              <p>Inter · 16px · 400 · line-height 1.6</p>
+              <p class="break-words">Inter · 16px · 400 · line-height 1.6</p>
               <p>Uso: Párrafos, descripciones, texto largo</p>
             </div>
           </div>
@@ -245,7 +245,7 @@ import Layout from '@/src/layouts/Layout.astro';
               15–18 Mayo 2026 &middot; $380.000 COP &middot; Granada, Cundinamarca
             </p>
             <div class="text-sm text-secondary-gray font-mono space-y-0.5">
-              <p>Inter · 14px · 500 · line-height 1.4 · tracking 0.02em</p>
+              <p class="break-words">Inter · 14px · 500 · line-height 1.4 · tracking 0.02em</p>
               <p>Uso: Fechas, precios, etiquetas, pies</p>
             </div>
           </div>
@@ -261,7 +261,7 @@ import Layout from '@/src/layouts/Layout.astro';
               Reservar ahora &rarr;
             </p>
             <div class="text-sm text-secondary-gray font-mono space-y-0.5">
-              <p>Inter · 16px · 600 · line-height 1.2</p>
+              <p class="break-words">Inter · 16px · 600 · line-height 1.2</p>
               <p>Uso: Todos los botones y CTAs</p>
             </div>
           </div>
@@ -344,7 +344,7 @@ import Layout from '@/src/layouts/Layout.astro';
           <div class="bg-sacred-sand rounded-lg p-8 text-center text-secondary-gray text-sm">
             Fondo de página — sin sombra — no shadow
           </div>
-          <p class="text-xs font-mono text-secondary-gray">Arena Sagrada background, flat</p>
+          <p class="text-xs font-mono text-secondary-gray break-words">Arena Sagrada background, flat</p>
         </div>
 
         <!-- Elevated: Airbnb shadow -->
@@ -359,9 +359,9 @@ import Layout from '@/src/layouts/Layout.astro';
         <div class="md:col-span-2 space-y-4">
           <h3 class="text-lg font-semibold font-display text-near-black">Interactive (hover)</h3>
           <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 text-center text-near-black text-sm transition-all duration-600 ease-in-out hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(247,148,30,0.12),0_0_0_1px_rgba(0,0,0,0.02),0_2px_6px_rgba(0,0,0,0.04),0_4px_8px_rgba(0,0,0,0.10)] cursor-pointer">
-            Pasa el ratón — escala 1.02 + resplandor azafrán
+            <span class="break-words">Pasa el ratón — escala 1.02 + resplandor azafrán</span>
           </div>
-          <p class="text-xs font-mono text-secondary-gray">Sombra tipo Airbnb + resplandor de azafrán al hover</p>
+          <p class="text-xs font-mono text-secondary-gray break-words">Sombra tipo Airbnb + resplandor de azafrán al hover</p>
         </div>
       </div>
     </section>
@@ -412,9 +412,9 @@ import Layout from '@/src/layouts/Layout.astro';
             <span class="text-sm font-semibold text-near-black">Primario</span>
             <p class="text-xs text-secondary-gray">CTAs principales, checkout</p>
           </div>
-          <div class="flex gap-4 flex-wrap items-center">
+          <div class="flex gap-4 flex-wrap items-center min-w-0">
             <button class="bg-rausch text-lotus-white font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight transition-all duration-300 hover:bg-rausch-dark cursor-pointer">Reservar ahora</button>
-            <span class="text-xs font-mono text-secondary-gray">Fondo Rausch, texto Blanco Loto</span>
+            <span class="text-xs font-mono text-secondary-gray break-words">Fondo Rausch, texto Blanco Loto</span>
           </div>
         </div>
         <!-- Secondary (Forest) -->
@@ -423,9 +423,9 @@ import Layout from '@/src/layouts/Layout.astro';
             <span class="text-sm font-semibold text-near-black">Secundario</span>
             <p class="text-xs text-secondary-gray">Acciones secundarias</p>
           </div>
-          <div class="flex gap-4 flex-wrap items-center">
+          <div class="flex gap-4 flex-wrap items-center min-w-0">
             <button class="bg-forest-dark text-lotus-white font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight transition-all duration-300 hover:bg-forest cursor-pointer">Ver la Huerta</button>
-            <span class="text-xs font-mono text-secondary-gray">Fondo Bosque Oscuro, texto Blanco Loto</span>
+            <span class="text-xs font-mono text-secondary-gray break-words">Fondo Bosque Oscuro, texto Blanco Loto</span>
           </div>
         </div>
         <!-- Saffron -->
@@ -434,9 +434,9 @@ import Layout from '@/src/layouts/Layout.astro';
             <span class="text-sm font-semibold text-near-black">Saffron</span>
             <p class="text-xs text-secondary-gray">Acciones espirituales</p>
           </div>
-          <div class="flex gap-4 flex-wrap items-center">
+          <div class="flex gap-4 flex-wrap items-center min-w-0">
             <button class="bg-saffron text-near-black font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight transition-all duration-300 hover:bg-saffron-light cursor-pointer">Conocer más</button>
-            <span class="text-xs font-mono text-secondary-gray">Fondo Azafrán, texto Casi Negro</span>
+            <span class="text-xs font-mono text-secondary-gray break-words">Fondo Azafrán, texto Casi Negro</span>
           </div>
         </div>
         <!-- Ghost -->
@@ -445,9 +445,9 @@ import Layout from '@/src/layouts/Layout.astro';
             <span class="text-sm font-semibold text-near-black">Fantasma</span>
             <p class="text-xs text-secondary-gray">Terciarias, "ver más"</p>
           </div>
-          <div class="flex gap-4 flex-wrap items-center">
+          <div class="flex gap-4 flex-wrap items-center min-w-0">
             <button class="bg-transparent text-near-black border-2 border-near-black font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight transition-all duration-300 hover:bg-near-black hover:text-lotus-white cursor-pointer">Ver todos los eventos</button>
-            <span class="text-xs font-mono text-secondary-gray">Borde Casi Negro, hover fondo oscuro</span>
+            <span class="text-xs font-mono text-secondary-gray break-words">Borde Casi Negro, hover fondo oscuro</span>
           </div>
         </div>
       </div>
@@ -460,15 +460,15 @@ import Layout from '@/src/layouts/Layout.astro';
       <div class="flex flex-wrap gap-4 mb-14">
         <div class="flex flex-col items-start gap-2">
           <span class="inline-block bg-saffron-light text-near-black text-sm font-medium px-3 py-1 rounded-full">Yoga & Meditación</span>
-          <span class="text-xs font-mono text-secondary-gray">Fondo azafrán claro — etiqueta espiritual</span>
+          <span class="text-xs font-mono text-secondary-gray break-words">Fondo azafrán claro — etiqueta espiritual</span>
         </div>
         <div class="flex flex-col items-start gap-2">
           <span class="inline-block bg-forest-light text-near-black text-sm font-medium px-3 py-1 rounded-full">Voluntariado</span>
-          <span class="text-xs font-mono text-secondary-gray">Fondo bosque claro — etiqueta naturaleza</span>
+          <span class="text-xs font-mono text-secondary-gray break-words">Fondo bosque claro — etiqueta naturaleza</span>
         </div>
         <div class="flex flex-col items-start gap-2">
           <span class="inline-block bg-sacred-sand text-near-black text-sm font-medium px-3 py-1 rounded-full border border-gray-200">Default tag</span>
-          <span class="text-xs font-mono text-secondary-gray">Fondo arena sagrada — neutro</span>
+          <span class="text-xs font-mono text-secondary-gray break-words">Fondo arena sagrada — neutro</span>
         </div>
       </div>
 
@@ -480,11 +480,11 @@ import Layout from '@/src/layouts/Layout.astro';
       <div class="space-y-4 mb-14">
         <div class="flex items-center gap-6">
           <a href="#" class="text-rausch font-sans text-base hover:text-rausch-light transition-colors underline underline-offset-4">Ver todos los eventos &rarr;</a>
-          <span class="text-xs font-mono text-secondary-gray">Color Rausch, hover más claro, subrayado</span>
+          <span class="text-xs font-mono text-secondary-gray break-words">Color Rausch, hover más claro, subrayado</span>
         </div>
         <div class="flex items-center gap-6">
           <a href="#" class="text-near-black font-sans text-base font-semibold hover:text-rausch transition-colors">Conoce nuestra comunidad</a>
-          <span class="text-xs font-mono text-secondary-gray">Color Casi Negro, hover Rausch</span>
+          <span class="text-xs font-mono text-secondary-gray break-words">Color Casi Negro, hover Rausch</span>
         </div>
       </div>
     </section>
@@ -520,23 +520,23 @@ import Layout from '@/src/layouts/Layout.astro';
         Lentas, gráciles, deliberadas. Nunca más rápido de 0.3s — la marca respira.
       </p>
       <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 space-y-6">
-        <div class="flex items-center gap-6">
-          <div class="w-32 h-12 bg-rausch rounded-[16px] transition-all duration-300 hover:bg-rausch-dark hover:scale-105 flex items-center justify-center text-white text-xs font-semibold cursor-pointer">
-            ䷀ 300ms button
+        <div class="flex flex-wrap items-center gap-6">
+          <div class="w-32 h-12 bg-rausch rounded-[16px] transition-all duration-300 hover:bg-rausch-dark hover:scale-105 flex-shrink-0 flex items-center justify-center text-white text-xs font-semibold cursor-pointer">
+            <span class="break-words">䷀ 300ms button</span>
           </div>
-          <span class="text-xs font-mono text-secondary-gray">Transición 300ms — botones y enlaces</span>
+          <span class="text-xs font-mono text-secondary-gray break-words">Transición 300ms — botones y enlaces</span>
         </div>
-        <div class="flex items-center gap-6">
-          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-600 ease-in-out hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(247,148,30,0.12),0_0_0_1px_rgba(0,0,0,0.02),0_2px_6px_rgba(0,0,0,0.04),0_4px_8px_rgba(0,0,0,0.10)] flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
-            ䷀ 600ms card hover
+        <div class="flex flex-wrap items-center gap-6">
+          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-600 ease-in-out hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(247,148,30,0.12),0_0_0_1px_rgba(0,0,0,0.02),0_2px_6px_rgba(0,0,0,0.04),0_4px_8px_rgba(0,0,0,0.10)] flex-shrink-0 flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
+            <span class="break-words">䷀ 600ms card hover</span>
           </div>
-          <span class="text-xs font-mono text-secondary-gray">Transición 600ms — tarjetas e imágenes</span>
+          <span class="text-xs font-mono text-secondary-gray break-words">Transición 600ms — tarjetas e imágenes</span>
         </div>
-        <div class="flex items-center gap-6">
-          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-700 ease-in-out hover:scale-110 flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
-            ䷀ 700ms image zoom
+        <div class="flex flex-wrap items-center gap-6">
+          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-700 ease-in-out hover:scale-110 flex-shrink-0 flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
+            <span class="break-words">䷀ 700ms image zoom</span>
           </div>
-          <span class="text-xs font-mono text-secondary-gray">Transición 700ms — zoom de imagen al hover</span>
+          <span class="text-xs font-mono text-secondary-gray break-words">Transición 700ms — zoom de imagen al hover</span>
         </div>
       </div>
     </section>

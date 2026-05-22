@@ -1,36 +1,47 @@
 # Component Stylings
 
 ## Cards
-- **Radius**: 24px–32px for a softer, more inviting look.
-- **Hover**: Subtle lift with a soft saffron glow or border.
+
+Cards are the dominant content container. They sit on Lotus White with the Airbnb layered shadow.
+
+- **Radius**: 24px–32px (`--radius-md` / `--radius-lg`). Larger cards get larger radius.
+- **Base state**: Lotus White background, Airbnb shadow, 24px internal padding.
+- **Hover state**: `scale(1.02)` transform, shadow deepens, warm saffron glow `0 8px 24px rgba(247,148,30,0.12)` at the edges.
+- **Transition**: 0.6s ease-in-out for both enter and exit.
+- **Image treatment**: Full-width image at top, rounded to match card radius at top corners only.
+- Avoid mixing radius sizes within the same component group.
 
 ## Buttons
-- **Primary**: Rausch Red, 16px radius, bold sans‑serif.
-- **Secondary**: Forest Green or Saffron, 16px radius.
-- **Ghost**: Near‑black border, display text for a "boutique" feel.
+
+Three variants share the same base: 16px radius (`--radius-DEFAULT`), bold Inter (600 weight), 12px vertical / 24px horizontal padding.
+
+- **Primary**: Rausch Red (`#52185B`) background, Lotus White text. For main CTAs, form submissions, checkout. Hover: `rausch-dark` (`#3A1241`).
+- **Secondary**: Forest Prana (`#779B05`) or Saffron Wisdom (`#F7941E`) background, Lotus White text. For supporting actions, filters, category tags. Hover: `forest-dark` or `saffron-light`.
+- **Ghost**: Transparent background, Near Black 2px border, Near Black text. For tertiary actions, "learn more" links, navigation items.
+
+All buttons use `transition-all duration-300` with a darken-on-hover effect. Don't use border-radius below 16px for buttons.
+
+## Shapes & Radius
+
+| Token | Value | Application |
+|-------|-------|-------------|
+| sm | 8px | Input fields, small badges, inline tags |
+| DEFAULT | 16px | Buttons, form elements, small containers |
+| md | 24px | Standard cards, modals |
+| lg | 32px | Large cards, hero images, featured content |
+| full | 9999px | Pills, status badges, avatar crops |
+
+Squircle-like shapes (continuous curvature) are preferred over pure geometric rounded rectangles where CSS supports it.
 
 ## Icons
-- Use **Lucide‑react** but prioritize organic shapes: `Leaf`, `Flower2`, `Sun`, `Moon`, `Heart`.
 
-## Implementation Details
+Use **Lucide-react** exclusively. Prefer organic, nature-themed shapes over abstract ones.
 
-### Card Styling
-- Apply the card shadow defined in [Color Palette & Roles](color-palette.md#elevation).
-- Use background color `Lotus White` (`#FFFFFF`) for card surfaces.
-- Border radius should be between 24px and 32px, depending on context (larger radius for larger cards).
-- On hover, add a slight scale transform (`scale‑[1.02]`) and a shadow elevation increase, optionally with a saffron border (`border‑saffron‑wisdom`).
+- Navigation/actions: `Leaf`, `Flower2`, `Sun`, `Moon`, `Heart`, `Star`
+- UI controls: `ChevronLeft`, `ChevronRight`, `X`, `Menu`, `Search`
+- Status/info: `Clock`, `MapPin`, `Calendar`, `Users`, `Info`
 
-### Button Styling
-- Primary buttons: background `Rausch Red`, text white, font weight `600`, padding `0.75rem 1.5rem`.
-- Secondary buttons: background `Forest Prana` or `Saffron Wisdom`, same padding and radius.
-- Ghost buttons: transparent background, `Near Black` border (`border‑2`), text `Near Black`.
-- All buttons should have a transition (`transition‑all duration‑300`) and a hover effect (darken background, slight shadow).
-
-### Icons
-- Use Lucide‑react icon set (already installed).
-- Prefer organic, nature‑themed icons over abstract or technical ones.
-- Icon color defaults to `Near Black`; for accents use `Saffron Wisdom` or `Forest Prana`.
-- Ensure icons are sized appropriately (usually `1.25rem` for inline, `2rem` for standalone).
+Icon color defaults to Near Black. For accent use, match to Saffron Wisdom or Forest Prana. Size: 1.25rem (20px) for inline, 2rem (32px) for standalone.
 
 ---
 

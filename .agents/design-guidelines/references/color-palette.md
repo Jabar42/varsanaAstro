@@ -1,32 +1,69 @@
 # Color Palette & Roles
 
-## Primary Brand
-- **Rausch Red** (`#52185B`): Primary CTA, brand accent.
-- **Saffron Wisdom** (`#F7941E`): Secondary accent for spiritual highlights, yoga tags.
-- **Forest Prana** (`#779B05`): Accent for nature‑based activities, volunteering.
+## Brand Colors
 
-## Light Tones (For Gradients)
-- **Rausch Red Light** (`#97448E`): Lighter purple for gradients and hover states.
-- **Saffron Wisdom Light** (`#FAAF3E`): Lighter orange for gradients and highlights.
-- **Forest Prana Light** (`#95AD02`): Lighter green for gradients and accents.
+Three primary brand colors anchor the identity:
+
+- **Rausch Red** (`#52185B`): The dominant CTA and brand accent. A deep, warm purple that conveys grounded spirituality. Use for primary buttons, links, and key brand moments.
+- **Saffron Wisdom** (`#F7941E`): The spiritual accent. Evokes marigold garlands, monk robes, and sacred fire. Use for highlights, tags, yoga-related elements, and hover glows.
+- **Forest Prana** (`#779B05`): The nature accent. Represents the surrounding farmland, orchards, and eco-conscious values. Use for nature activities, volunteering, and secondary CTAs.
+
+## Light Tones (For Gradients & Hover States)
+
+- **Rausch Red Light** (`#97448E`): Lifted purple for hover states and gradient stops.
+- **Saffron Wisdom Light** (`#FAAF3E`): Warm glow for saffron hover states.
+- **Forest Prana Light** (`#95AD02`): Brightened green for hover and accents.
 
 ## Neutral Scale
-- **Near Black** (`#222222`): Primary text — warm and grounded.
-- **Secondary Gray** (`#6a6a6a`): Descriptions and metadata.
-- **Sacred Sand** (`#FAF9F6`): Primary background — organic and calming.
-- **Lotus White** (`#FFFFFF`): Card surfaces and highlighted containers.
+
+A warm-shifted neutral scale replaces harsh pure-black and cool-gray:
+
+- **Near Black** (`#222222`): Primary text. Warmer and softer than `#000`, grounded and approachable.
+- **Secondary Gray** (`#6A6A6A`): Descriptions, metadata, and supporting text.
+- **Sacred Sand** (`#FAF9F6`): Page background. An organic off-white with warm undertones.
+- **Lotus White** (`#FFFFFF`): Card surfaces and elevated containers. Pure white for contrast against the sand background.
+- **Light Surface** (`#F7F7F7`): Subtle surface variation for alternating sections.
 
 ## Elevation
-- **Card Shadow**: `rgba(0,0,0,0.02) 0px 0px 0px 1px, rgba(0,0,0,0.04) 0px 2px 6px, rgba(0,0,0,0.1) 0px 4px 8px` (Airbnb standard).
 
-## Usage Notes
-- Use Rausch Red for buttons, links, and any primary action.
+### Card Shadow
+
+```
+0 0 0 1px rgba(0,0,0,0.02),
+0 2px 6px rgba(0,0,0,0.04),
+0 4px 8px rgba(0,0,0,0.10)
+```
+
+Three layers: a hairline border (1px, 2%) defines the edge, a tight blur (2px, 4%) adds proximity depth, and a wider blur (4px, 10%) creates ambient separation.
+
+### Depth Levels
+
+| Level | Usage | Behavior |
+|-------|-------|----------|
+| Base | Page background (Sacred Sand) | Flat, no shadow |
+| Elevated | Cards, modals, dialogs | Airbnb shadow on Lotus White |
+| Interactive | Hovered/focused cards | Shadow deepens + saffron glow `0 8px 24px rgba(247,148,30,0.12)` |
+
+Cards lift on hover with `scale(1.02)` and a warm saffron-tinted shadow expansion. Transition: 0.6s ease-in-out.
+
+### Z-Index Stack
+
+| Layer | z-index | Usage |
+|-------|---------|-------|
+| Content | auto | Default page content |
+| Sticky header | 40 | Main navigation bar |
+| Overlay | 50 | Modals, drawers, dropdowns |
+
+## Usage Rules
+
+- Use Rausch Red for buttons, links, and primary actions. Never use it for large background areas.
 - Use Saffron Wisdom for highlights, tags, and spiritual elements.
-- Use Forest Prana for nature‑related content, volunteering, and eco‑themed sections.
+- Use Forest Prana for nature-related content, volunteering, and eco-themed sections.
 - Near Black is the default text color; Secondary Gray for supporting text.
-- Sacred Sand is the main background color for pages and large surfaces.
-- Lotus White is used for cards, modals, and elevated surfaces.
-- The card shadow should be applied to all cards and elevated containers.
+- Sacred Sand is the main page background — never use pure white for large surfaces.
+- Lotus White is for cards, modals, and elevated surfaces.
+- Don't mix more than two brand colors in a single view.
+- Don't use pure black (`#000`) for text — Near Black is the darkest allowed value.
 
 ---
 
