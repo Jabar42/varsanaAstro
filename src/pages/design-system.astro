@@ -1,6 +1,12 @@
 ---
 export const prerender = true;
 import Layout from '@/src/layouts/Layout.astro';
+import {
+  House, Leaf, Flower2, Sun, Moon, Heart, Star, Compass, Map, Send,
+  ChevronDown, ChevronRight, X, Menu, Search, ArrowUpRight, ArrowLeft,
+  Clock, MapPin, Calendar, Users, Info, CheckCircle2, Check,
+  Instagram, Facebook, Youtube, Globe, Mail, Phone,
+} from 'lucide-react';
 ---
 
 <Layout title="Sistema de Diseño | Varsana">
@@ -490,6 +496,282 @@ import Layout from '@/src/layouts/Layout.astro';
     </section>
 
     <!-- ================================ -->
+    <!-- ICONOGRAPHY                     -->
+    <!-- ================================ -->
+    <section>
+      <h2 class="text-3xl md:text-4xl font-bold font-display text-near-black mb-8">Iconografía</h2>
+      <p class="text-secondary-gray mb-10 max-w-2xl">
+        Usamos <strong class="text-near-black">Lucide-react</strong> exclusivamente. Preferir formas orgánicas y naturales sobre las geométricas o técnicas. Los íconos son un acento, no el protagonista.
+      </p>
+
+      <!-- Approved Icon Categories -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Biblioteca de íconos</h3>
+      <div class="space-y-8 mb-14">
+        <!-- Navigation / Actions -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6">
+          <p class="text-sm font-semibold text-near-black mb-4">Navegación y acciones</p>
+          <div class="flex flex-wrap gap-6">
+            {([
+              { Icon: House, label: 'House' },
+              { Icon: Leaf, label: 'Leaf' },
+              { Icon: Flower2, label: 'Flower2' },
+              { Icon: Sun, label: 'Sun' },
+              { Icon: Moon, label: 'Moon' },
+              { Icon: Heart, label: 'Heart' },
+              { Icon: Star, label: 'Star' },
+              { Icon: Compass, label: 'Compass' },
+              { Icon: Map, label: 'Map' },
+              { Icon: Send, label: 'Send' },
+            ]).map(({ Icon, label }) => (
+              <div class="flex flex-col items-center gap-2 w-16">
+                <Icon size={24} strokeWidth={1.5} class="text-near-black" />
+                <span class="text-xs font-mono text-secondary-gray text-center">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- UI Controls -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6">
+          <p class="text-sm font-semibold text-near-black mb-4">Controles de interfaz</p>
+          <div class="flex flex-wrap gap-6">
+            {([
+              { Icon: ChevronDown, label: 'ChevronDown' },
+              { Icon: ChevronRight, label: 'ChevronRight' },
+              { Icon: X, label: 'X' },
+              { Icon: Menu, label: 'Menu' },
+              { Icon: Search, label: 'Search' },
+              { Icon: ArrowUpRight, label: 'ArrowUpRight' },
+              { Icon: ArrowLeft, label: 'ArrowLeft' },
+            ]).map(({ Icon, label }) => (
+              <div class="flex flex-col items-center gap-2 w-16">
+                <Icon size={24} strokeWidth={1.5} class="text-near-black" />
+                <span class="text-xs font-mono text-secondary-gray text-center">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Status / Info -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6">
+          <p class="text-sm font-semibold text-near-black mb-4">Estado e información</p>
+          <div class="flex flex-wrap gap-6">
+            {([
+              { Icon: Clock, label: 'Clock' },
+              { Icon: MapPin, label: 'MapPin' },
+              { Icon: Calendar, label: 'Calendar' },
+              { Icon: Users, label: 'Users' },
+              { Icon: Info, label: 'Info' },
+              { Icon: CheckCircle2, label: 'CheckCircle2' },
+              { Icon: Check, label: 'Check' },
+            ]).map(({ Icon, label }) => (
+              <div class="flex flex-col items-center gap-2 w-16">
+                <Icon size={24} strokeWidth={1.5} class="text-near-black" />
+                <span class="text-xs font-mono text-secondary-gray text-center">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Social -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6">
+          <p class="text-sm font-semibold text-near-black mb-4">Redes sociales</p>
+          <div class="flex flex-wrap gap-6">
+            {([
+              { Icon: Instagram, label: 'Instagram' },
+              { Icon: Facebook, label: 'Facebook' },
+              { Icon: Youtube, label: 'Youtube' },
+              { Icon: Globe, label: 'Globe' },
+              { Icon: Mail, label: 'Mail' },
+              { Icon: Phone, label: 'Phone' },
+            ]).map(({ Icon, label }) => (
+              <div class="flex flex-col items-center gap-2 w-16">
+                <Icon size={24} strokeWidth={1.5} class="text-near-black" />
+                <span class="text-xs font-mono text-secondary-gray text-center">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Sizing Scale -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Escala de tamaños</h3>
+      <p class="text-secondary-gray mb-8 max-w-2xl">
+        El tamaño se elige según el contexto. Íconos inline con texto usan 14–18px; navegación 20px; secciones 24px; acentos independientes 32–56px.
+      </p>
+      <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden mb-14">
+        <div class="divide-y divide-gray-100">
+          {([
+            { size: 14, px: '14px', usage: 'Inline diminuto — etiquetas, ratings, contacto', Icon: Star },
+            { size: 16, px: '16px', usage: 'Inline pequeño — header, flechas de retroceso', Icon: Heart },
+            { size: 18, px: '18px', usage: 'Inline con metadatos — fechas, ubicación, hora', Icon: Clock },
+            { size: 20, px: '20px', usage: 'Navegación — barra de categorías (size-5)', Icon: House },
+            { size: 24, px: '24px', usage: 'Estándar — secciones, tarjetas, bloques info', Icon: Users },
+            { size: 32, px: '32px', usage: 'Acento independiente — destacados de features', Icon: Info },
+            { size: 56, px: '56px', usage: 'Hero/resultado — estados de pago éxito/error', Icon: CheckCircle2 },
+          ]).map(({ size, px, usage, Icon }) => (
+            <div class="flex items-center gap-6 px-6 py-4">
+              <div class="w-14 flex-shrink-0 flex items-center justify-center">
+                <Icon size={size} strokeWidth={1.5} class="text-near-black" />
+              </div>
+              <span class="w-14 text-sm font-mono text-rausch font-semibold flex-shrink-0">{px}</span>
+              <span class="text-sm text-secondary-gray">{usage}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Stroke Width -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Grosor de trazo</h3>
+      <p class="text-secondary-gray mb-8 max-w-2xl">
+        El grosor por defecto es <code class="text-near-black bg-sacred-sand px-1.5 py-0.5 rounded text-sm font-mono">strokeWidth&#123;1.5&#125;</code> — ligero y elegante. Usar valores mayores solo para énfasis intencional.
+      </p>
+      <div class="bg-lotus-white rounded-lg shadow-airbnb p-6 mb-14">
+        <div class="flex flex-wrap gap-10">
+          <div class="flex flex-col items-center gap-3">
+            <Leaf size={32} strokeWidth={1.5} class="text-near-black" />
+            <span class="text-sm font-mono text-secondary-gray">1.5 — default</span>
+            <span class="text-xs text-secondary-gray">Navegación, UI general</span>
+          </div>
+          <div class="flex flex-col items-center gap-3">
+            <Leaf size={32} strokeWidth={2} class="text-near-black" />
+            <span class="text-sm font-mono text-secondary-gray">2.0 — énfasis</span>
+            <span class="text-xs text-secondary-gray">Tarjetas, favoritos</span>
+          </div>
+          <div class="flex flex-col items-center gap-3">
+            <ArrowUpRight size={32} strokeWidth={2.5} class="text-near-black" />
+            <span class="text-sm font-mono text-secondary-gray">2.5 — bold</span>
+            <span class="text-xs text-secondary-gray">CTAs, flechas hero</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Color Usage -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Color de íconos</h3>
+      <p class="text-secondary-gray mb-8 max-w-2xl">
+        El color por defecto es <strong class="text-near-black">Casi Negro</strong>. Para acentos, usar los colores de marca con moderación — nunca más de un color de acento por vista.
+      </p>
+      <div class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden mb-14">
+        <div class="divide-y divide-gray-100">
+          {([
+            { color: 'text-near-black', label: 'Casi Negro', usage: 'Default — íconos de UI, navegación, controles', Icon: Menu },
+            { color: 'text-saffron', label: 'Saffron', usage: 'Metadatos — fechas, ubicación, hora en tarjetas', Icon: MapPin },
+            { color: 'text-rausch', label: 'Rausch', usage: 'Énfasis de marca — checks, estados activos', Icon: CheckCircle2 },
+            { color: 'text-forest', label: 'Forest', usage: 'Naturaleza — voluntariado, eco, aldea', Icon: Leaf },
+            { color: 'text-secondary-gray', label: 'Gris Secundario', usage: 'Muted — íconos deshabilitados o secundarios', Icon: Info },
+          ]).map(({ color, label, usage, Icon }) => (
+            <div class="flex items-center gap-6 px-6 py-4">
+              <Icon size={24} strokeWidth={1.5} class={`${color} flex-shrink-0`} />
+              <span class="w-32 text-sm font-semibold text-near-black flex-shrink-0">{label}</span>
+              <span class="text-sm text-secondary-gray">{usage}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Usage Patterns -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Patrones de uso</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-14">
+        <!-- Icon + Label -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6 space-y-4">
+          <p class="text-sm font-semibold text-near-black">Ícono + etiqueta</p>
+          <p class="text-xs text-secondary-gray">Navegación — CategoryBar</p>
+          <div class="flex items-center gap-4 pt-2">
+            <div class="flex flex-col items-center gap-0.5">
+              <House size={20} strokeWidth={1.5} class="text-near-black" />
+              <span class="text-xs font-medium text-near-black">Inicio</span>
+            </div>
+            <div class="flex flex-col items-center gap-0.5">
+              <Users size={20} strokeWidth={1.5} class="text-near-black" />
+              <span class="text-xs font-medium text-near-black">Nosotros</span>
+            </div>
+            <div class="flex flex-col items-center gap-0.5">
+              <Leaf size={20} strokeWidth={1.5} class="text-near-black" />
+              <span class="text-xs font-medium text-near-black">Voluntariado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inline with metadata -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6 space-y-4">
+          <p class="text-sm font-semibold text-near-black">Inline con metadatos</p>
+          <p class="text-xs text-secondary-gray">Tarjetas de eventos y pasadías</p>
+          <div class="space-y-2 pt-2">
+            <div class="flex items-center gap-2">
+              <Calendar size={18} class="text-saffron" />
+              <span class="text-sm text-near-black">15–18 Mayo 2026</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <MapPin size={18} class="text-saffron" />
+              <span class="text-sm text-near-black">Granada, Cundinamarca</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <Clock size={18} class="text-saffron" />
+              <span class="text-sm text-near-black">4 días · 3 noches</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Standalone in features -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6 space-y-4">
+          <p class="text-sm font-semibold text-near-black">Independiente en features</p>
+          <p class="text-xs text-secondary-gray">Listas de beneficios, voluntariado</p>
+          <div class="space-y-3 pt-2">
+            <div class="flex items-start gap-3">
+              <CheckCircle2 size={24} class="text-rausch flex-shrink-0 mt-0.5" />
+              <span class="text-sm text-near-black">Alojamiento en cabañas compartidas</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <CheckCircle2 size={24} class="text-rausch flex-shrink-0 mt-0.5" />
+              <span class="text-sm text-near-black">Alimentación vegetariana incluida</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inside buttons -->
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6 space-y-4">
+          <p class="text-sm font-semibold text-near-black">Dentro de botones</p>
+          <p class="text-xs text-secondary-gray">CTAs con ícono de flecha</p>
+          <div class="flex flex-wrap gap-4 pt-2">
+            <button class="bg-rausch text-lotus-white font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight inline-flex items-center gap-2 cursor-pointer">
+              Reservar ahora
+              <ArrowUpRight size={18} strokeWidth={2.5} />
+            </button>
+            <button class="bg-transparent text-near-black border-2 border-near-black font-semibold font-sans rounded-[16px] px-6 py-3 text-base leading-tight inline-flex items-center gap-2 cursor-pointer">
+              <ArrowLeft size={16} />
+              Volver
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Do's and Don'ts -->
+      <h3 class="text-xl font-semibold font-display text-near-black mb-6">Reglas</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6">
+          <p class="text-sm font-semibold text-forest mb-4">✓ Hacer</p>
+          <ul class="space-y-2 text-sm text-near-black">
+            <li>Usar solo íconos de <code class="bg-sacred-sand px-1.5 py-0.5 rounded text-xs font-mono">lucide-react</code></li>
+            <li>Preferir formas orgánicas: <code class="bg-sacred-sand px-1.5 py-0.5 rounded text-xs font-mono">Leaf</code>, <code class="bg-sacred-sand px-1.5 py-0.5 rounded text-xs font-mono">Flower2</code>, <code class="bg-sacred-sand px-1.5 py-0.5 rounded text-xs font-mono">Heart</code>, <code class="bg-sacred-sand px-1.5 py-0.5 rounded text-xs font-mono">Sun</code></li>
+            <li>Usar <code class="bg-sacred-sand px-1.5 py-0.5 rounded text-xs font-mono">strokeWidth&#123;1.5&#125;</code> por defecto</li>
+            <li>Mantener íconos en <strong>Casi Negro</strong> a menos que el contexto pida acento</li>
+            <li>Alinear verticalmente con el texto adyacente (<code class="bg-sacred-sand px-1.5 py-0.5 rounded text-xs font-mono">flex items-center</code>)</li>
+          </ul>
+        </div>
+        <div class="bg-lotus-white rounded-lg shadow-airbnb p-6">
+          <p class="text-sm font-semibold text-rausch mb-4">✗ Evitar</p>
+          <ul class="space-y-2 text-sm text-near-black">
+            <li>Mezclar librerías de íconos — solo Lucide</li>
+            <li>Usar íconos técnicos o abstractos cuando hay alternativa orgánica</li>
+            <li>Colorear íconos con más de un color de marca en la misma vista</li>
+            <li>Usar íconos como sustituto de texto legible — siempre acompañar de etiqueta</li>
+            <li>Tamaños menores a 14px o mayores a 56px</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================ -->
     <!-- Z-INDEX                         -->
     <!-- ================================ -->
     <section>
@@ -541,7 +823,7 @@ import Layout from '@/src/layouts/Layout.astro';
       </div>
     </section>
 
-    
+
 
   </main>
 </Layout>
