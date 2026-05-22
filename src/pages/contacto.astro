@@ -1,0 +1,236 @@
+---
+export const prerender = true;
+
+import Layout from '@/src/layouts/Layout.astro';
+import {
+  Send,
+  MessageCircle,
+  Mail,
+  MapPin,
+  ChevronRight,
+  Sparkles,
+  Clock,
+  Car,
+  Bus,
+  ArrowRight,
+} from 'lucide-react';
+---
+
+<Layout title="Contacto | Varsana Eco Yoga Aldea">
+
+  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12">
+    <!-- Hero -->
+    <section class="mb-20 text-center max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold mb-6">
+        <Send size={16} />
+        <span>Contáctanos</span>
+      </div>
+      <h1 class="text-4xl md:text-6xl font-bold tracking-tightest leading-tight mb-6">
+        Estamos aquí para ti
+      </h1>
+      <p class="text-secondary-gray text-xl leading-relaxed">
+        Escríbenos, llámanos o visítanos. Queremos acompañarte en tu camino hacia una experiencia de bienestar, naturaleza y espiritualidad en Varsana.
+      </p>
+    </section>
+
+    <!-- Contact Info Cards -->
+    <section class="mb-24 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- WhatsApp -->
+      <a
+        href="https://wa.me/573214538242"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600 group"
+      >
+        <div class="w-14 h-14 bg-saffron/10 rounded-2xl flex items-center justify-center text-saffron mx-auto group-hover:bg-saffron group-hover:text-white transition-colors duration-300">
+          <MessageCircle size={28} />
+        </div>
+        <h3 class="text-xl font-bold font-display tracking-tightest">WhatsApp</h3>
+        <p class="text-secondary-gray text-sm">Chatea con nosotros</p>
+        <p class="text-near-black font-bold font-display">+57 321 4538242</p>
+        <span class="inline-flex items-center gap-1 text-saffron text-sm font-bold group-hover:gap-2 transition-all">
+          Abrir chat
+          <ChevronRight size={14} />
+        </span>
+      </a>
+
+      <!-- Email -->
+      <a
+        href="mailto:contacto@varsana.com"
+        class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600 group"
+      >
+        <div class="w-14 h-14 bg-rausch/10 rounded-2xl flex items-center justify-center text-rausch mx-auto group-hover:bg-rausch group-hover:text-white transition-colors duration-300">
+          <Mail size={28} />
+        </div>
+        <h3 class="text-xl font-bold font-display tracking-tightest">Correo electrónico</h3>
+        <p class="text-secondary-gray text-sm">Escríbenos tus preguntas</p>
+        <p class="text-near-black font-bold font-display">contacto@varsana.com</p>
+        <span class="inline-flex items-center gap-1 text-rausch text-sm font-bold group-hover:gap-2 transition-all">
+          Enviar correo
+          <ChevronRight size={14} />
+        </span>
+      </a>
+
+      <!-- Location -->
+      <div class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600 group">
+        <div class="w-14 h-14 bg-forest/10 rounded-2xl flex items-center justify-center text-forest mx-auto group-hover:bg-forest group-hover:text-white transition-colors duration-300">
+          <MapPin size={28} />
+        </div>
+        <h3 class="text-xl font-bold font-display tracking-tightest">Visítanos</h3>
+        <p class="text-secondary-gray text-sm">Te recibimos con los brazos abiertos</p>
+        <p class="text-near-black font-bold font-display leading-relaxed">
+          Km 28, Vía Silvania – Granada<br />Granada, Cundinamarca
+        </p>
+        <span class="inline-flex items-center gap-1 text-forest text-sm font-bold">
+          Colombia
+        </span>
+      </div>
+    </section>
+
+    <!-- Google Maps -->
+    <section class="mb-24">
+      <div class="aspect-[2/1] rounded-[32px] overflow-hidden shadow-airbnb">
+        <iframe
+          src="https://maps.google.com/maps?ll=4.5255247,-74.3549159&q=Varsana+Eco+Yoga+Village+Granada+Cundinamarca&z=15&output=embed"
+          width="100%"
+          height="100%"
+          style="border:0"
+          loading="lazy"
+          allowfullscreen
+          title="Ubicación de Varsana Eco Yoga Aldea en Granada, Cundinamarca"
+        ></iframe>
+      </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="mb-24 max-w-2xl mx-auto">
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-2 bg-rausch/10 text-rausch px-4 py-2 rounded-full text-sm font-bold mb-6">
+          <Sparkles size={16} />
+          <span>Envíanos un mensaje</span>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+          ¿Tienes una pregunta?
+        </h2>
+        <p class="text-secondary-gray text-lg">
+          Completa el formulario y te responderemos lo antes posible.
+        </p>
+      </div>
+
+      <form class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 md:p-12 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label for="nombre" class="text-sm font-bold text-near-black">Nombre</label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              placeholder="Tu nombre completo"
+              class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all"
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="email" class="text-sm font-bold text-near-black">Correo electrónico</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="tucorreo@ejemplo.com"
+              class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all"
+            />
+          </div>
+        </div>
+        <div class="space-y-2">
+          <label for="mensaje" class="text-sm font-bold text-near-black">Mensaje</label>
+          <textarea
+            id="mensaje"
+            name="mensaje"
+            rows={5}
+            placeholder="Cuéntanos cómo podemos ayudarte..."
+            class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all resize-y"
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          class="bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2"
+        >
+          Enviar mensaje
+          <Send size={18} />
+        </button>
+      </form>
+    </section>
+
+    <!-- How to Get Here -->
+    <section class="mb-16 bg-light-surface rounded-2xl p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-8">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-forest/10 text-forest px-4 py-2 rounded-full text-sm font-bold mb-6">
+            <MapPin size={16} />
+            <span>Cómo llegar</span>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+            Encuentra el camino a Varsana
+          </h2>
+          <p class="text-secondary-gray text-lg">
+            Estamos a hora y media de Bogotá. La ruta es sencilla y el paisaje hace que el viaje valga la pena.
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-xl bg-forest/10 flex items-center justify-center text-forest shrink-0 mt-1">
+              <Car size={20} />
+            </div>
+            <div>
+              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">En carro</h4>
+              <p class="text-secondary-gray leading-relaxed">
+                Toma la vía Bogotá – Silvania – Granada. Al llegar al Km 28, encontrarás la entrada de Varsana. El trayecto dura aproximadamente hora y media. Hay estacionamiento gratuito en la aldea.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-xl bg-saffron/10 flex items-center justify-center text-saffron shrink-0 mt-1">
+              <Bus size={20} />
+            </div>
+            <div>
+              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">En bus</h4>
+              <p class="text-secondary-gray leading-relaxed">
+                Desde el Terminal del Sur de Bogotá salen buses intermunicipales hacia Granada. Pide al conductor que te deje en el Km 28 de la vía Silvania – Granada, justo en la entrada de Varsana.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-xl bg-rausch/10 flex items-center justify-center text-rausch shrink-0 mt-1">
+              <Clock size={20} />
+            </div>
+            <div>
+              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">Horario de llegada</h4>
+              <p class="text-secondary-gray leading-relaxed">
+                Recomendamos llegar antes de las 5:00 p. m. para que puedas instalarte con luz natural y disfrutar el atardecer desde nuestra montaña.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative aspect-[3/4] rounded-[32px] overflow-hidden shadow-airbnb">
+        <img
+          src="https://picsum.photos/seed/road-varsana/800/1067"
+          alt="Carretera hacia Varsana entre montañas"
+          class="w-full h-full object-cover"
+          referrerpolicy="no-referrer"
+          loading="lazy"
+        />
+      </div>
+    </section>
+  </main>
+
+</Layout>
+
+<style>
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+  }
+</style>

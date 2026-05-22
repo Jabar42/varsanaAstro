@@ -1,0 +1,353 @@
+---
+export const prerender = true;
+
+import Layout from '@/src/layouts/Layout.astro';
+import {
+  Sun,
+  Moon,
+  Flower2,
+  Star,
+  TreePine,
+  Wind,
+  CheckCircle2,
+  Info,
+  MapPin,
+  Sparkles,
+  ChevronRight,
+} from 'lucide-react';
+
+const rooms = [
+  {
+    name: 'Suite del Sol',
+    icon: Sun,
+    description: 'Amplia habitación con vista al amanecer sobre la montaña. Decorada con textiles artesanales y maderas de la región.',
+    image: 'https://picsum.photos/seed/sol-suite/800/600',
+    capacity: '2 personas',
+    features: ['Vista panorámica', 'Baño privado', 'Terraza'],
+    price: '180.000',
+    accent: 'saffron',
+  },
+  {
+    name: 'Refugio Lunar',
+    icon: Moon,
+    description: 'Un espacio íntimo y sereno para el descanso profundo. Iluminación tenue, colores tierra y total silencio natural.',
+    image: 'https://picsum.photos/seed/lunar-refuge/800/600',
+    capacity: '2 personas',
+    features: ['Aislación acústica', 'Baño privado', 'Ropa de cama orgánica'],
+    price: '160.000',
+    accent: 'rausch',
+  },
+  {
+    name: 'Cabaña Flor de Loto',
+    icon: Flower2,
+    description: 'Cabaña independiente rodeada de jardines. Ideal para quienes buscan privacidad y conexión con la naturaleza.',
+    image: 'https://picsum.photos/seed/loto-cabin/800/600',
+    capacity: '3 personas',
+    features: ['Cabaña privada', 'Baño con ducha caliente', 'Vista al jardín'],
+    price: '220.000',
+    accent: 'forest',
+  },
+  {
+    name: 'Nido del Bosque',
+    icon: TreePine,
+    description: 'Habitación elevada entre los árboles con diseño rústico y acogedor. Perfecta para una experiencia inmersiva en el bosque.',
+    image: 'https://picsum.photos/seed/bosque-nest/800/600',
+    capacity: '2 personas',
+    features: ['Hamaca privada', 'Ducha ecológica', 'Escritorio'],
+    price: '190.000',
+    accent: 'forest',
+  },
+  {
+    name: 'Estancia de las Estrellas',
+    icon: Star,
+    description: 'Nuestra habitación más especial, con claraboya para observar el cielo nocturno desde la cama.',
+    image: 'https://picsum.photos/seed/stars-room/800/600',
+    capacity: '2 personas',
+    features: ['Claraboya', 'Baño privado', 'Chimenea'],
+    price: '240.000',
+    accent: 'rausch',
+  },
+  {
+    name: 'Cabaña Al Viento',
+    icon: Wind,
+    description: 'Espacio abierto con brisa constante y diseño minimalista. La ventilación natural mantiene fresco todo el año.',
+    image: 'https://picsum.photos/seed/viento-cabin/800/600',
+    capacity: '4 personas',
+    features: ['Dos habitaciones', 'Cocina básica', 'Zona de hamacas'],
+    price: '280.000',
+    accent: 'saffron',
+  },
+];
+
+const amenities = [
+  'Agua caliente con energía solar',
+  'Alimentación vegetariana consciente (3 comidas)',
+  'Clases diarias de yoga y meditación',
+  'Senderos ecológicos señalizados',
+  'Estacionamiento privado',
+  'Wi-Fi en áreas comunes',
+  'Ropa de cama y toallas orgánicas',
+  'Productos de aseo biodegradables',
+];
+
+const faqs = [
+  {
+    question: '¿Cuál es el horario de llegada y salida?',
+    answer: 'El check-in es a partir de las 2:00 p. m. y el check-out antes de las 11:00 a. m. Si necesitas flexibilidad, contáctanos y haremos lo posible por acomodarte.',
+  },
+  {
+    question: '¿Se permiten mascotas?',
+    answer: 'Por respeto a la fauna local y a la tranquilidad de nuestros huéspedes, no permitimos mascotas. Tenemos tres perros residentes que cuidan la aldea.',
+  },
+  {
+    question: '¿La alimentación está incluida en la tarifa?',
+    answer: 'Sí, todas nuestras tarifas incluyen tres comidas vegetarianas conscientes al día, preparadas con ingredientes de nuestra huerta orgánica.',
+  },
+  {
+    question: '¿Cuál es la política de cancelación?',
+    answer: 'Reembolso completo si cancelas con más de 7 días de anticipación. Con 3 a 6 días, reembolsamos el 50 %. Las cancelaciones con menos de 48 horas no tienen reembolso.',
+  },
+  {
+    question: '¿Cómo llegar a Varsana desde Bogotá?',
+    answer: 'Estamos en Granada, Cundinamarca. Puedes llegar en carro por la vía Bogotá – Silvania – Granada (hora y media aprox.) o tomar un bus intermunicipal desde el Terminal del Sur.',
+  },
+];
+
+const accentStyles: Record<string, { iconBg: string; iconText: string; border: string; btn: string; topBorder: string }> = {
+  saffron: {
+    iconBg: 'bg-saffron/10',
+    iconText: 'text-saffron',
+    border: 'border-saffron/30',
+    btn: 'bg-saffron text-white',
+    topBorder: 'border-t-saffron/20',
+  },
+  rausch: {
+    iconBg: 'bg-rausch/10',
+    iconText: 'text-rausch',
+    border: 'border-rausch/30',
+    btn: 'bg-rausch text-white',
+    topBorder: 'border-t-rausch/20',
+  },
+  forest: {
+    iconBg: 'bg-forest/10',
+    iconText: 'text-forest',
+    border: 'border-forest/30',
+    btn: 'bg-forest text-white',
+    topBorder: 'border-t-forest/20',
+  },
+};
+---
+
+<Layout title="Hospedaje Ecológico | Varsana Eco Yoga Aldea">
+
+  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12">
+    <!-- Hero Section -->
+    <section class="mb-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-6">
+        <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold">
+          <Sparkles size={16} />
+          <span>Eco-alojamiento consciente</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tightest leading-tight">
+          Hospedaje Ecológico en Varsana
+        </h1>
+        <p class="text-secondary-gray text-xl leading-relaxed">
+          Despierta entre montañas, respira aire puro y descansa en espacios diseñados para la paz interior. Cada habitación es un refugio donde la naturaleza y la espiritualidad se encuentran.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-4">
+          <a href="#habitaciones" class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2">
+            Ver habitaciones
+            <ChevronRight size={20} />
+          </a>
+          <a href="#faq" class="border-2 border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors">
+            Más información
+          </a>
+        </div>
+      </div>
+      <div class="relative aspect-[4/3] rounded-[32px] overflow-hidden shadow-airbnb">
+        <img
+          src="https://picsum.photos/seed/hospedaje-hero/1200/900"
+          alt="Habitación ecológica en Varsana con vista a las montañas"
+          class="w-full h-full object-cover"
+          referrerpolicy="no-referrer"
+        />
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-8">
+          <p class="text-white font-bold text-lg flex items-center gap-2">
+            <MapPin size={18} />
+            Granada, Cundinamarca
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Room Cards Grid -->
+    <section id="habitaciones" class="py-20 md:py-28">
+      <div class="mb-14 text-center max-w-2xl mx-auto">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tightest mb-4">
+          Nuestras Habitaciones
+        </h2>
+        <p class="text-secondary-gray text-lg leading-relaxed">
+          Seis espacios únicos donde la arquitectura sostenible se funde con el paisaje de Cundinamarca. Cada uno tiene su propia personalidad.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {rooms.map((room) => {
+          const styles = accentStyles[room.accent] ?? accentStyles.saffron;
+          return (
+            <div class="bg-lotus-white rounded-[24px] shadow-airbnb overflow-hidden flex flex-col h-full group hover:scale-[1.02] transition-all duration-600 cursor-pointer">
+              <div class="aspect-[4/3] overflow-hidden relative">
+                <img
+                  src={room.image}
+                  alt={room.name}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  referrerpolicy="no-referrer"
+                  loading="lazy"
+                />
+                <div class="absolute top-4 left-4 flex items-center gap-2 bg-lotus-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
+                  <room.icon size={14} />
+                  <span>{room.capacity}</span>
+                </div>
+              </div>
+
+              <div class="p-6 flex flex-col flex-grow space-y-4">
+                <div class="flex items-center gap-3">
+                  <div class={`w-10 h-10 ${styles.iconBg} rounded-xl flex items-center justify-center ${styles.iconText} border ${styles.border}`}>
+                    <room.icon size={20} />
+                  </div>
+                  <h3 class="text-xl font-bold font-display tracking-tightest">{room.name}</h3>
+                </div>
+
+                <p class="text-secondary-gray text-sm leading-relaxed flex-grow">{room.description}</p>
+
+                <div class={`border-t pt-4 space-y-2 ${styles.topBorder}`}>
+                  <ul class="space-y-1.5">
+                    {room.features.map((feat) => (
+                      <li class="flex items-center gap-2 text-sm text-secondary-gray">
+                        <CheckCircle2 size={14} class="text-forest shrink-0" />
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div class="pt-3 flex items-end justify-between">
+                    <div>
+                      <p class="text-xs text-secondary-gray">Desde</p>
+                      <p class="text-2xl font-bold tracking-tightest">
+                        ${room.price}
+                        <span class="text-sm font-normal text-secondary-gray"> COP / noche</span>
+                      </p>
+                    </div>
+                    <a
+                      href="#"
+                      class={`${styles.btn} px-5 py-2.5 rounded-xl font-bold text-sm hover:brightness-90 transition-all duration-300 shadow-sm inline-flex items-center gap-1.5`}
+                    >
+                      Reservar
+                      <ChevronRight size={14} />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Amenities Section -->
+    <section class="py-20 md:py-28">
+      <div class="bg-light-surface rounded-2xl p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8">
+          <div>
+            <div class="inline-flex items-center gap-2 bg-forest/10 text-forest px-4 py-2 rounded-full text-sm font-bold mb-6">
+              <Sparkles size={16} />
+              <span>Servicios incluidos</span>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+              Todo lo que necesitas para una estancia plena
+            </h2>
+            <p class="text-secondary-gray text-lg">
+              Cada detalle está pensado para tu comodidad, sin perder la esencia de la vida consciente y sostenible.
+            </p>
+          </div>
+
+          <ul class="space-y-4">
+            {amenities.map((item) => (
+              <li class="flex items-center gap-4 text-lg font-medium">
+                <CheckCircle2 class="text-forest shrink-0" size={24} />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div class="flex items-center gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand shadow-airbnb">
+            <Info class="text-rausch shrink-0" size={32} />
+            <p class="text-sm text-secondary-gray">
+              Todos nuestros espacios son libres de humo, alcohol y sustancias. Mantenemos un ambiente de respeto, silencio y espiritualidad.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <img
+            src="https://picsum.photos/seed/yoga-room/600/800"
+            class="rounded-3xl shadow-md aspect-[3/4] object-cover"
+            alt="Sala de yoga en Varsana"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+          />
+          <img
+            src="https://picsum.photos/seed/huerta-food/600/800"
+            class="rounded-3xl shadow-md mt-8 aspect-[3/4] object-cover"
+            alt="Alimentación vegetariana en Varsana"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="max-w-3xl mx-auto pb-20 space-y-12">
+      <div class="text-center">
+        <div class="inline-flex items-center gap-2 bg-rausch/10 text-rausch px-4 py-2 rounded-full text-sm font-bold mb-6">
+          <Info size={16} />
+          <span>Preguntas frecuentes</span>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+          Información para tu visita
+        </h2>
+        <p class="text-secondary-gray text-lg">
+          Resolvemos las dudas más comunes para que solo te preocupes por disfrutar.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        {faqs.map((faq) => (
+          <div class="border-b border-sacred-sand pb-6">
+            <h4 class="font-bold text-lg mb-2 font-display tracking-tightest">{faq.question}</h4>
+            <p class="text-secondary-gray leading-relaxed">{faq.answer}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="text-center pt-8">
+        <p class="text-secondary-gray mb-4">¿Tienes una pregunta diferente?</p>
+        <a
+          href="/contacto"
+          class="inline-flex items-center gap-2 border-2 border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors"
+        >
+          Escríbenos
+          <ChevronRight size={20} />
+        </a>
+      </div>
+    </section>
+  </main>
+
+</Layout>
+
+<style>
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+  }
+</style>

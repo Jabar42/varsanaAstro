@@ -1,0 +1,111 @@
+---
+export const prerender = true;
+
+import Layout from '@/src/layouts/Layout.astro';
+import {
+  House,
+  Users,
+  Sparkles,
+  Tent,
+  Salad,
+  Megaphone,
+  Send,
+  Store,
+  Heart,
+  Leaf,
+  MapPin,
+  Info,
+  ArrowUpRight,
+} from 'lucide-react';
+
+const groups = [
+  {
+    heading: 'Principal',
+    links: [
+      { label: 'Inicio', href: '/', icon: House, description: 'Página de bienvenida, eventos destacados y galería' },
+      { label: 'Nosotros', href: '/nosotros', icon: Users, description: 'Conoce a nuestro equipo y nuestra misión' },
+      { label: 'Contáctanos', href: '/contacto', icon: Send, description: 'Escríbenos, llámanos o visítanos' },
+    ],
+  },
+  {
+    heading: 'Experiencias',
+    links: [
+      { label: 'Eventos', href: '/events', icon: Sparkles, description: 'Retiros, talleres y encuentros con fecha programada' },
+      { label: 'Pasadías', href: '/pasadias', icon: Leaf, description: 'Servicios y experiencias disponibles todo el año' },
+      { label: 'Voluntariado', href: '/voluntariado', icon: Heart, description: 'Vive la eco-aldea como voluntario y aprende habilidades sostenibles' },
+    ],
+  },
+  {
+    heading: 'Bienestar',
+    links: [
+      { label: 'Hospedaje', href: '/hospedaje', icon: Tent, description: 'Habitaciones ecológicas con vista a las montañas de Cundinamarca' },
+      { label: 'Alimentación', href: '/alimentacion', icon: Salad, description: 'Cocina vegetariana consciente — próximamente' },
+      { label: 'Tienda', href: '/tienda', icon: Store, description: 'Productos artesanales y sostenibles — próximamente' },
+    ],
+  },
+  {
+    heading: 'Más',
+    links: [
+      { label: 'Donar', href: '/donar', icon: Heart, description: 'Apoya la misión de Varsana con tu contribución' },
+      { label: 'Blog', href: '/blog', icon: Megaphone, description: 'Historias, sabiduría y noticias de la comunidad — próximamente' },
+      { label: 'Design System', href: '/design-system', icon: Info, description: 'Guía de diseño para desarrolladores y colaboradores' },
+    ],
+  },
+];
+---
+
+<Layout title="Mapa del sitio | Varsana Eco Yoga Aldea">
+
+  <main class="max-w-3xl mx-auto px-6 md:px-12 lg:px-20 py-12">
+    <!-- Hero -->
+    <section class="mb-16 text-center">
+      <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold mb-6">
+        <MapPin size={16} />
+        <span>Navegación</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tightest leading-tight mb-4">
+        Mapa del sitio
+      </h1>
+      <p class="text-secondary-gray text-lg">
+        Todas las páginas de Varsana en un solo lugar.
+      </p>
+    </section>
+
+    <!-- Link Groups -->
+    <section class="space-y-16 pb-20">
+      {groups.map((group) => (
+        <div>
+          <h2 class="text-2xl font-bold font-display tracking-tightest mb-6 text-near-black">
+            {group.heading}
+          </h2>
+          <div class="space-y-3">
+            {group.links.map((link) => (
+              <a
+                href={link.href}
+                class="flex items-center gap-5 bg-lotus-white rounded-[20px] shadow-airbnb px-6 py-5 hover:scale-[1.01] transition-all duration-300 group"
+              >
+                <div class="w-10 h-10 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch shrink-0 group-hover:bg-rausch group-hover:text-white transition-colors duration-300">
+                  <link.icon size={20} />
+                </div>
+                <div class="flex-grow min-w-0">
+                  <h3 class="font-bold font-display tracking-tightest text-near-black group-hover:text-rausch transition-colors">
+                    {link.label}
+                  </h3>
+                  <p class="text-sm text-secondary-gray truncate">{link.description}</p>
+                </div>
+                <ArrowUpRight size={18} class="text-secondary-gray shrink-0 group-hover:text-rausch transition-colors" />
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  </main>
+
+</Layout>
+
+<style>
+  h1, h2, h3 {
+    letter-spacing: -0.02em;
+  }
+</style>
