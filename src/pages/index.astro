@@ -4,7 +4,6 @@ export const prerender = true;
 import Layout from '@/src/layouts/Layout.astro';
 import HeroBanner from '@/src/components/HeroBanner.astro';
 import EventCard from '@/src/components/EventCard.astro';
-import PhotoGallery from '@/src/components/PhotoGallery.astro';
 import { ArrowUpRight } from 'lucide-react';
 import { getUpcomingEvents } from '@/src/lib/events';
 import { getFeaturedItems } from '@/src/lib/slider';
@@ -201,7 +200,7 @@ const discoveryCards = [
     </section>
 
     <!-- Photo Gallery Section -->
-    <PhotoGallery />
+
 
     <!-- Call to Action -->
     <section class="mt-24 bg-near-black rounded-[32px] md:rounded-lg p-8 md:p-16 lg:p-24 text-white flex flex-col lg:flex-row items-center justify-between gap-12 overflow-hidden relative shadow-airbnb text-center lg:text-left">
@@ -222,9 +221,9 @@ const discoveryCards = [
         </div>
       </div>
       <div class="relative w-full lg:w-1/2 aspect-video rounded-3xl overflow-hidden shadow-airbnb rotate-0 lg:rotate-2 hover:rotate-0 transition-transform duration-500">
-        <img 
-          src="https://picsum.photos/seed/meditation-cta/1200/750" 
-          alt="Meditación" 
+        <img
+          src="https://picsum.photos/seed/meditation-cta/1200/750"
+          alt="Meditación"
           class="w-full h-full object-cover"
           referrerpolicy="no-referrer"
         />
