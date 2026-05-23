@@ -12,9 +12,6 @@
       "minimum": 0,
       "maximum": 9007199254740991
     },
-    "id": {
-      "type": "string"
-    },
     "title": {
       "type": "string"
     },
@@ -72,7 +69,6 @@
     }
   },
   "required": [
-    "id",
     "title",
     "description",
     "image",

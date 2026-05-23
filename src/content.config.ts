@@ -1,4 +1,5 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 /**
@@ -28,9 +29,8 @@ const priceSchema = z.object({
 const pricesSchema = z.array(priceSchema);
 
 const eventsCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/events' }),
+  loader: glob({ pattern: '**/[^_]*.mdoc', base: './src/content/events' }),
   schema: destacableSchema.merge(z.object({
-    id: z.string(),
     title: titleSchema,
     description: z.string(),
     event_start: z.date(),
@@ -42,9 +42,8 @@ const eventsCollection = defineCollection({
 });
 
 const pasadiasCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/pasadias' }),
+  loader: glob({ pattern: '**/[^_]*.mdoc', base: './src/content/pasadias' }),
   schema: destacableSchema.merge(z.object({
-    id: z.string(),
     title: titleSchema,
     description: z.string(),
     image: z.string(),
@@ -58,9 +57,8 @@ const pasadiasCollection = defineCollection({
 });
 
 const nosotrosCollection = defineCollection({
-  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/nosotros' }),
+  loader: glob({ pattern: '**/[^_]*.mdoc', base: './src/content/nosotros' }),
   schema: z.object({
-    id: z.string(),
     nombre: z.string(),
     rol: z.string(),
     descripcion: z.string(),

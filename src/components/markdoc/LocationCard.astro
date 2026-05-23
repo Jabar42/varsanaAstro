@@ -1,0 +1,34 @@
+---
+import { MapPin, Clock, Timer } from 'lucide-react';
+
+interface Props {
+  lugar: string;
+  hora: string;
+  duracion: string;
+}
+
+const { lugar, hora, duracion } = Astro.props;
+---
+
+<div class="bg-lotus-white rounded-[24px] shadow-airbnb p-6 my-8 inline-flex flex-wrap items-center gap-6">
+  <div class="flex items-center gap-2 text-secondary-gray text-sm font-medium">
+    <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-rausch/10 text-rausch shrink-0">
+      <MapPin size={16} />
+    </span>
+    <span>{lugar}</span>
+  </div>
+  <span class="text-sacred-sand/50 hidden sm:inline">|</span>
+  <div class="flex items-center gap-2 text-secondary-gray text-sm font-medium">
+    <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-saffron/10 text-saffron shrink-0">
+      <Clock size={16} />
+    </span>
+    <span>{hora}</span>
+  </div>
+  <span class="text-sacred-sand/50 hidden sm:inline">|</span>
+  <div class="flex items-center gap-2 text-secondary-gray text-sm font-medium">
+    <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-forest/10 text-forest shrink-0">
+      <Timer size={16} />
+    </span>
+    <span>{duracion}</span>
+  </div>
+</div>

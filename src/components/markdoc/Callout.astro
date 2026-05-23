@@ -1,0 +1,37 @@
+---
+interface Props {
+  type?: 'info' | 'tip' | 'warning';
+  title?: string;
+}
+
+const { type = 'info', title } = Astro.props;
+
+const variants = {
+  info: {
+    border: 'border-l-rausch',
+    bg: 'bg-rausch/5',
+    icon: 'text-rausch',
+  },
+  tip: {
+    border: 'border-l-forest',
+    bg: 'bg-forest/5',
+    icon: 'text-forest',
+  },
+  warning: {
+    border: 'border-l-saffron',
+    bg: 'bg-saffron/5',
+    icon: 'text-saffron',
+  },
+};
+
+const v = variants[type];
+---
+
+<div class={`border-l-4 ${v.border} ${v.bg} rounded-[16px] p-6 my-8`}>
+  {title && (
+    <p class="font-bold text-base text-near-black mb-2">{title}</p>
+  )}
+  <div class="text-secondary-gray text-base leading-relaxed">
+    <slot />
+  </div>
+</div>
