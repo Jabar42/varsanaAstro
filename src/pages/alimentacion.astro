@@ -1,0 +1,295 @@
+---
+export const prerender = true;
+
+import Layout from '@/src/layouts/Layout.astro';
+import {
+  Salad,
+  Sprout,
+  Leaf,
+  Heart,
+  Sun,
+  Moon,
+  Flower2,
+  Coffee,
+  ChefHat,
+  Sparkles,
+  CheckCircle2,
+  ChevronRight,
+} from 'lucide-react';
+
+const philosophy = [
+  {
+    title: 'De la huerta a la mesa',
+    icon: Sprout,
+    description: 'Cosechamos cada día los ingredientes frescos de nuestra huerta orgánica. Lo que llega a tu plato fue cultivado con amor, sin químicos ni prisas.',
+    accent: 'forest',
+  },
+  {
+    title: 'Cocina vegetariana consciente',
+    icon: Leaf,
+    description: 'No servimos carne, huevos, alcohol ni tabaco. Nuestra cocina honra la vida en todas sus formas y nutre el cuerpo con la abundancia del reino vegetal.',
+    accent: 'saffron',
+  },
+  {
+    title: 'Nutrición sagrada',
+    icon: Heart,
+    description: 'Para nosotros cocinar es un acto de devoción. Cada ingrediente se elige, se prepara y se ofrece con conciencia, transformando la nutrición en una práctica espiritual.',
+    accent: 'rausch',
+  },
+];
+
+const huertaProducts = [
+  'Verduras de temporada — lechuga, acelga, kale, espinaca',
+  'Hierbas aromáticas — albahaca, cilantro, romero, tomillo',
+  'Frutas frescas — mora, fresa, guayaba, feijoa',
+  'Flores comestibles — caléndula, pensamiento, capuchina',
+  'Tubérculos andinos — papa criolla, cubio, arracacha',
+];
+
+const meals = [
+  {
+    name: 'Desayuno',
+    icon: Sun,
+    time: '7:00 – 9:00 a. m.',
+    description: 'Frutas frescas de la huerta, granola artesanal, pan recién horneado, mermeladas naturales y bebidas calientes para empezar el día con energía.',
+    accent: 'saffron',
+  },
+  {
+    name: 'Almuerzo',
+    icon: Flower2,
+    time: '12:00 – 2:00 p. m.',
+    description: 'El plato principal del día: sopa de verduras, una proteína vegetal como lentejas o garbanzos, arroz, ensalada fresca y postre.',
+    accent: 'forest',
+  },
+  {
+    name: 'Cena',
+    icon: Moon,
+    time: '6:30 – 8:00 p. m.',
+    description: 'Una opción más ligera: crema de verduras, wrap de vegetales asados o bowl de quinoa con hortalizas de la huerta.',
+    accent: 'rausch',
+  },
+  {
+    name: 'Bebidas',
+    icon: Coffee,
+    time: 'Todo el día',
+    description: 'Infusiones de hierbas recolectadas en la montaña, agua de panela, café orgánico de la región y jugos naturales según la cosecha del día.',
+    accent: 'saffron',
+  },
+];
+
+const principles = [
+  {
+    title: 'Ingredientes orgánicos',
+    icon: Sprout,
+    description: 'Todo lo que cultivamos y servimos es 100 % libre de pesticidas y fertilizantes químicos.',
+  },
+  {
+    title: 'Sin procesados',
+    icon: ChefHat,
+    description: 'Preparamos nuestros alimentos desde cero. Nada de conservantes, saborizantes ni productos industriales.',
+  },
+  {
+    title: 'Sazón consciente',
+    icon: Sparkles,
+    description: 'Cocinamos con intención, en un ambiente de calma y gratitud. La energía con la que se prepara el alimento también nutre.',
+  },
+];
+
+const accentStyles: Record<string, { iconBg: string; iconText: string; topBorder: string }> = {
+  saffron: { iconBg: 'bg-saffron/10', iconText: 'text-saffron', topBorder: 'border-t-saffron/20' },
+  rausch: { iconBg: 'bg-rausch/10', iconText: 'text-rausch', topBorder: 'border-t-rausch/20' },
+  forest: { iconBg: 'bg-forest/10', iconText: 'text-forest', topBorder: 'border-t-forest/20' },
+};
+---
+
+<Layout title="Alimentación Consciente | Varsana Eco Yoga Aldea">
+
+  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12">
+    <!-- Hero -->
+    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-6">
+        <div class="inline-flex items-center gap-2 bg-forest/10 text-forest px-4 py-2 rounded-full text-sm font-bold">
+          <Salad size={16} />
+          <span>Alimentación consciente</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tightest leading-tight">
+          Alimentación Consciente en Varsana
+        </h1>
+        <p class="text-secondary-gray text-xl leading-relaxed">
+          En nuestra mesa, cada alimento cuenta una historia de amor por la tierra. Practicamos una cocina vegetariana que nutre el cuerpo, honra la naturaleza y eleva el espíritu.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-4">
+          <a href="#huerta" class="bg-forest text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-forest-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2">
+            Conoce la huerta
+            <ChevronRight size={20} />
+          </a>
+          <a href="#filosofia" class="border-2 border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors">
+            Nuestra filosofía
+          </a>
+        </div>
+      </div>
+      <div class="relative aspect-[4/3] rounded-[32px] overflow-hidden shadow-airbnb">
+        <img
+          src="https://picsum.photos/seed/varsana-food-hero/1200/900"
+          alt="Alimentación vegetariana consciente en Varsana"
+          class="w-full h-full object-cover"
+          referrerpolicy="no-referrer"
+        />
+      </div>
+    </section>
+
+    <!-- Philosophy Cards -->
+    <section id="filosofia" class="mb-24">
+      <div class="mb-14 text-center max-w-2xl mx-auto">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tightest mb-4">
+          Nuestra filosofía alimentaria
+        </h2>
+        <p class="text-secondary-gray text-lg leading-relaxed">
+          Comer en Varsana es una experiencia que despierta los sentidos y cultiva la gratitud. Esto es lo que creemos.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {philosophy.map((item) => {
+          const s = accentStyles[item.accent] ?? accentStyles.forest;
+          return (
+            <div class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600 group">
+              <div class={`w-14 h-14 ${s.iconBg} rounded-2xl flex items-center justify-center ${s.iconText} mx-auto group-hover:scale-110 transition-transform duration-300`}>
+                <item.icon size={28} />
+              </div>
+              <h3 class="text-xl font-bold font-display tracking-tightest">{item.title}</h3>
+              <p class="text-secondary-gray text-sm leading-relaxed">{item.description}</p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- La Huerta -->
+    <section id="huerta" class="mb-24 bg-light-surface rounded-2xl p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-8">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-forest/10 text-forest px-4 py-2 rounded-full text-sm font-bold mb-6">
+            <Sprout size={16} />
+            <span>Del campo a tu plato</span>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+            Nuestra huerta orgánica
+          </h2>
+          <p class="text-secondary-gray text-lg leading-relaxed">
+            Cultivamos sin químicos, en armonía con los ciclos de la naturaleza. La tierra de Varsana nos regala alimentos vivos, llenos de sabor y de prana.
+          </p>
+        </div>
+
+        <ul class="space-y-3">
+          {huertaProducts.map((item) => (
+            <li class="flex items-center gap-3 text-lg font-medium">
+              <CheckCircle2 class="text-forest shrink-0" size={22} />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <img
+          src="https://picsum.photos/seed/huerta-veggies/600/800"
+          class="rounded-3xl shadow-md aspect-[3/4] object-cover"
+          alt="Huerta orgánica de Varsana"
+          referrerpolicy="no-referrer"
+          loading="lazy"
+        />
+        <img
+          src="https://picsum.photos/seed/huerta-harvest/600/800"
+          class="rounded-3xl shadow-md mt-8 aspect-[3/4] object-cover"
+          alt="Cosecha de vegetales orgánicos"
+          referrerpolicy="no-referrer"
+          loading="lazy"
+        />
+      </div>
+    </section>
+
+    <!-- Qué esperar (meals) -->
+    <section class="mb-24">
+      <div class="mb-14 text-center max-w-2xl mx-auto">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tightest mb-4">
+          Qué esperar en la mesa
+        </h2>
+        <p class="text-secondary-gray text-lg leading-relaxed">
+          Tres comidas al día preparadas con ingredientes frescos de la huerta, servidas en comunidad.
+        </p>
+      </div>
+
+      <div class="max-w-3xl mx-auto space-y-4">
+        {meals.map((meal) => {
+          const s = accentStyles[meal.accent] ?? accentStyles.forest;
+          return (
+            <div class={`bg-lotus-white rounded-[20px] shadow-airbnb p-6 flex gap-5 items-start hover:scale-[1.01] transition-all duration-600 group border-t-2 ${s.topBorder}`}>
+              <div class={`w-12 h-12 ${s.iconBg} rounded-xl flex items-center justify-center ${s.iconText} shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                <meal.icon size={22} />
+              </div>
+              <div class="space-y-1 flex-grow">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <h3 class="text-lg font-bold font-display tracking-tightest">{meal.name}</h3>
+                  <span class="text-xs text-secondary-gray bg-sacred-sand px-2.5 py-0.5 rounded-full font-medium">{meal.time}</span>
+                </div>
+                <p class="text-secondary-gray text-sm leading-relaxed">{meal.description}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Principios -->
+    <section class="mb-24">
+      <div class="mb-14 text-center max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 bg-rausch/10 text-rausch px-4 py-2 rounded-full text-sm font-bold mb-6">
+          <Sparkles size={16} />
+          <span>Principios de nuestra cocina</span>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+          Así preparamos tus alimentos
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {principles.map((p) => (
+          <div class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600">
+            <div class="w-14 h-14 bg-forest/10 rounded-2xl flex items-center justify-center text-forest mx-auto">
+              <p.icon size={28} />
+            </div>
+            <h3 class="text-xl font-bold font-display tracking-tightest">{p.title}</h3>
+            <p class="text-secondary-gray text-sm leading-relaxed">{p.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="mb-16 bg-near-black rounded-2xl p-10 md:p-16 text-center space-y-6">
+      <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest text-white">
+        ¿Quieres aprender el arte de la cocina consciente?
+      </h2>
+      <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+        Participa en nuestros talleres de panadería artesanal, cocina vegetariana y nutrición ayurvédica. Descubre cómo transformar ingredientes simples en alimento sagrado.
+      </p>
+      <div class="flex flex-wrap gap-4 justify-center pt-4">
+        <a href="/events" class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2">
+          Ver eventos
+          <ChevronRight size={20} />
+        </a>
+        <a href="/voluntariado" class="border-2 border-white/20 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:border-white/40 hover:bg-white/5 transition-all">
+          Ser voluntario en la huerta
+        </a>
+      </div>
+    </section>
+  </main>
+
+</Layout>
+
+<style>
+  h1, h2, h3 {
+    letter-spacing: -0.02em;
+  }
+</style>
