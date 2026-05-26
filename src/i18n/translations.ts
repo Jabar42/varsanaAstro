@@ -33,6 +33,7 @@ export interface TranslationDict {
     huertaTitle: string;
     huertaText: string;
     huertaCta: string;
+    metaDescription: string;
     ctaFinalTitle: string;
     ctaFinalText: string;
     ctaReserve: string;
@@ -325,6 +326,7 @@ export const translations: Record<Locale, TranslationDict> = {
       huertaTitle: 'Cultivamos alimentos, cultivamos conciencia',
       huertaText: 'En nuestra huerta orgánica producimos alimentos frescos, con prácticas sostenibles que cuidan la tierra y nuestra comunidad.',
       huertaCta: 'Ver la Huerta',
+      metaDescription: 'Varsana Eco Yoga Aldea es una comunidad consciente en Granada, Cundinamarca. Retiros de yoga, meditación, pasadías, voluntariado y hospedaje ecológico en conexión con la naturaleza.',
       ctaFinalTitle: '¿Listo para tu transformación?',
       ctaFinalText: 'Únete a cientos de personas que han encontrado paz y propósito en nuestra aldea. Tu viaje comienza aquí.',
       ctaReserve: 'Reservar ahora',
@@ -772,6 +774,7 @@ export const translations: Record<Locale, TranslationDict> = {
       huertaTitle: 'We grow food, we grow consciousness',
       huertaText: 'In our organic garden we produce fresh food with sustainable practices that care for the land and our community.',
       huertaCta: 'See the Garden',
+      metaDescription: 'Varsana Eco Yoga Aldea is a conscious community in Granada, Colombia. Yoga retreats, meditation, day passes, volunteering, and eco-lodging in harmony with nature.',
       ctaFinalTitle: 'Ready for your transformation?',
       ctaFinalText: 'Join hundreds of people who have found peace and purpose in our village. Your journey begins here.',
       ctaReserve: 'Book now',
