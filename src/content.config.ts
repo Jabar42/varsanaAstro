@@ -13,6 +13,11 @@ const titleSchema = z.string().trim()
     message: 'Title must start with an uppercase letter (sentence case)',
   });
 
+/** Shared schema for locale-aware content. */
+const localizableSchema = z.object({
+  locale: z.enum(['es', 'en']).optional().default('es'),
+});
+
 /** Shared schema for collections that can appear in the featured slider. */
 const destacableSchema = z.object({
   destacado: z.boolean().optional().default(false),
@@ -30,7 +35,7 @@ const pricesSchema = z.array(priceSchema);
 
 const eventsCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.mdoc', base: './src/content/events' }),
-  schema: destacableSchema.merge(z.object({
+  schema: localizableSchema.merge(destacableSchema).merge(z.object({
     title: titleSchema,
     description: z.string(),
     event_start: z.date(),
@@ -43,7 +48,7 @@ const eventsCollection = defineCollection({
 
 const pasadiasCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.mdoc', base: './src/content/pasadias' }),
-  schema: destacableSchema.merge(z.object({
+  schema: localizableSchema.merge(destacableSchema).merge(z.object({
     title: titleSchema,
     description: z.string(),
     image: z.string(),
@@ -58,7 +63,7 @@ const pasadiasCollection = defineCollection({
 
 const nosotrosCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.mdoc', base: './src/content/nosotros' }),
-  schema: z.object({
+  schema: localizableSchema.merge(z.object({
     nombre: z.string(),
     rol: z.string(),
     descripcion: z.string(),
@@ -73,7 +78,7 @@ const nosotrosCollection = defineCollection({
     ).optional().default([]),
     correo: z.string().email().optional(),
     telefono: z.string().optional(),
-  }),
+  })),
 });
 
 export const collections = {

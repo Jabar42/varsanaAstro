@@ -5,11 +5,15 @@ import { getCollection } from 'astro:content';
  * y los ordena por fecha de inicio (más cercanos primero).
  * Usa event_end si está disponible, o event_start como fecha final.
  */
-export async function getUpcomingEvents() {
+export async function getUpcomingEvents(locale = 'es') {
   const allEvents = await getCollection('events');
   const now = new Date();
 
-  return allEvents
+  // Filter by locale, falling back to Spanish content
+  const localeEvents = allEvents.filter(e => (e.data.locale ?? 'es') === locale);
+  const sourceEvents = localeEvents.length > 0 ? localeEvents : allEvents.filter(e => (e.data.locale ?? 'es') === 'es');
+
+  return sourceEvents
     .filter(event => {
       const eventEnd = event.data.event_end
         ? new Date(event.data.event_end)

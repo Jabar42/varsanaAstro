@@ -2,6 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
+    "locale": {
+      "default": "es",
+      "type": "string",
+      "enum": [
+        "es",
+        "en"
+      ]
+    },
     "destacado": {
       "default": false,
       "type": "boolean"

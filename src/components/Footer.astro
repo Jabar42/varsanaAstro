@@ -1,5 +1,16 @@
 ---
 import { Globe, Facebook, Instagram, Youtube } from 'lucide-react';
+import { useTranslations } from '@/src/i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const otherLocale = locale === 'en' ? 'es' : 'en';
+const t = useTranslations(locale);
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
+const switchUrl = (() => {
+  const p = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '');
+  return getRelativeLocaleUrl(otherLocale, p || '/');
+})();
 ---
 
 <footer class="bg-near-black mt-16 px-6 py-12 md:px-12 lg:px-20">
@@ -8,57 +19,57 @@ import { Globe, Facebook, Instagram, Youtube } from 'lucide-react';
       <div class="flex flex-col gap-4">
         <img src="/logo/logoWhite.png" alt="Varsana" class="w-24" />
         <p class="text-sm text-gray-400 leading-relaxed max-w-52">
-          Eco Yoga Aldea — bienestar, conciencia y conexión espiritual en Granada, Cundinamarca.
+          {t('footer.tagline')}
         </p>
       </div>
       <div class="space-y-4">
-        <h4 class="font-bold text-sm uppercase tracking-wider text-white">Comunidad</h4>
+        <h4 class="font-bold text-sm uppercase tracking-wider text-white">{t('footer.community')}</h4>
         <ul class="space-y-3 text-sm text-gray-400">
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Varsana.org</li>
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Proyectos Sociales</li>
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Agricultura Orgánica</li>
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Eco-Construcción</li>
-          <li><a href="/red-eco-aldeas" class="hover:text-white hover:underline cursor-pointer transition-colors">Red de eco aldeas</a></li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.varsanaOrg')}</li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.socialProjects')}</li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.organicAgriculture')}</li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.ecoConstruction')}</li>
+          <li><a href={l('/red-eco-aldeas')} class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.ecoVillageNetwork')}</a></li>
         </ul>
       </div>
       <div class="space-y-4">
-        <h4 class="font-bold text-sm uppercase tracking-wider text-white">Sobre Nosotros</h4>
+        <h4 class="font-bold text-sm uppercase tracking-wider text-white">{t('footer.about')}</h4>
         <ul class="space-y-3 text-sm text-gray-400">
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Nuestra Historia</li>
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Filosofía</li>
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Galería</li>
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Preguntas Frecuentes</li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.ourStory')}</li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.philosophy')}</li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.gallery')}</li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.faq')}</li>
         </ul>
       </div>
       <div class="space-y-4">
-        <h4 class="font-bold text-sm uppercase tracking-wider text-white">Contacto</h4>
+        <h4 class="font-bold text-sm uppercase tracking-wider text-white">{t('footer.contact')}</h4>
         <ul class="space-y-3 text-sm text-gray-400">
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">+57 321 4538242</li>
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">contacto@varsana.com</li>
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Granada, Cundinamarca</li>
-          <li class="hover:text-white hover:underline cursor-pointer transition-colors">Colombia</li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.location')}</li>
+          <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.colombia')}</li>
         </ul>
       </div>
     </div>
 
     <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
       <div class="flex flex-wrap justify-center gap-2 text-gray-500">
-        <span>© 2024 Varsana Eco Yoga Aldea</span>
+        <span>{t('footer.copyright')}</span>
         <span>·</span>
-        <span class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">Privacidad</span>
+        <span class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">{t('footer.privacy')}</span>
         <span>·</span>
-        <span class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">Condiciones</span>
+        <span class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">{t('footer.terms')}</span>
         <span>·</span>
-        <a href="/mapa-del-sitio" class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">Mapa del sitio</a>
+        <a href={l('/mapa-del-sitio')} class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">{t('footer.sitemap')}</a>
         <span>·</span>
-        <a href="/design-system" class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">Design System</a>
+        <a href={l('/design-system')} class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">{t('footer.designSystem')}</a>
       </div>
 
       <div class="flex items-center gap-6 font-semibold text-gray-400">
-        <div class="flex items-center gap-2 hover:text-white hover:underline cursor-pointer transition-colors">
+        <a href={switchUrl} data-locale-switch={otherLocale} class="flex items-center gap-2 hover:text-white hover:underline cursor-pointer transition-colors">
           <Globe size={16} />
-          <span>Español (CO)</span>
-        </div>
+          <span>{t('footer.language')}</span>
+        </a>
         <div class="flex items-center gap-2 hover:text-white hover:underline cursor-pointer transition-colors">
           <span>$</span>
           <span>COP</span>
@@ -72,3 +83,12 @@ import { Globe, Facebook, Instagram, Youtube } from 'lucide-react';
     </div>
   </div>
 </footer>
+
+<script>
+  document.querySelectorAll('[data-locale-switch]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const targetLocale = el.getAttribute('data-locale-switch');
+      document.cookie = 'varsana_locale=' + targetLocale + '; Path=/; Max-Age=31536000; SameSite=Lax';
+    });
+  });
+</script>

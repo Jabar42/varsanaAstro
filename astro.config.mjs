@@ -10,6 +10,11 @@ export default defineConfig({
   output: "server",
   site: "https://varsana.com",
   adapter: vercel(),
+  i18n: {
+    defaultLocale: "es",
+    locales: ["es", "en"],
+    routing: "manual",
+  },
   integrations: [react(), sitemap(), markdoc()],
   prefetch: {
     prefetchAll: true,

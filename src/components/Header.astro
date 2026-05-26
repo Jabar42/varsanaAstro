@@ -1,12 +1,25 @@
 ---
 import { Globe, Heart, MessageCircle } from 'lucide-react';
 import CategoryBar from '@/src/components/CategoryBar.astro';
+import { useTranslations } from '@/src/i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const otherLocale = locale === 'en' ? 'es' : 'en';
+const otherLabel = otherLocale === 'en' ? 'EN' : 'ES';
+const t = useTranslations(locale);
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
+// URL to switch language: go to current page in the other locale
+const switchUrl = (() => {
+  const p = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '');
+  return getRelativeLocaleUrl(otherLocale, p || '/');
+})();
 ---
 
 <header class="sticky top-0 z-50 bg-lotus-white border-b border-sacred-sand">
   <div class="max-w-7xl mx-auto px-8 pt-2 pb-0 md:px-16 lg:px-24 flex items-center gap-4 md:gap-8">
     <!-- Desktop logo: spans both rows, centered vertically -->
-    <a href="/" class="hidden min-[900px]:block flex-shrink-0">
+    <a href={l('/')} class="hidden min-[900px]:block flex-shrink-0">
       <img
         src="/logo/logocompleto.png"
         alt="Varsana"
@@ -22,7 +35,7 @@ import CategoryBar from '@/src/components/CategoryBar.astro';
       <!-- Top row: contact info -->
       <div class="flex items-center justify-between">
         <!-- Mobile logo -->
-        <a href="/" class="flex items-center cursor-pointer group min-[900px]:hidden">
+        <a href={l('/')} class="flex items-center cursor-pointer group min-[900px]:hidden">
           <div class="h-6 w-auto overflow-hidden">
             <img
               src="/logo/logovarsana.png"
@@ -45,15 +58,21 @@ import CategoryBar from '@/src/components/CategoryBar.astro';
               <span class="hidden sm:inline">+57 321 4538242</span>
             </a>
 
-            <a href="/donar" class="inline-flex items-center gap-2 bg-rausch text-white font-semibold rounded-2xl px-4 py-1 md:px-5 transition-all duration-300 hover:brightness-90 cursor-pointer">
+            <a href={l('/donar')} class="inline-flex items-center gap-2 bg-rausch text-white font-semibold rounded-2xl px-4 py-1 md:px-5 transition-all duration-300 hover:brightness-90 cursor-pointer">
               <Heart size={16} />
-              <span>Donar</span>
+              <span>{t('nav.donate')}</span>
             </a>
 
-            <!-- Globe icon -->
-            <div class="hover:bg-sacred-sand rounded-full cursor-pointer transition-colors">
-              <Globe size={18} />
-            </div>
+            <!-- Language switcher -->
+            <a
+              href={switchUrl}
+              data-locale-switch={otherLocale}
+              class="flex items-center gap-1.5 hover:bg-sacred-sand rounded-full px-2 py-1 cursor-pointer transition-colors group"
+              title={otherLabel === 'EN' ? 'Switch to English' : 'Cambiar a Español'}
+            >
+              <Globe size={16} />
+              <span class="text-xs font-bold opacity-70 group-hover:opacity-100 transition-opacity">{otherLabel}</span>
+            </a>
           </div>
         </div>
       </div>
@@ -63,3 +82,14 @@ import CategoryBar from '@/src/components/CategoryBar.astro';
     </div>
   </div>
 </header>
+
+<script>
+  // Clear locale cookie when switching FROM English TO Spanish
+  // so the middleware doesn't redirect back to /en/
+  document.querySelectorAll('[data-locale-switch]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const targetLocale = el.getAttribute('data-locale-switch');
+      document.cookie = 'varsana_locale=' + targetLocale + '; Path=/; Max-Age=31536000; SameSite=Lax';
+    });
+  });
+</script>

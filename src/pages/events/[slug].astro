@@ -1,21 +1,15 @@
 ---
-export const prerender = true;
 
 import Layout from '@/src/layouts/Layout.astro';
-import { getCollection, render } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 import { getAvailablePrices } from '@/src/lib/events';
 import BoldPaymentButton from '@/src/components/BoldPaymentButton';
 import { Calendar, MapPin, Users, Info, Star } from 'lucide-react';
 
-export async function getStaticPaths() {
-  const events = await getCollection('events');
-  return events.map(event => ({
-    params: { slug: event.id },
-    props: { event },
-  }));
-}
+const { slug } = Astro.params;
+const event = await getEntry('events', slug!);
+if (!event) return Astro.redirect('/404');
 
-const { event } = Astro.props;
 const { title, description, event_start, event_end, image, prices, stock_max } = event.data;
 const { Content } = await render(event);
 

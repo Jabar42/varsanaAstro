@@ -1,21 +1,15 @@
 ---
-export const prerender = true;
 
 import Layout from '@/src/layouts/Layout.astro';
-import { getCollection, render } from 'astro:content';
+import { getEntry, render } from 'astro:content';
 import { getCurrentPrice } from '@/src/lib/pasadias';
 import BoldPaymentButton from '@/src/components/BoldPaymentButton';
 import { Calendar, MapPin, Clock, Users, Info, Star, Check } from 'lucide-react';
 
-export async function getStaticPaths() {
-  const pasadias = await getCollection('pasadias');
-  return pasadias.map(pasadia => ({
-    params: { slug: pasadia.id },
-    props: { pasadia },
-  }));
-}
+const { slug } = Astro.params;
+const pasadia = await getEntry('pasadias', slug!);
+if (!pasadia) return Astro.redirect('/404');
 
-const { pasadia } = Astro.props;
 const { title, description, image, prices, stock_max, duration, meeting_point, category, included_services } = pasadia.data;
 const { Content } = await render(pasadia);
 

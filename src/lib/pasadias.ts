@@ -3,9 +3,11 @@ import { getCollection } from 'astro:content';
 /**
  * Returns all pasadias (fixed services without dates), sorted alphabetically by title.
  */
-export async function getAllPasadias() {
+export async function getAllPasadias(locale = 'es') {
   const allPasadias = await getCollection('pasadias');
-  return allPasadias.sort((a, b) =>
+  const localeItems = allPasadias.filter(p => (p.data.locale ?? 'es') === locale);
+  const sourceItems = localeItems.length > 0 ? localeItems : allPasadias.filter(p => (p.data.locale ?? 'es') === 'es');
+  return sourceItems.sort((a, b) =>
     a.data.title.localeCompare(b.data.title)
   );
 }

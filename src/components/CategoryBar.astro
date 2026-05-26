@@ -1,5 +1,11 @@
 ---
 import { Menu, Send, House, Megaphone, Store, Tent, Users, Sparkles, Salad, ChevronDown } from 'lucide-react';
+import { useTranslations } from '@/src/i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const t = useTranslations(locale);
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
 
 interface NavChild {
   name: string;
@@ -14,22 +20,22 @@ interface NavItem {
 }
 
 const categories: NavItem[] = [
-  { name: 'Inicio', icon: House, href: '/' },
-  { name: 'Nosotros', icon: Users, href: '/nosotros' },
+  { name: t('nav.home'), icon: House, href: l('/') },
+  { name: t('nav.about'), icon: Users, href: l('/nosotros') },
   {
-    name: 'Experiencias',
+    name: t('nav.experiences'),
     icon: Sparkles,
     children: [
-      { name: 'Eventos', href: '/events' },
-      { name: 'Pasadias', href: '/pasadias' },
-      { name: 'Voluntariado', href: '/voluntariado' },
+      { name: t('nav.events'), href: l('/events') },
+      { name: t('nav.pasadias'), href: l('/pasadias') },
+      { name: t('nav.volunteering'), href: l('/voluntariado') },
     ],
   },
-  { name: 'Tienda', icon: Store, href: '/tienda' },
-  { name: 'Hospedaje', icon: Tent, href: '/hospedaje' },
-  { name: 'Alimentacion', icon: Salad, href: '/alimentacion' },
-  { name: 'Blog', icon: Megaphone, href: '/blog' },
-  { name: 'Contacto', icon: Send, href: '/contacto' },
+  { name: t('nav.shop'), icon: Store, href: l('/tienda') },
+  { name: t('nav.lodging'), icon: Tent, href: l('/hospedaje') },
+  { name: t('nav.food'), icon: Salad, href: l('/alimentacion') },
+  { name: t('nav.blog'), icon: Megaphone, href: l('/blog') },
+  { name: t('nav.contact'), icon: Send, href: l('/contacto') },
 ];
 
 const mobilePrimary: NavItem[] = [
@@ -131,7 +137,7 @@ function menuItemClass(href: string) {
         class={`${triggerBase} border-transparent opacity-60`}
       >
         <Menu class={iconClasses} strokeWidth={1.5} />
-        <span class={labelClasses}>Menu</span>
+        <span class={labelClasses}>{t('nav.menu')}</span>
       </button>
       <div
         data-dropdown-menu

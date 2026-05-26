@@ -1,6 +1,9 @@
 ---
 import Layout from '@/src/layouts/Layout.astro';
+import { useTranslations } from '@/src/i18n/utils';
 import { CheckCircle, XCircle, Clock, ArrowLeft } from 'lucide-react';
+
+const t = useTranslations((Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es');
 
 const boldOrderId = Astro.url.searchParams.get('bold-order-id');
 const boldTxStatus = Astro.url.searchParams.get('bold-tx-status');
@@ -17,32 +20,32 @@ interface ResultConfig {
 const resultConfigs: Record<string, ResultConfig> = {
   approved: {
     icon: CheckCircle,
-    title: '¡Pago exitoso!',
-    message: 'Pronto recibirás un correo de confirmación con los detalles de tu reserva. Si no lo ves en tu bandeja de entrada, revisa la carpeta de spam.',
+    title: t('payment.successTitle'),
+    message: t('payment.successMessage'),
     color: 'text-green-700',
     bgColor: 'bg-green-50',
     borderColor: 'border-green-200',
   },
   declined: {
     icon: XCircle,
-    title: 'Pago rechazado',
-    message: 'El pago no pudo completarse. Esto puede deberse a fondos insuficientes o a un error temporal. Intenta nuevamente con otro medio de pago.',
+    title: t('payment.declinedTitle'),
+    message: t('payment.declinedMessage'),
     color: 'text-red-700',
     bgColor: 'bg-red-50',
     borderColor: 'border-red-200',
   },
   failed: {
     icon: XCircle,
-    title: 'Pago fallido',
-    message: 'Ocurrió un error al procesar el pago. Por favor, intenta nuevamente.',
+    title: t('payment.failedTitle'),
+    message: t('payment.failedMessage'),
     color: 'text-red-700',
     bgColor: 'bg-red-50',
     borderColor: 'border-red-200',
   },
   pending: {
     icon: Clock,
-    title: 'Pago en proceso',
-    message: 'Tu pago está siendo procesado. Te notificaremos cuando se confirme. No cierres esta página.',
+    title: t('payment.pendingTitle'),
+    message: t('payment.pendingMessage'),
     color: 'text-amber-700',
     bgColor: 'bg-amber-50',
     borderColor: 'border-amber-200',
@@ -65,22 +68,22 @@ const ResultIcon = config?.icon || Clock;
 
       <!-- Title -->
       <h1 class={`text-2xl font-bold font-display ${config?.color || 'text-gray-800'}`}>
-        {config?.title || (boldOrderId ? 'Procesando...' : 'Sin información de pago')}
+        {config?.title || (boldOrderId ? t('payment.processing') : t('payment.noInfo'))}
       </h1>
 
       <!-- Message -->
       <p class="text-gray-600 text-sm leading-relaxed">
         {config?.message || (
           boldOrderId
-            ? 'Tu transacción está siendo procesada. Te contactaremos cuando tengamos una actualización.'
-            : 'No se encontró información de una transacción reciente. Si realizaste un pago, por favor contáctanos.'
+            ? t('payment.unknownMessage')
+            : t('payment.unknownFallback')
         )}
       </p>
 
       <!-- Order Reference -->
       {boldOrderId && (
         <div class="border-t border-sacred-sand pt-4">
-          <p class="text-xs text-gray-400 uppercase tracking-wide font-semibold">Referencia</p>
+          <p class="text-xs text-gray-400 uppercase tracking-wide font-semibold">{t('payment.reference')}</p>
           <p class="text-sm font-mono text-gray-600 mt-1 break-all">{boldOrderId}</p>
         </div>
       )}
@@ -92,7 +95,7 @@ const ResultIcon = config?.icon || Clock;
             href="javascript:history.back()"
             class="block w-full rounded-xl bg-sacred-900 px-4 py-3 font-semibold text-white text-center transition-colors hover:bg-sacred-900/90"
           >
-            Intentar nuevamente
+            {t('payment.retry')}
           </a>
         )}
         <a
@@ -100,7 +103,7 @@ const ResultIcon = config?.icon || Clock;
           class="flex items-center justify-center gap-2 w-full rounded-xl border border-sacred-sand px-4 py-3 font-medium text-sacred-900 transition-colors hover:bg-sacred-sand/50"
         >
           <ArrowLeft size={16} />
-          Volver al inicio
+          {t('payment.backHome')}
         </a>
       </div>
     </div>

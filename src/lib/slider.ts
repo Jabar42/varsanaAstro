@@ -16,18 +16,21 @@ export interface FeaturedItem {
 interface GetFeaturedOptions {
   collections?: string[];
   maxItems?: number;
+  locale?: string;
 }
 
 export async function getFeaturedItems(
   options: GetFeaturedOptions = {},
 ): Promise<FeaturedItem[]> {
-  const { collections = ['events', 'pasadias'], maxItems } = options;
+  const { collections = ['events', 'pasadias'], maxItems, locale = 'es' } = options;
   const items: FeaturedItem[] = [];
 
   if (collections.includes('events')) {
     const all = await getCollection('events');
+    const localeEvents = all.filter(e => (e.data.locale ?? 'es') === locale);
+    const sourceEvents = localeEvents.length > 0 ? localeEvents : all.filter(e => (e.data.locale ?? 'es') === 'es');
     const now = new Date();
-    for (const entry of all) {
+    for (const entry of sourceEvents) {
       if (!entry.data.destacado) continue;
       const end = entry.data.event_end
         ? new Date(entry.data.event_end)
@@ -53,7 +56,9 @@ export async function getFeaturedItems(
 
   if (collections.includes('pasadias')) {
     const all = await getCollection('pasadias');
-    for (const entry of all) {
+    const localePasadias = all.filter(p => (p.data.locale ?? 'es') === locale);
+    const sourcePasadias = localePasadias.length > 0 ? localePasadias : all.filter(p => (p.data.locale ?? 'es') === 'es');
+    for (const entry of sourcePasadias) {
       if (!entry.data.destacado) continue;
 
       items.push({

@@ -1,7 +1,11 @@
 ---
-export const prerender = true;
 
 import Layout from '@/src/layouts/Layout.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
+
 import {
   Sun,
   Moon,
@@ -334,7 +338,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; border: s
       <div class="text-center pt-8">
         <p class="text-secondary-gray mb-4">¿Tienes una pregunta diferente?</p>
         <a
-          href="/contacto"
+          href={l('/contacto')}
           class="inline-flex items-center gap-2 border-2 border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors"
         >
           Escríbenos

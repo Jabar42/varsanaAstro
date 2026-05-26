@@ -2,6 +2,8 @@
 Astro.response.status = 404;
 
 import Layout from '@/src/layouts/Layout.astro';
+import { useTranslations } from '@/src/i18n/utils';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 import {
   Compass,
   ArrowRight,
@@ -9,6 +11,10 @@ import {
   Leaf,
   MessageCircle,
 } from 'lucide-react';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const t = useTranslations(locale);
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
 ---
 
 <Layout title="Página no encontrada | Varsana Eco Yoga Aldea">
@@ -28,19 +34,18 @@ import {
         </p>
 
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tightest leading-tight text-near-black">
-          Página no encontrada
+          {t('notFound.heading')}
         </h1>
 
         <p class="text-secondary-gray text-lg md:text-xl leading-relaxed max-w-lg">
-          El camino que buscas no está en nuestro mapa. Tal vez la página fue movida,
-          renombrada, o simplemente decidió salir a meditar al jardín.
+          {t('notFound.text')}
         </p>
 
         <a
-          href="/"
+          href={l('/')}
           class="inline-flex items-center gap-3 bg-rausch text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-600 ease-in-out shadow-lg min-h-[56px]"
         >
-          Volver al inicio
+          {t('notFound.cta')}
           <ArrowRight size={20} />
         </a>
       </div>
@@ -55,12 +60,12 @@ import {
     <section class="mt-16 lg:mt-8 max-w-3xl">
       <div class="bg-lotus-white rounded-[32px] shadow-airbnb p-8 md:p-12 space-y-6">
         <h2 class="text-xl md:text-2xl font-bold font-display tracking-tightest text-near-black">
-          Quizás te interese visitar
+          {t('notFound.suggestTitle')}
         </h2>
 
         <div class="flex flex-wrap gap-4">
           <a
-            href="/events"
+            href={l('/events')}
             class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-sacred-sand hover:bg-saffron/10 text-near-black font-semibold transition-all duration-600 ease-in-out hover:scale-105 min-h-[52px]"
           >
             <Calendar size={20} class="text-saffron" />
@@ -68,7 +73,7 @@ import {
           </a>
 
           <a
-            href="/pasadias"
+            href={l('/pasadias')}
             class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-sacred-sand hover:bg-forest/10 text-near-black font-semibold transition-all duration-600 ease-in-out hover:scale-105 min-h-[52px]"
           >
             <Leaf size={20} class="text-forest" />
@@ -76,7 +81,7 @@ import {
           </a>
 
           <a
-            href="/contacto"
+            href={l('/contacto')}
             class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-sacred-sand hover:bg-rausch/10 text-near-black font-semibold transition-all duration-600 ease-in-out hover:scale-105 min-h-[52px]"
           >
             <MessageCircle size={20} class="text-rausch" />

@@ -1,7 +1,11 @@
 ---
-export const prerender = true;
 
 import Layout from '@/src/layouts/Layout.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
+
 import {
   Salad,
   Sprout,
@@ -275,11 +279,11 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; topBorder
         Participa en nuestros talleres de panadería artesanal, cocina vegetariana y nutrición ayurvédica. Descubre cómo transformar ingredientes simples en alimento sagrado.
       </p>
       <div class="flex flex-wrap gap-4 justify-center pt-4">
-        <a href="/events" class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2">
+        <a href={l('/events')} class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2">
           Ver eventos
           <ChevronRight size={20} />
         </a>
-        <a href="/voluntariado" class="border-2 border-white/20 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:border-white/40 hover:bg-white/5 transition-all">
+        <a href={l('/voluntariado')} class="border-2 border-white/20 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:border-white/40 hover:bg-white/5 transition-all">
           Ser voluntario en la huerta
         </a>
       </div>

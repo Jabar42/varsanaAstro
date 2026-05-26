@@ -1,6 +1,10 @@
 ---
 import { getCurrentPrice } from '@/src/lib/pasadias';
 import { Clock, MapPin } from 'lucide-react';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
 
 interface Price {
   label: string;
@@ -25,7 +29,7 @@ const currentPrice = getCurrentPrice(prices);
 
 ---
 
-<a href={`/pasadias/${slug}`} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
+<a href={l(`/pasadias/${slug}`)} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
   <div class="aspect-[16/10] overflow-hidden relative">
     <img 
       src={image} 

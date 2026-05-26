@@ -1,7 +1,11 @@
 ---
-export const prerender = true;
 
 import Layout from '@/src/layouts/Layout.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
+
 import { Heart, Sprout, Home } from 'lucide-react';
 
 const supportAreas = [
@@ -47,7 +51,7 @@ const supportAreas = [
             Hacer una Donación
           </a>
           <a
-            href="/nosotros"
+            href={l('/nosotros')}
             class="border border-near-black px-10 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-block"
           >
             Conócenos
@@ -132,7 +136,7 @@ const supportAreas = [
             Hacer una Donación
           </a>
           <a
-            href="/nosotros"
+            href={l('/nosotros')}
             class="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-lg transition-all duration-300 inline-block text-center"
           >
             Conoce más

@@ -1,18 +1,21 @@
 ---
-export const prerender = true;
 
 import Layout from '@/src/layouts/Layout.astro';
 import PasadiaCard from '@/src/components/PasadiaCard.astro';
 import { getAllPasadias } from '@/src/lib/pasadias';
+import { useTranslations } from '@/src/i18n/utils';
 
-const allPasadias = await getAllPasadias();
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const t = useTranslations(locale);
+
+const allPasadias = await getAllPasadias(locale);
 ---
 
 <Layout title="Pasadías | Varsana Eco Yoga Aldea">
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-16">
     <div class="mb-12">
-      <h1 class="text-5xl font-bold tracking-tightest mb-4">Pasadías</h1>
-      <p class="text-gray-500 text-xl">Descubre nuestras experiencias de día completo en contacto con la naturaleza y la espiritualidad.</p>
+      <h1 class="text-5xl font-bold tracking-tightest mb-4">{t('pasadias.heading')}</h1>
+      <p class="text-gray-500 text-xl">{t('pasadias.subtitle')}</p>
     </div>
     
     {allPasadias.length > 0 ? (
@@ -23,8 +26,8 @@ const allPasadias = await getAllPasadias();
       </div>
     ) : (
       <div class="py-20 text-center bg-gray-50 rounded-3xl">
-        <p class="text-2xl font-medium text-gray-400">No hay pasadías disponibles en este momento.</p>
-        <a href="/" class="mt-6 inline-block text-rausch font-bold underline">Volver al inicio</a>
+        <p class="text-2xl font-medium text-gray-400">{t('pasadias.noPasadias')}</p>
+        <a href="/" class="mt-6 inline-block text-rausch font-bold underline">{t('pasadias.backHome')}</a>
       </div>
     )}
   </main>

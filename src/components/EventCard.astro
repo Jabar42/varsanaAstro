@@ -1,5 +1,9 @@
 ---
 import { getCurrentPrice } from '@/src/lib/events';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
 
 interface Price {
   label: string;
@@ -27,7 +31,7 @@ const formattedDate = event_start.toLocaleDateString('es-ES', {
 });
 ---
 
-<a href={`/events/${slug}`} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
+<a href={l(`/events/${slug}`)} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
   <div class="aspect-[16/10] overflow-hidden relative">
     <img 
       src={image} 

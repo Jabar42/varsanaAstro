@@ -13,7 +13,7 @@ export interface Props {
 const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
 ---
 
-<html lang="es">
+<html lang={(Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es'}>
   <head>
     <style is:inline>
       html, body {
@@ -32,6 +32,9 @@ const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="alternate" hreflang="es" href={new URL(Astro.url.pathname.replace(/^\/en\//, '/').replace(/^\/en$/, '/'), Astro.site).href} />
+    <link rel="alternate" hreflang="en" href={new URL('/en' + Astro.url.pathname.replace(/^\/en\//, '/').replace(/^\/en$/, '/'), Astro.site).href} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).href} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="preconnect" href="https://fonts.googleapis.com">
