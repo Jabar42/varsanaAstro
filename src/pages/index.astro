@@ -4,6 +4,7 @@ import Layout from '@/src/layouts/Layout.astro';
 import HeroBanner from '@/src/components/HeroBanner.astro';
 import EventCard from '@/src/components/EventCard.astro';
 import { ArrowUpRight } from 'lucide-react';
+import { YouTube } from 'astro-embed';
 import { getUpcomingEvents } from '@/src/lib/events';
 import { getFeaturedItems } from '@/src/lib/slider';
 import { useTranslations } from '@/src/i18n/utils';
@@ -145,13 +146,7 @@ const discoveryCards = [
         <!-- Video -->
         <div class="w-full lg:w-7/12 bg-white rounded-[32px] shadow-airbnb p-3 hover:scale-[1.02] transition-all duration-700 ease-in-out">
           <div class="aspect-video rounded-2xl overflow-hidden">
-            <iframe
-              src={aboutVideoUrl}
-              title="Sobre Varsana"
-              class="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
+            <YouTube id={aboutVideoUrl} />
           </div>
         </div>
 
