@@ -1,87 +1,147 @@
 ---
 import Layout from '@/src/layouts/Layout.astro';
 import { useTranslations } from '@/src/i18n/utils';
-import { CheckCircle, XCircle, Clock, ArrowLeft } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Search, ArrowLeft } from 'lucide-react';
+import { getAdminClient } from '@/src/lib/supabase';
 
 const t = useTranslations((Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es');
 
 const boldOrderId = Astro.url.searchParams.get('bold-order-id');
-const boldTxStatus = Astro.url.searchParams.get('bold-tx-status');
 
-interface ResultConfig {
+type OrderRow = {
+  status: 'pending' | 'paid' | 'failed' | 'refunded';
+  amount: number;
+  customer_name: string;
+  bold_order_id: string;
+};
+
+let orderStatus: OrderRow['status'] | 'not_found' | 'no_id' = 'no_id';
+let orderRow: OrderRow | null = null;
+
+if (boldOrderId) {
+  const admin = getAdminClient();
+  const { data, error } = await admin
+    .from('orders')
+    .select('status, amount, customer_name, bold_order_id')
+    .eq('bold_order_id', boldOrderId)
+    .single();
+
+  if (data && !error) {
+    orderRow = data as OrderRow;
+    orderStatus = data.status;
+  } else {
+    orderStatus = 'not_found';
+  }
+}
+
+type UIConfig = {
   icon: typeof CheckCircle;
   title: string;
   message: string;
   color: string;
   bgColor: string;
   borderColor: string;
-}
-
-const resultConfigs: Record<string, ResultConfig> = {
-  approved: {
-    icon: CheckCircle,
-    title: t('payment.successTitle'),
-    message: t('payment.successMessage'),
-    color: 'text-green-700',
-    bgColor: 'bg-green-50',
-    borderColor: 'border-green-200',
-  },
-  declined: {
-    icon: XCircle,
-    title: t('payment.declinedTitle'),
-    message: t('payment.declinedMessage'),
-    color: 'text-red-700',
-    bgColor: 'bg-red-50',
-    borderColor: 'border-red-200',
-  },
-  failed: {
-    icon: XCircle,
-    title: t('payment.failedTitle'),
-    message: t('payment.failedMessage'),
-    color: 'text-red-700',
-    bgColor: 'bg-red-50',
-    borderColor: 'border-red-200',
-  },
-  pending: {
-    icon: Clock,
-    title: t('payment.pendingTitle'),
-    message: t('payment.pendingMessage'),
-    color: 'text-amber-700',
-    bgColor: 'bg-amber-50',
-    borderColor: 'border-amber-200',
-  },
+  showRetry: boolean;
 };
 
-const config: ResultConfig | null = boldTxStatus ? resultConfigs[boldTxStatus] ?? null : null;
+function getUIConfig(status: string): UIConfig {
+  switch (status) {
+    case 'paid':
+      return {
+        icon: CheckCircle,
+        title: t('payment.successTitle'),
+        message: t('payment.successMessage'),
+        color: 'text-green-700',
+        bgColor: 'bg-green-50',
+        borderColor: 'border-green-200',
+        showRetry: false,
+      };
+    case 'failed':
+    case 'refunded':
+      return {
+        icon: XCircle,
+        title: t('payment.failedTitle'),
+        message: t('payment.failedMessage'),
+        color: 'text-red-700',
+        bgColor: 'bg-red-50',
+        borderColor: 'border-red-200',
+        showRetry: true,
+      };
+    case 'pending':
+      return {
+        icon: Clock,
+        title: t('payment.confirmingTitle'),
+        message: t('payment.confirmingMessage'),
+        color: 'text-amber-700',
+        bgColor: 'bg-amber-50',
+        borderColor: 'border-amber-200',
+        showRetry: false,
+      };
+    case 'not_found':
+      return {
+        icon: Search,
+        title: t('payment.searchingTitle'),
+        message: t('payment.searchingMessage'),
+        color: 'text-gray-500',
+        bgColor: 'bg-gray-50',
+        borderColor: 'border-gray-200',
+        showRetry: false,
+      };
+    default: // no_id
+      return {
+        icon: Search,
+        title: t('payment.searchingTitle'),
+        message: t('payment.noInfo'),
+        color: 'text-gray-500',
+        bgColor: 'bg-gray-50',
+        borderColor: 'border-gray-200',
+        showRetry: false,
+      };
+  }
+}
 
-const ResultIcon = config?.icon || Clock;
+const config = getUIConfig(orderStatus);
+const ResultIcon = config.icon;
+const isPending = orderStatus === 'pending';
 ---
 
 <Layout title="Resultado del pago | Varsana Eco Yoga Aldea" description="Resultado de tu transacción de pago">
   <main class="min-h-[70vh] flex items-center justify-center px-4 py-16">
-    <div class={`w-full max-w-md rounded-[24px] border ${config?.borderColor || 'border-sacred-sand'} ${config?.bgColor || 'bg-lotus-white'} p-8 shadow-airbnb text-center space-y-6`}>
-      
+    <div class={`w-full max-w-md rounded-[24px] border ${config.borderColor} ${config.bgColor} p-8 shadow-airbnb text-center space-y-6`}>
+
       <!-- Icon -->
       <div class="flex justify-center">
-        <ResultIcon size={56} className={config?.color || 'text-gray-400'} strokeWidth={1.5} />
+        {
+          isPending ? (
+            <svg class="h-14 w-14 animate-spin text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          ) : (
+            <ResultIcon size={56} className={config.color} strokeWidth={1.5} />
+          )
+        }
       </div>
 
       <!-- Title -->
-      <h1 class={`text-2xl font-bold font-display ${config?.color || 'text-gray-800'}`}>
-        {config?.title || (boldOrderId ? t('payment.processing') : t('payment.noInfo'))}
+      <h1 class={`text-2xl font-bold font-display ${config.color}`}>
+        {config.title}
       </h1>
 
       <!-- Message -->
       <p class="text-gray-600 text-sm leading-relaxed">
-        {config?.message || (
-          boldOrderId
-            ? t('payment.unknownMessage')
-            : t('payment.unknownFallback')
-        )}
+        {config.message}
       </p>
 
       <!-- Order Reference -->
-      {boldOrderId && (
+      {orderRow && (
+        <div class="border-t border-sacred-sand pt-4">
+          <p class="text-xs text-gray-400 uppercase tracking-wide font-semibold">{t('payment.reference')}</p>
+          <p class="text-sm font-mono text-gray-600 mt-1 break-all">{orderRow.bold_order_id}</p>
+        </div>
+      )}
+
+      {boldOrderId && orderStatus === 'not_found' && (
         <div class="border-t border-sacred-sand pt-4">
           <p class="text-xs text-gray-400 uppercase tracking-wide font-semibold">{t('payment.reference')}</p>
           <p class="text-sm font-mono text-gray-600 mt-1 break-all">{boldOrderId}</p>
@@ -90,7 +150,7 @@ const ResultIcon = config?.icon || Clock;
 
       <!-- CTA Buttons -->
       <div class="space-y-3 pt-2">
-        {(!boldTxStatus || boldTxStatus === 'declined' || boldTxStatus === 'failed') && (
+        {config.showRetry && (
           <a
             href="javascript:history.back()"
             class="block w-full rounded-xl bg-sacred-900 px-4 py-3 font-semibold text-white text-center transition-colors hover:bg-sacred-900/90"
@@ -110,22 +170,31 @@ const ResultIcon = config?.icon || Clock;
   </main>
 </Layout>
 
-<!-- Verify payment status with backend — fallback in case webhook hasn't arrived yet -->
-{boldOrderId && boldTxStatus && (
+<!-- Polling: only when the order exists but is still pending (webhook not arrived yet) -->
+{isPending && boldOrderId && (
   <script>
-    (async function verifyPayment() {
+    (function pollOrderStatus() {
       const orderId = '{boldOrderId}';
-      const txStatus = '{boldTxStatus}';
-      try {
-        await fetch('/api/verify-payment', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ boldOrderId: orderId, boldTxStatus: txStatus }),
-        });
-      } catch (err) {
-        // Silently fail — webhook will eventually update the order
-        console.error('Payment verification fallback failed:', err);
-      }
+      let attempts = 0;
+      const maxAttempts = 6;
+
+      const interval = setInterval(async () => {
+        attempts++;
+        try {
+          const res = await fetch('/api/order-status?bold-order-id=' + encodeURIComponent(orderId));
+          if (!res.ok) return;
+          const data = await res.json();
+          if (data.status !== 'pending') {
+            clearInterval(interval);
+            window.location.reload();
+          }
+        } catch (err) {
+          // Network hiccup — keep polling until maxAttempts
+        }
+        if (attempts >= maxAttempts) {
+          clearInterval(interval);
+        }
+      }, 2000);
     })();
   </script>
 )}

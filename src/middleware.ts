@@ -32,7 +32,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   if (isEnglishPath) {
     context.locals.locale = 'en';
     const newPath = pathname === '/en' ? '/' : pathname.slice(3);
-    const rewrittenUrl = new URL(newPath, url.origin);
+    const rewrittenUrl = new URL(newPath + url.search, url.origin);
 
     const headers = new Headers(context.request.headers);
     headers.set(REWRITTEN_HEADER, '1');
@@ -62,9 +62,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // Cookie says English → redirect to /en/...
   if (cookieLocale === 'en') {
     const dest = pathname === '/' ? '/en/' : `/en${pathname}`;
+    const destWithQuery = url.search ? dest + url.search : dest;
     return new Response(null, {
       status: 302,
-      headers: { Location: dest },
+      headers: { Location: destWithQuery },
     });
   }
 
@@ -73,10 +74,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const browserLocale = getLocaleFromBrowser(context.request);
     if (browserLocale === 'en') {
       const dest = pathname === '/' ? '/en/' : `/en${pathname}`;
+      const destWithQuery = url.search ? dest + url.search : dest;
       return new Response(null, {
         status: 302,
         headers: {
-          Location: dest,
+          Location: destWithQuery,
           'Set-Cookie': `${COOKIE_NAME}=en; Path=/; Max-Age=31536000; SameSite=Lax`,
         },
       });

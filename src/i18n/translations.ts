@@ -243,6 +243,10 @@ export interface TranslationDict {
     pendingMessage: string;
     processing: string;
     noInfo: string;
+    searchingTitle: string;
+    searchingMessage: string;
+    confirmingTitle: string;
+    confirmingMessage: string;
     unknownMessage: string;
     unknownFallback: string;
     reference: string;
@@ -707,6 +711,10 @@ export const translations: Record<Locale, TranslationDict> = {
       pendingMessage: 'Tu pago está siendo procesado. Te notificaremos cuando se confirme. No cierres esta página.',
       processing: 'Procesando...',
       noInfo: 'Sin información de pago',
+      searchingTitle: 'Buscando transacción...',
+      searchingMessage: 'Estamos consultando la información de tu pago. Si realizaste una transacción, espera unos segundos.',
+      confirmingTitle: 'Confirmando transacción...',
+      confirmingMessage: 'Tu pago está siendo confirmado. Esto puede tomar unos segundos. No cierres esta página.',
       unknownMessage: 'Tu transacción está siendo procesada. Te contactaremos cuando tengamos una actualización.',
       unknownFallback: 'No se encontró información de una transacción reciente. Si realizaste un pago, por favor contáctanos.',
       reference: 'Referencia',
@@ -1170,6 +1178,10 @@ export const translations: Record<Locale, TranslationDict> = {
       pendingMessage: 'Your payment is being processed. We will notify you when it is confirmed. Do not close this page.',
       processing: 'Processing...',
       noInfo: 'No payment information',
+      searchingTitle: 'Looking up transaction...',
+      searchingMessage: 'We are looking up your payment information. If you made a transaction, please wait a few seconds.',
+      confirmingTitle: 'Confirming transaction...',
+      confirmingMessage: 'Your payment is being confirmed. This may take a few seconds. Do not close this page.',
       unknownMessage: 'Your transaction is being processed. We will contact you when we have an update.',
       unknownFallback: 'No information was found for a recent transaction. If you made a payment, please contact us.',
       reference: 'Reference',

@@ -3,6 +3,10 @@
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp", "--executable-path", "/home/jota/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome"]
     }
   }
 }

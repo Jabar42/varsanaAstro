@@ -243,10 +243,16 @@ export const POST: APIRoute = async ({ request }) => {
   // 8. Return signed payload to the frontend
   // ------------------------------------------------------------------
   let siteUrl = (import.meta.env.PUBLIC_SITE_URL as string) || 'https://varsana.co';
-  // Remove trailing slash to avoid double slashes in redirect URL
+  // Strip trailing slash(es) so the assembled path never triggers a
+  // 301/308 redirect on Vercel (which would drop query params).
   siteUrl = siteUrl.replace(/\/+$/, '');
 
   const description = (entry.data as Record<string, unknown>).title as string;
+
+  const redirectionUrl = `${siteUrl}/pago/exito?bold-order-id=${encodeURIComponent(orderId)}`;
+
+  // Safety: validate the URL is well-formed (throws synchronously if not)
+  new URL(redirectionUrl);
 
   const payload = {
     orderId,
@@ -255,7 +261,7 @@ export const POST: APIRoute = async ({ request }) => {
     integritySignature,
     apiKey: import.meta.env.BOLD_API_KEY as string,
     description,
-    redirectionUrl: `${siteUrl}/pago/exito?bold-order-id=${orderId}`,
+    redirectionUrl,
   };
 
   return new Response(JSON.stringify(payload), {

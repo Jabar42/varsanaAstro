@@ -1,0 +1,176 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link "Varsana Logo Varsana" [ref=e6] [cursor=pointer]:
+          - /url: /en/
+          - img "Varsana Logo" [ref=e8]
+          - generic [ref=e9]: Varsana
+        - generic [ref=e11]:
+          - link "+57 321 4538242" [ref=e12] [cursor=pointer]:
+            - /url: https://wa.me/573214538242
+            - generic [ref=e13]: +57 321 4538242
+          - link "Donate" [ref=e14] [cursor=pointer]:
+            - /url: /en/donar/
+            - img [ref=e15]
+            - generic [ref=e17]: Donate
+          - link "ES" [ref=e18] [cursor=pointer]:
+            - /url: /events/amanecer-entre-nubes/
+            - img [ref=e19]
+            - generic [ref=e22]: ES
+      - navigation "Navegacion principal" [ref=e23]:
+        - generic [ref=e24]:
+          - link "About Us" [ref=e25] [cursor=pointer]:
+            - /url: /en/nosotros/
+            - img [ref=e26]
+            - generic [ref=e31]: About Us
+          - button "Experiences" [ref=e33] [cursor=pointer]:
+            - img [ref=e34]
+            - generic [ref=e37]:
+              - text: Experiences
+              - img [ref=e38]
+          - link "Shop" [ref=e40] [cursor=pointer]:
+            - /url: /en/tienda/
+            - img [ref=e41]
+            - generic [ref=e45]: Shop
+          - button "Menu" [ref=e47] [cursor=pointer]:
+            - img [ref=e48]
+            - generic [ref=e49]: Menu
+  - main [ref=e50]:
+    - main [ref=e51]:
+      - img "Amanecer entre nubes" [ref=e53]
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - heading "Amanecer entre nubes" [level=1] [ref=e57]
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - img [ref=e60]
+                - generic [ref=e62]: domingo, 14 de junio de 2026
+              - generic [ref=e63]:
+                - img [ref=e64]
+                - generic [ref=e67]: Granada, Cundinamarca
+          - generic [ref=e68]:
+            - generic [ref=e69]:
+              - heading "Experiencia organizada por Varsana" [level=2] [ref=e70]
+              - paragraph [ref=e71]: Comunidad intencional · 15 años de sabiduría
+            - img "Host" [ref=e73]
+          - generic [ref=e74]:
+            - article [ref=e75]:
+              - heading "Una mañana que despierta el alma" [level=2] [ref=e76]
+              - paragraph [ref=e77]: Ven a vivir el amanecer desde lo alto de Varsana, cuando las nubes abrazan el valle y los primeros rayos de sol pintan el cielo de colores. Una experiencia de conexión profunda con la naturaleza y contigo mismo.
+              - heading "¿Qué incluye?" [level=3] [ref=e78]
+              - list [ref=e79]:
+                - listitem [ref=e80]: Meditación guiada al amanecer con vista panorámica.
+                - listitem [ref=e81]: Té de hierbas reconfortante preparado al momento.
+                - listitem [ref=e82]: Sesión de yoga suave al aire libre.
+                - listitem [ref=e83]: Desayuno consciente con productos locales.
+              - generic [ref=e84]:
+                - paragraph [ref=e85]: Antes de venir
+                - list [ref=e87]:
+                  - listitem [ref=e88]: Lleva ropa abrigada para la mañana (la temperatura es fresca en las alturas).
+                  - listitem [ref=e89]: Trae tu propio mat de yoga si tienes.
+                  - listitem [ref=e90]: Llega 15 minutos antes para instalarte cómodamente.
+                  - listitem [ref=e91]: Se recomienda venir en ayunas para disfrutar plenamente del desayuno consciente.
+              - generic [ref=e92]:
+                - paragraph [ref=e93]: Importante
+                - paragraph [ref=e95]: Cupos limitados — solo hay 30 espacios disponibles para esta experiencia. Reserva con anticipación para asegurar tu lugar.
+              - generic [ref=e96]:
+                - generic [ref=e97]:
+                  - img [ref=e99]
+                  - generic [ref=e102]: Varsana Eco Aldea – Yoga Village, Km 28 Vía Melgar (Granada, Cundinamarca)
+                - generic [ref=e103]: "|"
+                - generic [ref=e104]:
+                  - img [ref=e106]
+                  - generic [ref=e109]: 5:30 a. m.
+                - generic [ref=e110]: "|"
+                - generic [ref=e111]:
+                  - img [ref=e113]
+                  - generic [ref=e116]: 3 horas
+            - paragraph [ref=e117]: Una experiencia única al amanecer en las alturas de Varsana, rodeado de niebla matinal y naturaleza virgen.
+          - generic [ref=e118]:
+            - generic [ref=e119]:
+              - img [ref=e120]
+              - generic [ref=e125]:
+                - heading "Ambiente Comunitario" [level=4] [ref=e126]
+                - paragraph [ref=e127]: Comparte con personas que buscan el mismo camino de paz.
+            - generic [ref=e128]:
+              - img [ref=e129]
+              - generic [ref=e131]:
+                - heading "Todo Incluido" [level=4] [ref=e132]
+                - paragraph [ref=e133]: Alimentación vegetariana consciente y hospedaje ecológico.
+        - generic [ref=e135]:
+          - generic [ref=e136]:
+            - generic [ref=e137]: $1.000 / persona
+            - generic [ref=e138]:
+              - img [ref=e139]
+              - generic [ref=e141]: "4.98"
+          - generic [ref=e143]:
+            - generic [ref=e144]:
+              - paragraph [ref=e145]: Fecha
+              - paragraph [ref=e146]: 14/6/2026
+            - generic [ref=e147]:
+              - paragraph [ref=e148]: Cupos
+              - paragraph [ref=e149]: 30 personas
+          - generic [ref=e151]:
+            - generic [ref=e249]:
+              - paragraph [ref=e250]: Error
+              - paragraph [ref=e251]: "Error interno: RPC failed: TypeError: fetch failed"
+            - button "Intentar nuevamente" [ref=e252] [cursor=pointer]
+          - paragraph [ref=e185]: Asegura tu cupo con anticipación
+  - contentinfo [ref=e186]:
+    - generic [ref=e187]:
+      - generic [ref=e188]:
+        - generic [ref=e189]:
+          - img "Varsana" [ref=e190]
+          - paragraph [ref=e191]: Eco Yoga Village — well-being, consciousness, and spiritual connection in Granada, Cundinamarca.
+        - generic [ref=e192]:
+          - heading "Community" [level=4] [ref=e193]
+          - list [ref=e194]:
+            - listitem [ref=e195] [cursor=pointer]: Varsana.org
+            - listitem [ref=e196] [cursor=pointer]: Social Projects
+            - listitem [ref=e197] [cursor=pointer]: Organic Agriculture
+            - listitem [ref=e198] [cursor=pointer]: Eco-Construction
+            - listitem [ref=e199]:
+              - link "Eco-village Network" [ref=e200] [cursor=pointer]:
+                - /url: /en/red-eco-aldeas/
+        - generic [ref=e201]:
+          - heading "About Us" [level=4] [ref=e202]
+          - list [ref=e203]:
+            - listitem [ref=e204] [cursor=pointer]: Our Story
+            - listitem [ref=e205] [cursor=pointer]: Philosophy
+            - listitem [ref=e206] [cursor=pointer]: Gallery
+            - listitem [ref=e207] [cursor=pointer]: FAQ
+        - generic [ref=e208]:
+          - heading "Contact" [level=4] [ref=e209]
+          - list [ref=e210]:
+            - listitem [ref=e211] [cursor=pointer]: +57 321 4538242
+            - listitem [ref=e212] [cursor=pointer]: contacto@varsana.com
+            - listitem [ref=e213] [cursor=pointer]: Granada, Cundinamarca
+            - listitem [ref=e214] [cursor=pointer]: Colombia
+      - generic [ref=e215]:
+        - generic [ref=e216]:
+          - generic [ref=e217]: © 2024 Varsana Eco Yoga Aldea
+          - generic [ref=e218]: ·
+          - generic [ref=e219] [cursor=pointer]: Privacy
+          - generic [ref=e220]: ·
+          - generic [ref=e221] [cursor=pointer]: Terms
+          - generic [ref=e222]: ·
+          - link "Sitemap" [ref=e223] [cursor=pointer]:
+            - /url: /en/mapa-del-sitio/
+          - generic [ref=e224]: ·
+          - link "Design System" [ref=e225] [cursor=pointer]:
+            - /url: /en/design-system/
+        - generic [ref=e226]:
+          - link "English (US)" [ref=e227] [cursor=pointer]:
+            - /url: /events/amanecer-entre-nubes/
+            - img [ref=e228]
+            - generic [ref=e231]: English (US)
+          - generic [ref=e232] [cursor=pointer]:
+            - generic [ref=e233]: $
+            - generic [ref=e234]: COP
+          - generic [ref=e235]:
+            - img [ref=e236]
+            - img [ref=e238]
+            - img [ref=e241]
+  - img
