@@ -52,6 +52,15 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   // ---- Requests without locale prefix ----
 
+  // Omitir peticiones internas de datos de Astro generadas por ViewTransitions/Prefetch
+  if (
+    pathname.startsWith('/_astro/') ||
+    context.request.headers.get('Purpose') === 'prefetch' ||
+    context.request.headers.get('Sec-Fetch-Dest') === 'empty'
+  ) {
+    return next();
+  }
+
   // Skip API and static assets
   if (pathname.startsWith('/api/') || pathname.includes('.')) {
     return next();

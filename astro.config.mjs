@@ -16,12 +16,14 @@ export default defineConfig({
     routing: "manual",
   },
   integrations: [react(), sitemap(), markdoc()],
-  prefetch: {
-    prefetchAll: true,
-    defaultStrategy: "viewport",
-  },
+  trailingSlash: "ignore",
   build: {
+    format: "directory",
     inlineStylesheets: "always",
+  },
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: "hover",
   },
   server: {
     port: 3000,
