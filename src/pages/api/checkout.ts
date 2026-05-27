@@ -249,9 +249,11 @@ export const POST: APIRoute = async ({ request }) => {
 
   const description = (entry.data as Record<string, unknown>).title as string;
 
-  const redirectionUrl = `${siteUrl}/pago/exito?bold-order-id=${encodeURIComponent(orderId)}`;
+  // Bold appends bold-order-id and bold-tx-status automatically
+  // (it uses the orderId we pass to BoldCheckout constructor).
+  // No need to add query params ourselves — keeps the URL clean.
+  const redirectionUrl = `${siteUrl}/pago/exito`;
 
-  // Safety: validate the URL is well-formed (throws synchronously if not)
   new URL(redirectionUrl);
 
   const payload = {
