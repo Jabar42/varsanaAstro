@@ -16,9 +16,7 @@ export default defineConfig({
     routing: "manual",
   },
   integrations: [react(), sitemap(), markdoc()],
-  trailingSlash: "ignore",
   build: {
-    format: "directory",
     inlineStylesheets: "always",
   },
   prefetch: {
