@@ -1,5 +1,8 @@
 import type { APIRoute } from 'astro';
 import { getAdminClient } from '@/src/lib/supabase';
+import { getEntry } from 'astro:content';
+import { sendOrderConfirmationEmail } from '@/src/lib/email';
+import { sendTelegramMessage, buildSaleMessage, buildEmailErrorMessage } from '@/src/lib/telegram';
 
 export const prerender = false;
 
@@ -32,7 +35,7 @@ export const POST: APIRoute = async ({ request }) => {
   const admin = getAdminClient();
   const { data: order, error: lookupError } = await admin
     .from('orders')
-    .select('id, status')
+    .select('id, status, content_type, content_id, event_date, customer_email, customer_name, ticket_details, amount, currency')
     .eq('bold_order_id', boldOrderId)
     .single();
 
@@ -78,6 +81,55 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     console.log(`[verify-payment] Order ${boldOrderId} marked as paid (fallback from success page)`);
+
+    // Resolve content title from Markdown frontmatter
+    let contentTitle = order.content_id.replace(/-/g, ' ');
+    try {
+      const collection = order.content_type === 'event' ? 'events' : 'pasadias';
+      const entry = await getEntry(collection as 'events' | 'pasadias', order.content_id);
+      if (entry?.data && typeof (entry.data as any).title === 'string') {
+        contentTitle = (entry.data as any).title as string;
+      }
+    } catch {
+      // fallback: content_id sin guiones
+    }
+
+    const orderData = {
+      bold_order_id: boldOrderId,
+      customer_email: order.customer_email,
+      customer_name: order.customer_name || 'Invitado',
+      content_title: contentTitle,
+      content_type: order.content_type as 'event' | 'pasadia',
+      event_date: order.event_date,
+      ticket_details: order.ticket_details,
+      amount: order.amount,
+      currency: order.currency || 'COP',
+    };
+
+    // 1. Notificar al admin via Telegram (nueva venta)
+    await sendTelegramMessage(buildSaleMessage({
+      customer_name: orderData.customer_name,
+      customer_email: orderData.customer_email,
+      content_title: contentTitle,
+      content_type: orderData.content_type,
+      event_date: orderData.event_date,
+      amount: orderData.amount,
+      bold_order_id: boldOrderId,
+    }));
+
+    // 2. Email de confirmacion al cliente
+    //    Si falla, notificar via Telegram
+    const [emailResult] = await Promise.allSettled([
+      sendOrderConfirmationEmail(orderData),
+    ]);
+    if (emailResult.status === 'rejected') {
+      const errMsg = emailResult.reason instanceof Error
+        ? emailResult.reason.message
+        : String(emailResult.reason);
+      console.error(`[verify-payment] Email failed:`, errMsg);
+      await sendTelegramMessage(buildEmailErrorMessage(boldOrderId, errMsg));
+    }
+
     return new Response(JSON.stringify({ ok: true, status: 'paid' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

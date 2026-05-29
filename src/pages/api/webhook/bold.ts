@@ -2,6 +2,9 @@ import type { APIRoute } from 'astro';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { getAdminClient } from '@/src/lib/supabase';
 import { releaseStock } from '@/src/lib/db';
+import { getEntry } from 'astro:content';
+import { sendOrderConfirmationEmail } from '@/src/lib/email';
+import { sendTelegramMessage, buildSaleMessage, buildEmailErrorMessage } from '@/src/lib/telegram';
 
 /** Ensure this route runs on the server (not pre-rendered). */
 export const prerender = false;
@@ -201,7 +204,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const { data: existingOrder } = await admin
     .from('orders')
-    .select('status, content_type, content_id, quantity, event_date')
+    .select('status, content_type, content_id, quantity, event_date, customer_email, customer_name, ticket_details, amount, currency')
     .eq('bold_order_id', orderId)
     .single();
 
@@ -247,6 +250,54 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     console.log(`[webhook:${requestId}] Order ${orderId} marked as paid`);
+
+    // Resolve content title from Markdown frontmatter
+    let contentTitle = existingOrder.content_id.replace(/-/g, ' ');
+    try {
+      const collection = existingOrder.content_type === 'event' ? 'events' : 'pasadias';
+      const entry = await getEntry(collection as 'events' | 'pasadias', existingOrder.content_id);
+      if (entry?.data && typeof (entry.data as any).title === 'string') {
+        contentTitle = (entry.data as any).title as string;
+      }
+    } catch {
+      // fallback: content_id sin guiones
+    }
+
+    const orderData = {
+      bold_order_id: orderId,
+      customer_email: existingOrder.customer_email,
+      customer_name: existingOrder.customer_name || 'Invitado',
+      content_title: contentTitle,
+      content_type: existingOrder.content_type as 'event' | 'pasadia',
+      event_date: existingOrder.event_date,
+      ticket_details: existingOrder.ticket_details,
+      amount: existingOrder.amount,
+      currency: existingOrder.currency || 'COP',
+    };
+
+    // 1. Notificar al admin via Telegram (nueva venta)
+    await sendTelegramMessage(buildSaleMessage({
+      customer_name: orderData.customer_name,
+      customer_email: orderData.customer_email,
+      content_title: contentTitle,
+      content_type: orderData.content_type,
+      event_date: orderData.event_date,
+      amount: orderData.amount,
+      bold_order_id: orderId,
+    }));
+
+    // 2. Email de confirmacion al cliente
+    //    Si falla, notificar via Telegram para que el admin sepa
+    const [emailResult] = await Promise.allSettled([
+      sendOrderConfirmationEmail(orderData),
+    ]);
+    if (emailResult.status === 'rejected') {
+      const errMsg = emailResult.reason instanceof Error
+        ? emailResult.reason.message
+        : String(emailResult.reason);
+      console.error(`[webhook:${requestId}] Email failed:`, errMsg);
+      await sendTelegramMessage(buildEmailErrorMessage(orderId, errMsg));
+    }
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
