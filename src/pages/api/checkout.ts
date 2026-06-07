@@ -242,7 +242,7 @@ export const POST: APIRoute = async ({ request }) => {
   // ------------------------------------------------------------------
   // 8. Return signed payload to the frontend
   // ------------------------------------------------------------------
-  let siteUrl = (import.meta.env.PUBLIC_SITE_URL as string) || 'https://varsana.co';
+  let siteUrl = (import.meta.env.PUBLIC_SITE_URL as string) || 'https://varsana.com';
   // Strip trailing slash(es) so the assembled path never triggers a
   // 301/308 redirect on Vercel (which would drop query params).
   siteUrl = siteUrl.replace(/\/+$/, '');

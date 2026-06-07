@@ -1,3 +1,10 @@
+/**
+ * Inicialización de clientes Supabase en dos niveles de privilegio:
+ * - Cliente público (supabase, exportado por defecto): usa la anon key y está
+ *   sujeto a Row Level Security; seguro en cliente y servidor.
+ * - getAdminClient(): crea un cliente con la service role key que bypassa RLS;
+ *   solo debe importarse en rutas API y contexto de servidor.
+ */
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;

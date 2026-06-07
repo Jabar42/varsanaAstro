@@ -1,3 +1,11 @@
+/**
+ * Construye la lista unificada de elementos destacados para el slider del
+ * homepage. Itera sobre eventos y pasadías, filtra los marcados con
+ * `destacado: true`, descarta eventos ya finalizados, y normaliza todo a una
+ * interfaz común FeaturedItem. Ordena por el campo `orden` (prioridad manual),
+ * luego por fecha (eventos primero) y finalmente por título alfabético.
+ * Soporta límite de items vía maxItems.
+ */
 import { getCollection } from 'astro:content';
 
 export interface FeaturedItem {

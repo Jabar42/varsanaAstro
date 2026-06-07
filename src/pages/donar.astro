@@ -130,7 +130,7 @@ const supportAreas = [
         </p>
         <div class="flex flex-wrap gap-4 md:gap-6 justify-center lg:justify-start">
           <a
-            href="https://donar.varsana.co"
+            href={import.meta.env.PUBLIC_DONATION_URL || '#'}
             class="w-full sm:w-auto bg-rausch hover:bg-rausch-dark text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-lg transition-all duration-300 hover:shadow-lg active:scale-95 inline-block text-center"
           >
             Hacer una Donación

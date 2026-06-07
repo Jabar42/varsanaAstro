@@ -1,3 +1,11 @@
+/**
+ * Helpers de lectura para la colección de eventos.
+ * - getUpcomingEvents: consulta la colección de Astro Content, filtra por
+ *   locale (con fallback a español), descarta eventos cuyo event_end (o
+ *   event_start) ya pasó, y ordena por fecha más próxima.
+ * - getAvailablePrices / getCurrentPrice: implementan la lógica de precios
+ *   escalonados (early bird → regular) según deadlines.
+ */
 import { getCollection } from 'astro:content';
 
 /**

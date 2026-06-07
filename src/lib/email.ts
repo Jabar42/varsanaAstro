@@ -1,3 +1,12 @@
+/**
+ * Envío de correos transaccionales con Resend.
+ * Toma los datos de una orden, normaliza los tickets, renderiza la plantilla
+ * React Email (OrderConfirmationEmail) a HTML, y la despacha usando un
+ * idempotencyKey basado en el bold_order_id para que reintentos no produzcan
+ * envíos duplicados. Si el renderizado o el envío fallan, loguea el error y
+ * lanza una excepción para que el caller (el webhook de Bold) pueda manejar
+ * el fallo.
+ */
 import { Resend } from 'resend';
 import { render } from 'react-email';
 import OrderConfirmationEmail from '@/src/emails/OrderConfirmationEmail';
@@ -47,6 +56,10 @@ function normalizeTickets(raw: unknown): TicketDetail[] {
   return normalized.length > 0 ? normalized : [];
 }
 
+function getFromEmail(): string {
+  return (import.meta.env.RESEND_FROM_EMAIL as string) || 'Varsana <onboarding@resend.dev>';
+}
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -87,7 +100,7 @@ export async function sendOrderConfirmationEmail(order: OrderEmailData): Promise
 
   const { data, error } = await resend.emails.send(
     {
-      from: 'Varsana Eco Yoga Aldea <reservas@varsana.co>',
+      from: getFromEmail(),
       to: [order.customer_email],
       subject,
       html,

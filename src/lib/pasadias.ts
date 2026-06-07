@@ -1,3 +1,11 @@
+/**
+ * Helpers de lectura para la colección de pasadías (servicios sin fecha).
+ * - getAllPasadias: filtra por locale y ordena alfabéticamente.
+ * - getPasadiasByCategory: agrupa por categoría.
+ * - getPasadiaBySlug: busca por slug.
+ * Reexporta getCurrentPrice desde events.ts porque ambas colecciones
+ * comparten la misma estructura de precios con deadlines.
+ */
 import { getCollection } from 'astro:content';
 
 /**

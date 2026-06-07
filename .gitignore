@@ -10,3 +10,4 @@ coverage/
 .vercel
 .playwright-mcp/
 *.png
+.claude/

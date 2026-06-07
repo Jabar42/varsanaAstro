@@ -18,6 +18,8 @@ export interface TranslationDict {
   };
   home: {
     tagline: string;
+    taglinePart1?: string;
+    taglinePart2?: string;
     subtitle: string;
     ctaCommunity: string;
     discoverTitle: string;

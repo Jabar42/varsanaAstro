@@ -1,3 +1,14 @@
+/**
+ * Capa de acceso a Supabase para el control de inventario.
+ * Centraliza todas las operaciones de stock que requieren atomicidad:
+ * - getAvailableStock: consulta disponibilidad restando reservas del máximo.
+ * - reserveStock / releaseStock: usan RPCs para decrementar/incrementar
+ *   stock_reserved sin race conditions.
+ * - ensureInventoryAndReserve: combina inicialización de fila + validación +
+ *   reserva en una sola transacción atómica.
+ * Esto evita overbooking cuando múltiples usuarios compran el mismo cupo
+ * simultáneamente.
+ */
 import { getAdminClient } from './supabase';
 
 export async function getAvailableStock(contentType: string, contentId: string, eventDate: string) {

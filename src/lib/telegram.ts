@@ -1,3 +1,13 @@
+/**
+ * Notificaciones internas al equipo vía Telegram Bot API.
+ * - sendTelegramMessage: envía un mensaje genérico al chat configurado.
+ * - buildSaleMessage: formatea los datos de una venta nueva en un mensaje
+ *   legible con emojis y formato HTML.
+ * - buildEmailErrorMessage: genera una alerta cuando el envío de confirmación
+ *   por correo falla.
+ * Si TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID no están configurados, las
+ * llamadas son no-op silenciosas.
+ */
 const TELEGRAM_API = 'https://api.telegram.org';
 
 function getTelegramConfig(): { token: string; chatId: string } | null {
