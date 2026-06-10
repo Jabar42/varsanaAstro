@@ -134,47 +134,53 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Floating button */}
-      <button
-        onClick={() => setOpen(!open)}
-        className={`
-          fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl
-          bg-forest text-white shadow-airbnb
-          flex items-center justify-center
-          transition-all duration-600 ease-in-out
-          hover:brightness-90 hover:scale-105
-          active:scale-95
-        `}
-        aria-label={open ? 'Cerrar chat' : 'Abrir chat'}
-      >
-        {open ? (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        ) : (
+      {/* Floating button — only opens */}
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className="
+            fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl
+            bg-forest text-white shadow-airbnb
+            flex items-center justify-center
+            transition-all duration-600 ease-in-out
+            hover:brightness-90 hover:scale-105
+            active:scale-95
+          "
+          aria-label="Abrir chat"
+        >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
-        )}
-      </button>
+        </button>
+      )}
 
       {/* Chat panel */}
       {open && (
         <div
           className={`
-            fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)]
-            max-h-[520px] h-[520px]
-            bg-sacred-sand rounded-3xl shadow-airbnb
-            border border-gray-200/50
+            fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50 w-full sm:w-[360px]
+            max-h-[520px] h-[520px] sm:rounded-3xl
+            bg-sacred-sand shadow-airbnb border border-gray-200/50
             flex flex-col overflow-hidden
             transition-all duration-600 ease-in-out
           `}
         >
           {/* Header */}
-          <div className="bg-forest text-white px-5 py-3.5 shrink-0">
-            <h3 className="font-display font-semibold text-base">Varsana Eco Aldea</h3>
-            <p className="text-xs text-white/75 mt-0.5">Asistente virtual</p>
+          <div className="bg-forest text-white px-5 py-3.5 shrink-0 flex items-center justify-between">
+            <div>
+              <h3 className="font-display font-semibold text-base">Varsana Eco Aldea</h3>
+              <p className="text-xs text-white/75 mt-0.5">Asistente virtual</p>
+            </div>
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Cerrar chat"
+              className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
           </div>
 
           {/* Messages */}
