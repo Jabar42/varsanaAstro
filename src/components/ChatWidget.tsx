@@ -5,7 +5,7 @@ import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent } from 
 // ---------------------------------------------------------------------------
 
 const API_BASE = import.meta.env.PUBLIC_HERMES_API_URL ?? 'http://localhost:8642';
-const API_KEY = import.meta.env.PUBLIC_HERMES_API_KEY ?? '';
+const API_KEY=import..._KEY ?? '';
 
 const STORAGE_KEY = 'varsana-chat-session';
 
@@ -19,6 +19,11 @@ interface SessionResponse {
 
 interface ChatResponse {
   message: { role: string; content: string };
+}
+
+interface HistoryMessage {
+  role: string;
+  content: string;
 }
 
 type Message = { role: 'user' | 'bot' | 'error'; text: string };
@@ -58,17 +63,31 @@ async function sendChat(sessionId: string, message: string): Promise<string> {
   return data.message.content;
 }
 
+async function loadHistory(sessionId: string): Promise<Message[]> {
+  const res = await fetch(`${API_BASE}/api/sessions/${sessionId}/messages`, {
+    headers: { Authorization: `Bearer ${API_KEY}` },
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  const msgs = data.messages ?? data.data ?? [];
+  return msgs
+    .filter((m: HistoryMessage) => m.role === 'user' || m.role === 'assistant')
+    .map((m: HistoryMessage) => ({
+      role: m.role === 'assistant' ? 'bot' as const : 'user' as const,
+      text: m.content,
+    }));
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'bot', text: '🌿 ¡Hola! Soy el asistente de Varsana. ¿En qué puedo ayudarte?' },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(() => {
     try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
   });
@@ -90,16 +109,24 @@ export default function ChatWidget() {
     return () => { document.body.style.overflow = ''; };
   }, [open, closing]);
 
-  // Health check on mount
+  // Load history on mount
   useEffect(() => {
-    fetch(`${API_BASE}/health`, {
-      headers: { Authorization: `Bearer ${API_KEY}` },
-    }).catch(() => {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'error', text: '⚠ El chat no está disponible en este momento.' },
+    async function init() {
+      if (sessionId) {
+        const history = await loadHistory(sessionId);
+        if (history.length > 0) {
+          setMessages(history);
+          setInitialLoading(false);
+          return;
+        }
+      }
+      // No session or empty history → show welcome
+      setMessages([
+        { role: 'bot', text: '🌿 ¡Hola! Soy el asistente de Varsana. ¿En qué puedo ayudarte?' },
       ]);
-    });
+      setInitialLoading(false);
+    }
+    init();
   }, []);
 
   async function handleSend(e?: FormEvent) {
