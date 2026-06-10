@@ -197,10 +197,12 @@ export default function ChatWidget() {
       {open && (
         <div
           className={`
-            fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50 w-full sm:w-[360px]
-            max-h-[520px] h-[520px] sm:rounded-3xl
+            fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50
+            w-full sm:w-[360px]
+            h-full sm:max-h-[520px] sm:h-[520px]
+            sm:rounded-3xl
             bg-sacred-sand shadow-airbnb border border-gray-200/50
-            flex flex-col overflow-hidden
+            flex flex-col
             animate-slide-up
           `}
         >
