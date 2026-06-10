@@ -208,7 +208,7 @@ export default function ChatWidget() {
             <input
               type="text"
               name="chat-message"
-              autocomplete="off"
+              autoComplete="off"
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck={false}
