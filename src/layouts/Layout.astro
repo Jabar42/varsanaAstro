@@ -2,6 +2,7 @@
 import '@/src/styles/global.css';
 import Header from '@/src/components/Header.astro';
 import Footer from '@/src/components/Footer.astro';
+import ChatWidget from '@/src/components/ChatWidget';
 import SpeedInsights from '@vercel/speed-insights/astro';
 import { ClientRouter } from 'astro:transitions';
 
@@ -53,6 +54,7 @@ const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
       <slot />
     </main>
     <Footer />
+    <ChatWidget client:load />
 
     <!-- Grain texture overlay — SVG noise filter for handmade/earthy feel -->
     <svg aria-hidden="true" class="grain-overlay" transition:persist>
