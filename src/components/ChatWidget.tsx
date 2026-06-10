@@ -73,11 +73,22 @@ export default function ChatWidget() {
     try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
   });
   const messagesEnd = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to latest message
   useEffect(() => {
     messagesEnd.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Lock background scroll when panel is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
 
   // Health check on mount
   useEffect(() => {
