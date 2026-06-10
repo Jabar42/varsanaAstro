@@ -217,9 +217,13 @@ export default function ChatWidget() {
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="px-4 py-2.5 bg-forest text-white font-semibold text-sm rounded-xl hover:brightness-90 disabled:opacity-40 transition-all"
+              title="Enviar"
+              className="shrink-0 w-10 h-10 bg-forest text-white rounded-xl hover:brightness-90 disabled:opacity-40 transition-all flex items-center justify-center"
             >
-              Enviar
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
             </button>
           </form>
         </div>
