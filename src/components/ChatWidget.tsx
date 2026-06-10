@@ -73,6 +73,7 @@ export default function ChatWidget() {
     try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
   });
   const messagesEnd = useRef<HTMLDivElement>(null);
+  const [closing, setClosing] = useState(false);
 
   // Auto-scroll to latest message
   useEffect(() => {
@@ -81,13 +82,13 @@ export default function ChatWidget() {
 
   // Lock background scroll when panel is open
   useEffect(() => {
-    if (open) {
+    if (open && !closing) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
     return () => { document.body.style.overflow = ''; };
-  }, [open]);
+  }, [open, closing]);
 
   // Health check on mount
   useEffect(() => {
@@ -203,17 +204,23 @@ export default function ChatWidget() {
             sm:rounded-3xl
             bg-sacred-sand shadow-airbnb border border-gray-200/50
             flex flex-col
-            animate-slide-up
+            ${closing ? 'animate-slide-down' : 'animate-slide-up'}
           `}
         >
           {/* Header */}
-          <div className="bg-forest text-white px-5 py-3.5 shrink-0 flex items-center justify-between">
+          <div className="bg-forest text-white px-5 py-3.5 shrink-0 flex items-center justify-between sm:rounded-t-3xl">
             <div>
               <h3 className="font-display font-semibold text-base">Varsana Eco Aldea</h3>
               <p className="text-xs text-white/75 mt-0.5">Asistente virtual</p>
             </div>
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setClosing(true);
+                setTimeout(() => {
+                  setOpen(false);
+                  setClosing(false);
+                }, 300);
+              }}
               aria-label="Cerrar chat"
               className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
             >
