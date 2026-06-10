@@ -207,6 +207,11 @@ export default function ChatWidget() {
           <form onSubmit={handleSend} className="shrink-0 flex gap-2 px-4 py-3 border-t border-gray-200/60 bg-white/60">
             <input
               type="text"
+              name="chat-message"
+              autocomplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
