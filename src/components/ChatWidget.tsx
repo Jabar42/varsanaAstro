@@ -5,7 +5,7 @@ import { useState, useRef, useEffect, type FormEvent, type KeyboardEvent } from 
 // ---------------------------------------------------------------------------
 
 const API_BASE = import.meta.env.PUBLIC_HERMES_API_URL ?? 'http://localhost:8642';
-const API_KEY=import..._KEY ?? '';
+const API_KEY = import.meta.env.PUBLIC_HERMES_API_KEY ?? '';
 
 const STORAGE_KEY = 'varsana-chat-session';
 
