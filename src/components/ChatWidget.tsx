@@ -73,7 +73,6 @@ export default function ChatWidget() {
     try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
   });
   const messagesEnd = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to latest message
   useEffect(() => {
@@ -145,6 +144,35 @@ export default function ChatWidget() {
 
   return (
     <>
+      <style>{`
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(100%);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes slide-down {
+          from {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          to {
+            opacity: 0;
+            transform: translateY(100%);
+          }
+        }
+        .animate-slide-up {
+          animation: slide-up 0.4s ease-out forwards;
+        }
+        .animate-slide-down {
+          animation: slide-down 0.3s ease-in forwards;
+        }
+      `}</style>
+
       {/* Floating button — only opens */}
       {!open && (
         <button
@@ -173,7 +201,7 @@ export default function ChatWidget() {
             max-h-[520px] h-[520px] sm:rounded-3xl
             bg-sacred-sand shadow-airbnb border border-gray-200/50
             flex flex-col overflow-hidden
-            transition-all duration-600 ease-in-out
+            animate-slide-up
           `}
         >
           {/* Header */}
