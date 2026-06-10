@@ -69,9 +69,9 @@ export default function ChatWidget() {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(
-    () => localStorage.getItem(STORAGE_KEY),
-  );
+  const [sessionId, setSessionId] = useState<string | null>(() => {
+    try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
+  });
   const messagesEnd = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to latest message
