@@ -1,13 +1,15 @@
 import type { APIRoute } from 'astro';
 import { getEntry } from 'astro:content';
 import { createHash } from 'node:crypto';
-import { getAdminClient } from '@/src/lib/supabase';
-import { ensureInventoryAndReserve } from '@/src/lib/db';
+import { getDB, getEnv } from '@/src/lib/d1';
+import { ensureInventoryAndReserve } from '@/src/lib/db-d1';
 
 /** Ensure this route runs on the server (not pre-rendered). */
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
+  const env = getEnv(locals);
+
   // ------------------------------------------------------------------
   // 1. Parse & validate request body
   // ------------------------------------------------------------------
@@ -52,8 +54,6 @@ export const POST: APIRoute = async ({ request }) => {
 
   // ------------------------------------------------------------------
   // 2. Determine eventDate
-  //    - Events: derived from Markdown event_start
-  //    - Pasadias: must be provided by the user
   // ------------------------------------------------------------------
   let eventDate = '';
 
@@ -85,7 +85,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 3. Read Markdown — source of truth for price & stock
+  // 4. Read Markdown — source of truth for price & stock
   // ------------------------------------------------------------------
   const collection = contentType === 'event' ? 'events' : 'pasadias';
   const entry = await getEntry(collection, contentId);
@@ -108,7 +108,6 @@ export const POST: APIRoute = async ({ request }) => {
     eventDate = eventStart.toISOString().slice(0, 10);
   }
 
-  // Prices array exists in both schemas
   const prices = (entry.data as Record<string, unknown>).prices as
     | { label: string; amount: number; deadline?: string }[]
     | undefined;
@@ -156,15 +155,14 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 4. Generate order-id
+  // 5. Generate order-id
   // ------------------------------------------------------------------
   const orderId = `${contentType}-${contentId}-${Date.now()}`;
 
   // ------------------------------------------------------------------
-  // 5. Generate integrity-signature (SHA256)
-  //    Formula: SHA256(orderId + amount + currency + BOLD_SECRET_KEY)
+  // 6. Generate integrity-signature (SHA256)
   // ------------------------------------------------------------------
-  const boldSecretKey = import.meta.env.BOLD_SECRET_KEY as string | undefined;
+  const boldSecretKey = env.BOLD_SECRET_KEY as string | undefined;
   if (!boldSecretKey) {
     console.error('BOLD_SECRET_KEY is not configured');
     return new Response(JSON.stringify({ error: 'Server configuration error' }), {
@@ -177,10 +175,13 @@ export const POST: APIRoute = async ({ request }) => {
   const integritySignature = createHash('sha256').update(signatureInput).digest('hex');
 
   // ------------------------------------------------------------------
-  // 6. Atomic stock check + reserve (init lazily if first access)
+  // 7. Atomic stock check + reserve (init lazily if first access)
   // ------------------------------------------------------------------
+  const db = getDB(locals);
+
   try {
     const result = await ensureInventoryAndReserve(
+      db,
       contentType,
       contentId,
       eventDate,
@@ -207,32 +208,33 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 7. Insert order row (status: 'pending') with ticket_details
+  // 8. Insert order row (status: 'pending') with ticket_details
   // ------------------------------------------------------------------
-  const admin = getAdminClient();
-  const { error: insertError } = await admin.from('orders').insert({
-    bold_order_id: orderId,
-    content_type: contentType,
-    content_id: contentId,
-    event_date: eventDate,
-    customer_email: customerData.email,
-    customer_name: customerData.fullName,
-    amount: totalAmount,
-    currency: 'COP',
-    status: 'pending',
-    quantity: totalQuantity,
-    ticket_details: tickets.map(t => ({
-      label: t.label,
-      amount: prices.find(p => p.label === t.label)!.amount,
-      quantity: t.quantity,
-    })),
-  });
-
-  if (insertError) {
-    console.error('Order insert error:', insertError);
-    // NOTE: Stock was already decremented; a compensating transaction
-    // would be needed in production. For v1, we let the webhook handler
-    // release stock if the order is never paid.
+  try {
+    await db
+      .prepare(
+        `INSERT INTO orders (bold_order_id, content_type, content_id, event_date,
+          customer_email, customer_name, amount, currency, status, quantity, ticket_details)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 'COP', 'pending', ?, ?)`
+      )
+      .bind(
+        orderId,
+        contentType,
+        contentId,
+        eventDate,
+        customerData.email,
+        customerData.fullName,
+        totalAmount,
+        totalQuantity,
+        JSON.stringify(tickets.map(t => ({
+          label: t.label,
+          amount: prices.find(p => p.label === t.label)!.amount,
+          quantity: t.quantity,
+        }))),
+      )
+      .run();
+  } catch (insertErr) {
+    console.error('Order insert error:', insertErr);
     return new Response(JSON.stringify({ error: 'Failed to create order' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
@@ -240,18 +242,13 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // ------------------------------------------------------------------
-  // 8. Return signed payload to the frontend
+  // 9. Return signed payload to the frontend
   // ------------------------------------------------------------------
-  let siteUrl = (import.meta.env.PUBLIC_SITE_URL as string) || 'https://varsana.com';
-  // Strip trailing slash(es) so the assembled path never triggers a
-  // 301/308 redirect on Vercel (which would drop query params).
+  let siteUrl = (env.PUBLIC_SITE_URL as string) || 'https://varsana.com';
   siteUrl = siteUrl.replace(/\/+$/, '');
 
   const description = (entry.data as Record<string, unknown>).title as string;
 
-  // Bold appends bold-order-id and bold-tx-status automatically
-  // (it uses the orderId we pass to BoldCheckout constructor).
-  // No need to add query params ourselves — keeps the URL clean.
   const redirectionUrl = `${siteUrl}/pago/exito`;
 
   new URL(redirectionUrl);
@@ -261,7 +258,7 @@ export const POST: APIRoute = async ({ request }) => {
     amount: totalAmount,
     currency: 'COP',
     integritySignature,
-    apiKey: import.meta.env.BOLD_API_KEY as string,
+    apiKey: env.BOLD_API_KEY as string,
     description,
     redirectionUrl,
   };

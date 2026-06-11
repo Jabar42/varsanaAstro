@@ -1,12 +1,25 @@
 import type { APIRoute } from 'astro';
-import { getAdminClient } from '@/src/lib/supabase';
+import { getDB } from '@/src/lib/d1';
 import { getEntry } from 'astro:content';
 import { sendOrderConfirmationEmail } from '@/src/lib/email';
 import { sendTelegramMessage, buildSaleMessage, buildEmailErrorMessage } from '@/src/lib/telegram';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
+interface OrderRow {
+  id: number;
+  status: string;
+  content_type: string;
+  content_id: string;
+  event_date: string;
+  customer_email: string;
+  customer_name: string;
+  ticket_details: string;
+  amount: number;
+  currency: string;
+}
+
+export const POST: APIRoute = async ({ request, locals }) => {
   // ------------------------------------------------------------------
   // 1. Parse request body
   // ------------------------------------------------------------------
@@ -32,15 +45,18 @@ export const POST: APIRoute = async ({ request }) => {
   // ------------------------------------------------------------------
   // 2. Look up the order
   // ------------------------------------------------------------------
-  const admin = getAdminClient();
-  const { data: order, error: lookupError } = await admin
-    .from('orders')
-    .select('id, status, content_type, content_id, event_date, customer_email, customer_name, ticket_details, amount, currency')
-    .eq('bold_order_id', boldOrderId)
-    .single();
+  const db = getDB(locals);
+  const order = await db
+    .prepare(
+      `SELECT id, status, content_type, content_id, event_date,
+              customer_email, customer_name, ticket_details, amount, currency
+       FROM orders WHERE bold_order_id = ?`
+    )
+    .bind(boldOrderId)
+    .first<OrderRow>();
 
-  if (lookupError || !order) {
-    return new Response(JSON.stringify({ error: 'Order not found', detail: lookupError?.message }), {
+  if (!order) {
+    return new Response(JSON.stringify({ error: 'Order not found' }), {
       status: 404,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -63,22 +79,14 @@ export const POST: APIRoute = async ({ request }) => {
   const normalizedStatus = boldTxStatus.toLowerCase();
 
   if (normalizedStatus === 'approved') {
-    const { error: updateError } = await admin
-      .from('orders')
-      .update({
-        status: 'paid',
-        bold_tx_status: 'approved',
-        updated_at: new Date().toISOString(),
-      })
-      .eq('bold_order_id', boldOrderId);
-
-    if (updateError) {
-      console.error(`[verify-payment] Failed to update order ${boldOrderId}:`, updateError.message);
-      return new Response(JSON.stringify({ error: 'Database error' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    await db
+      .prepare(
+        `UPDATE orders
+         SET status = 'paid', bold_tx_status = 'approved', updated_at = datetime('now')
+         WHERE bold_order_id = ?`
+      )
+      .bind(boldOrderId)
+      .run();
 
     console.log(`[verify-payment] Order ${boldOrderId} marked as paid (fallback from success page)`);
 
@@ -94,6 +102,16 @@ export const POST: APIRoute = async ({ request }) => {
       // fallback: content_id sin guiones
     }
 
+    // Parse ticket_details from JSON string
+    let ticketDetails: any;
+    try {
+      ticketDetails = typeof order.ticket_details === 'string'
+        ? JSON.parse(order.ticket_details)
+        : order.ticket_details;
+    } catch {
+      ticketDetails = [];
+    }
+
     const orderData = {
       bold_order_id: boldOrderId,
       customer_email: order.customer_email,
@@ -101,7 +119,7 @@ export const POST: APIRoute = async ({ request }) => {
       content_title: contentTitle,
       content_type: order.content_type as 'event' | 'pasadia',
       event_date: order.event_date,
-      ticket_details: order.ticket_details,
+      ticket_details: ticketDetails,
       amount: order.amount,
       currency: order.currency || 'COP',
     };
@@ -138,22 +156,14 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (normalizedStatus === 'declined' || normalizedStatus === 'failed') {
     // Mark as failed — stock release is handled by the webhook
-    const { error: updateError } = await admin
-      .from('orders')
-      .update({
-        status: 'failed',
-        bold_tx_status: normalizedStatus,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('bold_order_id', boldOrderId);
-
-    if (updateError) {
-      console.error(`[verify-payment] Failed to mark order ${boldOrderId} as failed:`, updateError.message);
-      return new Response(JSON.stringify({ error: 'Database error' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    await db
+      .prepare(
+        `UPDATE orders
+         SET status = 'failed', bold_tx_status = ?, updated_at = datetime('now')
+         WHERE bold_order_id = ?`
+      )
+      .bind(normalizedStatus, boldOrderId)
+      .run();
 
     return new Response(JSON.stringify({ ok: true, status: 'failed' }), {
       status: 200,

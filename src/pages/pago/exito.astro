@@ -2,7 +2,7 @@
 import Layout from '@/src/layouts/Layout.astro';
 import { useTranslations } from '@/src/i18n/utils';
 import { CheckCircle, XCircle, Clock, Search, ArrowLeft } from 'lucide-react';
-import { getAdminClient } from '@/src/lib/supabase';
+import { getDB } from '@/src/lib/d1';
 
 const t = useTranslations((Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es');
 
@@ -19,16 +19,15 @@ let orderStatus: OrderRow['status'] | 'not_found' | 'no_id' = 'no_id';
 let orderRow: OrderRow | null = null;
 
 if (boldOrderId) {
-  const admin = getAdminClient();
-  const { data, error } = await admin
-    .from('orders')
-    .select('status, amount, customer_name, bold_order_id')
-    .eq('bold_order_id', boldOrderId)
-    .single();
+  const db = getDB(Astro.locals);
+  const row = await db
+    .prepare('SELECT status, amount, customer_name, bold_order_id FROM orders WHERE bold_order_id = ?')
+    .bind(boldOrderId)
+    .first<OrderRow>();
 
-  if (data && !error) {
-    orderRow = data as OrderRow;
-    orderStatus = data.status;
+  if (row) {
+    orderRow = row;
+    orderStatus = row.status;
   } else {
     orderStatus = 'not_found';
   }

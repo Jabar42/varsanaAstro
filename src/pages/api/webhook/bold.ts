@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { getAdminClient } from '@/src/lib/supabase';
-import { releaseStock } from '@/src/lib/db';
+import { getDB, getEnv } from '@/src/lib/d1';
+import { releaseStock } from '@/src/lib/db-d1';
 import { getEntry } from 'astro:content';
 import { sendOrderConfirmationEmail } from '@/src/lib/email';
 import { sendTelegramMessage, buildSaleMessage, buildEmailErrorMessage } from '@/src/lib/telegram';
@@ -41,30 +41,7 @@ function verifyWebhookSignature(
 
 // ---------------------------------------------------------------------------
 // Bold Webhook Event Types
-// Maps Bold's CloudEvents `type` field to our internal status values.
 // ---------------------------------------------------------------------------
-
-/**
- * Bold sends events with the following CloudEvents structure:
- * {
- *   id: string,
- *   type: 'SALE_APPROVED' | 'SALE_REJECTED' | 'VOID_APPROVED' | 'VOID_REJECTED',
- *   subject: string,
- *   source: string,
- *   spec_version: string,
- *   time: number,              // POSIX nanoseconds
- *   data: {
- *     payment_id: string,
- *     merchant_id: string,
- *     created_at: string,
- *     amount: { currency, total, taxes, tip },
- *     metadata: { reference: string | null },   // ← our orderId lives here
- *     payment_method: string,
- *     ...
- *   },
- *   datacontenttype?: string
- * }
- */
 
 interface BoldAmount {
   currency: string;
@@ -96,6 +73,19 @@ interface BoldWebhookPayload {
   datacontenttype?: string;
 }
 
+interface OrderRow {
+  status: string;
+  content_type: string;
+  content_id: string;
+  quantity: number;
+  event_date: string;
+  customer_email: string;
+  customer_name: string;
+  ticket_details: string;
+  amount: number;
+  currency: string;
+}
+
 /**
  * Convert Bold's CloudEvents `type` to our internal status.
  */
@@ -110,7 +100,7 @@ function mapBoldStatus(boldType: string): string {
     case 'VOID_REJECTED':
       return 'VOID_FAILED';
     default:
-      return boldType; // pass through unknown types
+      return boldType;
   }
 }
 
@@ -118,8 +108,9 @@ function mapBoldStatus(boldType: string): string {
 // POST Handler
 // ---------------------------------------------------------------------------
 
-export const POST: APIRoute = async ({ request }) => {
-  const requestId = crypto.randomUUID().slice(0, 8); // short id for traceability
+export const POST: APIRoute = async ({ request, locals }) => {
+  const requestId = crypto.randomUUID().slice(0, 8);
+  const env = getEnv(locals);
 
   // ------------------------------------------------------------------
   // 1. Read raw body + signature header
@@ -139,9 +130,8 @@ export const POST: APIRoute = async ({ request }) => {
 
   // ------------------------------------------------------------------
   // 2. Signature Verification (MANDATORY)
-  //    Uses BOLD_SECRET_KEY; falls back to empty string in test mode.
   // ------------------------------------------------------------------
-  const boldSecretKey = (import.meta.env.BOLD_SECRET_KEY as string) || '';
+  const boldSecretKey = (env.BOLD_SECRET_KEY as string) || '';
 
   if (!signatureHeader) {
     console.warn(`[webhook:${requestId}] Missing x-bold-signature header`);
@@ -153,7 +143,6 @@ export const POST: APIRoute = async ({ request }) => {
 
   const isValid = verifyWebhookSignature(rawBody, signatureHeader, boldSecretKey);
   if (!isValid) {
-    // Log preview of body for debugging (safe: no PII in orderId)
     const bodyPreview = rawBody.length > 200 ? rawBody.slice(0, 200) + '...' : rawBody;
     console.warn(`[webhook:${requestId}] Invalid signature — rejecting. body=${bodyPreview} sig=${signatureHeader.slice(0, 20)}... key=${boldSecretKey ? 'present' : 'EMPTY'}`);
     return new Response(JSON.stringify({ error: 'Invalid signature' }), {
@@ -166,9 +155,6 @@ export const POST: APIRoute = async ({ request }) => {
 
   // ------------------------------------------------------------------
   // 3. Parse webhook payload (Bold CloudEvents format)
-  //    Bold sends events as CloudEvents: { type, subject, data: { metadata: { reference }, ... } }
-  //    Our orderId → data.metadata.reference
-  //    Our status   → type (SALE_APPROVED / SALE_REJECTED)
   // ------------------------------------------------------------------
   let boldPayload: BoldWebhookPayload;
   try {
@@ -181,10 +167,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  // Extract our orderId from Bold's metadata.reference (what we sent via data-order-id)
-  // Fallback to subject (Bold's own transaction ID) if reference is null
   const orderId = boldPayload.data?.metadata?.reference || boldPayload.subject || '';
-  // Map Bold's CloudEvents type (e.g. "SALE_APPROVED") → our internal status
   const status = mapBoldStatus(boldPayload.type);
 
   if (!orderId || !status) {
@@ -200,17 +183,19 @@ export const POST: APIRoute = async ({ request }) => {
   // ------------------------------------------------------------------
   // 4. Idempotency Check — skip if already paid
   // ------------------------------------------------------------------
-  const admin = getAdminClient();
+  const db = getDB(locals);
 
-  const { data: existingOrder } = await admin
-    .from('orders')
-    .select('status, content_type, content_id, quantity, event_date, customer_email, customer_name, ticket_details, amount, currency')
-    .eq('bold_order_id', orderId)
-    .single();
+  const existingOrder = await db
+    .prepare(
+      `SELECT status, content_type, content_id, quantity, event_date,
+              customer_email, customer_name, ticket_details, amount, currency
+       FROM orders WHERE bold_order_id = ?`
+    )
+    .bind(orderId)
+    .first<OrderRow>();
 
   if (!existingOrder) {
     console.warn(`[webhook:${requestId}] Order ${orderId} not found in database`);
-    // Return 200 so Bold doesn't keep retrying — order was never created
     return new Response(JSON.stringify({ ok: true, skipped: true, reason: 'order_not_found' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -232,22 +217,14 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (normalizedStatus === 'APPROVED') {
     // --- Payment approved ---
-    const { error: updateError } = await admin
-      .from('orders')
-      .update({
-        status: 'paid',
-        bold_tx_status: 'approved',
-        updated_at: new Date().toISOString(),
-      })
-      .eq('bold_order_id', orderId);
-
-    if (updateError) {
-      console.error(`[webhook:${requestId}] Failed to update order ${orderId}:`, updateError.message);
-      return new Response(JSON.stringify({ error: 'Database error' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    await db
+      .prepare(
+        `UPDATE orders
+         SET status = 'paid', bold_tx_status = 'approved', updated_at = datetime('now')
+         WHERE bold_order_id = ?`
+      )
+      .bind(orderId)
+      .run();
 
     console.log(`[webhook:${requestId}] Order ${orderId} marked as paid`);
 
@@ -263,6 +240,16 @@ export const POST: APIRoute = async ({ request }) => {
       // fallback: content_id sin guiones
     }
 
+    // Parse ticket_details from JSON string
+    let ticketDetails: any;
+    try {
+      ticketDetails = typeof existingOrder.ticket_details === 'string'
+        ? JSON.parse(existingOrder.ticket_details)
+        : existingOrder.ticket_details;
+    } catch {
+      ticketDetails = [];
+    }
+
     const orderData = {
       bold_order_id: orderId,
       customer_email: existingOrder.customer_email,
@@ -270,7 +257,7 @@ export const POST: APIRoute = async ({ request }) => {
       content_title: contentTitle,
       content_type: existingOrder.content_type as 'event' | 'pasadia',
       event_date: existingOrder.event_date,
-      ticket_details: existingOrder.ticket_details,
+      ticket_details: ticketDetails,
       amount: existingOrder.amount,
       currency: existingOrder.currency || 'COP',
     };
@@ -287,7 +274,6 @@ export const POST: APIRoute = async ({ request }) => {
     }));
 
     // 2. Email de confirmacion al cliente
-    //    Si falla, notificar via Telegram para que el admin sepa
     const [emailResult] = await Promise.allSettled([
       sendOrderConfirmationEmail(orderData),
     ]);
@@ -311,29 +297,20 @@ export const POST: APIRoute = async ({ request }) => {
 
     try {
       const date = eventDate || new Date().toISOString().slice(0, 10);
-      await releaseStock(contentType, contentId, quantity || 1, date);
+      await releaseStock(db, contentType, contentId, quantity || 1, date);
     } catch (releaseError) {
       const msg = releaseError instanceof Error ? releaseError.message : 'Unknown';
       console.error(`[webhook:${requestId}] Failed to release stock for ${orderId}:`, msg);
-      // Continue anyway — still mark the order as failed
     }
 
-    const { error: updateError } = await admin
-      .from('orders')
-      .update({
-        status: 'failed',
-        bold_tx_status: normalizedStatus.toLowerCase(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq('bold_order_id', orderId);
-
-    if (updateError) {
-      console.error(`[webhook:${requestId}] Failed to update failed order ${orderId}:`, updateError.message);
-      return new Response(JSON.stringify({ error: 'Database error' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    await db
+      .prepare(
+        `UPDATE orders
+         SET status = 'failed', bold_tx_status = ?, updated_at = datetime('now')
+         WHERE bold_order_id = ?`
+      )
+      .bind(normalizedStatus.toLowerCase(), orderId)
+      .run();
 
     console.log(`[webhook:${requestId}] Order ${orderId} marked as failed, stock released`);
 
@@ -346,17 +323,14 @@ export const POST: APIRoute = async ({ request }) => {
   // --- Unknown status — acknowledge but log ---
   console.log(`[webhook:${requestId}] Unhandled status ${status} for order ${orderId} — acknowledged`);
 
-  const { error: updateError } = await admin
-    .from('orders')
-    .update({
-      bold_tx_status: normalizedStatus.toLowerCase(),
-      updated_at: new Date().toISOString(),
-    })
-    .eq('bold_order_id', orderId);
-
-  if (updateError) {
-    console.error(`[webhook:${requestId}] Failed to update status for ${orderId}:`, updateError.message);
-  }
+  await db
+    .prepare(
+      `UPDATE orders
+       SET bold_tx_status = ?, updated_at = datetime('now')
+       WHERE bold_order_id = ?`
+    )
+    .bind(normalizedStatus.toLowerCase(), orderId)
+    .run();
 
   return new Response(JSON.stringify({ ok: true }), {
     status: 200,
