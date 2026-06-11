@@ -8,6 +8,7 @@ coverage/
 !.env.example
 .vercel/
 .vercel
+.wrangler/
 .playwright-mcp/
 *.png
 .claude/
