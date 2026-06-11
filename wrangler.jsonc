@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2026-06-08",
+  "compatibility_flags": ["nodejs_compat"],
+  "name": "varsana-co",
+  "main": "dist/server/entrypoint.js",
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "ENVIRONMENT": "staging"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "varsana-db",
+      "database_id": "8ca3e0d2-1772-440c-bd96-9fea0c09582b"
+    }
+  ]
+}
