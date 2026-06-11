@@ -9,9 +9,7 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   output: "server",
   site: "https://varsana.com",
-  adapter: cloudflare({
-    mode: "directory",
-  }),
+  adapter: cloudflare(),
   i18n: {
     defaultLocale: "es",
     locales: ["es", "en"],
