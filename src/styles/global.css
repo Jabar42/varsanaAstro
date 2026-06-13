@@ -69,6 +69,20 @@
   opacity: 0.1;
 }
 
+/* Chat widget — varsana palette overrides */
+:root {
+  --chat-primary: #52185b;
+  --chat-primary-fg: #faf9f6;
+  --chat-primary-hover: #3a1241;
+  --chat-bot-bubble: #f7f2f9;
+  --chat-bot-text: #222222;
+  --chat-font-heading: "Proza Libre", sans-serif;
+  --chat-font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --chat-border: #e8dce8;
+  --chat-code-bg: rgba(82, 24, 91, 0.08);
+  --chat-close-btn-bg: rgba(250, 249, 246, 0.15);
+}
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;

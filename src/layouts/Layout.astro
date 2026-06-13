@@ -2,7 +2,7 @@
 import '@/src/styles/global.css';
 import Header from '@/src/components/Header.astro';
 import Footer from '@/src/components/Footer.astro';
-import ChatWidget from '@/src/components/ChatWidget';
+import ChatWidget from '@tp3/chat-widget';
 
 import { ClientRouter } from 'astro:transitions';
 
@@ -53,7 +53,12 @@ const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
       <slot />
     </main>
     <Footer />
-    <ChatWidget client:load />
+    <ChatWidget
+      agentHost="varsana-chat.iaforchange.workers.dev"
+      brandName="Varsana"
+      brandSubtitle="Asistente virtual"
+      welcomeMessage="🙏 ¡Bienvenida a Varsana Eco Yoga Aldea! Soy Ananda, tu asistente virtual. ¿En qué puedo ayudarte?"
+      client:load />
 
     <!-- Grain texture overlay — SVG noise filter for handmade/earthy feel -->
     <svg aria-hidden="true" class="grain-overlay" transition:persist>
