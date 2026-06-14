@@ -21,5 +21,11 @@
       "database_name": "varsana-db",
       "database_id": "8ca3e0d2-1772-440c-bd96-9fea0c09582b"
     }
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "varsana-images",
+      "binding": "VARSANA_IMAGES"
+    }
   ]
 }
