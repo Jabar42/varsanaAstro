@@ -1,112 +1,86 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guia para Claude Code en el repositorio varsanaAstro.
 
 ## Commands
 
 ```bash
-npm install              # Install dependencies
-npm run dev              # Start dev server (port 3000, exposed on network)
-npm run build            # Production build
-npm run preview          # Preview production build locally
-npm run lint             # Type-check with tsc --noEmit
-npm run clean            # Remove dist/
+npm install              # Instalar dependencias
+npm run dev              # Dev server (port 3000)
+npm run build            # Build produccion
+npm run deploy           # Build + deploy a Cloudflare Workers
+npm run lint             # Type-check con tsc --noEmit
 ```
 
-## Architecture
+## Arquitectura
 
-Astro 6 site for Varsana Eco Yoga Aldea — a spiritual retreat center. **SSR mode** (`output: 'server'`), deployed to Vercel via `@astrojs/vercel`.
+Astro 6 en **modo SSR** (`output: 'server'`), desplegado en **Cloudflare Workers** via `@astrojs/cloudflare`. Branch `cf-migration` (staging), `main` (produccion Vercel — a migrar).
 
-### Content Collections (file-based Markdown CMS)
+### Workers del ecosistema varsana
 
-Three collections defined in [src/content.config.ts](src/content.config.ts), loaded via `astro:content` glob loader:
+| Worker | URL | Repo | Funcion |
+|--------|-----|------|---------|
+| `varsana-co` | `varsana-co.iaforchange.workers.dev` | varsanaAstro | Sitio Astro SSR + API + D1 + R2 |
+| `varsana-chat` | `varsana-chat.iaforchange.workers.dev` | agente-core-tp3 | Agente IA (Ananda) con tool-calling |
+| `varsana-mcp` | `varsana-mcp.iaforchange.workers.dev` | agente-core-tp3 | MCP server (experimental) |
 
-- **`src/content/events/`** — dated retreats/workshops with `event_start`, `event_end`, `stock_max`, and tiered `prices` with deadlines
-- **`src/content/pasadias/`** — evergreen services (no dates, no stock limits) with `category`, `duration`, `meeting_point`
-- **`src/content/nosotros/`** — team members with social links
+### Content Collections
 
-`id` must match the filename slug. Schema uses Zod with a shared `titleSchema` that enforces sentence case and no-emoji via `.refine()`.
+Tres colecciones en `src/content/` (Zod + Markdoc):
+- **`events/`** — retiros con `event_start`, `stock_max`, `prices` con deadlines
+- **`pasadias/`** — experiencias de un dia con `duration`, `category`, `meeting_point`
+- **`nosotros/`** — equipo con `role`, social links
 
-### Payment Flow (Bold)
+### API Endpoints
 
-`BoldPaymentButton.tsx` (React island) → `POST /api/checkout` → Bold payment gateway → redirect back with `bold-order-id` & `bold-tx-status` query params → `GET /pago/exito` → client-side `POST /api/verify-payment` (fallback).
+| Endpoint | Metodo | Funcion |
+|----------|--------|---------|
+| `/api/checkout` | POST | Crea orden Bold + reserva stock en D1 |
+| `/api/webhook/bold` | POST | Recibe webhooks de Bold (HMAC-SHA256) |
+| `/api/verify-payment` | POST | Verifica pago via redirect de Bold |
+| `/api/order-status` | GET | Consulta estado de orden en D1 |
+| `/api/events` | GET | Lista eventos futuros (usado por el agente) |
+| `/api/pasadias` | GET | Lista pasadias (usado por el agente) |
+| `/api/images/[...key]` | GET/POST | Subida y servicio de imagenes desde R2 |
 
-Server-side: checkout validates tickets against Markdown prices (source of truth), computes integrity signature with `BOLD_SECRET_KEY`, reserves stock atomically via `decrement_stock` RPC.
+### Database (D1)
 
-### Webhook Handling
+**D1** (`varsana-db`) con binding `DB`. Tablas: `inventory` (stock_max, stock_reserved) y `orders` (bold_order_id, status, ticket_details).
 
-`POST /api/webhook/bold` receives Bold CloudEvents (`type: SALE_APPROVED | SALE_REJECTED | VOID_APPROVED | VOID_REJECTED`). Maps `data.metadata.reference` → our `orderId`. Verifies HMAC-SHA256 signature from `x-bold-signature` header. On approval: marks order `paid`. On decline: releases stock via `release_stock` RPC and marks `failed`. Has idempotency guards.
+El acceso se hace via `import { env } from "cloudflare:workers"` → `env.DB` (D1Database). El wrapper esta en `src/lib/d1.ts`. Las operaciones de inventario atomico en `src/lib/db-d1.ts`.
 
-### Database Layer
+### R2 (Imagenes)
 
-Supabase with two client tiers:
-- **Public** (`src/lib/supabase.ts` default export) — uses `PUBLIC_SUPABASE_ANON_KEY`, RLS-enforced
-- **Admin** (`getAdminClient()`) — uses `SUPABASE_SERVICE_ROLE_KEY`, server-only, bypasses RLS
+Bucket `varsana-images` con binding `VARSANA_IMAGES`. La API `/api/images/[...key]` maneja subida y servicio.
 
-`src/lib/db.ts` wraps inventory operations: `getAvailableStock()`, `reserveStock()` (atomic RPC), `releaseStock()`. Stock is managed in an `inventory` table with `stock_max` and `stock_reserved`. Orders go to `orders` table.
+### Variables de entorno
 
-### Required Environment Variables
-
-```
-BOLD_API_KEY            # Bold public key
-BOLD_SECRET_KEY         # Bold secret key (used for HMAC signing & verification)
-PUBLIC_SUPABASE_URL     # Supabase project URL
-PUBLIC_SUPABASE_ANON_KEY # Supabase anon key (client-safe)
-SUPABASE_SERVICE_ROLE_KEY # Supabase service role (server-only, bypasses RLS)
-PUBLIC_SITE_URL         # Canonical site URL (e.g. https://varsana.co)
+```bash
+BOLD_API_KEY            # Bold public key (secret)
+BOLD_SECRET_KEY         # Bold secret key (secret, para HMAC)
+PUBLIC_SITE_URL         # URL canonica (varsana.co)
+RESEND_API_KEY          # Resend para emails transaccionales (secret)
+RESEND_FROM_EMAIL       # Email remitente
+TELEGRAM_BOT_TOKEN      # Notificaciones admin (secret)
+TELEGRAM_CHAT_ID        # Chat destino Telegram (secret)
+PUBLIC_DONATION_URL     # URL de donacion (var en wrangler.jsonc)
 ```
 
 ### Design System
 
-**Source of truth:** [`.agents/design-guidelines/SKILL.md`](.agents/design-guidelines/SKILL.md) — read it before any UI change.
+Tailwind v4 con tokens en `src/styles/design-tokens.css`:
+- `--color-rausch` (#52185B) — primary CTA
+- `--color-saffron` (#F7941E) — accent
+- `--color-forest` (#779B05) — nature
+- `--color-sacred-sand` (#FAF9F6) — background
+- `--font-display` / `--font-sans` — Proza Libre / Inter
 
-Tailwind v4 with custom theme tokens in [src/styles/global.css](src/styles/global.css):
-- `--color-rausch` (#52185B) — primary CTA, brand accent
-- `--color-saffron` (#F7941E) — spiritual accent, highlights, tags
-- `--color-forest` (#779B05) — nature accent, volunteering
-- `--color-sacred-sand` (#FAF9F6) — page background
-- `--font-display` / `--font-sans` — Proza Libre (headings) / Inter (body, UI)
-- `--shadow-airbnb` — card elevation (`rgba(0,0,0,0.02) 0 0 0 1px, rgba(0,0,0,0.04) 0 2px 6px, rgba(0,0,0,0.1) 0 4px 8px`)
+### Tool-calling del agente
 
-**Component rules** (see [component-stylings.md](.agents/design-guidelines/references/component-stylings.md)):
-- Cards: 24–32px border-radius, Lotus White background, subtle lift + saffron glow on hover
-- Buttons: 16px border-radius, bold Inter, Rausch Red primary / Forest or Saffron secondary
-- Icons: Lucide-react, prefer organic shapes (Leaf, Flower2, Sun, Moon, Heart)
+El agente `varsana-chat` (Ananda) consulta los endpoints `/api/events` y `/api/pasadias` via tool-calling para dar datos reales a los usuarios del chat. Las tools se definen en `agente-core-tp3/packages/agent/src/prompts/varsana/`.
 
-**Layout** (see [layout-principles.md](.agents/design-guidelines/references/layout-principles.md)):
-- Favor asymmetry over rigid grids; increase vertical spacing ~20% vs standard layouts
-- Transitions: 0.6–0.8s ease-in-out, slow and graceful
-- Touch targets: ≥ 44px on mobile
+### Agregar un evento nuevo
 
-### Content Formatting
-
-**Source of truth:** [`.agents/event-content-formatting/SKILL.md`](.agents/event-content-formatting/SKILL.md) — read it before editing any Markdown content.
-
-- Headings: `h2` → `mt-10 mb-5`, `h3` → `mt-8 mb-4`, no skipping levels
-- Structured data → HTML tables with Tailwind classes (see [tables.md](.agents/event-content-formatting/references/tables.md))
-- Spacing: paragraphs `mb-5`, blockquotes/images `my-8`, images `rounded-3xl shadow-airbnb`
-- Sentence case for all headings, no ALL-CAPS, active voice, inclusive tone
-- Frontmatter: follow schema in [src/content.config.ts](src/content.config.ts); see [frontmatter-consistency.md](.agents/event-content-formatting/references/frontmatter-consistency.md)
-
-### Key Patterns
-
-- **Alias**: `@/` maps to project root (e.g. `@/src/components/Header.astro`)
-- **Astro components** (`.astro`) handle static/SSR rendering; **React components** (`.tsx`) are client islands for interactivity (e.g. payment button)
-- **API routes** must set `export const prerender = false` (SSR-only)
-- **`getEntry()` / `getCollection()`** from `astro:content` are used to read Markdown content — these are the source of truth for prices and metadata
-
-### Agent Skills
-
-This repo includes project-specific agent skills in `.agents/`. See [skill-index](.agents/skill-index/SKILL.md) for the full catalog.
-
-| Skill | Use when |
-|---|---|
-| `design-guidelines` | UI changes, styling, component design |
-| `event-content-formatting` | Editing event/pasadia markdown |
-| `publish-new-event` | Adding a new event |
-| `publish-new-pasadia` | Adding a new pasadia |
-| `publish-new-member` | Adding a team member |
-| `create-content-collection-schema` | Adding a new content type |
-| `payment-integration-bold` | Debugging checkout, payments, webhooks |
-| `vercel-integration` | Deploying, env vars, logs, domains |
-| `upload-image` | Uploading/optimizing images to Supabase bucket |
+1. Crear `src/content/events/<slug>.mdoc` con frontmatter y contenido markdown
+2. `npm run build && npx wrangler deploy`
+3. El agente lo detecta automaticamente en la proxima consulta
