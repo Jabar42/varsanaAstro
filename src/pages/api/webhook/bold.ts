@@ -1,7 +1,8 @@
-import type { APIRoute } from 'astro';
-import { createHmac, timingSafeEqual } from 'node:crypto';
-import { getDB, getEnv } from '@/src/lib/d1';
-import { releaseStock } from '@/src/lib/db-d1';
+import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { getDB } from "@/src/lib/d1";
+import { releaseStock } from "@/src/lib/db-d1";
 import { getEntry } from 'astro:content';
 import { sendOrderConfirmationEmail } from '@/src/lib/email';
 import { sendTelegramMessage, buildSaleMessage, buildEmailErrorMessage } from '@/src/lib/telegram';
@@ -108,9 +109,9 @@ function mapBoldStatus(boldType: string): string {
 // POST Handler
 // ---------------------------------------------------------------------------
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
+  try {
   const requestId = crypto.randomUUID().slice(0, 8);
-  const env = getEnv(locals);
 
   // ------------------------------------------------------------------
   // 1. Read raw body + signature header
@@ -130,8 +131,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   // ------------------------------------------------------------------
   // 2. Signature Verification (MANDATORY)
+  //    Do this BEFORE accessing any bindings — reject unauthenticated
+  //    requests as early as possible.
   // ------------------------------------------------------------------
-  const boldSecretKey = (env.BOLD_SECRET_KEY as string) || '';
+  const boldSecretKey = (env.BOLD_SECRET_KEY as string) || "";
 
   if (!signatureHeader) {
     console.warn(`[webhook:${requestId}] Missing x-bold-signature header`);
@@ -183,7 +186,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   // ------------------------------------------------------------------
   // 4. Idempotency Check — skip if already paid
   // ------------------------------------------------------------------
-  const db = getDB(locals);
+  const db = getDB(env);
 
   const existingOrder = await db
     .prepare(
@@ -336,4 +339,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`[webhook] Unhandled error:`, msg);
+    return new Response(JSON.stringify({ error: 'Internal error', detail: msg }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 };

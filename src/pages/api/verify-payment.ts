@@ -1,5 +1,6 @@
-import type { APIRoute } from 'astro';
-import { getDB } from '@/src/lib/d1';
+import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
+import { getDB } from "@/src/lib/d1";
 import { getEntry } from 'astro:content';
 import { sendOrderConfirmationEmail } from '@/src/lib/email';
 import { sendTelegramMessage, buildSaleMessage, buildEmailErrorMessage } from '@/src/lib/telegram';
@@ -19,7 +20,7 @@ interface OrderRow {
   currency: string;
 }
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   // ------------------------------------------------------------------
   // 1. Parse request body
   // ------------------------------------------------------------------
@@ -45,7 +46,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   // ------------------------------------------------------------------
   // 2. Look up the order
   // ------------------------------------------------------------------
-  const db = getDB(locals);
+  const db = getDB(env);
   const order = await db
     .prepare(
       `SELECT id, status, content_type, content_id, event_date,

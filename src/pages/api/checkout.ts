@@ -1,14 +1,14 @@
-import type { APIRoute } from 'astro';
-import { getEntry } from 'astro:content';
-import { createHash } from 'node:crypto';
-import { getDB, getEnv } from '@/src/lib/d1';
-import { ensureInventoryAndReserve } from '@/src/lib/db-d1';
+import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
+import { getEntry } from "astro:content";
+import { createHash } from "node:crypto";
+import { getDB } from "@/src/lib/d1";
+import { ensureInventoryAndReserve } from "@/src/lib/db-d1";
 
 /** Ensure this route runs on the server (not pre-rendered). */
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, locals }) => {
-  const env = getEnv(locals);
+export const POST: APIRoute = async ({ request }) => {
 
   // ------------------------------------------------------------------
   // 1. Parse & validate request body
@@ -177,7 +177,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   // ------------------------------------------------------------------
   // 7. Atomic stock check + reserve (init lazily if first access)
   // ------------------------------------------------------------------
-  const db = getDB(locals);
+  const db = getDB(env);
 
   try {
     const result = await ensureInventoryAndReserve(
