@@ -132,7 +132,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; topBorder
           </a>
         </div>
       </div>
-      <div class="relative aspect-[4/3] rounded-[32px] overflow-hidden shadow-airbnb">
+      <div class="relative aspect-4/3 rounded-[32px] overflow-hidden shadow-airbnb">
         <img
           src="https://picsum.photos/seed/varsana-food-hero/1200/900"
           alt="Alimentación vegetariana consciente en Varsana"
@@ -198,14 +198,14 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; topBorder
       <div class="grid grid-cols-2 gap-4">
         <img
           src="https://picsum.photos/seed/huerta-veggies/600/800"
-          class="rounded-3xl shadow-md aspect-[3/4] object-cover"
+          class="rounded-3xl shadow-md aspect-3/4 object-cover"
           alt="Huerta orgánica de Varsana"
           referrerpolicy="no-referrer"
           loading="lazy"
         />
         <img
           src="https://picsum.photos/seed/huerta-harvest/600/800"
-          class="rounded-3xl shadow-md mt-8 aspect-[3/4] object-cover"
+          class="rounded-3xl shadow-md mt-8 aspect-3/4 object-cover"
           alt="Cosecha de vegetales orgánicos"
           referrerpolicy="no-referrer"
           loading="lazy"
@@ -232,7 +232,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; topBorder
               <div class={`w-12 h-12 ${s.iconBg} rounded-xl flex items-center justify-center ${s.iconText} shrink-0 group-hover:scale-110 transition-transform duration-300`}>
                 <meal.icon size={22} />
               </div>
-              <div class="space-y-1 flex-grow">
+              <div class="space-y-1 grow">
                 <div class="flex items-center gap-3 flex-wrap">
                   <h3 class="text-lg font-bold font-display tracking-tightest">{meal.name}</h3>
                   <span class="text-xs text-secondary-gray bg-sacred-sand px-2.5 py-0.5 rounded-full font-medium">{meal.time}</span>

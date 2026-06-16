@@ -102,7 +102,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; badge: st
           const s = accentStyles[aldea.accent] ?? accentStyles.forest;
           return (
             <div class="bg-lotus-white rounded-[24px] shadow-airbnb overflow-hidden flex flex-col h-full group hover:scale-[1.02] transition-all duration-600 cursor-pointer">
-              <div class="aspect-[4/3] overflow-hidden relative">
+              <div class="aspect-4/3 overflow-hidden relative">
                 <img
                   src={aldea.image}
                   alt={aldea.name}
@@ -112,11 +112,11 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; badge: st
                 />
                 <div class="absolute top-4 left-4 flex items-center gap-1.5 bg-lotus-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
                   <MapPin size={12} class="text-rausch" />
-                  <span class="text-secondary-gray truncate max-w-[180px]">{aldea.location}</span>
+                  <span class="text-secondary-gray truncate max-w-45">{aldea.location}</span>
                 </div>
               </div>
 
-              <div class="p-6 flex flex-col flex-grow space-y-4">
+              <div class="p-6 flex flex-col grow space-y-4">
                 <div class="flex items-center gap-3">
                   <div class={`w-10 h-10 ${s.iconBg} rounded-xl flex items-center justify-center ${s.iconText}`}>
                     <aldea.icon size={20} />
@@ -124,7 +124,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; badge: st
                   <h3 class="text-xl font-bold font-display tracking-tightest">{aldea.name}</h3>
                 </div>
 
-                <p class="text-secondary-gray text-sm leading-relaxed flex-grow">{aldea.description}</p>
+                <p class="text-secondary-gray text-sm leading-relaxed grow">{aldea.description}</p>
 
                 <div class={`border-t pt-4 space-y-2 ${s.topBorder}`}>
                   <ul class="space-y-1.5">

@@ -70,9 +70,9 @@ const discoveryCards = [
           <a
             href={`/experiencias/${card.slug}`}
             draggable="false"
-            class="group w-[40vw] flex-shrink-0 snap-start select-none"
+            class="group w-[40vw] shrink-0 snap-start select-none"
           >
-            <div class="aspect-[1/2] overflow-hidden rounded-lg relative shadow-airbnb transition-shadow duration-500">
+            <div class="aspect-1/2 overflow-hidden rounded-lg relative shadow-airbnb transition-shadow duration-500">
               <img
                 src={`https://picsum.photos/seed/${card.slug}/400/800`}
                 alt={card.title}
@@ -96,7 +96,7 @@ const discoveryCards = [
             href={`/experiencias/${card.slug}`}
             class="group block"
           >
-            <div class="aspect-[1/2] overflow-hidden rounded-2xl relative">
+            <div class="aspect-1/2 overflow-hidden rounded-2xl relative">
               <img
                 src={`https://picsum.photos/seed/${card.slug}/400/800`}
                 alt={card.title}
@@ -190,7 +190,7 @@ const discoveryCards = [
         </div>
 
         <!-- Image Panel -->
-        <div class="aspect-[4/3] lg:aspect-auto lg:min-h-[500px] overflow-hidden">
+        <div class="aspect-4/3 lg:aspect-auto lg:min-h-125 overflow-hidden">
           <img
             src="https://picsum.photos/seed/huerta/1200/900"
             alt="Huerta orgánica de Varsana"

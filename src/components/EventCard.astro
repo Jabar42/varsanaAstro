@@ -32,7 +32,7 @@ const formattedDate = event_start.toLocaleDateString('es-ES', {
 ---
 
 <a href={l(`/events/${slug}`)} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
-  <div class="aspect-[16/10] overflow-hidden relative">
+  <div class="aspect-16/10 overflow-hidden relative">
     <img 
       src={image} 
       alt={title} 
@@ -46,7 +46,7 @@ const formattedDate = event_start.toLocaleDateString('es-ES', {
     )}
   </div>
   
-  <div class="p-6 flex flex-col flex-grow space-y-3">
+  <div class="p-6 flex flex-col grow space-y-3">
     <div class="space-y-1">
       <p class="text-saffron font-semibold text-sm uppercase tracking-wider">{formattedDate}</p>
       <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{title}</h3>

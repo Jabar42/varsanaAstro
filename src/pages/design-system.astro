@@ -178,7 +178,7 @@ import {
       <div class="space-y-12">
         <!-- Hero Heading -->
         <div class="bg-lotus-white rounded-lg shadow-airbnb p-4 sm:p-8 flex flex-col lg:flex-row lg:items-start gap-6">
-          <div class="lg:w-48 flex-shrink-0">
+          <div class="lg:w-48 shrink-0">
             <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Hero Heading</span>
           </div>
           <div class="flex-1 space-y-3">
@@ -194,7 +194,7 @@ import {
 
         <!-- Section Title -->
         <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
-          <div class="lg:w-48 flex-shrink-0">
+          <div class="lg:w-48 shrink-0">
             <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Section Title</span>
           </div>
           <div class="flex-1 space-y-3">
@@ -210,7 +210,7 @@ import {
 
         <!-- Card Title -->
         <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
-          <div class="lg:w-48 flex-shrink-0">
+          <div class="lg:w-48 shrink-0">
             <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Card Title</span>
           </div>
           <div class="flex-1 space-y-3">
@@ -226,7 +226,7 @@ import {
 
         <!-- Body -->
         <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
-          <div class="lg:w-48 flex-shrink-0">
+          <div class="lg:w-48 shrink-0">
             <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Body</span>
           </div>
           <div class="flex-1 space-y-3">
@@ -242,7 +242,7 @@ import {
 
         <!-- Metadata -->
         <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
-          <div class="lg:w-48 flex-shrink-0">
+          <div class="lg:w-48 shrink-0">
             <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Metadata</span>
           </div>
           <div class="flex-1 space-y-3">
@@ -258,7 +258,7 @@ import {
 
         <!-- Button -->
         <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 flex flex-col lg:flex-row lg:items-start gap-6">
-          <div class="lg:w-48 flex-shrink-0">
+          <div class="lg:w-48 shrink-0">
             <span class="inline-block bg-saffron-light text-near-black text-xs font-semibold px-3 py-1 rounded-full">Button</span>
           </div>
           <div class="flex-1 space-y-3">
@@ -295,8 +295,8 @@ import {
           { label: 'section', value: '80px', px: 80 },
         ]).map(({ label, value, px }) => (
           <div class="flex items-center gap-6">
-            <div class="w-28 text-sm font-semibold text-near-black text-right flex-shrink-0">{label}</div>
-            <div class="w-20 text-sm font-mono text-secondary-gray text-right flex-shrink-0">{value}</div>
+            <div class="w-28 text-sm font-semibold text-near-black text-right shrink-0">{label}</div>
+            <div class="w-20 text-sm font-mono text-secondary-gray text-right shrink-0">{value}</div>
             <div class="flex-1 flex items-center">
               <div class="h-6 bg-rausch rounded-sm" style={`width: ${px}px;`}></div>
             </div>
@@ -413,7 +413,7 @@ import {
       <div class="space-y-6 mb-14">
         <!-- Primario -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
-          <div class="w-40 flex-shrink-0">
+          <div class="w-40 shrink-0">
             <span class="text-sm font-semibold text-near-black">Primario</span>
             <p class="text-xs text-secondary-gray">CTAs principales, checkout</p>
           </div>
@@ -424,7 +424,7 @@ import {
         </div>
         <!-- Secondary (Forest) -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
-          <div class="w-40 flex-shrink-0">
+          <div class="w-40 shrink-0">
             <span class="text-sm font-semibold text-near-black">Secundario</span>
             <p class="text-xs text-secondary-gray">Acciones secundarias</p>
           </div>
@@ -435,7 +435,7 @@ import {
         </div>
         <!-- Saffron -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
-          <div class="w-40 flex-shrink-0">
+          <div class="w-40 shrink-0">
             <span class="text-sm font-semibold text-near-black">Saffron</span>
             <p class="text-xs text-secondary-gray">Acciones espirituales</p>
           </div>
@@ -446,7 +446,7 @@ import {
         </div>
         <!-- Ghost -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
-          <div class="w-40 flex-shrink-0">
+          <div class="w-40 shrink-0">
             <span class="text-sm font-semibold text-near-black">Fantasma</span>
             <p class="text-xs text-secondary-gray">Terciarias, "ver más"</p>
           </div>
@@ -610,10 +610,10 @@ import {
             { size: 56, px: '56px', usage: 'Hero/resultado — estados de pago éxito/error', Icon: CheckCircle2 },
           ]).map(({ size, px, usage, Icon }) => (
             <div class="flex items-center gap-6 px-6 py-4">
-              <div class="w-14 flex-shrink-0 flex items-center justify-center">
+              <div class="w-14 shrink-0 flex items-center justify-center">
                 <Icon size={size} strokeWidth={1.5} class="text-near-black" />
               </div>
-              <span class="w-14 text-sm font-mono text-rausch font-semibold flex-shrink-0">{px}</span>
+              <span class="w-14 text-sm font-mono text-rausch font-semibold shrink-0">{px}</span>
               <span class="text-sm text-secondary-gray">{usage}</span>
             </div>
           ))}
@@ -660,8 +660,8 @@ import {
             { color: 'text-secondary-gray', label: 'Gris Secundario', usage: 'Muted — íconos deshabilitados o secundarios', Icon: Info },
           ]).map(({ color, label, usage, Icon }) => (
             <div class="flex items-center gap-6 px-6 py-4">
-              <Icon size={24} strokeWidth={1.5} class={`${color} flex-shrink-0`} />
-              <span class="w-32 text-sm font-semibold text-near-black flex-shrink-0">{label}</span>
+              <Icon size={24} strokeWidth={1.5} class={`${color} shrink-0`} />
+              <span class="w-32 text-sm font-semibold text-near-black shrink-0">{label}</span>
               <span class="text-sm text-secondary-gray">{usage}</span>
             </div>
           ))}
@@ -717,11 +717,11 @@ import {
           <p class="text-xs text-secondary-gray">Listas de beneficios, voluntariado</p>
           <div class="space-y-3 pt-2">
             <div class="flex items-start gap-3">
-              <CheckCircle2 size={24} class="text-rausch flex-shrink-0 mt-0.5" />
+              <CheckCircle2 size={24} class="text-rausch shrink-0 mt-0.5" />
               <span class="text-sm text-near-black">Alojamiento en cabañas compartidas</span>
             </div>
             <div class="flex items-start gap-3">
-              <CheckCircle2 size={24} class="text-rausch flex-shrink-0 mt-0.5" />
+              <CheckCircle2 size={24} class="text-rausch shrink-0 mt-0.5" />
               <span class="text-sm text-near-black">Alimentación vegetariana incluida</span>
             </div>
           </div>
@@ -802,19 +802,19 @@ import {
       </p>
       <div class="bg-lotus-white rounded-lg shadow-airbnb p-8 space-y-6">
         <div class="flex flex-wrap items-center gap-6">
-          <div class="w-32 h-12 bg-rausch rounded-[16px] transition-all duration-300 hover:bg-rausch-dark hover:scale-105 flex-shrink-0 flex items-center justify-center text-white text-xs font-semibold cursor-pointer">
+          <div class="w-32 h-12 bg-rausch rounded-[16px] transition-all duration-300 hover:bg-rausch-dark hover:scale-105 shrink-0 flex items-center justify-center text-white text-xs font-semibold cursor-pointer">
             <span class="break-words">䷀ 300ms button</span>
           </div>
           <span class="text-xs font-mono text-secondary-gray break-words">Transición 300ms — botones y enlaces</span>
         </div>
         <div class="flex flex-wrap items-center gap-6">
-          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-600 ease-in-out hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(247,148,30,0.12),0_0_0_1px_rgba(0,0,0,0.02),0_2px_6px_rgba(0,0,0,0.04),0_4px_8px_rgba(0,0,0,0.10)] flex-shrink-0 flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
+          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-600 ease-in-out hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(247,148,30,0.12),0_0_0_1px_rgba(0,0,0,0.02),0_2px_6px_rgba(0,0,0,0.04),0_4px_8px_rgba(0,0,0,0.10)] shrink-0 flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
             <span class="break-words">䷀ 600ms card hover</span>
           </div>
           <span class="text-xs font-mono text-secondary-gray break-words">Transición 600ms — tarjetas e imágenes</span>
         </div>
         <div class="flex flex-wrap items-center gap-6">
-          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-700 ease-in-out hover:scale-110 flex-shrink-0 flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
+          <div class="w-40 h-16 bg-lotus-white rounded-lg shadow-airbnb transition-all duration-700 ease-in-out hover:scale-110 shrink-0 flex items-center justify-center text-xs text-near-black cursor-pointer font-medium">
             <span class="break-words">䷀ 700ms image zoom</span>
           </div>
           <span class="text-xs font-mono text-secondary-gray break-words">Transición 700ms — zoom de imagen al hover</span>
