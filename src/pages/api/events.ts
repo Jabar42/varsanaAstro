@@ -1,48 +1,83 @@
 import type { APIRoute } from "astro";
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+// ─── Constantes ────────────────────────────────────────────────────────────────
+
+const MAX_EVENTS = 5;
+
+const JSON_HEADERS: HeadersInit = {
+  "Content-Type": "application/json",
+  // Reemplaza "*" por tu dominio si la API no es pública
+  "Access-Control-Allow-Origin": "*",
+};
+
+// ─── Tipos ─────────────────────────────────────────────────────────────────────
+
+interface EventData {
+  event_start: string;
+  body?: string;
+  [key: string]: unknown;
+}
+
+type EventEntry = CollectionEntry<"events"> & { data: EventData };
+
+// ─── Helpers ───────────────────────────────────────────────────────────────────
+
+function isFutureEvent(entry: EventEntry, now: Date): boolean {
+  const start = entry.data.event_start;
+  return !!start && new Date(start) > now;
+}
+
+function sortByDate(a: EventEntry, b: EventEntry): number {
+  return (
+    new Date(a.data.event_start).getTime() -
+    new Date(b.data.event_start).getTime()
+  );
+}
+
+function toListItem(entry: EventEntry): Omit<EventData, "body"> & { slug: string } {
+  const { body: _body, ...data } = entry.data;
+  return { slug: entry.id, ...data };
+}
+
+function jsonResponse(payload: unknown, status: number): Response {
+  return new Response(JSON.stringify(payload), {
+    status,
+    headers: JSON_HEADERS,
+  });
+}
+
+// ─── Endpoint ──────────────────────────────────────────────────────────────────
 
 export const prerender = false;
 
 export const GET: APIRoute = async ({ request }) => {
-  const url = new URL(request.url);
-  const slug = url.searchParams.get("slug");
+  try {
+    const slug = new URL(request.url).searchParams.get("slug");
+    const entries = (await getCollection("events")) as EventEntry[];
+    const now = new Date();
 
-  const entries = await getCollection("events");
+    const upcoming = entries
+      .filter((e) => isFutureEvent(e, now))
+      .sort(sortByDate);
 
-  // Filtrar eventos futuros, ordenar por fecha
-  const now = new Date();
-  const upcoming = entries
-    .filter((e) => {
-      const start = (e.data as any).event_start;
-      return start && new Date(start) > now;
-    })
-    .sort(
-      (a, b) =>
-        new Date((a.data as any).event_start).getTime() -
-        new Date((b.data as any).event_start).getTime(),
-    );
+    // Detalle de un evento específico
+    if (slug) {
+      const entry = upcoming.find((e) => e.id === slug);
 
-  if (slug) {
-    const entry = upcoming.find((e) => e.id === slug);
-    if (!entry) {
-      return new Response(JSON.stringify({ error: "not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-      });
+      if (!entry) {
+        return jsonResponse({ error: "Evento no encontrado" }, 404);
+      }
+
+      return jsonResponse({ slug: entry.id, ...entry.data }, 200);
     }
-    return new Response(JSON.stringify({ slug: entry.id, ...entry.data }), {
-      status: 200,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-    });
+
+    // Listado de próximos eventos (sin body)
+    const list = upcoming.slice(0, MAX_EVENTS).map(toListItem);
+    return jsonResponse(list, 200);
+
+  } catch (err) {
+    console.error("[GET /api/events]", err);
+    return jsonResponse({ error: "Error interno del servidor" }, 500);
   }
-
-  const list = upcoming.slice(0, 5).map((e) => {
-    const { body, ...data } = e.data as any;
-    return { slug: e.id, ...data };
-  });
-
-  return new Response(JSON.stringify(list), {
-    status: 200,
-    headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-  });
 };
