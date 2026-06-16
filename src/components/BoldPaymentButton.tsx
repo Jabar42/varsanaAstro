@@ -201,7 +201,7 @@ export default function BoldPaymentButton({
       });
 
       if (!response.ok) {
-        const errBody = await response.json().catch(() => ({ error: 'Error del servidor' }));
+        const errBody = (await response.json().catch(() => ({ error: 'Error del servidor' }))) as { error?: string };
         throw new Error(errBody.error || `HTTP ${response.status}`);
       }
 

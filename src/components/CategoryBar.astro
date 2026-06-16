@@ -98,12 +98,12 @@ function menuItemClass(href: string) {
                 : 'border-transparent opacity-60'
             }`}
           >
-            <item.icon class={iconClasses} strokeWidth={1.5} />
-            <span class={`${labelClasses} inline-flex items-center gap-0.5`}>{item.name}<ChevronDown class="size-3" strokeWidth={1.5} /></span>
+            <item.icon className={iconClasses} strokeWidth={1.5} />
+            <span class={`${labelClasses} inline-flex items-center gap-0.5`}>{item.name}<ChevronDown className="size-3" strokeWidth={1.5} /></span>
           </button>
           <div
             data-dropdown-menu
-            class="hidden absolute top-full left-0 mt-1 bg-lotus-white border border-sacred-sand rounded-lg shadow-airbnb py-1 min-w-[140px] z-50"
+            class="hidden absolute top-full left-0 mt-1 bg-lotus-white border border-sacred-sand rounded-lg shadow-airbnb py-1 min-w-35 z-50"
             role="menu"
           >
             {item.children.map((child) => (
@@ -122,7 +122,7 @@ function menuItemClass(href: string) {
               : 'border-transparent opacity-60'
           }`}
         >
-          <item.icon class={iconClasses} strokeWidth={1.5} />
+          <item.icon className={iconClasses} strokeWidth={1.5} />
           <span class={labelClasses}>{item.name}</span>
         </a>
       )
@@ -136,12 +136,12 @@ function menuItemClass(href: string) {
         aria-haspopup="true"
         class={`${triggerBase} border-transparent opacity-60`}
       >
-        <Menu class={iconClasses} strokeWidth={1.5} />
+        <Menu className={iconClasses} strokeWidth={1.5} />
         <span class={labelClasses}>{t('nav.menu')}</span>
       </button>
       <div
         data-dropdown-menu
-        class="hidden absolute top-full right-0 mt-1 bg-lotus-white border border-sacred-sand rounded-lg shadow-airbnb py-1 min-w-[140px] z-50"
+        class="hidden absolute top-full right-0 mt-1 bg-lotus-white border border-sacred-sand rounded-lg shadow-airbnb py-1 min-w-35 z-50"
         role="menu"
       >
         {mobileOverflow.map((item) => (
@@ -169,12 +169,12 @@ function menuItemClass(href: string) {
                 : 'border-transparent opacity-60 hover:opacity-100 hover:border-saffron'
             }`}
           >
-            <item.icon class={iconClasses} strokeWidth={1.5} />
-            <span class={`${labelClasses} inline-flex items-center gap-0.5`}>{item.name}<ChevronDown class="size-3" strokeWidth={1.5} /></span>
+            <item.icon className={iconClasses} strokeWidth={1.5} />
+            <span class={`${labelClasses} inline-flex items-center gap-0.5`}>{item.name}<ChevronDown className="size-3" strokeWidth={1.5} /></span>
           </button>
           <div
             data-dropdown-menu
-            class="hidden absolute top-full left-0 mt-1 bg-lotus-white border border-sacred-sand rounded-lg shadow-airbnb py-1 min-w-[160px] z-50"
+            class="hidden absolute top-full left-0 mt-1 bg-lotus-white border border-sacred-sand rounded-lg shadow-airbnb py-1 min-w-40 z-50"
             role="menu"
           >
             {item.children.map((child) => (
@@ -193,7 +193,7 @@ function menuItemClass(href: string) {
               : 'border-transparent opacity-60 hover:opacity-100 hover:border-saffron'
           }`}
         >
-          <item.icon class={iconClasses} strokeWidth={1.5} />
+          <item.icon className={iconClasses} strokeWidth={1.5} />
           <span class={labelClasses}>{item.name}</span>
         </a>
       )
@@ -202,7 +202,7 @@ function menuItemClass(href: string) {
 </nav>
 
 <script>
-  function toggleDropdown(trigger, menu) {
+  function toggleDropdown(trigger: Element, menu: Element) {
     const isHidden = menu.classList.contains('hidden');
     if (isHidden) {
       closeAllDropdowns();
@@ -225,7 +225,7 @@ function menuItemClass(href: string) {
   }
 
   document.addEventListener('click', (e) => {
-    const trigger = e.target.closest('[data-dropdown-trigger]');
+    const trigger = (e.target as Element | null)?.closest('[data-dropdown-trigger]');
     if (trigger) {
       const menu = trigger.nextElementSibling;
       if (menu) toggleDropdown(trigger, menu);
@@ -240,7 +240,7 @@ function menuItemClass(href: string) {
       return;
     }
     if (e.key === 'Enter' || e.key === ' ') {
-      const trigger = e.target.closest('[data-dropdown-trigger]');
+      const trigger = (e.target as Element | null)?.closest('[data-dropdown-trigger]');
       if (trigger) {
         e.preventDefault();
         const menu = trigger.nextElementSibling;
