@@ -1,12 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "compatibility_date": "2026-06-08",
-  "compatibility_flags": ["nodejs_compat"],
   "name": "varsana-co",
   "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-06-15",
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
-    "directory": "dist/client",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "directory": "./dist"
   },
   "observability": {
     "enabled": true
