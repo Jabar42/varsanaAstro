@@ -81,6 +81,17 @@ export interface TranslationDict {
     subtitle: string;
     noMembers: string;
     backHome: string;
+    storyTitle: string;
+    storyText: string;
+    storyCta: string;
+    storyImageAlt: string;
+    practiceTitle: string;
+    practiceText: string;
+    practiceCta: string;
+    practiceImageAlt: string;
+    sustainabilityTitle: string;
+    sustainabilityText: string;
+    sustainabilityImageAlt: string;
   };
   hospedaje: {
     title: string;
@@ -378,6 +389,17 @@ export const translations: Record<Locale, TranslationDict> = {
       subtitle: 'Conoce a las personas que hacen posible Varsana Eco Yoga Aldea.',
       noMembers: 'No hay miembros activos en este momento.',
       backHome: 'Volver al inicio',
+      storyTitle: 'Espacio de vida consciente donde convergen la espiritualidad, la naturaleza y la comunidad',
+      storyText: 'Varsana es un santuario de conciencia ubicado en la puerta del Sumapaz, creado para reconectar con la naturaleza, la espiritualidad y la vida en comunidad. Desde 1980, este territorio reúne prácticas como yoga, meditación, permacultura, alimentación consciente y experiencias de descanso interior en un entorno natural y ancestral.',
+      storyCta: 'Conoce nuestra historia',
+      storyImageAlt: 'Paisaje de Varsana Eco Yoga Aldea en Granada, Cundinamarca',
+      practiceTitle: 'Práctica espiritual',
+      practiceText: 'La vida en la ecoaldea está guiada por una práctica espiritual basada en la tradición védica. La meditación, el canto de mantras y el servicio consciente hacen parte del día a día.',
+      practiceCta: 'Explora más',
+      practiceImageAlt: 'Práctica espiritual en Varsana Eco Yoga Aldea',
+      sustainabilityTitle: 'Varsana es también un proyecto de sostenibilidad',
+      sustainabilityText: 'A través de la huerta orgánica, el consumo consciente y el trabajo comunitario, se construye una forma de habitar el territorio en equilibrio. Además, genera impacto en la comunidad local mediante educación, empleo y prácticas regenerativas.',
+      sustainabilityImageAlt: 'Proyecto de sostenibilidad en Varsana Eco Yoga Aldea',
     },
     hospedaje: {
       title: 'Hospedaje Ecológico | Varsana Eco Yoga Aldea',
@@ -845,6 +867,17 @@ export const translations: Record<Locale, TranslationDict> = {
       subtitle: 'Meet the people who make Varsana Eco Yoga Aldea possible.',
       noMembers: 'No active members at this time.',
       backHome: 'Back to home',
+      storyTitle: 'A conscious living space where spirituality, nature, and community converge',
+      storyText: 'Varsana is a sanctuary of consciousness located at the gateway to Sumapaz, created to reconnect with nature, spirituality, and community life. Since 1980, this territory has brought together practices such as yoga, meditation, permaculture, conscious eating, and inner rest experiences in a natural and ancestral environment.',
+      storyCta: 'Learn our story',
+      storyImageAlt: 'Landscape of Varsana Eco Yoga Aldea in Granada, Cundinamarca',
+      practiceTitle: 'Spiritual practice',
+      practiceText: 'Life in the eco-village is guided by a spiritual practice rooted in the Vedic tradition. Meditation, mantra chanting, and conscious service are part of everyday life.',
+      practiceCta: 'Explore more',
+      practiceImageAlt: 'Spiritual practice at Varsana Eco Yoga Aldea',
+      sustainabilityTitle: 'Varsana is also a sustainability project',
+      sustainabilityText: 'Through organic farming, conscious consumption, and community work, a balanced way of inhabiting the land is built. It also generates impact in the local community through education, employment, and regenerative practices.',
+      sustainabilityImageAlt: 'Sustainability project at Varsana Eco Yoga Aldea',
     },
     hospedaje: {
       title: 'Eco-Lodging | Varsana Eco Yoga Aldea',

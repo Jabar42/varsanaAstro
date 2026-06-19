@@ -2,9 +2,9 @@
 
 import Layout from '@/src/layouts/Layout.astro';
 import HeroBanner from '@/src/components/HeroBanner.astro';
+import SplitSection from '@/src/components/SplitSection.astro';
 import EventCard from '@/src/components/EventCard.astro';
 import { ArrowUpRight } from 'lucide-react';
-import { YouTube } from 'astro-embed';
 import { getUpcomingEvents } from '@/src/lib/events';
 import { getFeaturedItems } from '@/src/lib/slider';
 import { useTranslations } from '@/src/i18n/utils';
@@ -21,8 +21,6 @@ const featuredItems = await getFeaturedItems({
   collections: ['events', 'pasadias'],
   locale,
 });
-
-const aboutVideoUrl = "https://www.youtube.com/watch?v=2TXMwJ7FHgY";
 
 const discoveryCards = [
   { title: 'Temazcal', slug: 'temazcal' },
@@ -141,64 +139,32 @@ const discoveryCards = [
     </section>
 
     <!-- About Video Section -->
-    <section class="py-20 md:py-28">
-      <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-        <!-- Video -->
-        <div class="w-full lg:w-7/12 bg-white rounded-[32px] shadow-airbnb p-3 hover:scale-[1.02] transition-all duration-700 ease-in-out">
-          <div class="aspect-video rounded-2xl overflow-hidden">
-            <YouTube id={aboutVideoUrl} />
-          </div>
-        </div>
+    <SplitSection
+      title={t('home.aboutTitle')}
+      description={t('home.aboutText')}
+      ctaLabel={t('home.aboutCta')}
+      ctaUrl={l('/nosotros')}
+      videoUrl="https://www.youtube.com/watch?v=2TXMwJ7FHgY"
+      imageAlt="Video sobre Varsana Eco Yoga Aldea"
+      reversed
+    />
 
-        <!-- Text -->
-        <div class="w-full lg:w-5/12 space-y-6 lg:space-y-8">
-          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display text-near-black leading-tight">
-            {t('home.aboutTitle')}
-          </h2>
-          <p class="text-lg text-gray-500 leading-relaxed max-w-lg">
-            {t('home.aboutText')}
-          </p>
-          <a
-            href={l('/nosotros')}
-            class="inline-block bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark transition-all duration-300 hover:scale-105"
-          >
-            {t('home.aboutCta')}
-          </a>
-        </div>
-      </div>
-    </section>
+  </main>
 
-    <!-- Huerta Split Banner -->
-    <section class="-mx-6 md:-mx-12 lg:-mx-20">
-      <div class="grid grid-cols-1 lg:grid-cols-2">
-        <!-- Text Panel -->
-        <div class="bg-forest/10 px-6 md:px-12 lg:px-20 py-16 lg:py-20 flex items-center">
-          <div class="space-y-6 max-w-lg">
-            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display text-near-black leading-tight">
-              {t('home.huertaTitlePart1')}<br />{t('home.huertaTitlePart2')}
-            </h2>
-            <p class="text-secondary-gray text-lg leading-relaxed">
-              {t('home.huertaText')}
-            </p>
-            <a
-              href={l('/huerta')}
-              class="inline-block bg-forest text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-forest-dark transition-all duration-300 hover:scale-105"
-            >
-              {t('home.huertaCta')}
-            </a>
-          </div>
-        </div>
+  <!-- Huerta Split Banner -->
+  <SplitSection
+    title={t('home.huertaTitle')}
+    description={t('home.huertaText')}
+    ctaLabel={t('home.huertaCta')}
+    ctaUrl={l('/huerta')}
+    imageSrc="https://picsum.photos/seed/huerta/1200/900"
+    imageAlt="Huerta orgánica de Varsana"
+    background="bg-forest/10"
+    ctaVariant="forest"
+    reversed
+  />
 
-        <!-- Image Panel -->
-        <div class="aspect-4/3 lg:aspect-auto lg:min-h-125 overflow-hidden">
-          <img
-            src="https://picsum.photos/seed/huerta/1200/900"
-            alt="Huerta orgánica de Varsana"
-            class="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-    </section>
+  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pb-8">
 
     <!-- Photo Gallery Section -->
 
