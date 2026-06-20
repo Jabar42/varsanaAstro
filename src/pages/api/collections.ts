@@ -1,5 +1,6 @@
 // src/pages/api/collections.ts
 import type { APIRoute } from "astro";
+import { getCollection } from "astro:content";
 
 // ─── Constantes ────────────────────────────────────────────────────────────────
 
@@ -12,21 +13,9 @@ const INTERNAL_PREFIX = "meta::";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
-/**
- * Extrae los nombres de las colecciones desde el data store serializado
- * que Astro genera en el build. No usa content.config.ts (evita dependencias
- * de Node.js que no funcionan en Cloudflare Workers).
- *
- * El data store se serializa como array plano con formato:
- *   ["Map", keyIdx1, valIdx1, ...], "colName1", [...], "colName2", [...]
- *
- * Las claves de nivel superior cuyos índices aparecen en las posiciones
- * impares del header (después de "Map") son los nombres de colección.
- */
 function extractCollectionNames(data: any[]): string[] {
   const header = data?.[0];
   if (!Array.isArray(header) || header[0] !== "Map") return [];
-
   const names: string[] = [];
   for (let i = 1; i < header.length; i += 2) {
     const keyIndex = header[i] as number;
@@ -39,10 +28,24 @@ function extractCollectionNames(data: any[]): string[] {
 }
 
 function getEndpoints(name: string): Record<string, string> {
-  return {
-    list:   `/api/${name}`,
-    detail: `/api/${name}?slug={slug}`,
-  };
+  return { list: `/api/${name}`, detail: `/api/${name}?slug={slug}` };
+}
+
+/** Infiere tipos de campos desde los datos reales de la primera entrada. */
+function inferFields(entry: any): Record<string, string> {
+  const fields: Record<string, string> = {};
+  if (!entry?.data) return fields;
+  const { body, slug, ...data } = entry.data;
+  for (const [key, value] of Object.entries(data)) {
+    const t = typeof value;
+    if (t === "string") fields[key] = "string";
+    else if (t === "number") fields[key] = "number";
+    else if (t === "boolean") fields[key] = "boolean";
+    else if (Array.isArray(value)) fields[key] = "array";
+    else if (value instanceof Date) fields[key] = "date";
+    else if (t === "object" && value !== null) fields[key] = "object";
+  }
+  return fields;
 }
 
 // ─── Endpoint ──────────────────────────────────────────────────────────────────
@@ -51,22 +54,17 @@ export const prerender = false;
 
 export const GET: APIRoute = async () => {
   try {
-    // Importamos el data store que Astro genera en el build — solo contiene
-    // datos serializados, sin dependencias de Node.js (a diferencia de
-    // content.config.ts que importa astro/loaders → glob → createRequire).
     const data = (await import("astro:data-layer-content")).default;
-
     const names = extractCollectionNames(data);
 
-    const result = Object.fromEntries(
-      names.map((name) => [
-        name,
-        {
-          fields: {}, // Los esquemas Zod no están disponibles en runtime en Workers
-          endpoints: getEndpoints(name),
-        },
-      ])
-    );
+    const result: Record<string, any> = {};
+    for (const name of names) {
+      const entries = await getCollection(name as any);
+      result[name] = {
+        fields: entries.length > 0 ? inferFields(entries[0]) : {},
+        endpoints: getEndpoints(name),
+      };
+    }
 
     return new Response(JSON.stringify(result, null, 2), {
       status: 200,
