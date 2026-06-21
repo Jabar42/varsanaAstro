@@ -85,6 +85,26 @@ export async function getFeaturedItems(
     }
   }
 
+  if (collections.includes('blog')) {
+    const all = await getCollection('blog');
+    const localePosts = all.filter(p => (p.data.locale ?? 'es') === locale);
+    const sourcePosts = localePosts.length > 0 ? localePosts : all.filter(p => (p.data.locale ?? 'es') === 'es');
+    for (const entry of sourcePosts) {
+      if (!entry.data.destacado) continue;
+
+      items.push({
+        collection: 'blog',
+        slug: entry.id,
+        image: entry.data.image,
+        title: entry.data.title,
+        description: entry.data.description,
+        url: `/blog/${entry.id}`,
+        ctaLabel: 'Leer',
+        _orden: entry.data.orden ?? 0,
+      });
+    }
+  }
+
   items.sort((a, b) => {
     if (a._orden !== b._orden) return a._orden - b._orden;
     if (a.date && b.date) return a.date.getTime() - b.date.getTime();

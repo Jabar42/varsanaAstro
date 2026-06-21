@@ -281,6 +281,12 @@ export interface TranslationDict {
     namePlaceholder: string;
     phonePlaceholder: string;
   };
+  blog: {
+    heading: string;
+    subtitle: string;
+    noPosts: string;
+    backHome: string;
+  };
   footer: {
     tagline: string;
     community: string;
@@ -711,7 +717,7 @@ export const translations: Record<Locale, TranslationDict> = {
           heading: 'Más',
           links: [
             { label: 'Donar', description: 'Apoya la misión de Varsana con tu contribución' },
-            { label: 'Blog', description: 'Historias, sabiduría y noticias de la comunidad — próximamente' },
+            { label: 'Blog', description: 'Historias, sabiduría y noticias de la comunidad' },
             { label: 'Design System', description: 'Guía de diseño para desarrolladores y colaboradores' },
           ],
         },
@@ -759,6 +765,12 @@ export const translations: Record<Locale, TranslationDict> = {
       emailPlaceholder: 'Correo electrónico *',
       namePlaceholder: 'Nombre completo *',
       phonePlaceholder: 'Teléfono (opcional)',
+    },
+    blog: {
+      heading: 'Blog de Varsana',
+      subtitle: 'Historias, sabiduría y noticias de nuestra comunidad consciente.',
+      noPosts: 'No hay artículos publicados por ahora.',
+      backHome: 'Volver al inicio',
     },
     footer: {
       tagline: 'Eco Yoga Aldea — bienestar, conciencia y conexión espiritual en Granada, Cundinamarca.',
@@ -1189,7 +1201,7 @@ export const translations: Record<Locale, TranslationDict> = {
           heading: 'More',
           links: [
             { label: 'Donate', description: 'Support Varsana\'s mission with your contribution' },
-            { label: 'Blog', description: 'Stories, wisdom, and community news — coming soon' },
+            { label: 'Blog', description: 'Stories, wisdom, and community news' },
             { label: 'Design System', description: 'Design guide for developers and collaborators' },
           ],
         },
@@ -1237,6 +1249,12 @@ export const translations: Record<Locale, TranslationDict> = {
       emailPlaceholder: 'Email *',
       namePlaceholder: 'Full name *',
       phonePlaceholder: 'Phone (optional)',
+    },
+    blog: {
+      heading: 'Varsana Blog',
+      subtitle: 'Stories, wisdom, and news from our conscious community.',
+      noPosts: 'No articles published yet.',
+      backHome: 'Back to home',
     },
     footer: {
       tagline: 'Eco Yoga Village — well-being, consciousness, and spiritual connection in Granada, Cundinamarca.',

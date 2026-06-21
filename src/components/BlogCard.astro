@@ -1,0 +1,66 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
+
+interface Props {
+  title: string;
+  description: string;
+  image: string;
+  date: Date;
+  author: string;
+  tags?: string[];
+  slug: string;
+}
+
+const { title, description, image, date, author, tags = [], slug } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('es-ES', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
+---
+
+<a href={l(`/blog/${slug}`)} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
+  <div class="aspect-16/10 overflow-hidden relative">
+    <img
+      src={image}
+      alt={title}
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      referrerpolicy="no-referrer"
+    />
+  </div>
+
+  <div class="p-6 flex flex-col grow space-y-3">
+    <div class="space-y-1">
+      <div class="flex items-center gap-3 text-sm text-gray-500">
+        <p class="text-saffron font-semibold uppercase tracking-wider text-xs">{formattedDate}</p>
+        <span>·</span>
+        <p>{author}</p>
+      </div>
+      <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{title}</h3>
+    </div>
+
+    <p class="text-gray-600 line-clamp-2 text-sm leading-relaxed">
+      {description}
+    </p>
+
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-2 pt-2 mt-auto">
+        {tags.slice(0, 3).map((tag) => (
+          <span class="bg-sacred-sand text-rausch text-xs px-3 py-1 rounded-full font-medium">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+  </div>
+</a>
+
+<style>
+  h3 {
+    letter-spacing: -0.02em;
+  }
+</style>

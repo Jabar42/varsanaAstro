@@ -61,6 +61,18 @@ const pasadiasCollection = defineCollection({
   })),
 });
 
+const blogCollection = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.mdoc', base: './src/content/blog' }),
+  schema: localizableSchema.merge(destacableSchema).merge(z.object({
+    title: titleSchema,
+    description: z.string(),
+    image: z.string(),
+    date: z.date(),
+    author: z.string(),
+    tags: z.array(z.string()).optional().default([]),
+  })),
+});
+
 const nosotrosCollection = defineCollection({
   loader: glob({ pattern: '**/[^_]*.mdoc', base: './src/content/nosotros' }),
   schema: localizableSchema.merge(z.object({
@@ -85,4 +97,5 @@ export const collections = {
   events: eventsCollection,
   pasadias: pasadiasCollection,
   nosotros: nosotrosCollection,
+  blog: blogCollection,
 };
