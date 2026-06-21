@@ -1,6 +1,7 @@
 ---
 
 import Layout from '@/src/layouts/Layout.astro';
+import PageBanner from '@/src/components/PageBanner.astro';
 import EventCard from '@/src/components/EventCard.astro';
 import { getUpcomingEvents } from '@/src/lib/events';
 import { useTranslations } from '@/src/i18n/utils';
@@ -13,13 +14,17 @@ const upcomingEvents = await getUpcomingEvents(locale);
 
 <Layout title="Calendario de Eventos | Varsana Eco Yoga Aldea">
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-16">
-    <div class="mb-12">
-      <h1 class="text-5xl font-bold tracking-tightest mb-4">{t('events.heading')}</h1>
-      <p class="text-gray-500 text-xl">{t('events.subtitle')}</p>
-    </div>
-    
+    <PageBanner
+      title={t('events.heading')}
+      subtitle={t('events.subtitle')}
+      breadcrumb={[
+        { label: 'Inicio', url: '/' },
+        { label: t('nav.events'), url: '/events' },
+      ]}
+    />
+
     {upcomingEvents.length > 0 ? (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 mt-12">
         {upcomingEvents.map((event) => (
           <EventCard {...event.data} slug={event.id} />
         ))}

@@ -1,6 +1,7 @@
 ---
 
 import Layout from '@/src/layouts/Layout.astro';
+import PageBanner from '@/src/components/PageBanner.astro';
 import {
   Send,
   MessageCircle,
@@ -18,22 +19,19 @@ import {
 <Layout title="Contacto | Varsana Eco Yoga Aldea">
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12">
-    <!-- Hero -->
-    <section class="mb-20 text-center max-w-3xl mx-auto">
-      <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold mb-6">
-        <Send size={16} />
-        <span>Contáctanos</span>
-      </div>
-      <h1 class="text-4xl md:text-6xl font-bold tracking-tightest leading-tight mb-6">
-        Estamos aquí para ti
-      </h1>
-      <p class="text-secondary-gray text-xl leading-relaxed">
-        Escríbenos, llámanos o visítanos. Queremos acompañarte en tu camino hacia una experiencia de bienestar, naturaleza y espiritualidad en Varsana.
-      </p>
-    </section>
+    <!-- Page Banner -->
+    <PageBanner
+      title="Estamos aquí para ti"
+      subtitle="Escríbenos, llámanos o visítanos. Queremos acompañarte en tu camino hacia una experiencia de bienestar, naturaleza y espiritualidad en Varsana."
+      badge="Contáctanos"
+      breadcrumb={[
+        { label: 'Inicio', url: '/' },
+        { label: 'Contacto', url: '/contacto' },
+      ]}
+    />
 
     <!-- Contact Info Cards -->
-    <section class="mb-24 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <section class="mt-8 mb-24 grid grid-cols-1 md:grid-cols-3 gap-8">
       <!-- WhatsApp -->
       <a
         href="https://wa.me/573214538242"
