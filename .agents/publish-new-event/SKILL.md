@@ -12,7 +12,7 @@ Events in this Astro project are managed through **content collections**. Each e
 - Generates a dedicated detail page for each event at `/events/[slug]`, where the URL is derived from the entry ID (the filename without extension).
 - Selects the currently active price based on deadlines (if any) via `getCurrentPrice`.
 
-The frontmatter schema is defined in `src/content.config.ts` and includes `id`, `title`, `description`, `event_start`, `event_end` (optional), `image`, `stock_max`, and an array of `prices`.
+The frontmatter schema is defined in `src/content.config.ts` and includes `title`, `description`, `event_start`, `event_end` (optional), `image`, `stock_max`, and an array of `prices`.
 
 ## Step‑by‑Step Instructions
 
@@ -27,13 +27,12 @@ For minimal and complete examples, see [Examples](references/examples.md).
 ### Automatic inclusion in the upcoming events list
 The helper `getUpcomingEvents` (in `src/lib/events.ts`) fetches all events, filters out past dates, and sorts them chronologically. Your new event will appear on the main events page (`/events`) as soon as the site is rebuilt.
 
-### Event identification (`id` vs filename)
-Each event has a unique `id` field in its frontmatter, but the **entry ID** (filename without extension) is what Astro uses for routing (`/events/[entry-id]`) and for payment order references. The frontmatter `id` is a persistent human-readable identifier that should match the filename for consistency, but the system uses the **filename** as the canonical key.
+### Event identification (filename = slug = entry ID)
+The **filename** (without `.mdoc` extension) serves as the canonical identifier — it determines the URL slug (`/events/<filename>`), the API slug (`?slug=<filename>`), and the `content_id` used by payment orders. There is no separate `id` in the frontmatter.
 
-- The URL path is derived from the **filename**, not the frontmatter `id`. Example: `retiro-silencio.md` → `/events/retiro-silencio`.
-- Payment orders reference events by their **entry ID** (filename), not the frontmatter `id`.
-- Keep the frontmatter `id` identical to the filename (without extension) to avoid confusion.
-- Choose both carefully — once published and linked to payment records, changing the filename would break associations.
+- The URL path is derived from the **filename**. Example: `retiro-silencio.mdoc` → `/events/retiro-silencio`.
+- Payment orders reference events by their **entry ID** (filename without extension).
+- Choose the filename carefully — once published and linked to payment records, renaming it would break associations.
 
 ### Stock management (`stock_max`)
 The `stock_max` field defines the maximum capacity (number of available spots) for the event. This value will be used to control reservations and prevent overbooking when the payment gateway is integrated.

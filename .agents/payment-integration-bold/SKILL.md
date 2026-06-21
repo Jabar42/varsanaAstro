@@ -43,7 +43,7 @@ User clicks "Pagar" → BoldPaymentButton (React) → POST /api/checkout → sig
 | `id` | `uuid` PK | Auto-generated |
 | `bold_order_id` | `text` UNIQUE | Bold's order ID, used for webhook idempotency |
 | `content_type` | `text` | `'event'` or `'pasadia'` |
-| `content_id` | `text` | Matches Markdown frontmatter `id` field |
+| `content_id` | `text` | Matches the Astro entry ID (filename slug, e.g. `retiro-yoga-fin-de-semana`) |
 | `customer_email` | `text` | Collected via Bold form |
 | `customer_name` | `text` | Collected via Bold form |
 | `amount` | `integer` | Price in COP (no decimals) |
@@ -58,7 +58,7 @@ User clicks "Pagar" → BoldPaymentButton (React) → POST /api/checkout → sig
 |--------|------|-------|
 | `id` | `uuid` PK | Auto-generated |
 | `content_type` | `text` | `'event'` or `'pasadia'` |
-| `content_id` | `text` | Matches frontmatter `id` |
+| `content_id` | `text` | Matches the Astro entry ID (filename slug) |
 | `stock_max` | `integer` | Maximum capacity |
 | `stock_reserved` | `integer` | Currently reserved (paid + pending) |
 

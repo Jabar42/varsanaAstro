@@ -1,16 +1,14 @@
 ## Step‑by‑Step Instructions
 
 ### 1. Choose a filename
-- Create a new `.md` file inside `src/content/events/`.
-- The filename determines the entry ID (used as the URL slug and as the key for payment records). Use kebab‑case, lowercase, and avoid special characters.
-- Set the frontmatter `id` field to match the filename (without extension) for consistency.
+- Create a new `.mdoc` file inside `src/content/events/`.
+- The filename (without `.mdoc`) determines the entry ID — used as the URL slug (`/events/<slug>`), the API slug (`?slug=<slug>`), and the key for payment records. Use kebab‑case, lowercase, and avoid special characters.
 
 ### 2. Required frontmatter fields
 Every event must include the following frontmatter fields:
 
 ```yaml
 ---
-id: "my-event-id"
 title: "Event Title"
 description: "A short, compelling description for SEO and cards."
 event_start: YYYY-MM-DD
@@ -26,7 +24,6 @@ prices:
 ```
 
 #### Field details
-- **`id`** (string): A unique, persistent identifier for the event. Should match the filename (without extension) for consistency. The URL path for the event's detail page is derived from the **filename** (e.g., `retiro-silencio.md` → `/events/retiro-silencio`). Payment orders also reference the filename, not the frontmatter `id`.
 - **`title`** (string): The event's display name. Must be in **sentence case** (only the first letter capitalized; e.g., `"Retiro de silencio y meditación"`). Do **not** use ALL CAPS or emoji characters.
 - **`description`** (string): A one‑ or two‑sentence summary used in meta tags and cards.
 - **`event_start`** (date, required): The start date of the event in `YYYY‑MM‑DD` format.
