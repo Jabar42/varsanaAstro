@@ -75,10 +75,22 @@ El bucket es plano (no tiene carpetas). El nombre del archivo incluye un timesta
 
 ### Conversion a WebP
 
-```bash
-# Desde JPG/PNG — calidad 75 (equilibrio calidad/peso)
-cwebp -q 75 imagen.jpg -o imagen.webp
+Dos opciones. Cualquiera funciona:
 
-# Verificar peso (debe ser < 150 KB)
-ls -lh imagen.webp
+**Opción A — `cwebp` (mas liviano, instalar con `sudo dnf install libwebp-tools`):**
+```bash
+cwebp -q 75 imagen.jpg -o imagen.webp
+```
+
+**Opción B — ImageMagick (viene preinstalado en Fedora):**
+```bash
+convert imagen.jpg -quality 75 imagen.webp
+# o si convert esta deprecado:
+magick imagen.jpg -quality 75 imagen.webp
+```
+
+**Verificar:**
+```bash
+file imagen.webp   # debe decir: Web/P image
+ls -lh imagen.webp  # debe ser < 150 KB
 ```
