@@ -3,7 +3,6 @@
 ### Minimal frontmatter
 ```yaml
 ---
-id: "taller-mindfulness"
 title: "Taller de Mindfulness"
 description: "Aprende técnicas de atención plena en un entorno natural."
 event_start: 2026-05-10
@@ -18,7 +17,6 @@ prices:
 ### Complete example (frontmatter + body)
 ```markdown
 ---
-id: "retiro-silencio"
 title: "Retiro de Silencio"
 description: "Un fin de semana de introspección y reconexión en completo silencio."
 event_start: 2026-06-15
