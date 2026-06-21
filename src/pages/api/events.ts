@@ -69,7 +69,7 @@ export const GET: APIRoute = async ({ request }) => {
         return jsonResponse({ error: "Evento no encontrado" }, 404);
       }
 
-      return jsonResponse({ slug: entry.id, ...entry.data }, 200);
+      return jsonResponse({ slug: entry.id, ...entry.data, body: entry.body }, 200);
     }
 
     // Listado de próximos eventos (sin body)

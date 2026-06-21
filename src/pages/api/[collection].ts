@@ -38,7 +38,7 @@ export const GET: APIRoute = async ({ params, request }) => {
         return jsonResponse({ error: "Registro no encontrado" }, 404);
       }
 
-      return jsonResponse({ slug: entry.id, ...entry.data }, 200);
+      return jsonResponse({ slug: entry.id, ...entry.data, body: entry.body }, 200);
     }
 
     // Lista sin body, máximo MAX_ITEMS
