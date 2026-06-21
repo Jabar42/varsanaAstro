@@ -1,6 +1,7 @@
 
 export default new Map([
 ["src/content/blog/bienvenidos-a-varsana.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fbienvenidos-a-varsana.mdoc&astroContentModuleFlag=true")],
+["src/content/blog/museo-srila-prabhupada.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fmuseo-srila-prabhupada.mdoc&astroContentModuleFlag=true")],
 ["src/content/events/amanecer-entre-nubes.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fevents%2Famanecer-entre-nubes.mdoc&astroContentModuleFlag=true")],
 ["src/content/events/retiro-yoga-fin-de-semana.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fevents%2Fretiro-yoga-fin-de-semana.mdoc&astroContentModuleFlag=true")],
 ["src/content/events/sanacion-sonora-ancestral.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fevents%2Fsanacion-sonora-ancestral.mdoc&astroContentModuleFlag=true")],
