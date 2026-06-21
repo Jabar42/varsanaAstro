@@ -19,10 +19,23 @@ export const ALL: APIRoute = async ({ request, params }) => {
         });
       }
 
-      const uploadKey = `${Date.now()}-${file.name}`;
+      // Validate: WebP only, max 150 KB
+      const MAX_SIZE = 150 * 1024;
+      if (file.type !== "image/webp") {
+        return new Response(JSON.stringify({
+          error: "Solo se aceptan WebP. Convierte: cwebp -q 75 imagen.jpg -o imagen.webp",
+        }), { status: 400 });
+      }
+      if (file.size > MAX_SIZE) {
+        return new Response(JSON.stringify({
+          error: `Imagen de ${(file.size / 1024).toFixed(0)} KB. Maximo: 150 KB. Reduce con cwebp -q 50 o redimensiona.`,
+        }), { status: 400 });
+      }
+
+      const uploadKey = `${Date.now()}-${file.name.replace(/\.(jpe?g|png|gif|avif)$/i, ".webp")}`;
       const buffer = await file.arrayBuffer();
       await bucket.put(uploadKey, buffer, {
-        httpMetadata: { contentType: file.type },
+        httpMetadata: { contentType: "image/webp" },
       });
 
       const imageUrl = `${new URL(request.url).origin}/api/images/${uploadKey}`;

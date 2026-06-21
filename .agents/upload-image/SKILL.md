@@ -19,26 +19,39 @@ Ya no se usa Supabase Storage ni el script `scripts/upload-image.ts`.
 
 ## Instrucciones
 
-### 1. Identificar el contenido
+### 1. Preparar la imagen
 
-Determinar para que contenido es la imagen y cual es su slug.
+Convertir a WebP y verificar que pese menos de 150 KB:
+
+```bash
+# Convertir
+cwebp -q 75 imagen_original.jpg -o imagen.webp
+
+# Verificar formato
+file imagen.webp   # debe decir: Web/P image
+
+# Verificar peso (debe ser < 150 KB)
+ls -lh imagen.webp
+```
+
+Si el peso excede 150 KB, reducir calidad: `cwebp -q 50 ...` o redimensionar: `cwebp -resize 1200 0 -q 75 ...`.
 
 ### 2. Subir via API
 
 ```bash
 curl -X POST https://varsana-co.iaforchange.workers.dev/api/images \
-  -F "file=@ruta/de/la/imagen.jpg"
+  -F "file=@ruta/de/la/imagen.webp"
 ```
 
 Respuesta:
 ```json
-{"ok":true,"url":"https://varsana-co.iaforchange.workers.dev/api/images/1718400000000-imagen.jpg","key":"1718400000000-imagen.jpg"}
+{"ok":true,"url":"https://varsana-co.iaforchange.workers.dev/api/images/1718400000000-imagen.webp","key":"1718400000000-imagen.webp"}
 ```
 
 ### 3. Usar la URL en el frontmatter
 
 ```yaml
-image: "https://varsana-co.iaforchange.workers.dev/api/images/1718400000000-imagen.jpg"
+image: "https://varsana-co.iaforchange.workers.dev/api/images/1718400000000-imagen.webp"
 ```
 
 Cuando el sitio migre a `varsana.co`, reemplazar el dominio.
@@ -56,6 +69,16 @@ El bucket es plano (no tiene carpetas). El nombre del archivo incluye un timesta
 
 ## Formato de imagenes
 
-- Formatos aceptados: JPG, PNG, WebP, AVIF
-- Sin limite de tamano (Cloudflare R2)
-- Cache: inmutable (1 ano), forzar recarga con nuevo upload
+- **Formato obligatorio: WebP**. Usar `cwebp` o ImageMagick para convertir.
+- **Peso maximo: 150 KB**. Optimizar con `cwebp -q 75` o ajustar calidad.
+- Cache: inmutable (1 ano), forzar recarga con nuevo upload.
+
+### Conversion a WebP
+
+```bash
+# Desde JPG/PNG — calidad 75 (equilibrio calidad/peso)
+cwebp -q 75 imagen.jpg -o imagen.webp
+
+# Verificar peso (debe ser < 150 KB)
+ls -lh imagen.webp
+```
