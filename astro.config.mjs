@@ -15,7 +15,7 @@ export default defineConfig({
     locales: ["es", "en"],
     routing: "manual",
   },
-  integrations: [react(), sitemap(), markdoc()],
+  integrations: [react(), sitemap(), markdoc({ allowHTML: true })],
   build: {
     inlineStylesheets: "always",
   },

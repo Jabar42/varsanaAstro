@@ -73,7 +73,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
         )}
 
         <!-- Article Body -->
-        <div class="prose prose-zinc max-w-none text-gray-700 leading-relaxed text-lg">
+        <div class="max-w-none">
           <Content />
         </div>
       </div>
@@ -110,5 +110,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
 <style>
   h1, h2, h3, h4 {
     letter-spacing: -0.02em;
+  }
+  .lead-dropcap::first-letter {
+    float: left;
+    font-family: "Proza Libre", sans-serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    line-height: 0.75;
+    margin-right: 0.5rem;
+    margin-top: 0.25rem;
+    color: var(--color-rausch, #52185b);
   }
 </style>
