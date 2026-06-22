@@ -1,12 +1,24 @@
 ---
 name: event-content-formatting
-description: Provides guidelines for formatting event and pasadía content with HTML tables, spacing, and typography. Use when creating or editing event/pasadía markdown files to ensure consistent styling.
+description: Provides guidelines for formatting event, pasadía, and blog content with HTML + Tailwind typography classes. Use when creating or editing .mdoc files to ensure consistent Varsana brand styling.
 ---
-# Event & Pasadía Content Formatting Guidelines
+# Guía de formato para Events, Pasadías y Blog
 
-This document defines formatting standards for event and pasadía content, ensuring legibility, consistency, and a professional presentation across the Varsana website.
+Este documento define los estándares de formato para el contenido de events, pasadías y blog, usando HTML con clases Tailwind del design system Varsana. `allowHTML: true` está activado en la configuración de Markdoc.
 
-The guidelines are based on the improvements introduced in [`holi‑fest‑2026.md`](../src/content/events/holi-fest-2026.md). Use this file as a reference model.
+## Referencia rápida
+
+| Elemento | Clases clave |
+|----------|-------------|
+| h2 | `text-3xl font-display font-bold tracking-tightest text-near-black mt-14 mb-5` |
+| h3 | `text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4` |
+| Párrafo | `text-secondary-gray text-lg leading-relaxed mb-5` |
+| Lead (1er párrafo) | `text-xl text-near-black leading-relaxed mb-8 font-medium lead-dropcap` |
+| Blockquote | `border-l-4 border-saffron bg-saffron/5 rounded-r-[16px] p-6 my-8 text-secondary-gray italic leading-relaxed text-lg` |
+| Pull quote | `bg-saffron/5 border-l-4 border-saffron rounded-r-[16px] p-8 my-10 text-2xl font-display font-bold tracking-tightest text-near-black italic leading-snug mx-auto max-w-2xl` |
+| Link | `text-rausch font-medium underline decoration-rausch/30 hover:decoration-rausch transition-all duration-300` |
+| Imagen | `rounded-[24px] shadow-airbnb w-full my-10` |
+| Bullet lista | `space-y-2 my-5 list-none` + bullet span con `text-forest` |
 
 ---
 
@@ -19,14 +31,15 @@ Use clear heading levels to separate sections. The recommended order is:
 
 **Do not skip heading levels** (e.g., do not go from H2 directly to H4). Keep the hierarchy logical and predictable.
 
-**Styling:** Add Tailwind spacing classes directly to the heading tags for consistent vertical rhythm:
+**Styling:** Use the following HTML tags with Tailwind classes for brand typography:
 
 ```html
-<h2 class="mt-10 mb-5">¡El festival más colorido del planeta!</h2>
-<h3 class="mt-8 mb-4">Actividades Destacadas</h3>
+<h2 class=”text-3xl font-display font-bold tracking-tightest text-near-black mt-14 mb-5”>Sección principal</h2>
+<h3 class=”text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4”>Subsección</h3>
+<h4 class=”text-xl font-display font-semibold tracking-tightest text-near-black mt-8 mb-3”>Sub-subsección</h4>
 ```
 
-> **Why:** The classes `mt-10 mb-5` (H2) and `mt-8 mb-4` (H3) create a balanced visual separation that matches the site’s design system.
+> **Design tokens:** `font-display` = Proza Libre (headings), `text-near-black` = #222222, `tracking-tightest` = -0.02em.
 
 ---
 
@@ -36,19 +49,78 @@ Convert any list of features, pricing tiers, schedules, service descriptions, et
 
 ---
 
-## 3. Spacing & Vertical Rhythm
+## 3. Guía tipográfica completa
 
-Consistent spacing between elements makes the content feel organized and easy to read.
+Todos los elementos usan HTML con clases Tailwind del design system Varsana. `allowHTML: true` está activado en la configuración de Markdoc.
 
-| Element | Recommended HTML & Classes |
-|---------|----------------------------|
-| **Paragraph** | `<p class="mb-5">…</p>` |
-| **Blockquote** | `<blockquote class="my-8">…</blockquote>` |
-| **Unordered/Ordered List** | `<ul class="mb-5 list-disc pl-5">…</ul>` |
-| **Image** | `<img class="my-8 rounded-3xl shadow-airbnb" …>` |
-| **Horizontal Rule** | `<hr class="my-8 border-sacred-sand">` |
+### Párrafos
 
-**Rule of thumb:** Use `my-8` for block‑level separators (blockquotes, tables, images) and `mb-5` for inter‑paragraph spacing. Avoid adding extra `<br>` tags; rely on margin classes instead.
+```html
+<p class="text-secondary-gray text-lg leading-relaxed mb-5">Texto del párrafo...</p>
+```
+
+### Párrafo lead (primer párrafo del artículo, con drop cap)
+
+```html
+<p class="text-xl text-near-black leading-relaxed mb-8 font-medium lead-dropcap">Primer párrafo del artículo con drop cap decorativa...</p>
+```
+
+### Blockquote estándar
+
+```html
+<blockquote class="border-l-4 border-saffron bg-saffron/5 rounded-r-[16px] p-6 my-8 text-secondary-gray italic leading-relaxed text-lg">Cita normal...</blockquote>
+```
+
+### Pull quote (cita destacada, centrada)
+
+```html
+<blockquote class="bg-saffron/5 border-l-4 border-saffron rounded-r-[16px] p-8 my-10 text-2xl font-display font-bold tracking-tightest text-near-black italic leading-snug mx-auto max-w-2xl">"Cita destacada..."</blockquote>
+```
+
+### Listas
+
+```html
+<ul class="space-y-2 my-5 list-none">
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Elemento uno</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Elemento dos</li>
+</ul>
+```
+
+### Imagen
+
+```html
+<img src="url" alt="descripcion" class="rounded-[24px] shadow-airbnb w-full my-10" />
+```
+
+### Imagen con caption
+
+```html
+<figure class="my-10">
+  <img src="url" alt="descripcion" class="rounded-[24px] shadow-airbnb w-full" />
+  <figcaption class="text-sm text-secondary-gray text-center mt-3 italic">Texto del caption</figcaption>
+</figure>
+```
+
+### Links
+
+```html
+<a href="url" class="text-rausch font-medium underline decoration-rausch/30 hover:decoration-rausch transition-all duration-300" target="_blank" rel="noopener noreferrer">Texto del enlace</a>
+```
+
+### Negrita y cursiva (inline)
+
+```html
+<strong>texto en negrita</strong>
+<em>texto en cursiva</em>
+```
+
+### Separador horizontal
+
+```html
+<hr class="my-8 border-sacred-sand" />
+```
+
+> **Diseño:** `text-secondary-gray` = #6A6A6A (body), `text-near-black` = #222222 (headings), `text-rausch` = #52185B (links), `text-forest` = #779B05 (bullets), `border-saffron` = #F7941E (acento). Todas las fuentes: `font-display` = Proza Libre para headings, Inter para body.
 
 ---
 
@@ -82,11 +154,12 @@ Before saving a new or updated event/pasadía markdown file, verify the checklis
 
 - **Events:** `src/content/events/` – filename determines the URL (the slug); use kebab‑case.
 - **Pasadías:** `src/content/pasadias/` – same naming convention.
+- **Blog:** `src/content/blog/` – same naming convention.
 
-After saving, the site will automatically rebuild and the new content will appear on the respective listing pages (`/events`, `/pasadias`) and its dedicated detail page.
+After saving, the site will automatically rebuild and the new content will appear on the respective listing pages (`/events`, `/pasadias`, `/blog`) and its dedicated detail page.
 
 ---
 
-**Last updated:** 2026‑04‑16  
-**Based on:** [`holi‑fest‑2026.md`](../src/content/events/holi-fest-2026.md)  
-**See also:** [`.roo/how‑to‑a‑new‑event.md`](../publish-new-event/SKILL.md), [`.roo/how‑to‑a‑new‑pasadia.md`](../publish-new-pasadia/SKILL.md), [`design‑guidelines`](../design-guidelines/SKILL.md)
+**Last updated:** 2026‑06‑22
+**allowHTML:** Enabled
+**See also:** [`design‑guidelines`](../design-guidelines/SKILL.md), [`publish-new-event`](../publish-new-event/SKILL.md), [`publish-new-pasadia`](../publish-new-pasadia/SKILL.md)
