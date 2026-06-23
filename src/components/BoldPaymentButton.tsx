@@ -1,4 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+
+// ---------------------------------------------------------------------------
+// Global type declaration — elimina todos los (window as any).BoldCheckout
+// FIX Leg 1
+// ---------------------------------------------------------------------------
+
+declare global {
+  interface Window {
+    BoldCheckout: new (config: Record<string, string>) => { open(): void };
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -21,14 +32,16 @@ interface CheckoutPayload {
   redirectionUrl: string;
 }
 
+// FIX Leg 4: id único por ticket para evitar colisiones cuando dos tickets tienen el mismo label
 interface TicketSelection {
+  id: string;
   label: string;
   amount: number;
   quantity: number;
 }
 
 interface BoldPaymentButtonProps {
-  contentType: 'event' | 'pasadia';
+  contentType: "event" | "pasadia";
   contentId: string;
   prices: { label: string; amount: number }[];
   fixedDate?: string; // events have a fixed date; pasadias let the user pick
@@ -40,8 +53,15 @@ interface BoldPaymentButtonProps {
 // Helpers
 // ---------------------------------------------------------------------------
 
+// FIX Leg 3: formatCOP ahora maneja valores inválidos
 function formatCOP(amount: number): string {
-  return '$' + amount.toLocaleString('es-CO');
+  if (!Number.isFinite(amount) || amount < 0) return "$0";
+  return "$" + amount.toLocaleString("es-CO");
+}
+
+// FIX Seg 3: validación de formato de email en cliente
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
 
 /**
@@ -52,46 +72,87 @@ function formatCOP(amount: number): string {
 function loadBoldScript(): Promise<void> {
   return new Promise((resolve, reject) => {
     // Already available
-    if (typeof (window as any).BoldCheckout !== 'undefined') {
+    if (typeof window.BoldCheckout !== "undefined") {
       resolve();
       return;
     }
 
-    // Script tag already present – wait for it to finish
+    // FIX Bug 2: la rama "script ya existe" ahora tiene timeout de seguridad
+    // para evitar un interval infinito si el script nunca expone BoldCheckout
     const existing = document.querySelector<HTMLScriptElement>(
       'script[src="https://checkout.bold.co/library/boldPaymentButton.js"]',
     );
     if (existing) {
+      let elapsed = 0;
       const check = setInterval(() => {
-        if (typeof (window as any).BoldCheckout !== 'undefined') {
+        elapsed += 100;
+        if (typeof window.BoldCheckout !== "undefined") {
           clearInterval(check);
           resolve();
+        } else if (elapsed >= 8000) {
+          clearInterval(check);
+          reject(new Error("BoldCheckout load timeout"));
         }
       }, 100);
       return;
     }
 
     // Create & inject a fresh script tag
-    const script = document.createElement('script');
-    script.src = 'https://checkout.bold.co/library/boldPaymentButton.js';
+    const script = document.createElement("script");
+    script.src = "https://checkout.bold.co/library/boldPaymentButton.js";
 
     script.onload = () => {
-      // Small guard – give the browser a tick to expose the constructor
+      // Small guard: give the browser a tick to expose the constructor
       const check = setInterval(() => {
-        if (typeof (window as any).BoldCheckout !== 'undefined') {
+        if (typeof window.BoldCheckout !== "undefined") {
           clearInterval(check);
           resolve();
         }
       }, 50);
-      // Safety timeout – reject after 5 s even if not ready
-      setTimeout(() => { clearInterval(check); reject(new Error('BoldCheckout not available after load')); }, 5000);
+      // Safety timeout: reject after 5 s even if not ready
+      setTimeout(() => {
+        clearInterval(check);
+        reject(new Error("BoldCheckout not available after load"));
+      }, 5000);
     };
     script.onerror = () => {
-      reject(new Error('Failed to load Bold checkout script'));
+      reject(new Error("Failed to load Bold checkout script"));
     };
 
     document.head.appendChild(script);
   });
+}
+
+// FIX Leg 2: lógica de apertura del SDK extraída como función pura,
+// separando responsabilidades de handleReserve
+function openBoldCheckout(
+  payload: CheckoutPayload,
+  customer: CustomerData,
+): void {
+  if (typeof window.BoldCheckout === "undefined") {
+    throw new Error("BoldCheckout no está disponible. Recarga la página.");
+  }
+
+  // Nota: payload.apiKey viene del servidor. Confirmar con Bold que es una
+  // clave pública antes de asumir que exponerla al cliente es seguro (Seg 1).
+  const checkout = new window.BoldCheckout({
+    orderId: payload.orderId,
+    currency: payload.currency,
+    amount: String(payload.amount),
+    apiKey: payload.apiKey,
+    integritySignature: payload.integritySignature,
+    description: payload.description,
+    redirectionUrl: payload.redirectionUrl,
+    renderMode: "embedded",
+    customerData: JSON.stringify({
+      email: customer.email,
+      fullName: customer.fullName,
+      ...(customer.phone && { phone: customer.phone }),
+      ...(customer.dialCode && { dialCode: customer.dialCode }),
+    }),
+  });
+
+  checkout.open();
 }
 
 // ---------------------------------------------------------------------------
@@ -106,33 +167,79 @@ export default function BoldPaymentButton({
   onSuccess,
   onError,
 }: BoldPaymentButtonProps) {
-  const [phase, setPhase] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [customerData, setCustomerData] = useState<CustomerData>({ email: '', fullName: '' });
-  const [boldReady, setBoldReady] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(fixedDate || '');
-  const needsDatePicker = contentType === 'pasadia' && !fixedDate;
-
-  // Initialize ticket selections from prices prop
-  const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>(
-    () => prices.map(p => ({
-      label: p.label,
-      amount: p.amount,
-      quantity: prices.length === 1 ? 1 : 0,
-    })),
+  const [phase, setPhase] = useState<"idle" | "loading" | "success" | "error">(
+    "idle",
   );
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [customerData, setCustomerData] = useState<CustomerData>({
+    email: "",
+    fullName: "",
+  });
+  const [boldReady, setBoldReady] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(fixedDate || "");
+  const needsDatePicker = contentType === "pasadia" && !fixedDate;
+
+  // FIX Bug 3: refs estabilizados para los callbacks del padre. Evitan que el
+  // useEffect de redirección se re-ejecute si el padre no memoriza los callbacks,
+  // lo que podría disparar onSuccess más de una vez.
+  const onSuccessRef = useRef(onSuccess);
+  useEffect(() => {
+    onSuccessRef.current = onSuccess;
+  }, [onSuccess]);
+
+  const onErrorRef = useRef(onError);
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
+
+  // FIX Leg 4: tickets con id único numérico; la lógica no depende del label como clave.
+  // FIX Bug 4: useEffect sincroniza ticketSelections cuando la prop prices cambia
+  // (por ejemplo, al cambiar contentId en el padre).
+  const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>(
+    () =>
+      prices.map((p, i) => ({
+        id: `ticket-${i}`,
+        label: p.label,
+        amount: p.amount,
+        quantity: prices.length === 1 ? 1 : 0,
+      })),
+  );
+
+  useEffect(() => {
+    setTicketSelections(
+      prices.map((p, i) => ({
+        id: `ticket-${i}`,
+        label: p.label,
+        amount: p.amount,
+        quantity: prices.length === 1 ? 1 : 0,
+      })),
+    );
+  }, [prices]);
 
   // Derived values
   const totalAmount = ticketSelections.reduce(
-    (sum, t) => sum + t.amount * t.quantity, 0,
+    (sum, t) => sum + t.amount * t.quantity,
+    0,
   );
   const totalQuantity = ticketSelections.reduce(
-    (sum, t) => sum + t.quantity, 0,
+    (sum, t) => sum + t.quantity,
+    0,
   );
-  const selectedTickets = ticketSelections.filter(t => t.quantity > 0);
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const minDate = tomorrow.toISOString().slice(0, 10);
+
+  // FIX Perf 3: selectedTickets memoizado para que no fuerce la recreación
+  // del useCallback de handleReserve en cada render
+  const selectedTickets = useMemo(
+    () => ticketSelections.filter((t) => t.quantity > 0),
+    [ticketSelections],
+  );
+
+  // FIX Bug 5: minDate memoizado — new Date() en el cuerpo del componente
+  // producía una instancia diferente en cada render
+  const minDate = useMemo(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().slice(0, 10);
+  }, []);
 
   // ------------------------------------------------------------------
   // 1. Load Bold script on mount
@@ -141,9 +248,11 @@ export default function BoldPaymentButton({
     loadBoldScript()
       .then(() => setBoldReady(true))
       .catch((err) => {
-        const msg = err instanceof Error ? err.message : 'Unknown error';
-        console.error('Bold script load failed:', msg);
-        setErrorMsg('No se pudo cargar la pasarela de pago. Intenta recargar la página.');
+        const msg = err instanceof Error ? err.message : "Unknown error";
+        console.error("Bold script load failed:", msg);
+        setErrorMsg(
+          "No se pudo cargar la pasarela de pago. Intenta recargar la página.",
+        );
       });
   }, []);
 
@@ -151,135 +260,160 @@ export default function BoldPaymentButton({
   // 2. Handle payment result from redirection URL params
   //    (when user lands back on this page after a redirect checkout)
   // ------------------------------------------------------------------
+  // FIX Bug 3: dep array vacío — solo ejecutar al montar.
+  // onSuccess/onError se llaman a través de refs para no re-ejecutar este
+  // effect si el padre recrea los callbacks entre renders.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const boldOrderId = params.get('bold-order-id');
-    const boldTxStatus = params.get('bold-tx-status');
+    const boldOrderId = params.get("bold-order-id");
+    const boldTxStatus = params.get("bold-tx-status");
 
     if (boldOrderId && boldTxStatus) {
-      if (boldTxStatus === 'approved') {
-        setPhase('success');
-        onSuccess?.(boldOrderId);
+      if (boldTxStatus === "approved") {
+        setPhase("success");
+        onSuccessRef.current?.(boldOrderId);
       } else {
-        setPhase('error');
+        setPhase("error");
         setErrorMsg(
-          boldTxStatus === 'declined' || boldTxStatus === 'failed'
-            ? 'El pago no pudo completarse. Intenta nuevamente.'
+          boldTxStatus === "declined" || boldTxStatus === "failed"
+            ? "El pago no pudo completarse. Intenta nuevamente."
             : `Estado: ${boldTxStatus}. Te notificaremos cuando se confirme.`,
         );
       }
 
       const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, '', cleanUrl);
+      window.history.replaceState({}, "", cleanUrl);
     }
-  }, [onSuccess]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ------------------------------------------------------------------
   // 3. Handle "Reservar ahora" click → API → BoldCheckout.open()
   // ------------------------------------------------------------------
+  // FIX Bug 1: setPhase('idle') se mueve después de openBoldCheckout(); si
+  //            open() lanza, el catch captura el error sin resetear el estado
+  //            prematuramente.
+  // FIX Leg 2: la apertura del SDK fue delegada a openBoldCheckout().
+  // FIX Perf 2: selectedDate ahora está en las dependencias del useCallback.
   const handleReserve = useCallback(async () => {
-    if (phase === 'loading') return;
+    if (phase === "loading") return;
     if (!boldReady) {
-      setErrorMsg('La pasarela de pago aún no está lista. Intenta de nuevo en un momento.');
+      setErrorMsg(
+        "La pasarela de pago aún no está lista. Intenta de nuevo en un momento.",
+      );
       return;
     }
 
-    setPhase('loading');
+    // FIX Seg 4: validación de fecha en cliente antes de enviar al API
+    if (needsDatePicker && selectedDate) {
+      const chosen = new Date(selectedDate);
+      if (isNaN(chosen.getTime())) {
+        setErrorMsg("La fecha seleccionada no es válida.");
+        return;
+      }
+    }
+
+    setPhase("loading");
     setErrorMsg(null);
 
     try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contentType,
           contentId,
           eventDate: selectedDate || undefined,
-          tickets: selectedTickets.map(t => ({ label: t.label, quantity: t.quantity })),
+          tickets: selectedTickets.map((t) => ({
+            label: t.label,
+            quantity: t.quantity,
+          })),
           customerData,
         }),
       });
 
       if (!response.ok) {
-        const errBody = (await response.json().catch(() => ({ error: 'Error del servidor' }))) as { error?: string };
+        const errBody = (await response
+          .json()
+          .catch(() => ({ error: "Error del servidor" }))) as {
+          error?: string;
+        };
         throw new Error(errBody.error || `HTTP ${response.status}`);
       }
 
       const payload: CheckoutPayload = await response.json();
 
-      // Create a BoldCheckout instance and open it immediately (embedded)
-      const BoldCheckoutCtor = (window as any).BoldCheckout;
-      if (!BoldCheckoutCtor) {
-        throw new Error('BoldCheckout no está disponible. Recarga la página.');
-      }
+      // openBoldCheckout lanza si window.BoldCheckout no existe o si open() falla;
+      // en ese caso el catch de abajo captura el error correctamente.
+      openBoldCheckout(payload, customerData);
 
-      const checkout = new BoldCheckoutCtor({
-        orderId: payload.orderId,
-        currency: payload.currency,
-        amount: String(payload.amount),
-        apiKey: payload.apiKey,
-        integritySignature: payload.integritySignature,
-        description: payload.description,
-        redirectionUrl: payload.redirectionUrl,
-        renderMode: 'embedded',
-        customerData: JSON.stringify({
-          email: customerData.email,
-          fullName: customerData.fullName,
-          ...(customerData.phone && { phone: customerData.phone }),
-          ...(customerData.dialCode && { dialCode: customerData.dialCode }),
-        }),
-      });
-
-      // Open the Bold checkout modal/iframe
-      checkout.open();
-
-      // Go back to idle so the underlying form is visible behind the modal
-      setPhase('idle');
+      // Solo reseteamos a idle si open() completó sin error
+      setPhase("idle");
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Error inesperado';
-      setPhase('error');
+      const message = err instanceof Error ? err.message : "Error inesperado";
+      setPhase("error");
       setErrorMsg(message);
-      onError?.(err instanceof Error ? err : new Error(message));
+      onErrorRef.current?.(err instanceof Error ? err : new Error(message));
     }
-  }, [contentType, contentId, selectedTickets, customerData, phase, boldReady, onError]);
+  }, [
+    contentType,
+    contentId,
+    selectedTickets,
+    customerData,
+    selectedDate,
+    phase,
+    boldReady,
+    needsDatePicker,
+  ]);
 
   // ------------------------------------------------------------------
   // 4. Update ticket quantity
+  // FIX Leg 4: ahora identifica tickets por id, no por label
   // ------------------------------------------------------------------
-  const updateQuantity = useCallback((label: string, delta: number) => {
-    setTicketSelections(prev =>
-      prev.map(t =>
-        t.label === label
-          ? { ...t, quantity: Math.max(0, t.quantity + delta) }
-          : t,
+  const updateQuantity = useCallback((id: string, delta: number) => {
+    setTicketSelections((prev) =>
+      prev.map((t) =>
+        t.id === id ? { ...t, quantity: Math.max(0, t.quantity + delta) } : t,
       ),
     );
   }, []);
+
+  // FIX Seg 3: canSubmit usa validación real de email en vez de solo truthy check
+  const canSubmit =
+    isValidEmail(customerData.email) &&
+    customerData.fullName.trim().length > 0 &&
+    totalQuantity > 0 &&
+    (!needsDatePicker || !!selectedDate);
 
   // ==================================================================
   // Render
   // ==================================================================
 
-  if (phase === 'success') {
+  if (phase === "success") {
     return (
       <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-center">
         <p className="text-green-800 font-semibold">¡Pago exitoso!</p>
         <p className="text-green-600 text-sm mt-1">
-          Pronto recibirás un correo de confirmación con los detalles de tu reserva.
+          Pronto recibirás un correo de confirmación con los detalles de tu
+          reserva.
         </p>
       </div>
     );
   }
 
-  if (phase === 'error') {
+  if (phase === "error") {
     return (
       <div className="space-y-3">
         <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-center">
           <p className="text-red-800 font-semibold">Error</p>
-          <p className="text-red-600 text-sm mt-1">{errorMsg || 'Ocurrió un error inesperado.'}</p>
+          <p className="text-red-600 text-sm mt-1">
+            {errorMsg || "Ocurrió un error inesperado."}
+          </p>
         </div>
         <button
-          onClick={() => { setPhase('idle'); setErrorMsg(null); }}
+          onClick={() => {
+            setPhase("idle");
+            setErrorMsg(null);
+          }}
           className="w-full cursor-pointer rounded-lg bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/80"
         >
           Intentar nuevamente
@@ -288,27 +422,49 @@ export default function BoldPaymentButton({
     );
   }
 
-  if (phase === 'loading') {
+  if (phase === "loading") {
     return (
       <div className="flex items-center justify-center gap-3 rounded-lg bg-sacred-sand/50 px-4 py-3">
-        <svg className="h-5 w-5 animate-spin text-near-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        <svg
+          className="h-5 w-5 animate-spin text-near-black"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          />
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          />
         </svg>
-        <span className="text-sm font-medium text-near-black">Verificando disponibilidad...</span>
+        <span className="text-sm font-medium text-near-black">
+          Verificando disponibilidad...
+        </span>
       </div>
     );
   }
 
   // ------------------------------------------------------------------
   // Idle state: ticket selector + customer form + "Reservar ahora"
+  // FIX Perf 1: JSX unificado — un solo bloque de tickets para ambos casos
+  // (prices.length === 1 y prices.length > 1). Elimina ~30 líneas duplicadas.
   // ------------------------------------------------------------------
   return (
     <div className="space-y-4">
       {/* Date Picker — pasadias only */}
       {needsDatePicker && (
         <div className="space-y-1">
-          <label className="text-sm font-semibold text-near-black">Elige la fecha</label>
+          <label className="text-sm font-semibold text-near-black">
+            Elige la fecha
+          </label>
           <input
             type="date"
             min={minDate}
@@ -319,85 +475,59 @@ export default function BoldPaymentButton({
         </div>
       )}
 
-      {/* Ticket Selection Grid */}
-      {prices.length > 1 && (
+      {/* Ticket Selector — unificado para 1 o N precios */}
+      <div className="space-y-2">
+        {prices.length > 1 && (
+          <h4 className="text-sm font-semibold text-near-black">
+            Selecciona tus boletos
+          </h4>
+        )}
         <div className="space-y-2">
-          <h4 className="text-sm font-semibold text-near-black">Selecciona tus boletos</h4>
-          <div className="space-y-2">
-            {ticketSelections.map(ticket => (
-              <div
-                key={ticket.label}
-                className="flex items-center justify-between rounded-lg border border-sacred-sand bg-lotus-white px-3 py-2"
-              >
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-near-black">{ticket.label}</p>
-                  <p className="text-xs text-gray-500">{formatCOP(ticket.amount)} c/u</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(ticket.label, -1)}
-                    disabled={ticket.quantity === 0}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50 disabled:cursor-not-allowed disabled:opacity-30"
-                  >
-                    −
-                  </button>
-                  <span className="w-6 text-center text-sm font-semibold tabular-nums">
-                    {ticket.quantity}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(ticket.label, 1)}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Single price: show label + quantity selector */}
-      {prices.length === 1 && (
-        <div className="space-y-2">
-          <div className="rounded-lg border border-sacred-sand bg-lotus-white px-3 py-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-near-black">{prices[0].label}</p>
-                <p className="text-xs text-gray-500">{formatCOP(prices[0].amount)} c/u</p>
+          {ticketSelections.map((ticket) => (
+            <div
+              key={ticket.id}
+              className="flex items-center justify-between rounded-lg border border-sacred-sand bg-lotus-white px-3 py-2"
+            >
+              <div className="flex-1">
+                <p className="text-sm font-medium text-near-black">
+                  {ticket.label}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {formatCOP(ticket.amount)} c/u
+                </p>
               </div>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => updateQuantity(prices[0].label, -1)}
-                  disabled={ticketSelections[0]?.quantity === 0}
+                  onClick={() => updateQuantity(ticket.id, -1)}
+                  disabled={ticket.quantity === 0}
                   className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50 disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   −
                 </button>
                 <span className="w-6 text-center text-sm font-semibold tabular-nums">
-                  {ticketSelections[0]?.quantity ?? 1}
+                  {ticket.quantity}
                 </span>
                 <button
                   type="button"
-                  onClick={() => updateQuantity(prices[0].label, 1)}
+                  onClick={() => updateQuantity(ticket.id, 1)}
                   className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50"
                 >
                   +
                 </button>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* Running Total */}
       {totalAmount > 0 && (
         <div className="flex items-center justify-between border-t border-sacred-sand pt-2">
           <span className="text-sm font-medium text-near-black">Total</span>
-          <span className="text-lg font-bold text-near-black">{formatCOP(totalAmount)}</span>
+          <span className="text-lg font-bold text-near-black">
+            {formatCOP(totalAmount)}
+          </span>
         </div>
       )}
 
@@ -409,7 +539,9 @@ export default function BoldPaymentButton({
           placeholder="Correo electrónico *"
           required
           value={customerData.email}
-          onChange={(e) => setCustomerData((prev) => ({ ...prev, email: e.target.value }))}
+          onChange={(e) =>
+            setCustomerData((prev) => ({ ...prev, email: e.target.value }))
+          }
           className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
         />
         <input
@@ -417,29 +549,33 @@ export default function BoldPaymentButton({
           placeholder="Nombre completo *"
           required
           value={customerData.fullName}
-          onChange={(e) => setCustomerData((prev) => ({ ...prev, fullName: e.target.value }))}
+          onChange={(e) =>
+            setCustomerData((prev) => ({ ...prev, fullName: e.target.value }))
+          }
           className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
         />
         <input
           type="tel"
           placeholder="Teléfono (opcional)"
-          value={customerData.phone || ''}
-          onChange={(e) => setCustomerData((prev) => ({ ...prev, phone: e.target.value }))}
+          value={customerData.phone || ""}
+          onChange={(e) =>
+            setCustomerData((prev) => ({ ...prev, phone: e.target.value }))
+          }
           className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
         />
         {errorMsg && <p className="text-xs text-red-600">{errorMsg}</p>}
         <button
           onClick={handleReserve}
-          disabled={!customerData.email || !customerData.fullName || totalQuantity === 0 || (needsDatePicker && !selectedDate)}
+          disabled={!canSubmit}
           className="w-full cursor-pointer rounded-lg bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {!boldReady
-            ? 'Cargando pasarela de pago...'
+            ? "Cargando pasarela de pago..."
             : needsDatePicker && !selectedDate
-              ? 'Elige una fecha'
+              ? "Elige una fecha"
               : totalQuantity === 0
-                ? 'Selecciona al menos un boleto'
-                : 'Reservar ahora'}
+                ? "Selecciona al menos un boleto"
+                : "Reservar ahora"}
         </button>
       </div>
     </div>
