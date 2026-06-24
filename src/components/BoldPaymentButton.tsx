@@ -390,9 +390,9 @@ export default function BoldPaymentButton({
 
   if (phase === "success") {
     return (
-      <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-center">
-        <p className="text-green-800 font-semibold">¡Pago exitoso!</p>
-        <p className="text-green-600 text-sm mt-1">
+      <div className="rounded-xl bg-forest/10 border border-forest/20 p-4 text-center">
+        <p className="text-forest font-semibold">¡Pago exitoso!</p>
+        <p className="text-forest/80 text-sm mt-1">
           Pronto recibirás un correo de confirmación con los detalles de tu
           reserva.
         </p>
@@ -403,9 +403,9 @@ export default function BoldPaymentButton({
   if (phase === "error") {
     return (
       <div className="space-y-3">
-        <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-center">
-          <p className="text-red-800 font-semibold">Error</p>
-          <p className="text-red-600 text-sm mt-1">
+        <div className="rounded-xl bg-rausch/10 border border-rausch/20 p-4 text-center">
+          <p className="text-rausch font-semibold">Error</p>
+          <p className="text-rausch/80 text-sm mt-1">
             {errorMsg || "Ocurrió un error inesperado."}
           </p>
         </div>
@@ -414,7 +414,7 @@ export default function BoldPaymentButton({
             setPhase("idle");
             setErrorMsg(null);
           }}
-          className="w-full cursor-pointer rounded-lg bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/80"
+          className="w-full cursor-pointer rounded-xl bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/50"
         >
           Intentar nuevamente
         </button>
@@ -462,7 +462,7 @@ export default function BoldPaymentButton({
       {/* Date Picker — pasadias only */}
       {needsDatePicker && (
         <div className="space-y-1">
-          <label className="text-sm font-semibold text-near-black">
+          <label className="text-sm font-semibold text-near-black font-display tracking-tightest">
             Elige la fecha
           </label>
           <input
@@ -478,7 +478,7 @@ export default function BoldPaymentButton({
       {/* Ticket Selector — unificado para 1 o N precios */}
       <div className="space-y-2">
         {prices.length > 1 && (
-          <h4 className="text-sm font-semibold text-near-black">
+          <h4 className="text-sm font-semibold text-near-black font-display tracking-tightest">
             Selecciona tus boletos
           </h4>
         )}
@@ -486,13 +486,13 @@ export default function BoldPaymentButton({
           {ticketSelections.map((ticket) => (
             <div
               key={ticket.id}
-              className="flex items-center justify-between rounded-lg border border-sacred-sand bg-lotus-white px-3 py-2"
+              className="flex items-center justify-between rounded-xl border border-sacred-sand bg-lotus-white px-3 py-2"
             >
               <div className="flex-1">
                 <p className="text-sm font-medium text-near-black">
                   {ticket.label}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-secondary-gray">
                   {formatCOP(ticket.amount)} c/u
                 </p>
               </div>
@@ -533,7 +533,7 @@ export default function BoldPaymentButton({
 
       {/* Customer Form */}
       <div className="space-y-3 rounded-lg border border-sacred-sand bg-lotus-white p-4">
-        <h4 className="text-sm font-semibold text-near-black">Tus datos</h4>
+        <h4 className="text-sm font-semibold text-near-black font-display tracking-tightest">Tus datos</h4>
         <input
           type="email"
           placeholder="Correo electrónico *"
@@ -563,11 +563,11 @@ export default function BoldPaymentButton({
           }
           className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
         />
-        {errorMsg && <p className="text-xs text-red-600">{errorMsg}</p>}
+        {errorMsg && <p className="text-xs text-rausch">{errorMsg}</p>}
         <button
           onClick={handleReserve}
           disabled={!canSubmit}
-          className="w-full cursor-pointer rounded-lg bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full cursor-pointer rounded-xl bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {!boldReady
             ? "Cargando pasarela de pago..."
