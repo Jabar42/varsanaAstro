@@ -41,20 +41,35 @@ The `stock_max` field defines the maximum capacity (number of available spots) f
 - Set realistically based on the venue capacity and logistics.
 - Example: `stock_max: 30` for an intimate retreat, `stock_max: 500` for a large festival.
 
-### Price deadline logic (`getAvailablePrices` and `getCurrentPrice`)
-There are two functions for price selection:
+### Price deadline logic (`getAvailablePrices`, `getCurrentPrice`, `getBasePrice`)
+There are three functions for price selection:
 
-**`getAvailablePrices(prices, eventStart)`** — Returns all prices whose effective deadline is still in the future. The effective deadline for each price is:
-- The explicit `deadline` if present.
-- `event_start` if no deadline is set (tickets must be purchased before the event begins).
+**`getAvailablePrices(prices, eventStart)`** — Returns all prices whose effective deadline is still in the future.
 
-**`getCurrentPrice(prices, eventStart?)`** — Determines the single active price tier:
-1. It iterates through the `prices` array.
-2. For each price, it checks if its effective deadline is still in the future.
-3. The **first** price with a future deadline is selected.
-4. If none have a future deadline, the **last** price in the array is used as fallback.
+**`getBasePrice(prices)`** — Returns the price with the lowest `min_quantity` (the base "starting from" price). Used in the sidebar.
 
-**UTC midnight caveat:** The comparison uses `new Date(price.deadline) > now`. Because `deadline` is parsed as UTC midnight, a deadline of `2026-04-15` means "until the end of 2026‑04‑15 UTC". If your local timezone is ahead of UTC (e.g., America/Bogota is UTC‑5), the deadline may be considered passed 5 hours earlier than you expect. Plan accordingly.
+**`getCurrentPrice(prices, eventStart?)`** — Determines the active price tier by deadline.
+
+**UTC midnight caveat:** Deadlines are parsed as UTC midnight. Plan accordingly.
+
+### Volume discounts (`min_quantity`)
+
+Each price tier can have a `min_quantity` field (default `1`). The BoldPaymentButton automatically applies the tier with the highest `min_quantity` that the selected quantity satisfies.
+
+**Example — descuento al comprar 2+ personas:**
+```yaml
+prices:
+  - label: "General"
+    amount: 230000
+    min_quantity: 1
+  - label: "General"
+    amount: 200000
+    min_quantity: 2
+```
+- 1 persona → $230.000/persona
+- 2+ personas → $200.000/persona
+
+Both tiers use the same `label`. The component shows a single "Personas" counter, not separate ticket types. The price per person updates automatically.
 
 ### Event detail page generation
 The file `src/pages/events/[slug].astro` dynamically generates a page for each event. It uses the event's frontmatter for the title, description, image, and prices, and renders the Markdown body as HTML. The page also displays the active price tier and a "Reservar ahora" button ready for payment gateway integration.
@@ -76,14 +91,15 @@ The file `src/pages/events/[slug].astro` dynamically generates a page for each e
 - As noted above, deadlines are evaluated at UTC midnight. If you want a deadline to be effective until the end of a certain day in Colombia, set the deadline **one day later** (e.g., if the cutoff is April 15 Colombia time, write `deadline: 2026-04-16`).
 
 ### Price ordering
-- Place price tiers in the order you want them evaluated. The last price is the fallback, so put your "regular" or "default" price at the end.
-- Example:
+- For deadline-based tiers: place them in order. The last price is the fallback ("regular" price at the end).
+- For volume discounts: order doesn't matter — the component picks the tier with the highest `min_quantity` that the quantity satisfies.
+- Example with deadlines:
   ```yaml
   prices:
-    - label: "Super Early Bird"   # first checked
+    - label: "Super Early Bird"
       amount: 50000
       deadline: 2026-03-01
-    - label: "Early Bird"         # checked next
+    - label: "Early Bird"
       amount: 60000
       deadline: 2026-04-01
     - label: "Regular"            # fallback if both deadlines passed

@@ -10,7 +10,7 @@ Los pasadías en este proyecto Astro son **servicios disponibles todo el año co
 
 - Lista todos los pasadías en la página principal de pasadías (`/pasadias`) usando el helper `getAllPasadias`.
 - Genera una página de detalle para cada pasadía en `/pasadias/[slug]`, donde la URL se deriva del ID de entrada (el nombre del archivo sin extensión).
-- Selecciona el precio activo según los deadlines (si existen) mediante `getCurrentPrice` (la misma lógica que para los eventos).
+- Muestra un contador único de personas con precio automático. Si hay `min_quantity`, aplica descuento por volumen al alcanzar la cantidad mínima.
 - Muestra un selector de fecha en el botón de pago para que el usuario elija el día de su visita.
 - Gestiona el inventario por fecha: cada día tiene su propio cupo de `stock_max` personas.
 
@@ -48,7 +48,7 @@ Después de crear el archivo de tu pasadía, verifica que todo funcione como se 
 
 3. **Prueba el selector de fecha** – Verifica que solo permita seleccionar fechas a partir de mañana. Sin fecha seleccionada, el botón debe mostrar "Elige una fecha" y estar deshabilitado.
 
-4. **Prueba la selección de precio** – Si incluiste deadlines, verifica que el precio activo cambie según lo previsto cuando el deadline pase (puedes ajustar temporalmente el reloj del sistema o crear un pasadía de prueba con un deadline cercano).
+4. **Prueba el descuento por volumen** – Si usaste `min_quantity`, verifica que al alcanzar la cantidad mínima el precio por persona baje automáticamente.
 
 5. **Construye el sitio** – Ejecuta `npm run build` para asegurarte de que no haya errores de validación del esquema.
 
