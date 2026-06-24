@@ -32,19 +32,17 @@ interface CheckoutPayload {
   redirectionUrl: string;
 }
 
-// FIX Leg 4: id único por ticket para evitar colisiones cuando dos tickets tienen el mismo label
-interface TicketSelection {
-  id: string;
+interface PriceTier {
   label: string;
   amount: number;
-  quantity: number;
+  min_quantity?: number;
 }
 
 interface BoldPaymentButtonProps {
   contentType: "event" | "pasadia";
   contentId: string;
-  prices: { label: string; amount: number }[];
-  fixedDate?: string; // events have a fixed date; pasadias let the user pick
+  prices: PriceTier[];
+  fixedDate?: string;
   onSuccess?: (orderId: string) => void;
   onError?: (error: Error) => void;
 }
@@ -192,46 +190,22 @@ export default function BoldPaymentButton({
     onErrorRef.current = onError;
   }, [onError]);
 
-  // FIX Leg 4: tickets con id único numérico; la lógica no depende del label como clave.
-  // FIX Bug 4: useEffect sincroniza ticketSelections cuando la prop prices cambia
-  // (por ejemplo, al cambiar contentId en el padre).
-  const [ticketSelections, setTicketSelections] = useState<TicketSelection[]>(
-    () =>
-      prices.map((p, i) => ({
-        id: `ticket-${i}`,
-        label: p.label,
-        amount: p.amount,
-        quantity: prices.length === 1 ? 1 : 0,
-      })),
-  );
+  // Contador único de personas
+  const [quantity, setQuantity] = useState(prices.length === 1 ? 1 : 0);
 
-  useEffect(() => {
-    setTicketSelections(
-      prices.map((p, i) => ({
-        id: `ticket-${i}`,
-        label: p.label,
-        amount: p.amount,
-        quantity: prices.length === 1 ? 1 : 0,
-      })),
+  // Precio por persona según cantidad seleccionada (descuento por volumen)
+  const effectivePrice = useMemo(() => {
+    if (prices.length === 0) return 0;
+    // Ordenar por min_quantity descendente, elegir el primer precio donde quantity >= min_quantity
+    const sorted = [...prices].sort(
+      (a, b) => (b.min_quantity ?? 1) - (a.min_quantity ?? 1),
     );
-  }, [prices]);
+    const tier = sorted.find((p) => quantity >= (p.min_quantity ?? 1));
+    return tier ? tier.amount : prices[prices.length - 1].amount;
+  }, [prices, quantity]);
 
-  // Derived values
-  const totalAmount = ticketSelections.reduce(
-    (sum, t) => sum + t.amount * t.quantity,
-    0,
-  );
-  const totalQuantity = ticketSelections.reduce(
-    (sum, t) => sum + t.quantity,
-    0,
-  );
-
-  // FIX Perf 3: selectedTickets memoizado para que no fuerce la recreación
-  // del useCallback de handleReserve en cada render
-  const selectedTickets = useMemo(
-    () => ticketSelections.filter((t) => t.quantity > 0),
-    [ticketSelections],
-  );
+  const totalAmount = effectivePrice * quantity;
+  const priceLabel = prices.length > 1 && quantity > 0 ? prices[0].label : (prices[0]?.label ?? "");
 
   // FIX Bug 5: minDate memoizado — new Date() en el cuerpo del componente
   // producía una instancia diferente en cada render
@@ -293,7 +267,6 @@ export default function BoldPaymentButton({
   //            open() lanza, el catch captura el error sin resetear el estado
   //            prematuramente.
   // FIX Leg 2: la apertura del SDK fue delegada a openBoldCheckout().
-  // FIX Perf 2: selectedDate ahora está en las dependencias del useCallback.
   const handleReserve = useCallback(async () => {
     if (phase === "loading") return;
     if (!boldReady) {
@@ -303,7 +276,6 @@ export default function BoldPaymentButton({
       return;
     }
 
-    // FIX Seg 4: validación de fecha en cliente antes de enviar al API
     if (needsDatePicker && selectedDate) {
       const chosen = new Date(selectedDate);
       if (isNaN(chosen.getTime())) {
@@ -323,10 +295,7 @@ export default function BoldPaymentButton({
           contentType,
           contentId,
           eventDate: selectedDate || undefined,
-          tickets: selectedTickets.map((t) => ({
-            label: t.label,
-            quantity: t.quantity,
-          })),
+          tickets: [{ label: priceLabel, quantity, amount: effectivePrice }],
           customerData,
         }),
       });
@@ -342,11 +311,8 @@ export default function BoldPaymentButton({
 
       const payload: CheckoutPayload = await response.json();
 
-      // openBoldCheckout lanza si window.BoldCheckout no existe o si open() falla;
-      // en ese caso el catch de abajo captura el error correctamente.
       openBoldCheckout(payload, customerData);
 
-      // Solo reseteamos a idle si open() completó sin error
       setPhase("idle");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Error inesperado";
@@ -357,7 +323,9 @@ export default function BoldPaymentButton({
   }, [
     contentType,
     contentId,
-    selectedTickets,
+    priceLabel,
+    quantity,
+    effectivePrice,
     customerData,
     selectedDate,
     phase,
@@ -365,23 +333,10 @@ export default function BoldPaymentButton({
     needsDatePicker,
   ]);
 
-  // ------------------------------------------------------------------
-  // 4. Update ticket quantity
-  // FIX Leg 4: ahora identifica tickets por id, no por label
-  // ------------------------------------------------------------------
-  const updateQuantity = useCallback((id: string, delta: number) => {
-    setTicketSelections((prev) =>
-      prev.map((t) =>
-        t.id === id ? { ...t, quantity: Math.max(0, t.quantity + delta) } : t,
-      ),
-    );
-  }, []);
-
-  // FIX Seg 3: canSubmit usa validación real de email en vez de solo truthy check
   const canSubmit =
     isValidEmail(customerData.email) &&
     customerData.fullName.trim().length > 0 &&
-    totalQuantity > 0 &&
+    quantity > 0 &&
     (!needsDatePicker || !!selectedDate);
 
   // ==================================================================
@@ -475,49 +430,44 @@ export default function BoldPaymentButton({
         </div>
       )}
 
-      {/* Ticket Selector — unificado para 1 o N precios */}
+      {/* Person Counter */}
       <div className="space-y-2">
-        {prices.length > 1 && (
-          <h4 className="text-sm font-semibold text-near-black font-display tracking-tightest">
-            Selecciona tus boletos
-          </h4>
-        )}
-        <div className="space-y-2">
-          {ticketSelections.map((ticket) => (
-            <div
-              key={ticket.id}
-              className="flex items-center justify-between rounded-xl border border-sacred-sand bg-lotus-white px-3 py-2"
+        <h4 className="text-sm font-semibold text-near-black font-display tracking-tightest">
+          Personas
+        </h4>
+        <div className="flex items-center justify-between rounded-xl border border-sacred-sand bg-lotus-white px-3 py-3">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-near-black">
+              {quantity > 0
+                ? `${formatCOP(effectivePrice)} / persona`
+                : "Selecciona la cantidad"}
+            </p>
+            {prices.length > 1 && quantity > 0 && (
+              <p className="text-xs text-forest mt-0.5">
+                {quantity >= 2 ? "¡Descuento por volumen aplicado!" : "Compra 2+ para obtener descuento"}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setQuantity((q) => Math.max(0, q - 1))}
+              disabled={quantity === 0}
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50 disabled:cursor-not-allowed disabled:opacity-30"
             >
-              <div className="flex-1">
-                <p className="text-sm font-medium text-near-black">
-                  {ticket.label}
-                </p>
-                <p className="text-xs text-secondary-gray">
-                  {formatCOP(ticket.amount)} c/u
-                </p>
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => updateQuantity(ticket.id, -1)}
-                  disabled={ticket.quantity === 0}
-                  className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50 disabled:cursor-not-allowed disabled:opacity-30"
-                >
-                  −
-                </button>
-                <span className="w-6 text-center text-sm font-semibold tabular-nums">
-                  {ticket.quantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => updateQuantity(ticket.id, 1)}
-                  className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          ))}
+              −
+            </button>
+            <span className="w-8 text-center text-base font-bold tabular-nums">
+              {quantity}
+            </span>
+            <button
+              type="button"
+              onClick={() => setQuantity((q) => q + 1)}
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50"
+            >
+              +
+            </button>
+          </div>
         </div>
       </div>
 
@@ -573,8 +523,8 @@ export default function BoldPaymentButton({
             ? "Cargando pasarela de pago..."
             : needsDatePicker && !selectedDate
               ? "Elige una fecha"
-              : totalQuantity === 0
-                ? "Selecciona al menos un boleto"
+              : quantity === 0
+                ? "Selecciona al menos una persona"
                 : "Reservar ahora"}
         </button>
       </div>

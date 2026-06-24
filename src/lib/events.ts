@@ -52,6 +52,18 @@ export function getAvailablePrices(
 }
 
 /**
+ * Retorna el precio base (el de menor min_quantity o el primero).
+ * Para mostrar en el sidebar como precio "desde".
+ */
+export function getBasePrice(
+  prices: { label: string; amount: number; min_quantity?: number }[],
+) {
+  if (!prices || prices.length === 0) return null;
+  const sorted = [...prices].sort((a, b) => (a.min_quantity ?? 1) - (b.min_quantity ?? 1));
+  return sorted[0];
+}
+
+/**
  * Determina el precio vigente basado en los deadlines.
  * Retorna el primer precio cuyo deadline no ha pasado, o el último si todos pasaron.
  * Si se proporciona eventStart, se usa como deadline implícito para precios sin deadline.

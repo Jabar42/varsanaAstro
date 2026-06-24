@@ -29,6 +29,7 @@ const priceSchema = z.object({
   label: z.string(),
   amount: z.number(),
   deadline: z.date().optional(),
+  min_quantity: z.number().int().positive().optional().default(1),
 });
 
 const pricesSchema = z.array(priceSchema);

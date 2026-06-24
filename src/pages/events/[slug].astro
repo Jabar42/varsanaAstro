@@ -2,7 +2,7 @@
 
 import Layout from '@/src/layouts/Layout.astro';
 import { getEntry, render } from 'astro:content';
-import { getAvailablePrices } from '@/src/lib/events';
+import { getAvailablePrices, getBasePrice } from '@/src/lib/events';
 import BoldPaymentButton from '@/src/components/BoldPaymentButton';
 import { Calendar, MapPin } from 'lucide-react';
 
@@ -14,6 +14,7 @@ const { title, description, event_start, event_end, image, prices, stock_max, lo
 const { Content } = await render(event);
 
 const availablePrices = getAvailablePrices(prices, event_start);
+const basePrice = getBasePrice(availablePrices);
 
 const formattedStart = event_start.toLocaleDateString('es-ES', {
   weekday: 'long',
@@ -94,7 +95,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
       <div class="relative">
         <div class="sticky top-28 bg-lotus-white border border-sacred-sand rounded-[24px] p-6 shadow-airbnb space-y-6">
           <div>
-            <span class="text-3xl font-bold tracking-tightest font-display">${availablePrices.length > 0 ? availablePrices[0].amount.toLocaleString('es-CO') : '—'}</span>
+            <span class="text-3xl font-bold tracking-tightest font-display">${basePrice ? basePrice.amount.toLocaleString('es-CO') : '—'}</span>
             <span class="text-secondary-gray text-base font-normal"> / persona</span>
           </div>
 
