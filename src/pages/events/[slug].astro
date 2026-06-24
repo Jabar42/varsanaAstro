@@ -73,6 +73,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
           </div>
         </div>
 
+        <!-- Countdown -->
+        <div class="border-b border-sacred-sand pb-8" id="event-countdown" data-event-date={event_start.toISOString()} style="display:none">
+          <p class="text-sm font-semibold text-secondary-gray mb-2">Tiempo restante</p>
+          <div class="flex gap-4 text-center">
+            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-days">00</span><p class="text-xs text-secondary-gray">días</p></div>
+            <span class="text-2xl font-bold text-sacred-sand">:</span>
+            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-hours">00</span><p class="text-xs text-secondary-gray">horas</p></div>
+            <span class="text-2xl font-bold text-sacred-sand">:</span>
+            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-mins">00</span><p class="text-xs text-secondary-gray">mins</p></div>
+            <span class="text-2xl font-bold text-sacred-sand">:</span>
+            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-secs">00</span><p class="text-xs text-secondary-gray">segs</p></div>
+          </div>
+        </div>
+
         <!-- Host Info -->
         <div class="flex items-center justify-between border-b border-sacred-sand pb-8">
           <div class="space-y-1">
@@ -128,6 +142,35 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
     </div>
   </div>
 </Layout>
+
+<script>
+  const el = document.getElementById('event-countdown');
+  if (el) {
+    const target = new Date(el.dataset.eventDate).getTime();
+    const now = Date.now();
+    if (target > now && (target - now) < 90 * 24 * 60 * 60 * 1000) {
+      el.style.display = '';
+      const days = document.getElementById('cd-days');
+      const hours = document.getElementById('cd-hours');
+      const mins = document.getElementById('cd-mins');
+      const secs = document.getElementById('cd-secs');
+      function tick() {
+        const diff = target - Date.now();
+        if (diff <= 0) { el.style.display = 'none'; return; }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        days.textContent = String(d).padStart(2, '0');
+        hours.textContent = String(h).padStart(2, '0');
+        mins.textContent = String(m).padStart(2, '0');
+        secs.textContent = String(s).padStart(2, '0');
+      }
+      tick();
+      setInterval(tick, 1000);
+    }
+  }
+</script>
 
 <style>
   h1, h2, h3, h4 {
