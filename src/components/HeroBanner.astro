@@ -8,10 +8,27 @@ interface Props {
 
 const { items, interval = 6000 } = Astro.props;
 
-if (items.length === 0) return;
 const hasMultiple = items.length > 1;
 ---
 
+{items.length === 0 ? (
+  <div class="hero-banner">
+    <img
+      src="https://picsum.photos/seed/varsana-hero/1600/800"
+      alt="Varsana Eco Yoga Aldea"
+      class="hero-banner__image"
+    />
+    <div class="hero-banner__overlay">
+      <div class="hero-banner__overlay-inner">
+        <div class="hero-banner__content">
+          <h2 class="hero-banner__title">Varsana Eco Yoga Aldea</h2>
+          <p class="hero-banner__desc">Bienestar, conciencia y conexion espiritual en Granada, Cundinamarca.</p>
+          <a href="/events" class="hero-banner__cta">Ver experiencias</a>
+        </div>
+      </div>
+    </div>
+  </div>
+) : (
 <div class="hero-banner" data-hero-banner data-interval={String(interval)}>
   {items.map((item, i) => (
     <div
@@ -68,6 +85,7 @@ const hasMultiple = items.length > 1;
     </div>
   )}
 </div>
+)}
 
 <script>
   function initHeroBanner(el: HTMLElement) {
@@ -132,9 +150,26 @@ const hasMultiple = items.length > 1;
     }
 
     startTimer();
+
+    return () => {
+      stopTimer();
+      if (prev) prev.removeEventListener('click', () => { goPrev(); resetTimer(); });
+      if (next) next.removeEventListener('click', () => { goNext(); resetTimer(); });
+      dots.forEach((dot, i) => {
+        dot.removeEventListener('click', () => { show(i); resetTimer(); });
+      });
+    };
   }
 
-  document.querySelectorAll<HTMLElement>('[data-hero-banner]').forEach(initHeroBanner);
+  const cleaners: (() => void)[] = [];
+  document.querySelectorAll<HTMLElement>('[data-hero-banner]').forEach((el) => {
+    const clean = initHeroBanner(el);
+    if (clean) cleaners.push(clean);
+  });
+  document.addEventListener('astro:before-swap', () => {
+    cleaners.forEach(fn => fn());
+    cleaners.length = 0;
+  });
 </script>
 
 <style>
@@ -228,6 +263,7 @@ const hasMultiple = items.length > 1;
   }
 
   .hero-banner__title {
+    font-family: "Proza Libre", sans-serif;
     font-size: 2rem;
     font-weight: 700;
     color: white;
@@ -266,7 +302,7 @@ const hasMultiple = items.length > 1;
     background: var(--color-rausch);
     color: white;
     padding: 0.75rem 2rem;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-DEFAULT);
     font-weight: 700;
     font-size: 0.95rem;
     text-decoration: none;
@@ -275,7 +311,7 @@ const hasMultiple = items.length > 1;
 
   .hero-banner__cta:hover {
     background: var(--color-rausch-dark);
-    transform: scale(1.04);
+    transform: scale(1.02);
   }
 
   .hero-banner__controls {
@@ -306,7 +342,7 @@ const hasMultiple = items.length > 1;
 
   .hero-banner__arrow:hover {
     background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 
   .hero-banner__dots {
