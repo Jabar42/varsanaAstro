@@ -43,6 +43,10 @@ const eventsCollection = defineCollection({
     image: z.string(),
     stock_max: z.number().int().positive(),
     prices: pricesSchema,
+    location: z.string().optional().default('Granada, Cundinamarca'),
+    host_name: z.string().optional().default('Varsana'),
+    host_tagline: z.string().optional().default('Comunidad intencional · 15 años de sabiduría'),
+    host_image: z.string().optional(),
   })),
 });
 
@@ -58,6 +62,10 @@ const pasadiasCollection = defineCollection({
     meeting_point: z.string(),
     category: z.string(),
     included_services: z.array(z.string()).optional().default([]),
+    location: z.string().optional().default('Granada, Cundinamarca'),
+    host_name: z.string().optional().default('Varsana'),
+    host_tagline: z.string().optional().default('Comunidad intencional · 15 años de sabiduría'),
+    host_image: z.string().optional(),
   })),
 });
 

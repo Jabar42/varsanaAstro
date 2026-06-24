@@ -64,6 +64,21 @@
         ]
       }
     },
+    "location": {
+      "default": "Granada, Cundinamarca",
+      "type": "string"
+    },
+    "host_name": {
+      "default": "Varsana",
+      "type": "string"
+    },
+    "host_tagline": {
+      "default": "Comunidad intencional · 15 años de sabiduría",
+      "type": "string"
+    },
+    "host_image": {
+      "type": "string"
+    },
     "$schema": {
       "type": "string"
     }
