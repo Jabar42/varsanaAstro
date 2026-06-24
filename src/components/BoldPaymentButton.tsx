@@ -204,8 +204,13 @@ export default function BoldPaymentButton({
     return tier ? tier.amount : prices[prices.length - 1].amount;
   }, [prices, quantity]);
 
+  const baseAmount = prices.length > 0 ? Math.min(...prices.map(p => p.min_quantity ?? 1)) : 1;
+  const basePrice = prices.find(p => (p.min_quantity ?? 1) === baseAmount)?.amount ?? effectivePrice;
+  const discountTier = prices.find(p => (p.min_quantity ?? 1) > 1 && p.amount < basePrice);
+  const hasVolumeDiscount = !!discountTier;
+  const discountApplied = hasVolumeDiscount && effectivePrice < basePrice;
   const totalAmount = effectivePrice * quantity;
-  const priceLabel = prices.length > 1 && quantity > 0 ? prices[0].label : (prices[0]?.label ?? "");
+  const priceLabel = prices[0]?.label ?? "";
 
   // FIX Bug 5: minDate memoizado — new Date() en el cuerpo del componente
   // producía una instancia diferente en cada render
@@ -442,9 +447,11 @@ export default function BoldPaymentButton({
                 ? `${formatCOP(effectivePrice)} / persona`
                 : "Selecciona la cantidad"}
             </p>
-            {prices.length > 1 && quantity > 0 && (
+            {hasVolumeDiscount && quantity > 0 && (
               <p className="text-xs text-forest mt-0.5">
-                {quantity >= 2 ? "¡Descuento por volumen aplicado!" : "Compra 2+ para obtener descuento"}
+                {discountApplied
+                  ? "¡Descuento por volumen aplicado!"
+                  : `Compra ${discountTier?.min_quantity ?? 2}+ para obtener descuento`}
               </p>
             )}
           </div>
