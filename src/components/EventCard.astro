@@ -30,11 +30,9 @@ const formattedDate = event_start.toLocaleDateString('es-ES', {
   year: 'numeric'
 });
 
-const now = new Date();
-now.setHours(0, 0, 0, 0);
-const eventDate = new Date(event_start);
-eventDate.setHours(0, 0, 0, 0);
-const daysUntil = Math.ceil((eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+const now = Date.now();
+const eventTime = new Date(event_start).getTime();
+const daysUntil = Math.ceil((eventTime - now) / (1000 * 60 * 60 * 24));
 const showCountdown = daysUntil > 0 && daysUntil <= 90;
 ---
 
