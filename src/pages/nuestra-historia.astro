@@ -1,5 +1,6 @@
 ---
 import Layout from '@/src/layouts/Layout.astro';
+import PageBanner from '@/src/components/PageBanner.astro';
 import TextSection from '@/src/components/TextSection.astro';
 
 const text = "En Varsana Ecoaldea converge la vida, es un lugar de dialogo e integracion de las emociones, es un proyecto enfocado en la espiritualidad y ecologia. Esta ubicado en las estribaciones del paramo de Sumapaz, a menos de dos horas de Bogota. En un terreno de siete hectareas, en Granada – Cundinamarca, es un area concebida como una aldea sostenible inspirada en la sabiduria ancestral y milenaria de la india, para recuperar la relacion con la naturaleza y la conciencia interior.";
@@ -7,7 +8,14 @@ const text = "En Varsana Ecoaldea converge la vida, es un lugar de dialogo e int
 
 <Layout title="Nuestra Historia | Varsana Eco Yoga Aldea">
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8">
-    <h1 class="text-4xl md:text-6xl font-bold tracking-tightest mb-4 font-display">Nuestra Historia</h1>
+    <PageBanner
+      title="Nuestra Historia"
+      subtitle="Conoce el origen y la esencia de Varsana Eco Yoga Aldea"
+      breadcrumb={[
+        { label: 'Inicio', url: '/' },
+        { label: 'Nuestra Historia', url: '/nuestra-historia' },
+      ]}
+    />
     <TextSection text={text} />
   </main>
 </Layout>
