@@ -31,12 +31,13 @@ const getSocialIcon = (platform: string) => {
 ---
 
 <article class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
-  <div class="aspect-square overflow-hidden relative">
+  <div class="aspect-square overflow-hidden relative shimmer">
     <img
       src={imagen}
       alt={nombre}
       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
       referrerpolicy="no-referrer"
+      loading="lazy"
     />
   </div>
 

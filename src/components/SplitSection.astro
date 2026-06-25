@@ -72,7 +72,7 @@ const hasBackground = !!background && !fullBleed;
 
       {isVideo ? (
         <div class:list={[
-          'relative h-full overflow-hidden bg-gray-200 transition-transform duration-700 ease-in-out',
+          'relative h-full overflow-hidden shimmer transition-transform duration-700 ease-in-out',
           fullBleed ? '' : 'rounded-2xl shadow-airbnb hover:scale-[1.02]',
         ]}>
           <iframe
@@ -86,7 +86,7 @@ const hasBackground = !!background && !fullBleed;
         </div>
       ) : (
         <div class:list={[
-          'relative h-full overflow-hidden bg-gray-200 transition-transform duration-700 ease-in-out',
+          'relative h-full overflow-hidden shimmer transition-transform duration-700 ease-in-out',
           fullBleed ? '' : 'rounded-2xl shadow-airbnb hover:scale-[1.02]',
         ]}>
           <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">

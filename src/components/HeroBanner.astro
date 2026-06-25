@@ -24,7 +24,7 @@ const allItems = [...items, temploItem];
 const hasMultiple = allItems.length > 1;
 ---
 
-<div class="hero-banner" data-hero-banner data-interval={String(interval)}>
+<div class="hero-banner shimmer" data-hero-banner data-interval={String(interval)}>
   {allItems.map((item, i) => (
     <div
       class:list={['hero-banner__slide', { 'hero-banner__slide--active': i === 0 }]}

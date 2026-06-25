@@ -37,12 +37,13 @@ const showCountdown = daysUntil > 0 && daysUntil <= 90;
 ---
 
 <a href={l(`/events/${slug}`)} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
-  <div class="aspect-16/10 overflow-hidden relative">
+  <div class="aspect-16/10 overflow-hidden relative shimmer">
     <img 
       src={image} 
       alt={title} 
       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
       referrerpolicy="no-referrer"
+      loading="lazy"
     />
     {showCountdown && (
       <div class="absolute top-4 right-4 bg-rausch text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">

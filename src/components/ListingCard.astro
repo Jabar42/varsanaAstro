@@ -14,12 +14,13 @@ const { title, description, price, rating = "4.9", image, tag } = Astro.props;
 ---
 
 <div class="group cursor-pointer">
-  <div class="relative aspect-square overflow-hidden rounded-xl mb-3">
+  <div class="relative aspect-square overflow-hidden rounded-xl mb-3 shimmer">
     <img 
       src={image} 
       alt={title} 
       class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
       referrerpolicy="no-referrer"
+      loading="lazy"
     />
     <button class="absolute top-3 right-3 text-white/70 hover:text-rausch transition-colors">
       <Heart size={24} fill="rgba(0,0,0,0.3)" strokeWidth={2} />
