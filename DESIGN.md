@@ -17,7 +17,7 @@ colors:
   secondary-gray: "#6A6A6A"
   sacred-sand: "#FAF9F6"
   lotus-white: "#FFFFFF"
-  light-surface: "#F7F7F7"
+  light-surface: "#ECECEC"
 
 typography:
   hero-heading:
