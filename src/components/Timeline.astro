@@ -1,0 +1,62 @@
+---
+import { Calendar, Building2, Flower2, Heart } from 'lucide-react';
+
+interface TimelineItem {
+  date: string;
+  text: string;
+  icon: string;
+}
+
+const items: TimelineItem[] = [
+  {
+    date: '1967',
+    text: 'Inicio del yoga-monasterio. Una fraccion del terreno fue donado, dando inicio al proyecto Vaisnava, Vrinda Parivar en Colombia.',
+    icon: 'calendar',
+  },
+  {
+    date: 'Decada de 1980',
+    text: 'En compania de maestros espirituales, se da inicio a la construccion del templo ecologico, inspirado en la arquitectura hindu.',
+    icon: 'building2',
+  },
+  {
+    date: 'Decada de 1990',
+    text: 'Evoluciona a un santuario que integra practicas de meditacion, yoga, alimentacion consciente y vida comunitaria.',
+    icon: 'flower2',
+  },
+  {
+    date: 'Hoy',
+    text: 'Seguimos cultivando comunidad, cuidando la tierra y compartiendo un camino de vida consciente con personas de todo el mundo.',
+    icon: 'heart',
+  },
+];
+
+const iconMap: Record<string, any> = {
+  calendar: Calendar,
+  building2: Building2,
+  flower2: Flower2,
+  heart: Heart,
+};
+---
+
+<div class="relative py-16 md:py-24">
+  <!-- Linea horizontal -->
+  <div class="hidden md:block absolute top-24 left-0 right-0 h-0.5 bg-saffron/30" aria-hidden="true"></div>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4">
+    {items.map((item) => {
+      const IconComponent = iconMap[item.icon];
+      return (
+        <div class="relative flex flex-col items-center text-center group">
+          <!-- Circulo con icono -->
+          <div class="relative z-10 w-16 h-16 rounded-full bg-saffron/10 border-2 border-saffron flex items-center justify-center text-saffron mb-4 group-hover:bg-saffron group-hover:text-white transition-colors duration-300">
+            <IconComponent size={28} />
+          </div>
+          <!-- Fecha -->
+          <p class="font-display font-bold text-lg text-rausch mb-2">{item.date}</p>
+          <!-- Texto -->
+          <p class="text-secondary-gray text-sm leading-relaxed max-w-xs">{item.text}</p>
+        </div>
+      );
+    })}
+  </div>
+</div>
