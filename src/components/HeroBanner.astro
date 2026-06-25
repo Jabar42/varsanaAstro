@@ -128,11 +128,18 @@ const hasMultiple = allItems.length > 1;
       startTimer();
     }
 
-    if (prev) prev.addEventListener('click', () => { goPrev(); resetTimer(); });
-    if (next) next.addEventListener('click', () => { goNext(); resetTimer(); });
+    // Named handlers para poder removerlos correctamente
+    function handlePrev() { goPrev(); resetTimer(); }
+    function handleNext() { goNext(); resetTimer(); }
+    const dotHandlers: Array<{ dot: HTMLButtonElement; fn: () => void }> = [];
+
+    if (prev) prev.addEventListener('click', handlePrev);
+    if (next) next.addEventListener('click', handleNext);
 
     dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => { show(i); resetTimer(); });
+      const fn = () => { show(i); resetTimer(); };
+      dot.addEventListener('click', fn);
+      dotHandlers.push({ dot, fn });
     });
 
     const pauseZone = el.querySelector('.hero-banner__content');
@@ -147,11 +154,15 @@ const hasMultiple = allItems.length > 1;
 
     return () => {
       stopTimer();
-      if (prev) prev.removeEventListener('click', () => { goPrev(); resetTimer(); });
-      if (next) next.removeEventListener('click', () => { goNext(); resetTimer(); });
-      dots.forEach((dot, i) => {
-        dot.removeEventListener('click', () => { show(i); resetTimer(); });
-      });
+      if (prev) prev.removeEventListener('click', handlePrev);
+      if (next) next.removeEventListener('click', handleNext);
+      dotHandlers.forEach(({ dot, fn }) => dot.removeEventListener('click', fn));
+      if (pauseZone) {
+        pauseZone.removeEventListener('mouseenter', stopTimer);
+        pauseZone.removeEventListener('mouseleave', startTimer);
+        pauseZone.removeEventListener('focusin', stopTimer);
+        pauseZone.removeEventListener('focusout', startTimer);
+      }
     };
   }
 
