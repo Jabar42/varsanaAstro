@@ -30,18 +30,24 @@ prices:
   - label: "Regular"
     amount: 220000
 ---
-## Un espacio para escucharte
+<h2 class="text-3xl font-display font-bold tracking-tightest text-near-black mt-14 mb-5">Un espacio para escucharte</h2>
 
-Este retiro está diseñado para que puedas desconectar del ruido exterior y conectar con tu voz interior.
+<p class="text-secondary-gray text-lg leading-relaxed mb-5">Este retiro está diseñado para que puedas desconectar del ruido exterior y conectar con tu voz interior.</p>
 
-### Lo que vivirás
-- Meditaciones guiadas por la mañana y la tarde.
-- Caminatas contemplativas por el bosque.
-- Alimentación ayurvédica preparada con amor.
-- Espacios de escritura reflexiva.
+<h3 class="text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4">Lo que vivirás</h3>
 
-### Recomendaciones
-- Traer ropa cómoda y una manta para sentarse.
-- Se recomienda dejar dispositivos electrónicos en casa.
-- El silencio comienza el viernes a las 6 p. m. y finaliza el domingo al mediodía.
+<ul class="space-y-2 my-5 list-none">
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Meditaciones guiadas por la mañana y la tarde.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Caminatas contemplativas por el bosque.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Alimentación ayurvédica preparada con amor.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Espacios de escritura reflexiva.</li>
+</ul>
+
+<h3 class="text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4">Recomendaciones</h3>
+
+<ul class="space-y-2 my-5 list-none">
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Traer ropa cómoda y una manta para sentarse.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Se recomienda dejar dispositivos electrónicos en casa.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> El silencio comienza el viernes a las 6 p. m. y finaliza el domingo al mediodía.</li>
+</ul>
 ```

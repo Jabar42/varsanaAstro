@@ -4,145 +4,80 @@ description: Step-by-step instructions for publishing a new event in the Astro c
 ---
 # How to Publish a New Event
 
-## Overview
+Events are managed through **content collections**. Each event is a `.mdoc` file in `src/content/events/`. The filename is the entry ID (URL slug, `content_id` in payment orders). The body is written in **HTML with Tailwind classes**; the formatting guide is at [`event-content-formatting`](../event-content-formatting/SKILL.md).
 
-Events in this Astro project are managed through **content collections**. Each event is a Markdown file placed in `src/content/events/` with a defined frontmatter schema. The system automatically:
+## Workflow with the user
 
-- Lists upcoming events on the main events page (`/events`) using the `getUpcomingEvents` helper.
-- Generates a dedicated detail page for each event at `/events/[slug]`, where the URL is derived from the entry ID (the filename without extension).
-- Selects the currently active price based on deadlines (if any) via `getCurrentPrice`.
+When a user asks you to publish an event in natural language (e.g. *"publica un retiro de yoga el 20 de julio, 20 cupos, 180 lucas"*), follow this process:
 
-The frontmatter schema is defined in `src/content.config.ts` and includes `title`, `description`, `event_start`, `event_end` (optional), `image`, `stock_max`, and an array of `prices`.
+### 1. Extract what you already know
+
+Map what the user said directly to fields:
+
+| What the user says | Field |
+|--------------------|-------|
+| "20 de julio" / "fin de semana del 18 al 20" | `event_start`, `event_end` |
+| "20 cupos" / "máximo 30 personas" | `stock_max` → `20` |
+| "180 lucas" / "350.000 por persona" | `amount` → `180000` |
+| "preventa hasta el 1 de julio" | `deadline` |
+| "retiro de yoga y meditación" | `title` → `"Retiro de Yoga y Meditación"` |
+| "precio por pareja 600.000" | Separate price tier with higher `amount` |
+
+### 2. Apply smart defaults
+
+Fields the user didn't mention that you can **infer without asking**:
+
+| Field | Default | When to use |
+|-------|---------|-------------|
+| `image` | `https://picsum.photos/seed/<slug>/1600/1000` | Always, unless the user provides a URL |
+| `location` | `"Granada, Cundinamarca"` | Unless the user specifies another location |
+| `host_name` | `"Varsana"` | Unless specified otherwise |
+| `host_tagline` | `"Comunidad intencional · 15 años de sabiduría"` | Unless specified otherwise |
+| `destacado` | `false` | Unless the user wants it featured on the homepage |
+| `orden` | `0` | If no preference |
+| `event_end` | Omit it | If it's a single-day event (no end date mentioned) |
+| Prices without `deadline` | The last price in the array | Acts as the "regular" fallback price |
+
+### 3. Ask only what's necessary
+
+Fields you **must ask about** if the user didn't mention them:
+
+- **`event_start`**: If the user says "publica un retiro" with no date at all, ask. This is required.
+- **Price**: If the user says "publica algo" without mentioning money, ask for `amount` and whether they want early-bird pricing with a deadline.
+- **`stock_max`**: If no capacity is mentioned, ask. Don't assume a number.
+
+### 4. Confirm before writing
+
+Before creating the file, show the user a summary of what you understood:
+
+> *"Ok, I'll publish:*
+> - *File: `retiro-yoga-meditacion.mdoc`*
+> - *Title: Retiro de Yoga y Meditación*
+> - *Date: July 20, 2026*
+> - *Price: $180.000 General*
+> - *Capacity: 20*
+> - *Image: picsum placeholder*
+>
+> *Create it?"*
+
+Only write the file once the user confirms.
 
 ## Step‑by‑Step Instructions
 
-For detailed step‑by‑step instructions, see [Step‑by‑Step Instructions](references/step-by-step-instructions.md).
+[Step‑by‑Step Instructions](references/step-by-step-instructions.md) — complete guide: filename, frontmatter, prices, body format.
 
 ## Examples
 
-For minimal and complete examples, see [Examples](references/examples.md).
-
-## Integration Details
-
-### Automatic inclusion in the upcoming events list
-The helper `getUpcomingEvents` (in `src/lib/events.ts`) fetches all events, filters out past dates, and sorts them chronologically. Your new event will appear on the main events page (`/events`) as soon as the site is rebuilt.
-
-### Event identification (filename = slug = entry ID)
-The **filename** (without `.mdoc` extension) serves as the canonical identifier — it determines the URL slug (`/events/<filename>`), the API slug (`?slug=<filename>`), and the `content_id` used by payment orders. There is no separate `id` in the frontmatter.
-
-- The URL path is derived from the **filename**. Example: `retiro-silencio.mdoc` → `/events/retiro-silencio`.
-- Payment orders reference events by their **entry ID** (filename without extension).
-- Choose the filename carefully — once published and linked to payment records, renaming it would break associations.
-
-### Stock management (`stock_max`)
-The `stock_max` field defines the maximum capacity (number of available spots) for the event. This value will be used to control reservations and prevent overbooking when the payment gateway is integrated.
-
-- Must be a positive integer.
-- Set realistically based on the venue capacity and logistics.
-- Example: `stock_max: 30` for an intimate retreat, `stock_max: 500` for a large festival.
-
-### Price deadline logic (`getAvailablePrices`, `getCurrentPrice`, `getBasePrice`)
-There are three functions for price selection:
-
-**`getAvailablePrices(prices, eventStart)`** — Returns all prices whose effective deadline is still in the future.
-
-**`getBasePrice(prices)`** — Returns the price with the lowest `min_quantity` (the base "starting from" price). Used in the sidebar.
-
-**`getCurrentPrice(prices, eventStart?)`** — Determines the active price tier by deadline.
-
-**UTC midnight caveat:** Deadlines are parsed as UTC midnight. Plan accordingly.
-
-### Volume discounts (`min_quantity`)
-
-Each price tier can have a `min_quantity` field (default `1`). The BoldPaymentButton automatically applies the tier with the highest `min_quantity` that the selected quantity satisfies.
-
-**Example — descuento al comprar 2+ personas:**
-```yaml
-prices:
-  - label: "General"
-    amount: 230000
-    min_quantity: 1
-  - label: "General"
-    amount: 200000
-    min_quantity: 2
-```
-- 1 persona → $230.000/persona
-- 2+ personas → $200.000/persona
-
-Both tiers use the same `label`. The component shows a single "Personas" counter, not separate ticket types. The price per person updates automatically.
-
-### Event detail page generation
-The file `src/pages/events/[slug].astro` dynamically generates a page for each event. It uses the event's frontmatter for the title, description, image, and prices, and renders the Markdown body as HTML. The page also displays the active price tier and a "Reservar ahora" button ready for payment gateway integration.
+[Examples](references/examples.md) — minimal frontmatter and complete example with HTML+Tailwind body.
 
 ## Common Pitfalls & Tips
 
-### Date formats
-- **Always** use `YYYY-MM-DD` (with standard ASCII hyphens). Other formats (like `DD/MM/YYYY`) will cause parsing errors.
-- The `event_start`, `event_end` (optional), and `deadline` fields are parsed as `Date` objects by the schema.
-- For single-day events, omit `event_end`. For multi-day events, add `event_end`.
-- If a price has no explicit `deadline`, its effective deadline defaults to `event_start` (the ticket is available until the event starts).
-
-### Imágenes
-- Usa la skill [`upload-image`](../upload-image/SKILL.md) para subir la imagen del evento al bucket `VarsanaImages` y obtener una URL pública.
-- Si el evento aún no tiene imagen, usa `https://picsum.photos/seed/<event-slug>/1600/1000` como placeholder temporal.
-- La imagen debe ser de alta calidad y orientación horizontal (16:10 funciona bien).
-
-### Deadline timezone issue
-- As noted above, deadlines are evaluated at UTC midnight. If you want a deadline to be effective until the end of a certain day in Colombia, set the deadline **one day later** (e.g., if the cutoff is April 15 Colombia time, write `deadline: 2026-04-16`).
-
-### Price ordering
-- For deadline-based tiers: place them in order. The last price is the fallback ("regular" price at the end).
-- For volume discounts: order doesn't matter — the component picks the tier with the highest `min_quantity` that the quantity satisfies.
-- Example with deadlines:
-  ```yaml
-  prices:
-    - label: "Super Early Bird"
-      amount: 50000
-      deadline: 2026-03-01
-    - label: "Early Bird"
-      amount: 60000
-      deadline: 2026-04-01
-    - label: "Regular"            # fallback if both deadlines passed
-      amount: 80000
-  ```
-
-### YAML syntax
-- Use spaces (not tabs) for indentation.
-- Each price entry must start with a hyphen and a space.
-- The `amount` must be a plain number (no currency symbols, no commas).
-
-## Validation
-
-After creating your event file, verify that everything works as expected:
-
-1. **Check the events list** – Run the development server (`npm run dev`) and visit `/events`. Your new event should appear in the upcoming events grid.
-
-2. **Visit the detail page** – Click on the event card or navigate directly to `/events/[entry-id]`. Confirm that:
-   - The title, description, and image are displayed correctly.
-   - The Markdown body renders properly.
-   - The price card shows the expected active tier.
-
-3. **Test price selection** – If you included deadlines, verify that the active price changes as expected when the deadline passes (you can temporarily adjust your system clock or create a test event with a near‑future deadline).
-
-4. **Build the site** – Run `npm run build` to ensure there are no schema validation errors.
-
-If any step fails, review the frontmatter for typos, check the YAML indentation, and consult the browser's developer console for errors.
+- **Date format:** Always `YYYY-MM-DD` with standard ASCII hyphens.
+- **`event_end`:** Omit for single-day events. Add only if the user mentions multiple days.
+- **YAML:** Use spaces (not tabs) for indentation. Each price starts with a hyphen and a space.
+- **`amount`:** Plain number, no currency symbols or commas (e.g. `180000`).
+- **Sentence case:** Title must start with uppercase, no ALL CAPS, no emoji.
 
 ---
 
-## Bold Payment Gateway Integration
-
-This project uses **Bold Payment Gateway** for online payments. When you publish a new event:
-
-1. **`stock_max` is critical** — This value seeds the inventory table. It controls how many reservations are accepted before the event sells out. Choose it carefully.
-2. **The entry ID (filename) is the key** — Payment orders reference events by the entry ID (the filename without extension). Never rename an event file after it has been published and linked to payment records.
-3. **Prices come from frontmatter** — The checkout API reads prices from the Markdown file, not from user input. The API validates ticket labels against the frontmatter and calculates amounts server-side to prevent price manipulation.
-4. **Lazy inventory init** — If no inventory row exists for your event when the first checkout is attempted, one will be created automatically from the frontmatter `stock_max`.
-
-For full details on the payment integration, see [`payment-integration-bold`](../payment-integration-bold/SKILL.md).
-
----
-
-**See also:** [`upload-image`](../upload-image/SKILL.md), [`design‑guidelines`](../design-guidelines/SKILL.md), [`payment-integration-bold`](../payment-integration-bold/SKILL.md).
-
-*This guide is based on the project's implementation as of May 2026. For updates, refer to the latest `src/content.config.ts`, `src/lib/events.ts`, and [`payment-integration-bold`](../payment-integration-bold/SKILL.md).*
+**See also:** [`event-content-formatting`](../event-content-formatting/SKILL.md), [`upload-image`](../upload-image/SKILL.md), [`design-guidelines`](../design-guidelines/SKILL.md).

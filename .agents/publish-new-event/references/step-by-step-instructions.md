@@ -47,31 +47,47 @@ Each price object can have:
 
 **Multi-ticket behavior:** When an event has multiple prices, the BoldPaymentButton component shows a ticket selector where users can choose quantities of each ticket type. The total is calculated client-side and validated server-side. The checkout API reads prices from the Markdown file (not user input) to prevent price manipulation.
 
-### 4. Writing the markdown body
-Below the frontmatter, write the event's full description in Markdown.
+### 4. Writing the content body
+
+Below the frontmatter, write the event's full description. **The content must be written in HTML with Tailwind classes**, not plain Markdown. The complete formatting guide is at [`event-content-formatting`](../../event-content-formatting/SKILL.md).
+
+**Required classes for each element:**
+
+| Element | HTML + Tailwind classes |
+|---------|----------------------|
+| h2 (main section) | `<h2 class="text-3xl font-display font-bold tracking-tightest text-near-black mt-14 mb-5">` |
+| h3 (subsection) | `<h3 class="text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4">` |
+| p (paragraph) | `<p class="text-secondary-gray text-lg leading-relaxed mb-5">` |
+| ul (list) | `<ul class="space-y-2 my-5 list-none">` |
+| li (list item) | `<li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> ...</li>` |
+| li with schedule | `<li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>8:00 a. m.</strong> – Description</li>` |
 
 **Recommended structure:**
-- Start with an engaging headline (H2).
-- Use short paragraphs and bullet lists for readability.
-- Include subsections such as "What to Expect", "Schedule", "Location", "What to Bring", etc.
-- Maintain a friendly, inspirational tone that matches the Varsana brand.
+- Start with an engaging opening paragraph that introduces the experience.
+- Organize content into sections using h2/h3.
+- Use lists with green bullets for schedules, included items, and recommendations.
+- Include subsections such as "¿Qué incluye?", "Itinerario", "¿Qué debes traer?", "Recomendaciones".
 
 **Example body snippet:**
-```markdown
-## ¡Una experiencia que transforma!
+```html
+<h2 class="text-3xl font-display font-bold tracking-tightest text-near-black mt-14 mb-5">¡Una experiencia que transforma!</h2>
 
-Ven a reconectar con la naturaleza y contigo mismo en un entorno único.
+<p class="text-secondary-gray text-lg leading-relaxed mb-5">Ven a reconectar con la naturaleza y contigo mismo en un entorno único.</p>
 
-### ¿Qué incluye?
-- Meditación guiada al amanecer.
-- Taller de permacultura práctica.
-- Almuerzo vegetariano consciente.
-- Ceremonia de cierre alrededor del fuego.
+<h3 class="text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4">¿Qué incluye?</h3>
 
-### Información práctica
-**Fecha:** Domingo, 18 de abril de 2026  
-**Horario:** 8:00 a. m. – 6:00 p. m.  
-**Ubicación:** Varsana Eco Aldea – Yoga Village, Km 28 Vía Melgar (Granada, Cundinamarca)
+<ul class="space-y-2 my-5 list-none">
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Meditación guiada al amanecer.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Taller de permacultura práctica.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Almuerzo vegetariano consciente.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Ceremonia de cierre alrededor del fuego.</li>
+</ul>
+
+<h3 class="text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4">Información práctica</h3>
+
+<p class="text-secondary-gray text-lg leading-relaxed mb-5"><strong>Fecha:</strong> Domingo, 18 de abril de 2026</p>
+<p class="text-secondary-gray text-lg leading-relaxed mb-5"><strong>Horario:</strong> 8:00 a. m. – 6:00 p. m.</p>
+<p class="text-secondary-gray text-lg leading-relaxed mb-5"><strong>Ubicación:</strong> Varsana Eco Aldea – Yoga Village, Km 28 Vía Melgar (Granada, Cundinamarca)</p>
 ```
 
 ### 5. Where to place the file

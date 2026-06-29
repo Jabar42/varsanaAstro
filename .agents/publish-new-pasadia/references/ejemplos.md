@@ -3,7 +3,6 @@
 ### Frontmatter mínimo
 ```yaml
 ---
-id: "pasadia-bienestar"
 title: "Pasadía de Bienestar"
 description: "Una jornada de reconexión interior a través del yoga y la meditación."
 image: "https://picsum.photos/seed/bienestar/1600/1000"
@@ -20,7 +19,6 @@ category: "bienestar"
 ### Ejemplo completo (frontmatter + cuerpo)
 ```markdown
 ---
-id: "caminata-ecologica"
 title: "Caminata Ecológica por la Montaña"
 description: "Una jornada de conexión con la naturaleza a través de senderos ancestrales."
 image: "https://picsum.photos/seed/caminata/1600/1000"
@@ -39,23 +37,27 @@ included_services:
   - "Almuerzo vegetariano"
   - "Materiales para la caminata"
 ---
-## Una experiencia que te conecta con la tierra
+<h2 class="text-3xl font-display font-bold tracking-tightest text-near-black mt-14 mb-5">Una experiencia que te conecta con la tierra</h2>
 
-Sumérgete en los senderos ancestrales de la montaña sagrada de Varsana. Esta caminata ecológica está diseñada para quienes buscan un contacto profundo con la naturaleza, lejos del ruido urbano.
+<p class="text-secondary-gray text-lg leading-relaxed mb-5">Sumérgete en los senderos ancestrales de la montaña sagrada de Varsana. Esta caminata ecológica está diseñada para quienes buscan un contacto profundo con la naturaleza, lejos del ruido urbano.</p>
 
-### Itinerario aproximado
+<h3 class="text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4">Itinerario aproximado</h3>
 
-- **8:00 a. m.** – Encuentro en la entrada principal.
-- **8:30 a. m.** – Inicio de la caminata con una ceremonia de gratitud a la tierra.
-- **10:00 a. m.** – Parada en el mirador "El Colibrí" para meditación guiada.
-- **12:00 p. m.** – Almuerzo vegetariano preparado con ingredientes locales.
-- **2:00 p. m.** – Continuación del recorrido hasta la cascada "Agua Clara".
-- **4:00 p. m.** – Regreso al punto de encuentro y cierre con círculo de compartir.
+<ul class="space-y-2 my-5 list-none">
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>8:00 a. m.</strong> – Encuentro en la entrada principal.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>8:30 a. m.</strong> – Inicio de la caminata con una ceremonia de gratitud a la tierra.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>10:00 a. m.</strong> – Parada en el mirador "El Colibrí" para meditación guiada.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>12:00 p. m.</strong> – Almuerzo vegetariano preparado con ingredientes locales.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>2:00 p. m.</strong> – Continuación del recorrido hasta la cascada "Agua Clara".</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>4:00 p. m.</strong> – Regreso al punto de encuentro y cierre con círculo de compartir.</li>
+</ul>
 
-### ¿Qué incluye?
+<h3 class="text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4">¿Qué incluye?</h3>
 
-- Guía especializado en ecoturismo y sabiduría ancestral.
-- Almuerzo vegetariano completo (plato principal, bebida y postre).
-- Bastones de trekking y botella de agua reutilizable.
-- Seguro de asistencia médica durante la actividad.
+<ul class="space-y-2 my-5 list-none">
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Guía especializado en ecoturismo y sabiduría ancestral.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Almuerzo vegetariano completo (plato principal, bebida y postre).</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Bastones de trekking y botella de agua reutilizable.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Seguro de asistencia médica durante la actividad.</li>
+</ul>
 ```

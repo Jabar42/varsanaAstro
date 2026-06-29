@@ -8,5 +8,6 @@ export default new Map([
 ["src/content/events/temazcal-abundancia-consciente.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fevents%2Ftemazcal-abundancia-consciente.mdoc&astroContentModuleFlag=true")],
 ["src/content/nosotros/ana-garcia.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fnosotros%2Fana-garcia.mdoc&astroContentModuleFlag=true")],
 ["src/content/nosotros/prabhu-vinayaka-das.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fnosotros%2Fprabhu-vinayaka-das.mdoc&astroContentModuleFlag=true")],
-["src/content/pasadias/caminata-ecologica.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fpasadias%2Fcaminata-ecologica.mdoc&astroContentModuleFlag=true")]]);
+["src/content/pasadias/caminata-ecologica.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fpasadias%2Fcaminata-ecologica.mdoc&astroContentModuleFlag=true")],
+["src/content/pasadias/pasadia-basico.mdoc", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fpasadias%2Fpasadia-basico.mdoc&astroContentModuleFlag=true")]]);
 		

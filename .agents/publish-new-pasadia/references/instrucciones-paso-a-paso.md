@@ -1,16 +1,15 @@
 ## Instrucciones paso a paso
 
 ### 1. Elegir un nombre de archivo
-- Crea un nuevo archivo `.md` dentro de `src/content/pasadias/`.
-- El nombre del archivo determina el ID de entrada (que se usa como slug de la URL). Usa **kebab‑case**, minúsculas y evita caracteres especiales.
-- Recomendación: usar un nombre descriptivo en español, como `caminata-ecologica.md` o `pasadia-basico.md`.
 
-### 2. Campos obligatorios del frontmatter
-Cada pasadía debe incluir los siguientes campos en el frontmatter:
+Crea un nuevo archivo `.mdoc` dentro de `src/content/pasadias/`. El nombre del archivo **es** el entry ID: determina el slug de la URL (`/pasadias/<filename>`), cómo se referencia desde `getEntry()`, y el `content_id` en las órdenes de pago. No cambies el nombre después de publicar.
+
+Usa **kebab‑case**, minúsculas y evita caracteres especiales. Ejemplo: `caminata-ecologica.mdoc`, `pasadia-bienestar.mdoc`.
+
+### 2. Campos del frontmatter
 
 ```yaml
 ---
-id: "mi-pasadia-id"
 title: "Título del pasadía"
 description: "Una descripción corta y atractiva para SEO y tarjetas."
 image: "https://picsum.photos/seed/tu-pasadia/1600/1000"
@@ -27,64 +26,79 @@ included_services:
 ---
 ```
 
-#### Detalles de cada campo
-- **`id`** (string): Un identificador único y persistente para el pasadía. Este ID se usará para la integración con la pasarela de pagos y no cambiará aunque se renombre el archivo. La URL de la página de detalle se deriva de este ID (ej. `id: "caminata-ecologica"` → `/pasadias/caminata-ecologica`). Usa kebab‑case.
-- **`title`** (string): Nombre visible del pasadía. Debe estar en **minúscula con la primera letra mayúscula** (sentence case; ej. `"Caminata ecológica por la montaña"`). **No** uses MAYÚSCULAS SOSTENIDAS ni caracteres emoji.
-- **`description`** (string): Resumen de una o dos frases que se usará en las meta‑etiquetas y en las tarjetas de listado.
-- **`image`** (string): URL de una imagen de alta calidad. Usa la skill [`upload-image`](../../upload-image/SKILL.md) para subir la imagen al bucket `VarsanaImages` y obtener la URL pública. Si aún no tienes la imagen, usa `https://picsum.photos/seed/<pasadia-slug>/1600/1000` como placeholder temporal.
-- **`prices`** (array): Lista de objetos de precio (misma estructura que los eventos).
-- **`stock_max`** (number): Cupo máximo de personas **por día**. El inventario se gestiona por fecha: cada día tiene su propio cupo independiente.
-- **`destacado`** (boolean, opcional): Ponlo en `true` para que este pasadía aparezca en el slider de la homepage. Por defecto es `false`.
-- **`orden`** (number, opcional): Posición dentro del slider. Números más bajos aparecen primero. Por defecto es `0`.
-- **`duration`** (string): Duración aproximada en formato legible, ej. `"8 horas"`, `"4–5 horas"`, `"medio día"`.
-- **`meeting_point`** (string): Punto de encuentro donde los participantes deben presentarse. Incluye dirección completa o referencias claras.
-- **`category`** (string): Categoría temática del pasadía. Se usa para filtros en la interfaz. Los valores existentes son `"naturaleza"`, `"ecologico"`, `"bienestar"`, etc. Mantén la consistencia con las categorías ya usadas.
-- **`included_services`** (array de strings, opcional): Lista de servicios, elementos o beneficios incluidos en el pasadía. Si no se especifica, por defecto es un array vacío `[]`.
+#### Campos obligatorios
+
+- **`title`** (string): Nombre visible del pasadía. Sentence case (primera letra mayúscula). No usar MAYÚSCULAS SOSTENIDAS ni emoji.
+- **`description`** (string): Resumen de una o dos frases para meta‑etiquetas y tarjetas de listado.
+- **`image`** (string): URL de una imagen de alta calidad. Usa la skill [`upload-image`](../../upload-image/SKILL.md) para subirla al bucket `VarsanaImages`. Si aún no tienes la imagen, usa `https://picsum.photos/seed/<pasadia-slug>/1600/1000` como placeholder.
+- **`prices`** (array): Lista de objetos de precio (ver sección 3).
+- **`stock_max`** (number): Cupo máximo de personas **por día**.
+- **`duration`** (string): Duración aproximada, ej. `"8 horas"`, `"4–5 horas"`, `"medio día"`.
+- **`meeting_point`** (string): Punto de encuentro con dirección completa o referencias claras.
+- **`category`** (string): Categoría temática. Valores existentes: `"naturaleza"`, `"ecologico"`, `"bienestar"`. Usá una ya existente para mantener consistencia en los filtros.
+
+#### Campos opcionales
+
+- **`destacado`** (boolean): `true` para que aparezca en el slider de la homepage. Default `false`.
+- **`orden`** (number): Posición dentro del slider. Números más bajos primero. Default `0`.
+- **`included_services`** (array de strings): Servicios incluidos. Default `[]`.
 
 ### 3. Estructura del objeto de precio
+
 Cada objeto de precio puede tener:
 
 | Campo | Tipo | Obligatorio | Descripción |
 |-------|------|-------------|-------------|
-| `label` | string | Sí | Nombre visible del nivel de precio (ej. "Preventa", "General", "VIP"). |
+| `label` | string | Sí | Nombre visible del nivel (ej. "Preventa", "General"). |
 | `amount` | number | Sí | Precio en pesos colombianos **sin decimales** (ej. `35000`). |
-| `deadline` | date | No | Fecha límite para este precio en formato `YYYY‑MM‑DD`. Si se omite, el precio está siempre disponible. |
+| `deadline` | date | No | Fecha límite en formato `YYYY‑MM‑DD`. Si se omite, el precio está siempre disponible. |
+| `min_quantity` | number | No | Cantidad mínima de personas para aplicar este precio. Default `1`. |
 
-**Orden importante:** La lista de precios se evalúa de primero a último. El primer precio con un `deadline` futuro se convierte en el precio activo. Si ningún deadline está en el futuro, se usa el **último** precio del array como fallback. Por tanto, coloca tu precio "regular" o "por defecto" al final.
+**Orden importante:** La lista de precios se evalúa de primero a último. El primer precio con un `deadline` futuro se convierte en el precio activo. Si todos los deadlines ya pasaron, se usa el **último** precio como fallback. Por tanto, poné tu precio "regular" al final.
 
-### 4. Escribir el cuerpo en Markdown
-Debajo del frontmatter, escribe la descripción completa del pasadía en Markdown.
+**Descuento por volumen con `min_quantity`:**
+```yaml
+prices:
+  - label: "General"
+    amount: 75000
+    min_quantity: 1
+  - label: "General"
+    amount: 65000
+    min_quantity: 4
+```
+- 1–3 personas → $75.000/persona
+- 4+ personas → $65.000/persona
 
-**Estructura recomendada:**
-- Comienza con un titular atractivo (H2).
-- Usa párrafos cortos y listas con viñetas para mejorar la legibilidad.
-- Incluye secciones como "Itinerario aproximado", "¿Qué incluye?", "Recomendaciones", "Punto de encuentro", "Políticas de cancelación", etc.
-- Mantén un tono amigable e inspirador que coincida con la marca Varsana.
+### 4. Escribir el cuerpo del contenido
+
+Debajo del frontmatter, escribí la descripción completa. **El contenido debe escribirse en HTML con clases Tailwind**, no en Markdown plano. La guía completa de formato está en [`event-content-formatting`](../../event-content-formatting/SKILL.md).
 
 **Fragmento de ejemplo:**
 
-```markdown
-## Una experiencia que te conecta con la tierra
+```html
+<h2 class="text-3xl font-display font-bold tracking-tightest text-near-black mt-14 mb-5">Una experiencia que te conecta con la tierra</h2>
 
-Sumérgete en los senderos ancestrales de la montaña sagrada de Varsana. Esta caminata ecológica está diseñada para quienes buscan un contacto profundo con la naturaleza, lejos del ruido urbano.
+<p class="text-secondary-gray text-lg leading-relaxed mb-5">Sumérgete en los senderos ancestrales de la montaña sagrada de Varsana. Esta caminata ecológica está diseñada para quienes buscan un contacto profundo con la naturaleza, lejos del ruido urbano.</p>
 
-### Itinerario aproximado
+<h3 class="text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4">Itinerario aproximado</h3>
 
-- **8:00 a. m.** – Encuentro en la entrada principal.
-- **8:30 a. m.** – Inicio de la caminata con una ceremonia de gratitud a la tierra.
-- **10:00 a. m.** – Parada en el mirador "El Colibrí" para meditación guiada.
-- **12:00 p. m.** – Almuerzo vegetariano preparado con ingredientes locales.
-- **2:00 p. m.** – Continuación del recorrido hasta la cascada "Agua Clara".
-- **4:00 p. m.** – Regreso al punto de encuentro y cierre con círculo de compartir.
+<ul class="space-y-2 my-5 list-none">
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>8:00 a. m.</strong> – Encuentro en la entrada principal.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>8:30 a. m.</strong> – Inicio de la caminata con una ceremonia de gratitud a la tierra.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>10:00 a. m.</strong> – Parada en el mirador "El Colibrí" para meditación guiada.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>12:00 p. m.</strong> – Almuerzo vegetariano preparado con ingredientes locales.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>2:00 p. m.</strong> – Continuación del recorrido hasta la cascada "Agua Clara".</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> <strong>4:00 p. m.</strong> – Regreso al punto de encuentro y cierre con círculo de compartir.</li>
+</ul>
 
-### ¿Qué incluye?
+<h3 class="text-2xl font-display font-bold tracking-tightest text-near-black mt-10 mb-4">¿Qué incluye?</h3>
 
-- Guía especializado en ecoturismo y sabiduría ancestral.
-- Almuerzo vegetariano completo (plato principal, bebida y postre).
-- Bastones de trekking y botella de agua reutilizable.
-- Seguro de asistencia médica durante la actividad.
+<ul class="space-y-2 my-5 list-none">
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Guía especializado en ecoturismo y sabiduría ancestral.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Almuerzo vegetariano completo (plato principal, bebida y postre).</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Bastones de trekking y botella de agua reutilizable.</li>
+  <li class="flex items-start gap-3 text-secondary-gray text-lg"><span class="text-forest mt-1.5 shrink-0">•</span> Seguro de asistencia médica durante la actividad.</li>
+</ul>
 ```
 
-### 5. Dónde guardar el archivo
-Guarda el archivo en `src/content/pasadias/`. El cargador de colecciones de contenido de Astro lo detectará automáticamente.
-
+**Estructura recomendada:** abrí con un párrafo atractivo, organizá el contenido con h2/h3, usá listas con bullets verdes para itinerarios y servicios, e incluí secciones como "Itinerario", "¿Qué incluye?", "Recomendaciones", "Punto de encuentro", "Políticas de cancelación".
