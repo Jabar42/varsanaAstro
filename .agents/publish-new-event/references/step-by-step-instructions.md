@@ -28,8 +28,8 @@ prices:
 - **`description`** (string): A one‑ or two‑sentence summary used in meta tags and cards.
 - **`event_start`** (date, required): The start date of the event in `YYYY‑MM‑DD` format.
 - **`event_end`** (date, optional): The end date of the event. Omit for single-day events. If set, used to determine if the event is still upcoming.
-- **`image`** (string): A high‑quality image URL. The project currently uses `picsum.photos` placeholders; replace with a real image when available.
-- **`stock_max`** (integer): Maximum capacity / number of available spots for the event. Must be a positive integer. **This value seeds the inventory table** — it controls how many reservations are accepted before the event sells out. Stock is managed via Supabase; see [`payment-integration-bold`](../../payment-integration-bold/SKILL.md) for details.
+- **`image`** (string): A high‑quality image URL. Use the [`upload-image`](../../upload-image/SKILL.md) skill to upload to the `VarsanaImages` bucket. If you don't have the image yet, use `https://picsum.photos/seed/<event-slug>/1600/1000` as a temporary placeholder.
+- **`stock_max`** (integer): Maximum capacity / number of available spots for the event. Must be a positive integer.
 - **`destacado`** (boolean, optional): Set to `true` to feature this event in the homepage slider. Defaults to `false`. Past events are automatically excluded from the slider even if `destacado` is `true`.
 - **`orden`** (number, optional): Sort order within the slider. Lower numbers appear first. Defaults to `0`.
 - **`prices`** (array): A list of price objects.

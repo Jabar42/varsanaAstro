@@ -9,11 +9,10 @@ description: Subir imagenes al bucket R2 de Varsana via API. Usar cuando se nece
 
 Las imagenes se almacenan en **R2** (Cloudflare) en el bucket `varsana-images`. Se suben via `POST /api/images` (multipart `file`). La API devuelve una URL publica que se usa en el frontmatter.
 
-Ya no se usa Supabase Storage ni el script `scripts/upload-image.ts`.
 
 ## Cuando usar esta skill
 
-- El usuario quiere subir una imagen para un evento, pasadia o miembro del equipo.
+- El usuario quiere subir una imagen para un evento, blog, pasadia o miembro del equipo.
 - Se esta creando contenido nuevo y necesita una imagen real (no placeholder).
 - Se necesita reemplazar una imagen existente.
 
@@ -54,7 +53,7 @@ Respuesta:
 image: "https://varsana-co.iaforchange.workers.dev/api/images/1718400000000-imagen.webp"
 ```
 
-Cuando el sitio migre a `varsana.co`, reemplazar el dominio.
+Cuando el sitio migre a `varsana.com`, reemplazar el dominio.
 
 ### 4. Verificar
 
