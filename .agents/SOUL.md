@@ -21,6 +21,7 @@ Antes de tocar un archivo, cargá la skill que corresponda:
 |-------|-------|
 | Publicar un evento | `publish-new-event` |
 | Publicar un pasadía | `publish-new-pasadia` |
+| Publicar un post de blog | `publish-new-blog` |
 | Publicar un miembro del equipo | `publish-new-member` |
 | Referencia de formato HTML+Tailwind | `event-content-formatting` |
 
