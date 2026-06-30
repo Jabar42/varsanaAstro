@@ -39,8 +39,7 @@ orden: 1
 El cuerpo del blog combina los patrones básicos de `event-content-formatting` (secciones 1–4) con patrones específicos de blog (secciones 5–6).
 
 **Estructura recomendada:**
-- Abrí con un **h1** que repita o expanda el título
-- Primer párrafo con **lead + drop cap** (`text-xl text-near-black lead-dropcap`)
+- Abrí directo con el **lead paragraph** (`text-xl text-near-black lead-dropcap`) — no repitas el título del frontmatter como h1, la página ya lo muestra
 - Organizá el contenido con **h2** para secciones principales
 - Usá **blockquote** para citas destacadas
 - Usá **párrafos estándar** (`text-secondary-gray`) para el texto corrido
@@ -49,8 +48,6 @@ El cuerpo del blog combina los patrones básicos de `event-content-formatting` (
 **Fragmento de ejemplo:**
 
 ```html
-<h1 class="text-4xl md:text-5xl font-display font-bold tracking-tightest text-near-black mb-6">Título del artículo</h1>
-
 <p class="text-xl text-near-black leading-relaxed mb-8 font-medium lead-dropcap">Primer párrafo del artículo, con drop cap decorativa. Acá va el gancho que atrapa al lector.</p>
 
 <h2 class="text-3xl font-display font-bold tracking-tightest text-near-black mt-14 mb-5">Primera sección</h2>

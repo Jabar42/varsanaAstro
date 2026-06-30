@@ -77,12 +77,7 @@ El primer párrafo de un post de blog usa un estilo destacado con drop cap:
 
 Los párrafos siguientes vuelven al formato estándar de la sección 2.
 
-## 6. Blog: Blockquote, links, h1
-
-**h1 (título del post, solo blog):**
-```html
-<h1 class="text-4xl md:text-5xl font-display font-bold tracking-tightest text-near-black mb-6">Título del artículo</h1>
-```
+## 6. Blog: Blockquote y links
 
 **Blockquote:**
 ```html
