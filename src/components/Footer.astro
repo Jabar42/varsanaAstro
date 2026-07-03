@@ -84,11 +84,3 @@ const switchUrl = (() => {
   </div>
 </footer>
 
-<script>
-  document.querySelectorAll('[data-locale-switch]').forEach((el) => {
-    el.addEventListener('click', () => {
-      const targetLocale = el.getAttribute('data-locale-switch');
-      document.cookie = 'varsana_locale=' + targetLocale + '; Path=/; Max-Age=31536000; SameSite=Lax';
-    });
-  });
-</script>
