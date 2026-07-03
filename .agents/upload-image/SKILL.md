@@ -39,21 +39,23 @@ Si el peso excede 150 KB, reducir calidad: `cwebp -q 50 ...` o redimensionar: `c
 
 ```bash
 curl -X POST https://varsana-co.iaforchange.workers.dev/api/images \
-  -F "file=@ruta/de/la/imagen.webp"
+  -F "file=@ruta/de/la/imagen.webp;type=image/webp"
 ```
 
 Respuesta:
 ```json
-{"ok":true,"url":"https://varsana-co.iaforchange.workers.dev/api/images/1718400000000-imagen.webp","key":"1718400000000-imagen.webp"}
+{"ok":true,"url":"/api/images/1718400000000-imagen.webp","key":"1718400000000-imagen.webp"}
 ```
 
 ### 3. Usar la URL en el frontmatter
 
+**Copiá exactamente el valor del campo `url`** de la respuesta de la API. No construyas la URL a mano — el timestamp lo genera el servidor y debe coincidir con la key en R2.
+
 ```yaml
-image: "https://varsana-co.iaforchange.workers.dev/api/images/1718400000000-imagen.webp"
+image: "/api/images/1718400000000-imagen.webp"
 ```
 
-Cuando el sitio migre a `varsana.com`, reemplazar el dominio.
+La URL es relativa a la raíz (`/api/images/...`). Esto funciona en cualquier dominio sin cambios.
 
 ### 4. Verificar
 

@@ -38,7 +38,7 @@ export const ALL: APIRoute = async ({ request, params }) => {
         httpMetadata: { contentType: "image/webp" },
       });
 
-      const imageUrl = `${new URL(request.url).origin}/api/images/${uploadKey}`;
+      const imageUrl = `/api/images/${uploadKey}`;
       return new Response(JSON.stringify({ ok: true, url: imageUrl, key: uploadKey }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
