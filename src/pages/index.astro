@@ -23,11 +23,11 @@ const featuredItems = await getFeaturedItems({
 });
 
 const discoveryCards = [
-  { title: 'Temazcal', slug: 'temazcal' },
-  { title: 'Yoga', slug: 'yoga' },
-  { title: 'Alimentación', slug: 'alimentacion' },
-  { title: 'Huerta', slug: 'huerta' },
-  { title: 'Cuevas', slug: 'cuevas' },
+  { title: 'Temazcal', slug: 'temazcal', image: '/api/images/1783043616931-Temazcal.webp' },
+  { title: 'Yoga', slug: 'yoga', image: '/api/images/1783043619441-Yoga.webp' },
+  { title: 'Alimentación', slug: 'alimentacion', image: '/api/images/1783043620669-Alimentacion.webp' },
+  { title: 'Huerta', slug: 'huerta', image: '/api/images/1783043621950-Huerta.webp' },
+  { title: 'Cuevas', slug: 'cuevas', image: '/api/images/1783043618248-Cuevas.webp' },
 ];
 ---
 
@@ -72,7 +72,7 @@ const discoveryCards = [
           >
             <div class="aspect-1/2 overflow-hidden rounded-lg relative shadow-airbnb transition-shadow duration-500">
               <img
-                src={`https://picsum.photos/seed/${card.slug}/400/800`}
+                src={card.image}
                 alt={card.title}
                 draggable="false"
                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
@@ -96,7 +96,7 @@ const discoveryCards = [
           >
             <div class="aspect-1/2 overflow-hidden rounded-2xl relative">
               <img
-                src={`https://picsum.photos/seed/${card.slug}/400/800`}
+                src={card.image}
                 alt={card.title}
                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
               />
