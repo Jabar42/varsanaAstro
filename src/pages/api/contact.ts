@@ -34,7 +34,7 @@ export const POST: APIRoute = async ({ request }) => {
       'INSERT INTO contacts (nombre, email, mensaje, created_at) VALUES (?, ?, ?, ?)'
     ).bind(contact.nombre, contact.email, contact.mensaje, contact.timestamp).run();
 
-    // Telegram notification (fire and forget)
+    // Telegram notification (blocking with 3s timeout)
     const token = env.TELEGRAM_BOT_TOKEN as string;
     const chatId = env.TELEGRAM_CHAT_ID as string;
     if (token && chatId) {
@@ -46,15 +46,20 @@ export const POST: APIRoute = async ({ request }) => {
         contact.mensaje ? `\n<i>${contact.mensaje.slice(0, 300)}</i>` : '',
       ].filter(Boolean).join('\n');
 
-      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
-      }).then(r => {
-        if (!r.ok) console.error('[CONTACT] Telegram:', r.status);
-      }).catch(e => {
-        console.error('[CONTACT] Telegram error:', e);
-      });
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 3000);
+      try {
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+          signal: controller.signal,
+        });
+      } catch (e) {
+        console.error('[CONTACT] Telegram:', e);
+      } finally {
+        clearTimeout(timeout);
+      }
     } else {
       console.error('[CONTACT] Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID');
     }
