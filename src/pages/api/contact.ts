@@ -1,12 +1,14 @@
 import type { APIRoute } from 'astro';
-import { env } from 'cloudflare:workers';
 
 export const prerender = false;
 
-async function notifyTelegram(contact: Record<string, string>) {
+async function notifyTelegram(contact: Record<string, string>, env: any) {
   const token = env.TELEGRAM_BOT_TOKEN;
   const chatId = env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) return;
+  if (!token || !chatId) {
+    console.error('[CONTACT] Telegram config missing');
+    return;
+  }
 
   const text = [
     '📬 <b>Nuevo contacto — Varsana</b>',
@@ -17,22 +19,35 @@ async function notifyTelegram(contact: Record<string, string>) {
   ].filter(Boolean).join('\n');
 
   try {
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
     });
-  } catch {
-    // Non-blocking
+    if (!res.ok) {
+      console.error('[CONTACT] Telegram error:', res.status, await res.text());
+    }
+  } catch (err) {
+    console.error('[CONTACT] Telegram fetch failed:', err);
   }
 }
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const formData = await request.formData();
-    const nombre = formData.get('nombre')?.toString() || '';
-    const email = formData.get('email')?.toString() || '';
-    const mensaje = formData.get('mensaje')?.toString() || '';
+    let nombre = '', email = '', mensaje = '';
+
+    const contentType = request.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const body = await request.json();
+      nombre = body.nombre || '';
+      email = body.email || '';
+      mensaje = body.mensaje || '';
+    } else {
+      const formData = await request.formData();
+      nombre = formData.get('nombre')?.toString() || '';
+      email = formData.get('email')?.toString() || '';
+      mensaje = formData.get('mensaje')?.toString() || '';
+    }
 
     if (!nombre || !email) {
       return new Response(
@@ -44,13 +59,16 @@ export const POST: APIRoute = async ({ request }) => {
     const contact = { nombre, email, mensaje, timestamp: new Date().toISOString() };
 
     // Store in D1
-    await env.DB.prepare(
-      'INSERT INTO contacts (nombre, email, mensaje, created_at) VALUES (?, ?, ?, ?)'
-    ).bind(contact.nombre, contact.email, contact.mensaje, contact.timestamp).run();
+    const env = (locals as any).runtime?.env;
+    if (env?.DB) {
+      await env.DB.prepare(
+        'INSERT INTO contacts (nombre, email, mensaje, created_at) VALUES (?, ?, ?, ?)'
+      ).bind(contact.nombre, contact.email, contact.mensaje, contact.timestamp).run();
+    }
 
-    // Notify Telegram (fire-and-forget via waitUntil)
-    if (typeof request as any) {
-      notifyTelegram(contact);
+    // Telegram notification (non-blocking)
+    if (env) {
+      notifyTelegram(contact, env);
     }
 
     return new Response(
