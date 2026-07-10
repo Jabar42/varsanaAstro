@@ -114,7 +114,7 @@ import {
         </p>
       </div>
 
-      <form class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 md:p-12 space-y-6">
+      <form id="contact-form" class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 md:p-12 space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
             <label for="nombre" class="text-sm font-bold text-near-black">Nombre</label>
@@ -122,6 +122,7 @@ import {
               type="text"
               id="nombre"
               name="nombre"
+              required
               placeholder="Tu nombre completo"
               class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all"
             />
@@ -132,6 +133,7 @@ import {
               type="email"
               id="email"
               name="email"
+              required
               placeholder="tucorreo@ejemplo.com"
               class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all"
             />
@@ -147,8 +149,10 @@ import {
             class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all resize-y"
           ></textarea>
         </div>
+        <p id="form-msg" class="hidden text-sm font-bold text-center"></p>
         <button
           type="submit"
+          id="submit-btn"
           class="bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2"
         >
           Enviar mensaje
@@ -225,6 +229,41 @@ import {
   </main>
 
 </Layout>
+
+<script>
+  const form = document.getElementById('contact-form');
+  const msg = document.getElementById('form-msg');
+  const btn = document.getElementById('submit-btn');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    msg.className = 'hidden';
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        body: new FormData(form),
+      });
+      const data = await res.json();
+      if (data.success) {
+        msg.textContent = '✅ ¡Mensaje enviado! Te responderemos pronto.';
+        msg.className = 'text-sm font-bold text-center text-forest';
+        form.reset();
+      } else {
+        msg.textContent = '❌ ' + data.message;
+        msg.className = 'text-sm font-bold text-center text-red-500';
+      }
+    } catch {
+      msg.textContent = '❌ Error de conexión. Intenta de nuevo.';
+      msg.className = 'text-sm font-bold text-center text-red-500';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Enviar mensaje';
+    }
+  });
+</script>
 
 <style>
   h1, h2, h3, h4 {
