@@ -20,7 +20,31 @@ const temploItem: FeaturedItem = {
   _orden: 999,
 };
 
-const allItems = [...items, temploItem];
+// Permanent slide: Hospedajes
+const hospedajeItem: FeaturedItem = {
+  collection: 'static',
+  slug: 'hospedajes-con-proposito',
+  image: 'https://picsum.photos/seed/hospedaje-naturaleza/1200/600',
+  title: 'Hospedajes con propósito',
+  description: 'Descubre la magia de despertar rodeado de naturaleza sagrada.',
+  url: '/hospedaje',
+  ctaLabel: 'Ver hospedajes',
+  _orden: 998,
+};
+
+// Permanent slide: Experiencias
+const experienciasItem: FeaturedItem = {
+  collection: 'static',
+  slug: 'experiencias-a-la-medida',
+  image: 'https://picsum.photos/seed/experiencias-yoga/1200/600',
+  title: 'Experiencias a la medida',
+  description: 'Tu renovación el día de la semana que prefieras.',
+  url: '/experiencias',
+  ctaLabel: 'Ver experiencias',
+  _orden: 997,
+};
+
+const allItems = [...items, hospedajeItem, experienciasItem, temploItem];
 const hasMultiple = allItems.length > 1;
 ---
 
