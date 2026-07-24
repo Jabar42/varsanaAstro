@@ -18,7 +18,6 @@ import {
   Coffee,
   ChefHat,
   Sparkles,
-  CheckCircle2,
   ChevronRight,
 } from 'lucide-react';
 
@@ -41,14 +40,6 @@ const philosophy = [
     description: 'Para nosotros cocinar es un acto de devoción. Cada ingrediente se elige, se prepara y se ofrece con conciencia, transformando la nutrición en una práctica espiritual.',
     accent: 'rausch',
   },
-];
-
-const huertaProducts = [
-  'Verduras de temporada — lechuga, acelga, kale, espinaca',
-  'Hierbas aromáticas — albahaca, cilantro, romero, tomillo',
-  'Frutas frescas — mora, fresa, guayaba, feijoa',
-  'Flores comestibles — caléndula, pensamiento, capuchina',
-  'Tubérculos andinos — papa criolla, cubio, arracacha',
 ];
 
 const meals = [
@@ -171,18 +162,36 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; topBorder
             Nuestra huerta orgánica
           </h2>
           <p class="text-secondary-gray text-lg leading-relaxed">
-            Cultivamos sin químicos, en armonía con los ciclos de la naturaleza. La tierra de Varsana nos regala alimentos vivos, llenos de sabor y de prana.
+            En nuestra huerta agroecológica cultivamos una diversidad de alimentos y plantas que reflejan nuestro compromiso con la biodiversidad, la alimentación consciente y el cuidado de la tierra. Cada cultivo es sembrado y cuidado mediante prácticas sostenibles, respetando los ciclos naturales y promoviendo la regeneración del suelo.
           </p>
         </div>
 
-        <ul class="space-y-3">
-          {huertaProducts.map((item) => (
-            <li class="flex items-center gap-3 text-lg font-medium">
-              <CheckCircle2 class="text-forest shrink-0" size={22} />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
+        <div class="space-y-4">
+          <div>
+            <h3 class="font-bold text-forest mb-2">Hortalizas de hoja</h3>
+            <p class="text-secondary-gray">Lechuga, Acelga, Kale, Espinaca, Mostaza de hoja</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-forest mb-2">Hortalizas y cultivos de temporada</h3>
+            <p class="text-secondary-gray">Maíz (Mazorca tierna), Calabaza</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-forest mb-2">Leguminosas</h3>
+            <p class="text-secondary-gray">Fríjol, Arveja</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-forest mb-2">Hierbas aromáticas y medicinales</h3>
+            <p class="text-secondary-gray">Albahaca, Cilantro, Romero, Tomillo, Laurel, Hierbabuena</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-forest mb-2">Frutas y frutos andinos</h3>
+            <p class="text-secondary-gray">Mora, Frambuesa, Uchuva, Papayuela</p>
+          </div>
+          <div>
+            <h3 class="font-bold text-forest mb-2">Flores comestibles</h3>
+            <p class="text-secondary-gray">Caléndula, Pensamiento</p>
+          </div>
+        </div>
       </div>
 
       <div class="grid grid-cols-2 gap-4">
