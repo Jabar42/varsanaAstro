@@ -3,86 +3,34 @@
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getCollection } from 'astro:content';
 
 const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
 const l = (path: string) => getRelativeLocaleUrl(locale, path);
 
 import {
-  Sun,
-  Moon,
-  Flower2,
-  Star,
-  TreePine,
-  Wind,
+  Home,
   CheckCircle2,
   Info,
-  MapPin,
   Sparkles,
   ChevronRight,
+  Users,
 } from 'lucide-react';
 
-const rooms = [
-  {
-    name: 'Suite del Sol',
-    icon: Sun,
-    description: 'Amplia habitación con vista al amanecer sobre la montaña. Decorada con textiles artesanales y maderas de la región.',
-    image: 'https://picsum.photos/seed/sol-suite/800/600',
-    capacity: '2 personas',
-    features: ['Vista panorámica', 'Baño privado', 'Terraza'],
-    price: '180.000',
-    accent: 'saffron',
-  },
-  {
-    name: 'Refugio Lunar',
-    icon: Moon,
-    description: 'Un espacio íntimo y sereno para el descanso profundo. Iluminación tenue, colores tierra y total silencio natural.',
-    image: 'https://picsum.photos/seed/lunar-refuge/800/600',
-    capacity: '2 personas',
-    features: ['Aislación acústica', 'Baño privado', 'Ropa de cama orgánica'],
-    price: '160.000',
-    accent: 'rausch',
-  },
-  {
-    name: 'Cabaña Flor de Loto',
-    icon: Flower2,
-    description: 'Cabaña independiente rodeada de jardines. Ideal para quienes buscan privacidad y conexión con la naturaleza.',
-    image: 'https://picsum.photos/seed/loto-cabin/800/600',
-    capacity: '3 personas',
-    features: ['Cabaña privada', 'Baño con ducha caliente', 'Vista al jardín'],
-    price: '220.000',
-    accent: 'forest',
-  },
-  {
-    name: 'Nido del Bosque',
-    icon: TreePine,
-    description: 'Habitación elevada entre los árboles con diseño rústico y acogedor. Perfecta para una experiencia inmersiva en el bosque.',
-    image: 'https://picsum.photos/seed/bosque-nest/800/600',
-    capacity: '2 personas',
-    features: ['Hamaca privada', 'Ducha ecológica', 'Escritorio'],
-    price: '190.000',
-    accent: 'forest',
-  },
-  {
-    name: 'Estancia de las Estrellas',
-    icon: Star,
-    description: 'Nuestra habitación más especial, con claraboya para observar el cielo nocturno desde la cama.',
-    image: 'https://picsum.photos/seed/stars-room/800/600',
-    capacity: '2 personas',
-    features: ['Claraboya', 'Baño privado', 'Chimenea'],
-    price: '240.000',
-    accent: 'rausch',
-  },
-  {
-    name: 'Cabaña Al Viento',
-    icon: Wind,
-    description: 'Espacio abierto con brisa constante y diseño minimalista. La ventilación natural mantiene fresco todo el año.',
-    image: 'https://picsum.photos/seed/viento-cabin/800/600',
-    capacity: '4 personas',
-    features: ['Dos habitaciones', 'Cocina básica', 'Zona de hamacas'],
-    price: '280.000',
-    accent: 'saffron',
-  },
-];
+const allHospedajes = await getCollection('hospedaje');
+const rooms = allHospedajes
+  .sort((a, b) => a.data.orden - b.data.orden)
+  .map((h) => ({
+    slug: h.id,
+    name: h.data.nombre,
+    description: h.data.descripcion,
+    image: h.data.fotos?.[0] ?? 'https://picsum.photos/seed/default/800/600',
+    capacity: h.data.num_huespedes,
+    features: h.data.servicios_incluidos?.slice(0, 3) ?? [],
+    price: h.data.valor_por_persona_noche.replace('$', '').replace(',', ''),
+    icon: Home,
+    accent: 'forest' as const,
+  }));
 
 const amenities = [
   'Agua caliente con energía solar',
@@ -175,15 +123,15 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; border: s
           Nuestras Habitaciones
         </h2>
         <p class="text-secondary-gray text-lg leading-relaxed">
-          Seis espacios únicos donde la arquitectura sostenible se funde con el paisaje de Cundinamarca. Cada uno tiene su propia personalidad.
+          Siete espacios únicos donde la arquitectura sostenible se funde con el paisaje de Cundinamarca. Cada uno tiene su propia personalidad.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {rooms.map((room) => {
-          const styles = accentStyles[room.accent] ?? accentStyles.saffron;
+          const styles = accentStyles[room.accent] ?? accentStyles.forest;
           return (
-            <div class="bg-lotus-white rounded-[24px] shadow-airbnb overflow-hidden flex flex-col h-full group hover:scale-[1.02] transition-all duration-600 cursor-pointer">
+            <a href={l(`/hospedaje/${room.slug}`)} class="bg-lotus-white rounded-[24px] shadow-airbnb overflow-hidden flex flex-col h-full group hover:scale-[1.02] transition-all duration-600 cursor-pointer no-underline text-inherit">
               <div class="aspect-4/3 overflow-hidden relative">
                 <img
                   src={room.image}
@@ -193,7 +141,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; border: s
                   loading="lazy"
                 />
                 <div class="absolute top-4 left-4 flex items-center gap-2 bg-lotus-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
-                  <room.icon size={14} />
+                  <Users size={14} />
                   <span>{room.capacity}</span>
                 </div>
               </div>
@@ -201,7 +149,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; border: s
               <div class="p-6 flex flex-col grow space-y-4">
                 <div class="flex items-center gap-3">
                   <div class={`w-10 h-10 ${styles.iconBg} rounded-xl flex items-center justify-center ${styles.iconText} border ${styles.border}`}>
-                    <room.icon size={20} />
+                    <Home size={20} />
                   </div>
                   <h3 class="text-xl font-bold font-display tracking-tightest">{room.name}</h3>
                 </div>
@@ -226,17 +174,16 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; border: s
                         <span class="text-sm font-normal text-secondary-gray"> COP / noche</span>
                       </p>
                     </div>
-                    <a
-                      href="#"
+                    <span
                       class={`${styles.btn} px-5 py-2.5 rounded-xl font-bold text-sm hover:brightness-90 transition-all duration-300 shadow-sm inline-flex items-center gap-1.5`}
                     >
-                      Reservar
+                      Ver más
                       <ChevronRight size={14} />
-                    </a>
+                    </span>
                   </div>
                 </div>
               </div>
-            </div>
+            </a>
           );
         })}
       </div>

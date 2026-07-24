@@ -102,9 +102,26 @@ const nosotrosCollection = defineCollection({
   })),
 });
 
+const hospedajeCollection = defineCollection({
+  loader: glob({ pattern: '**/[^_]*.mdoc', base: './src/content/hospedaje' }),
+  schema: z.object({
+    nombre: z.string(),
+    descripcion: z.string(),
+    num_huespedes: z.string(),
+    noches: z.string(),
+    servicios_incluidos: z.array(z.string()).optional().default([]),
+    check_in_out: z.string(),
+    ten_en_cuenta: z.string(),
+    valor_por_persona_noche: z.string(),
+    fotos: z.array(z.string()).optional().default([]),
+    orden: z.number().int().min(0).optional().default(0),
+  }),
+});
+
 export const collections = {
   events: eventsCollection,
   pasadias: pasadiasCollection,
   nosotros: nosotrosCollection,
   blog: blogCollection,
+  hospedaje: hospedajeCollection,
 };
