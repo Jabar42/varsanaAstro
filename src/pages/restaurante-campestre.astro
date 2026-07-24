@@ -1,0 +1,89 @@
+---
+
+import Layout from '@/src/layouts/Layout.astro';
+import PageBanner from '@/src/components/PageBanner.astro';
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { ChefHat, MapPin, Clock, CheckCircle2 } from 'lucide-react';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const l = (path: string) => getRelativeLocaleUrl(locale, path);
+
+const servicios = [
+  'Desayuno, almuerzo y cena vegetarianos',
+  'Ingredientes frescos de la huerta orgánica',
+  'Zona de comedor al aire libre',
+  'Opciones para grupos y eventos',
+  'Cocina a la vista',
+];
+---
+
+<Layout title="Restaurante Campestre | Varsana Eco Yoga Aldea">
+
+  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
+    <PageBanner
+      title="Restaurante Campestre"
+      subtitle="Disfruta de una experiencia gastronómica vegetariana en medio de la naturaleza. Ingredientes frescos de la huerta, preparados con conciencia y servidos con amor."
+      badge="Gastronomía consciente"
+      breadcrumb={[
+        { label: 'Inicio', url: '/' },
+        { label: 'Alimentación', url: '/alimentacion' },
+        { label: 'Restaurante Campestre', url: '/restaurante-campestre' },
+      ]}
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16 mb-24">
+      <div class="space-y-8">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-forest/10 text-forest px-4 py-2 rounded-full text-sm font-bold mb-6">
+            <ChefHat size={16} />
+            <span>Restaurante Campestre</span>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+            Una mesa rodeada de naturaleza
+          </h2>
+          <p class="text-secondary-gray text-lg leading-relaxed">
+            Nuestro restaurante campestre ofrece una experiencia culinaria vegetariana única, donde cada plato celebra los sabores de la tierra. Ubicado en el corazón de Varsana, rodeado de jardines y con vista a las montañas del Sumapaz.
+          </p>
+        </div>
+
+        <ul class="space-y-3">
+          {servicios.map((s) => (
+            <li class="flex items-center gap-3 text-lg">
+              <CheckCircle2 class="text-forest shrink-0" size={22} />
+              <span>{s}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div class="flex items-center gap-3 text-secondary-gray">
+          <MapPin size={18} class="text-saffron shrink-0" />
+          <span>Granada, Cundinamarca — Varsana Eco Yoga Aldea</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <img
+          src="https://picsum.photos/seed/restaurante-1/600/800"
+          class="rounded-3xl shadow-md aspect-3/4 object-cover"
+          alt="Restaurante Campestre Varsana"
+          referrerpolicy="no-referrer"
+          loading="lazy"
+        />
+        <img
+          src="https://picsum.photos/seed/restaurante-2/600/800"
+          class="rounded-3xl shadow-md mt-8 aspect-3/4 object-cover"
+          alt="Comida vegetariana Varsana"
+          referrerpolicy="no-referrer"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </main>
+
+</Layout>
+
+<style>
+  h1, h2, h3 {
+    letter-spacing: -0.02em;
+  }
+</style>
