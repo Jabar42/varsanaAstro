@@ -60,6 +60,16 @@
     "telefono": {
       "type": "string"
     },
+    "categorias": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "info_adicional": {
+      "type": "string"
+    },
     "$schema": {
       "type": "string"
     }

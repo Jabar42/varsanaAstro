@@ -99,6 +99,8 @@ const nosotrosCollection = defineCollection({
     ).optional().default([]),
     correo: z.string().email().optional(),
     telefono: z.string().optional(),
+    categorias: z.array(z.string()).optional().default([]),
+    info_adicional: z.string().optional(),
   })),
 });
 
