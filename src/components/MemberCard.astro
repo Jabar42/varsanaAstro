@@ -30,8 +30,8 @@ const getSocialIcon = (platform: string) => {
 };
 ---
 
-<article class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
-  <a href={`/nosotros/${member.id}`} class="block h-full">
+<article class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
+  <a href={`/nosotros/${member.id}`} class="block">
   <div class="aspect-square overflow-hidden relative shimmer">
     <img
       src={imagen}
@@ -42,7 +42,7 @@ const getSocialIcon = (platform: string) => {
     />
   </div>
 
-  <div class="p-6 flex flex-col">
+  <div class="p-6">
     <div class="space-y-1">
       <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{nombre}</h3>
       <p class="text-sm text-saffron font-semibold uppercase tracking-wider truncate">{rol}</p>
