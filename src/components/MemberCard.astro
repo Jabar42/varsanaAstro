@@ -73,6 +73,7 @@ const getSocialIcon = (platform: string) => {
     )}
 
     {/* Contact info */}
+    {(correo || telefono) && (
     <div class="pt-4 mt-auto border-t border-sacred-sand space-y-2">
       {correo && (
         <div class="flex items-center gap-2 text-sm text-gray-600">
@@ -87,6 +88,7 @@ const getSocialIcon = (platform: string) => {
         </div>
       )}
     </div>
+    )}
   </div>
   </a>
 </article>
