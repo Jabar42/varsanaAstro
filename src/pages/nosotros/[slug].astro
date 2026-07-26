@@ -7,7 +7,7 @@ const { slug } = Astro.params;
 const member = await getEntry('nosotros', slug!);
 if (!member) return Astro.redirect('/404');
 
-const { nombre, rol, descripcion, imagen, enlaces_sociales, correo, telefono, categorias, info_adicional } = member.data;
+const { nombre, rol, descripcion, imagen, enlaces_sociales, correo, telefono, categorias } = member.data;
 const { Content } = await render(member);
 
 const getSocialIcon = (platform: string) => {
@@ -114,14 +114,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
         <div class="prose prose-lg max-w-none text-secondary-gray leading-relaxed">
           <Content />
         </div>
-
-        <!-- Additional info -->
-        {info_adicional && (
-          <div class="border-t border-sacred-sand pt-8">
-            <h2 class="text-2xl font-bold font-display mb-4">Más información</h2>
-            <p class="text-secondary-gray leading-relaxed whitespace-pre-line">{info_adicional}</p>
-          </div>
-        )}
       </div>
     </div>
   </main>
