@@ -101,6 +101,8 @@ const nosotrosCollection = defineCollection({
     telefono: z.string().optional(),
     categorias: z.array(z.string()).optional().default([]),
     info_adicional: z.string().optional(),
+    foto: z.string().optional(),
+    reel: z.string().optional(),
   })),
 });
 
