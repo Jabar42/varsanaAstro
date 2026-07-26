@@ -52,47 +52,43 @@ const getSocialIcon = (platform: string) => {
       {descripcion.slice(0, 150)}{descripcion.length > 150 ? '...' : ''}
     </p>
 
-    <div class="grow"></div>
+    {/* Social links */}
+    {enlaces_sociales && enlaces_sociales.length > 0 && (
+      <div class="flex items-center gap-3 pt-2">
+        {enlaces_sociales.map((enlace) => {
+          const Icon = getSocialIcon(enlace.plataforma);
+          return (
+            <a
+              href={enlace.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-gray-400 hover:text-saffron transition-colors"
+              title={enlace.plataforma}
+            >
+              <Icon size={18} />
+            </a>
+          );
+        })}
+      </div>
+    )}
 
-    {/* Social + Contact footer */}
-    {(enlaces_sociales && enlaces_sociales.length > 0) || correo || telefono ? (
-    <div class="space-y-2">
-      {enlaces_sociales && enlaces_sociales.length > 0 && (
-        <div class="flex items-center gap-3 pt-2">
-          {enlaces_sociales.map((enlace) => {
-            const Icon = getSocialIcon(enlace.plataforma);
-            return (
-              <a
-                href={enlace.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-gray-400 hover:text-saffron transition-colors"
-                title={enlace.plataforma}
-              >
-                <Icon size={18} />
-              </a>
-            );
-          })}
+    {/* Contact info */}
+    {(correo || telefono) && (
+    <div class="pt-3 mt-1 border-t border-sacred-sand space-y-2">
+      {correo && (
+        <div class="flex items-center gap-2 text-sm text-gray-600">
+          <Mail size={14} className="text-saffron" />
+          <a href={`mailto:${correo}`} class="hover:text-saffron">{correo}</a>
         </div>
       )}
-      {(correo || telefono) && (
-        <div class="pt-3 border-t border-sacred-sand space-y-2">
-          {correo && (
-            <div class="flex items-center gap-2 text-sm text-gray-600">
-              <Mail size={14} className="text-saffron" />
-              <a href={`mailto:${correo}`} class="hover:text-saffron">{correo}</a>
-            </div>
-          )}
-          {telefono && (
-            <div class="flex items-center gap-2 text-sm text-gray-600">
-              <Phone size={14} className="text-saffron" />
-              <a href={`tel:${telefono}`} class="hover:text-saffron">{telefono}</a>
-            </div>
-          )}
+      {telefono && (
+        <div class="flex items-center gap-2 text-sm text-gray-600">
+          <Phone size={14} className="text-saffron" />
+          <a href={`tel:${telefono}`} class="hover:text-saffron">{telefono}</a>
         </div>
       )}
     </div>
-    ) : null}
+    )}
   </div>
   </a>
 </article>
