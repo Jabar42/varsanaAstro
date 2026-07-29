@@ -1,0 +1,126 @@
+---
+import Layout from '@/src/layouts/Layout.astro';
+import PageBanner from '@/src/components/PageBanner.astro';
+import SplitSection from '@/src/components/SplitSection.astro';
+
+const principios = [
+  {
+    etiqueta: 'Compasión',
+    titulo: 'Dayā — Compasión universal',
+    descripcion: 'El respeto por todos los seres vivos es la base de nuestra práctica. Cultivamos la empatía activa hacia cada forma de vida, reconociendo la chispa divina en todos.',
+  },
+  {
+    etiqueta: 'Limpieza',
+    titulo: 'Śaucam — Pureza interior y exterior',
+    descripcion: 'La limpieza del cuerpo y la mente es esencial para el progreso espiritual. Mantenemos espacios sagrados y una alimentación consciente que nutre el alma.',
+  },
+  {
+    etiqueta: 'Austeridad',
+    titulo: 'Tapas — Disciplina voluntaria',
+    descripcion: 'La vida sencilla y el pensamiento elevado. Practicamos el desapego de lo material para enfocarnos en lo esencial: el crecimiento interior y el servicio.',
+  },
+  {
+    etiqueta: 'Veracidad',
+    titulo: 'Satyam — Vivir en verdad',
+    descripcion: 'La honestidad con uno mismo y con los demás es el camino hacia la libertad. Cultivamos la autenticidad en cada pensamiento, palabra y acción.',
+  },
+];
+---
+
+<Layout title="Práctica Espiritual | Varsana Eco Yoga Aldea">
+  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
+    <PageBanner
+      title="Práctica Espiritual"
+      subtitle="Descubre los principios que guían la vida en Varsana y las prácticas que cultivamos a diario para el bienestar integral."
+      breadcrumb={[
+        { label: 'Inicio', url: '/' },
+        { label: 'Práctica Espiritual', url: '/practica-espiritual' },
+      ]}
+    />
+
+    <!-- Cuatro principios esenciales -->
+    <section class="py-20 md:py-28">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tightest text-center mb-16">
+        Cuatro principios esenciales
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {principios.map((p) => (
+          <div class="bg-lotus-white rounded-[24px] p-8 shadow-airbnb flex flex-col items-center text-center hover:scale-[1.02] transition-all duration-300">
+            <span class="bg-rausch/10 text-rausch px-4 py-1.5 rounded-full text-xs font-bold mb-6 inline-block tracking-wide">
+              {p.etiqueta}
+            </span>
+
+            <div class="w-24 h-24 rounded-full bg-sacred-sand border-4 border-rausch/20 overflow-hidden mb-6 shrink-0">
+              <img
+                src="https://picsum.photos/seed/{p.etiqueta.toLowerCase()}/200/200"
+                alt={p.titulo}
+                class="w-full h-full object-cover"
+                loading="lazy"
+                referrerpolicy="no-referrer"
+              />
+            </div>
+
+            <h3 class="text-xl font-bold font-display tracking-tightest mb-3">{p.titulo}</h3>
+            <p class="text-secondary-gray text-sm leading-relaxed">{p.descripcion}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <SplitSection
+    title="Una práctica diaria al alcance de todos"
+    description="No necesitas experiencia previa. Nuestras prácticas están diseñadas para integrarse naturalmente en tu vida: meditación guiada, canto de mantras, clases de yoga para todos los niveles y espacios de reflexión personal. Cada actividad es una invitación, no una obligación."
+    ctaLabel="Ver experiencias"
+    ctaUrl="/experiencias"
+    imageAlt="Práctica espiritual en Varsana"
+    reversed
+    background="bg-light-surface"
+  />
+
+  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pb-20">
+    <section class="py-16 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-6">
+        <div class="inline-flex items-center gap-2 bg-forest/10 text-forest px-4 py-2 rounded-full text-sm font-bold">
+          Comunidad
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest">
+          Crecer juntos en el camino espiritual
+        </h2>
+        <p class="text-secondary-gray text-lg leading-relaxed">
+          La práctica espiritual en Varsana no es solitaria. La comunidad es el espejo donde vemos nuestro progreso y el soporte que nos sostiene en los momentos difíciles. Compartimos comidas conscientes, círculos de palabra y celebraciones que nutren el alma colectiva.
+        </p>
+        <a
+          href="/voluntariado"
+          class="inline-flex items-center gap-2 bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg"
+        >
+          Únete como voluntario
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <img
+          src="https://picsum.photos/seed/comunidad-1/600/800"
+          alt="Comunidad en Varsana"
+          class="rounded-3xl shadow-md aspect-3/4 object-cover"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+        />
+        <img
+          src="https://picsum.photos/seed/comunidad-2/600/800"
+          alt="Ceremonia en Varsana"
+          class="rounded-3xl shadow-md mt-8 aspect-3/4 object-cover"
+          loading="lazy"
+          referrerpolicy="no-referrer"
+        />
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+  }
+</style>
