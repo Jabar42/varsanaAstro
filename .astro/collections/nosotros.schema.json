@@ -70,6 +70,12 @@
     "info_adicional": {
       "type": "string"
     },
+    "foto": {
+      "type": "string"
+    },
+    "reel": {
+      "type": "string"
+    },
     "$schema": {
       "type": "string"
     }
