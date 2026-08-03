@@ -2,225 +2,141 @@
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { getCollection } from 'astro:content';
-import { Calendar, Users, Clock, MapPin, Home, ChevronRight, CheckCircle2, Sparkles, ArrowRight } from 'lucide-react';
 
 const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
 const l = (path: string) => getRelativeLocaleUrl(locale, path);
 
-// --- Hospedaje: primeras 3 habitaciones ---
-const allHospedajes = await getCollection('hospedaje');
-const hospedajes = allHospedajes
-  .sort((a, b) => a.data.orden - b.data.orden)
-  .slice(0, 3)
-  .map((h) => ({
-    slug: h.id,
-    name: h.data.nombre,
-    description: h.data.descripcion,
-    image: h.data.fotos?.[0] ?? 'https://picsum.photos/seed/default/800/600',
-    capacity: h.data.num_huespedes,
-    price: h.data.valor_por_persona_noche,
-  }));
-
-// --- Eventos: próximos 3 ---
-const allEvents = await getCollection('events');
-const now = new Date();
-const eventos = allEvents
-  .filter((e) => new Date(e.data.event_start) >= now)
-  .sort((a, b) => new Date(a.data.event_start).getTime() - new Date(b.data.event_start).getTime())
-  .slice(0, 3)
-  .map((e) => ({
-    slug: e.id,
-    title: e.data.title,
-    image: e.data.image,
-    date: e.data.event_start,
-    price: e.data.prices?.[0]?.amount
-      ? `$${e.data.prices[0].amount.toLocaleString('es-CO')} COP`
-      : 'Consultar',
-  }));
-
-// --- Pasadías: primeros 3 ---
-const allPasadias = await getCollection('pasadias');
-const pasadias = allPasadias.slice(0, 3).map((p) => ({
-  slug: p.id,
-  title: p.data.title,
-  description: p.data.description,
-  image: p.data.image,
-  duration: p.data.duration,
-  price: p.data.prices?.[0]?.amount
-    ? `$${p.data.prices[0].amount.toLocaleString('es-CO')} COP`
-    : 'Consultar',
-}));
-
-// --- Experiencias fijas ---
-const experienciasFijas = [
-  { titulo: 'Temazcal', slug: 'temazcal', descripcion: 'Ceremonia ancestral de purificación con vapor de hierbas.', icon: '🔥' },
-  { titulo: 'Yoga', slug: 'yoga', descripcion: 'Clases diarias para todos los niveles en la naturaleza.', icon: '🧘' },
-  { titulo: 'Alimentación Consciente', slug: 'alimentacion', descripcion: 'Cocina vegetariana con productos de nuestra huerta.', icon: '🥗' },
-  { titulo: 'Cuevas de Meditación', slug: 'cuevas', descripcion: 'Espacios subterráneos para la introspección.', icon: '🕯️' },
+const cards = [
+  {
+    titulo: 'Temazcal',
+    descripcion: 'Ceremonia ancestral de purificación con cantos, tambores y vapor de hierbas medicinales.',
+    href: l('/experiencias/temazcal'),
+    icon: '🔥',
+    color: 'saffron',
+  },
+  {
+    titulo: 'Yoga',
+    descripcion: 'Clases diarias para todos los niveles en medio de la naturaleza del Sumapaz.',
+    href: l('/experiencias/yoga'),
+    icon: '🧘',
+    color: 'rausch',
+  },
+  {
+    titulo: 'Alimentación Consciente',
+    descripcion: 'Comida vegetariana preparada con ingredientes frescos de nuestra huerta orgánica.',
+    href: l('/experiencias/alimentacion'),
+    icon: '🥗',
+    color: 'forest',
+  },
+  {
+    titulo: 'Huerta Orgánica',
+    descripcion: 'Aprende sobre permacultura y cultivo sostenible en nuestra huerta ecológica.',
+    href: l('/huerta'),
+    icon: '🌱',
+    color: 'forest',
+  },
+  {
+    titulo: 'Cuevas de Meditación',
+    descripcion: 'Espacios subterráneos para la introspección profunda y el silencio interior.',
+    href: l('/experiencias/cuevas'),
+    icon: '🕯️',
+    color: 'rausch',
+  },
+  {
+    titulo: 'Hospedaje',
+    descripcion: 'Seis espacios únicos donde la arquitectura sostenible se funde con el paisaje.',
+    href: l('/hospedaje'),
+    icon: '🏡',
+    color: 'saffron',
+  },
+  {
+    titulo: 'Eventos y Retiros',
+    descripcion: 'Calendario de retiros, ceremonias y encuentros para el crecimiento interior.',
+    href: l('/events'),
+    icon: '📅',
+    color: 'rausch',
+  },
+  {
+    titulo: 'Pasadías',
+    descripcion: 'Experiencias de un día: relajación, detox, constelaciones y más.',
+    href: l('/pasadias'),
+    icon: '☀️',
+    color: 'saffron',
+  },
+  {
+    titulo: 'Voluntariado',
+    descripcion: 'Vive la ecoaldea como voluntario y contribuye con tus habilidades.',
+    href: l('/voluntariado'),
+    icon: '🤝',
+    color: 'forest',
+  },
+  {
+    titulo: 'Práctica Espiritual',
+    descripcion: 'Los cuatro principios esenciales que guían la vida en comunidad.',
+    href: l('/practica-espiritual'),
+    icon: '🙏',
+    color: 'rausch',
+  },
+  {
+    titulo: 'Restaurante Campestre',
+    descripcion: 'Cocina vegetariana consciente abierta a visitantes, con productos de la huerta.',
+    href: l('/restaurante-campestre'),
+    icon: '🍽️',
+    color: 'forest',
+  },
+  {
+    titulo: 'Parador El Elefante',
+    descripcion: 'Tienda de productos artesanales, recuerdos y especialidades de la región.',
+    href: l('/parador-el-elefante'),
+    icon: '🛍️',
+    color: 'saffron',
+  },
 ];
 
-// --- Otras secciones ---
-const otrasSecciones = [
-  { titulo: 'Voluntariado', href: l('/voluntariado'), descripcion: 'Vive la ecoaldea como voluntario.', icon: '🤝' },
-  { titulo: 'Práctica Espiritual', href: l('/practica-espiritual'), descripcion: 'Los cuatro principios que nos guían.', icon: '🙏' },
-  { titulo: 'Restaurante Campestre', href: l('/restaurante-campestre'), descripcion: 'Cocina consciente abierta al público.', icon: '🍽️' },
-  { titulo: 'Parador El Elefante', href: l('/parador-el-elefante'), descripcion: 'Productos artesanales de la región.', icon: '🛍️' },
-];
-
-// --- Helpers ---
-function formatDate(d: Date): string {
-  return d.toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' });
-}
+const colorMap: Record<string, { bg: string; text: string; border: string }> = {
+  saffron: { bg: 'bg-saffron/10', text: 'text-saffron', border: 'border-saffron/30' },
+  rausch: { bg: 'bg-rausch/10', text: 'text-rausch', border: 'border-rausch/30' },
+  forest: { bg: 'bg-forest/10', text: 'text-forest', border: 'border-forest/30' },
+};
 ---
 
 <Layout title="Experiencias | Varsana Eco Yoga Aldea">
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
     <PageBanner
       title="Experiencias en Varsana"
-      subtitle="Descubre todas las formas de vivir, compartir y transformarte en nuestra ecoaldea."
+      subtitle="Descubre todas las formas de vivir, compartir y transformarte en nuestra ecoaldea. Desde ceremonias ancestrales hasta retiros de silencio, cada experiencia es una invitación a reconectar."
       breadcrumb={[
         { label: 'Inicio', url: '/' },
         { label: 'Experiencias', url: l('/experiencias-b') },
       ]}
     />
 
-    <!-- ========== HOSPEDAJE ========== -->
-    <section class="py-16 md:py-20">
-      <div class="flex items-end justify-between mb-10">
-        <div>
-          <span class="bg-forest/10 text-forest px-4 py-1.5 rounded-full text-xs font-bold">Alojamiento</span>
-          <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mt-4">Hospedaje ecológico</h2>
-        </div>
-        <a href={l('/hospedaje')} class="hidden sm:inline-flex items-center gap-1 text-rausch font-bold text-sm hover:underline">
-          Ver todos <ArrowRight size={16} />
-        </a>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {hospedajes.map((h) => (
-          <a href={l(`/hospedaje/${h.slug}`)} class="bg-lotus-white rounded-[24px] shadow-airbnb overflow-hidden group hover:scale-[1.02] transition-all duration-300 no-underline text-inherit">
-            <div class="aspect-4/3 overflow-hidden">
-              <img src={h.image} alt={h.name} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" referrerpolicy="no-referrer" />
-            </div>
-            <div class="p-5 space-y-3">
-              <div class="flex items-center gap-2 text-sm text-secondary-gray">
-                <Users size={14} /> <span>{h.capacity}</span>
+    <section class="py-16 md:py-24">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {cards.map((card) => {
+          const c = colorMap[card.color] ?? colorMap.forest;
+          return (
+            <a
+              href={card.href}
+              class="bg-lotus-white rounded-[24px] p-6 shadow-airbnb flex flex-col gap-4 group hover:scale-[1.02] transition-all duration-300 cursor-pointer no-underline text-inherit border border-transparent hover:border-sacred-sand"
+            >
+              <div class={`w-12 h-12 ${c.bg} ${c.border} border rounded-2xl flex items-center justify-center text-2xl`}>
+                {card.icon}
               </div>
-              <h3 class="text-lg font-bold font-display tracking-tightest">{h.name}</h3>
-              <p class="text-sm text-secondary-gray leading-relaxed line-clamp-2">{h.description}</p>
-              <p class="text-xl font-bold tracking-tightest">{h.price} <span class="text-sm font-normal text-secondary-gray">COP / noche</span></p>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <!-- ========== EVENTOS ========== -->
-    <section class="py-16 md:py-20 border-t border-sacred-sand">
-      <div class="flex items-end justify-between mb-10">
-        <div>
-          <span class="bg-rausch/10 text-rausch px-4 py-1.5 rounded-full text-xs font-bold">Próximamente</span>
-          <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mt-4">Eventos y retiros</h2>
-        </div>
-        <a href={l('/events')} class="hidden sm:inline-flex items-center gap-1 text-rausch font-bold text-sm hover:underline">
-          Ver todos <ArrowRight size={16} />
-        </a>
-      </div>
-
-      {eventos.length > 0 ? (
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {eventos.map((e) => (
-            <a href={l(`/events/${e.slug}`)} class="bg-lotus-white rounded-[24px] shadow-airbnb overflow-hidden group hover:scale-[1.02] transition-all duration-300 no-underline text-inherit">
-              <div class="aspect-video overflow-hidden">
-                <img src={e.image} alt={e.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" referrerpolicy="no-referrer" />
+              <div class="space-y-2">
+                <h3 class="text-lg font-bold font-display tracking-tightest group-hover:text-rausch transition-colors">
+                  {card.titulo}
+                </h3>
+                <p class="text-secondary-gray text-sm leading-relaxed">{card.descripcion}</p>
               </div>
-              <div class="p-5 space-y-3">
-                <div class="flex items-center gap-2 text-sm text-secondary-gray">
-                  <Calendar size={14} /> <span>{formatDate(e.date)}</span>
-                </div>
-                <h3 class="text-lg font-bold font-display tracking-tightest">{e.title}</h3>
-                <p class="text-xl font-bold tracking-tightest">{e.price}</p>
+              <div class={`mt-auto pt-3 border-t ${c.border}`}>
+                <span class={`text-sm font-bold ${c.text} inline-flex items-center gap-1`}>
+                  Explorar →
+                </span>
               </div>
             </a>
-          ))}
-        </div>
-      ) : (
-        <div class="bg-lotus-white rounded-2xl p-12 text-center">
-          <p class="text-secondary-gray text-lg">Próximamente anunciaremos nuevos eventos.</p>
-          <a href={l('/contacto')} class="inline-flex items-center gap-2 mt-4 bg-rausch text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-rausch-dark transition-all">
-            Mantenerme informado
-          </a>
-        </div>
-      )}
-    </section>
-
-    <!-- ========== PASADÍAS ========== -->
-    <section class="py-16 md:py-20 border-t border-sacred-sand">
-      <div class="flex items-end justify-between mb-10">
-        <div>
-          <span class="bg-saffron/10 text-saffron px-4 py-1.5 rounded-full text-xs font-bold">Un día</span>
-          <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mt-4">Pasadías</h2>
-        </div>
-        <a href={l('/pasadias')} class="hidden sm:inline-flex items-center gap-1 text-rausch font-bold text-sm hover:underline">
-          Ver todos <ArrowRight size={16} />
-        </a>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {pasadias.map((p) => (
-          <a href={l(`/pasadias/${p.slug}`)} class="bg-lotus-white rounded-[24px] shadow-airbnb overflow-hidden group hover:scale-[1.02] transition-all duration-300 no-underline text-inherit">
-            <div class="aspect-video overflow-hidden">
-              <img src={p.image} alt={p.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" referrerpolicy="no-referrer" />
-            </div>
-            <div class="p-5 space-y-3">
-              <div class="flex items-center gap-2 text-sm text-secondary-gray">
-                <Clock size={14} /> <span>{p.duration}</span>
-              </div>
-              <h3 class="text-lg font-bold font-display tracking-tightest">{p.title}</h3>
-              <p class="text-sm text-secondary-gray leading-relaxed line-clamp-2">{p.description}</p>
-              <p class="text-xl font-bold tracking-tightest">{p.price}</p>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <!-- ========== EXPERIENCIAS FIJAS ========== -->
-    <section class="py-16 md:py-20 border-t border-sacred-sand">
-      <div>
-        <span class="bg-rausch/10 text-rausch px-4 py-1.5 rounded-full text-xs font-bold">Vive Varsana</span>
-        <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mt-4 mb-10">Experiencias</h2>
-      </div>
-
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {experienciasFijas.map((exp) => (
-          <a href={l(`/experiencias/${exp.slug}`)} class="bg-lotus-white rounded-[20px] p-5 shadow-airbnb flex flex-col items-center text-center gap-3 group hover:scale-[1.03] transition-all duration-300 no-underline text-inherit">
-            <div class="w-14 h-14 rounded-2xl bg-rausch/10 flex items-center justify-center text-2xl">{exp.icon}</div>
-            <h3 class="font-bold font-display tracking-tightest text-sm group-hover:text-rausch transition-colors">{exp.titulo}</h3>
-            <p class="text-xs text-secondary-gray leading-relaxed">{exp.descripcion}</p>
-          </a>
-        ))}
-      </div>
-    </section>
-
-    <!-- ========== OTRAS SECCIONES ========== -->
-    <section class="py-16 md:py-20 border-t border-sacred-sand">
-      <div>
-        <span class="bg-forest/10 text-forest px-4 py-1.5 rounded-full text-xs font-bold">Comunidad</span>
-        <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mt-4 mb-10">También te puede interesar</h2>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {otrasSecciones.map((sec) => (
-          <a href={sec.href} class="bg-lotus-white rounded-[20px] p-5 shadow-airbnb flex items-center gap-4 group hover:scale-[1.02] transition-all duration-300 no-underline text-inherit">
-            <div class="w-12 h-12 rounded-xl bg-forest/10 flex items-center justify-center text-xl shrink-0">{sec.icon}</div>
-            <div class="min-w-0">
-              <h3 class="font-bold font-display tracking-tightest text-sm group-hover:text-rausch transition-colors">{sec.titulo}</h3>
-              <p class="text-xs text-secondary-gray leading-relaxed line-clamp-2">{sec.descripcion}</p>
-            </div>
-          </a>
-        ))}
+          );
+        })}
       </div>
     </section>
   </main>
