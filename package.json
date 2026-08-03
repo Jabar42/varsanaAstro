@@ -27,7 +27,7 @@
     "@google/genai": "^1.29.0",
     "@supabase/supabase-js": "^2.105.3",
     "@tailwindcss/vite": "^4.1.14",
-    "@tp3/chat-widget": "^0.2.3",
+    "@tp3/chat-widget": "^0.2.4",
     "@vitejs/plugin-react": "^5.0.4",
     "astro": "^6.3.7",
     "astro-embed": "^0.13.0",
