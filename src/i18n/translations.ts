@@ -311,6 +311,11 @@ export interface TranslationDict {
     language: string;
     currency: string;
   };
+  announcement: {
+    before: string;
+    here: string;
+    close: string;
+  };
 }
 
 export const translations: Record<Locale, TranslationDict> = {
@@ -796,6 +801,11 @@ export const translations: Record<Locale, TranslationDict> = {
       language: 'Español (CO)',
       currency: 'COP',
     },
+    announcement: {
+      before: 'Descarga nuestra guía de Varsana',
+      here: 'aquí',
+      close: 'Cerrar aviso',
+    },
   },
 
   en: {
@@ -1279,6 +1289,11 @@ export const translations: Record<Locale, TranslationDict> = {
       copyright: '© 2024 Varsana Eco Yoga Aldea',
       language: 'English (US)',
       currency: 'COP',
+    },
+    announcement: {
+      before: 'Download our Varsana guide',
+      here: 'here',
+      close: 'Dismiss notice',
     },
   },
 };

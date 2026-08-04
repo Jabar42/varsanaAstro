@@ -1,5 +1,6 @@
 ---
 import '@/src/styles/global.css';
+import AnnouncementBar from '@/src/components/AnnouncementBar.astro';
 import Header from '@/src/components/Header.astro';
 import Footer from '@/src/components/Footer.astro';
 import ChatWidget from '@tp3/chat-widget';
@@ -58,6 +59,7 @@ const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
     <slot name="head" />
   </head>
   <body class="bg-sacred-sand text-near-black font-sans antialiased">
+    <AnnouncementBar />
     <Header />
     <main>
       <slot />

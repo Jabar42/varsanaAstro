@@ -1,0 +1,127 @@
+---
+import { useTranslations } from '@/src/i18n/utils';
+
+const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const t = useTranslations(locale);
+const pdfUrl = '/descargas/guia-varsana.pdf';
+const delayMs = 4500;
+---
+
+<!-- Shopify-style announcement bar: hidden by default, slides down after a delay.
+     Closing it is remembered for the rest of the browsing session (sessionStorage),
+     so it does not reappear on SPA navigations via ClientRouter. -->
+<div id="announcement-bar" class="announcement-bar" data-delay={delayMs} aria-live="polite">
+  <div class="announcement-bar__inner">
+    <a href={pdfUrl} download class="announcement-bar__link" data-announcement-link>
+      <span>{t('announcement.before')}</span>
+      <strong>{t('announcement.here')}</strong>
+    </a>
+    <button
+      type="button"
+      class="announcement-bar__close"
+      aria-label={t('announcement.close')}
+      data-announcement-close
+    >
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .announcement-bar {
+    max-height: 0;
+    overflow: hidden;
+    background: var(--color-rausch);
+    color: var(--color-lotus-white);
+    transition: max-height 0.45s ease-in-out;
+    z-index: 40;
+  }
+
+  .announcement-bar.show {
+    max-height: 80px;
+  }
+
+  .announcement-bar__inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0.55rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    position: relative;
+  }
+
+  .announcement-bar__link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--color-lotus-white);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .announcement-bar__link strong {
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .announcement-bar__link:hover {
+    opacity: 0.85;
+  }
+
+  .announcement-bar__close {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--color-lotus-white);
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .announcement-bar__close:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+</style>
+
+<script>
+  // Re-ejecutado en cada navegación SPA (ClientRouter). sessionStorage
+  // evita que la barra reaparezca después de cerrarla.
+  const bar = document.getElementById('announcement-bar');
+  if (bar) {
+    const KEY = 'varsana_announcement_dismissed';
+    const delay = Number(bar.dataset.delay || 4500);
+    const alreadyDismissed = () => sessionStorage.getItem(KEY) === '1';
+
+    if (!alreadyDismissed()) {
+      const timer = window.setTimeout(() => {
+        bar.classList.add('show');
+      }, delay);
+
+      bar.addEventListener('click', (e) => {
+        const closeBtn = e.target.closest('[data-announcement-close]');
+        if (closeBtn) {
+          window.clearTimeout(timer);
+          bar.classList.remove('show');
+          sessionStorage.setItem(KEY, '1');
+        }
+      });
+    }
+  }
+</script>
