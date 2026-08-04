@@ -8,6 +8,7 @@ interface Props {
   ctaUrl?: string;
   imageSrc?: string;
   imageAlt?: string;
+  images?: string[];
   videoUrl?: string;
   reversed?: boolean;
   background?: string;
@@ -22,12 +23,15 @@ const {
   ctaUrl,
   imageSrc = '/images/about-hero.webp',
   imageAlt = '',
+  images,
   videoUrl,
   reversed = false,
   background = '',
   fullBleed = false,
   ctaVariant = 'rausch',
 } = Astro.props;
+
+const hasImages = !!images && images.length > 0;
 
 function getYouTubeEmbed(url: string): string {
   const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
@@ -83,6 +87,32 @@ const hasBackground = !!background && !fullBleed;
             allowfullscreen
             loading="lazy"
           />
+        </div>
+      ) : hasImages ? (
+        <div class="ss-slider" data-slider>
+          <div class="ss-slider-track" data-slider-track>
+            {images!.map((src, i) => (
+              <div class="ss-slide">
+                <img
+                  src={src}
+                  alt={`${imageAlt || title} — imagen ${i + 1}`}
+                  class="w-full h-full object-cover rounded-2xl shadow-airbnb"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            ))}
+          </div>
+          <div class="ss-slider-dots" data-slider-dots>
+            {images!.map((_, i) => (
+              <button
+                type="button"
+                data-slider-dot={i}
+                class:list={['ss-slider-dot', { active: i === 0 }]}
+                aria-label={`Ir a la imagen ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
       ) : (
         <div class:list={[
@@ -143,3 +173,127 @@ const hasBackground = !!background && !fullBleed;
   </div>
   </div>
 </section>
+
+<script>
+  function initSlider(container: HTMLElement) {
+    const track = container.querySelector<HTMLElement>('[data-slider-track]')!;
+    const dots = container.querySelectorAll<HTMLButtonElement>('[data-slider-dot]');
+    const slides = track.children;
+    const total = slides.length;
+
+    if (total < 2) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer: ReturnType<typeof setInterval> | null = null;
+    const interval = 5000;
+
+    function goTo(index: number) {
+      const slide = slides[index] as HTMLElement;
+      if (!slide) return;
+      current = index;
+      track.scrollTo({ left: slide.offsetLeft - track.offsetLeft, behavior: reduced ? 'auto' : 'smooth' });
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    function goNext() {
+      goTo((current + 1) % total);
+    }
+
+    function startTimer() {
+      if (reduced || total < 3) return;
+      stopTimer();
+      timer = setInterval(goNext, interval);
+    }
+
+    function stopTimer() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => { goTo(i); stopTimer(); startTimer(); });
+    });
+
+    container.addEventListener('mouseenter', stopTimer);
+    container.addEventListener('mouseleave', startTimer);
+    container.addEventListener('focusin', stopTimer);
+    container.addEventListener('focusout', startTimer);
+    container.addEventListener('touchstart', stopTimer, { passive: true });
+    container.addEventListener('touchend', () => { setTimeout(startTimer, 3000); });
+
+    // Update active dot on scroll (swipe/trackpad users)
+    let scrollTimeout: ReturnType<typeof setTimeout>;
+    track.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const x = track.scrollLeft + track.offsetWidth / 2;
+        let closest = 0;
+        let minDist = Infinity;
+        for (let i = 0; i < slides.length; i++) {
+          const s = slides[i] as HTMLElement;
+          const dist = Math.abs(s.offsetLeft - track.offsetLeft - x + s.offsetWidth / 2);
+          if (dist < minDist) { minDist = dist; closest = i; }
+        }
+        current = closest;
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+      }, 100);
+    }, { passive: true });
+
+    startTimer();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-slider]').forEach(initSlider);
+</script>
+
+<style>
+  .ss-slider {
+    position: relative;
+    width: 100%;
+  }
+
+  .ss-slider-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    border-radius: 1rem;
+  }
+
+  .ss-slider-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ss-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 1rem;
+  }
+
+  .ss-slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .ss-slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    background: var(--color-light-surface);
+    transition: all 0.3s ease;
+  }
+
+  .ss-slider-dot.active {
+    background: var(--color-rausch);
+    width: 28px;
+    border-radius: 5px;
+  }
+</style>
