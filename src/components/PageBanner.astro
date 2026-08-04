@@ -16,6 +16,7 @@ interface Props {
   imageAlt?: string;
   badge?: string;
   breadcrumb?: BreadcrumbItem[];
+  cta?: { label: string; url: string };
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   imageAlt = title,
   badge,
   breadcrumb,
+  cta,
 } = Astro.props;
 
 const siteUrl = Astro.site?.origin || 'https://varsana.co';
@@ -58,6 +60,14 @@ const siteUrl = Astro.site?.origin || 'https://varsana.co';
     <p class="text-base md:text-lg text-white/80 max-w-2xl">
       {subtitle}
     </p>
+    {cta && (
+      <a
+        href={cta.url}
+        class="mt-6 inline-flex items-center gap-2 bg-rausch text-white px-8 py-3 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg"
+      >
+        {cta.label}
+      </a>
+    )}
   </div>
 </header>
 

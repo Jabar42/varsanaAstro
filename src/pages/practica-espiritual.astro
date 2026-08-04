@@ -6,23 +6,23 @@ import SplitSection from '@/src/components/SplitSection.astro';
 const principios = [
   {
     etiqueta: 'Compasión',
-    titulo: 'Dayā — Compasión universal',
-    descripcion: 'El respeto por todos los seres vivos es la base de nuestra práctica. Cultivamos la empatía activa hacia cada forma de vida, reconociendo la chispa divina en todos.',
+    titulo: 'Nutrición consciente',
+    descripcion: 'Alimentación lacto vegetariana basada en el respeto por la vida, preparada para nutrir cuerpo, mente y conciencia. Ahimsa.',
   },
   {
     etiqueta: 'Limpieza',
-    titulo: 'Śaucam — Pureza interior y exterior',
-    descripcion: 'La limpieza del cuerpo y la mente es esencial para el progreso espiritual. Mantenemos espacios sagrados y una alimentación consciente que nutre el alma.',
+    titulo: 'Vida libre de intoxicación',
+    descripcion: 'Promovemos hábitos saludables, cultivando bienestar interior y equilibrio físico, mental y espiritual. No consumir sustancias intoxicantes.',
   },
   {
     etiqueta: 'Austeridad',
-    titulo: 'Tapas — Disciplina voluntaria',
-    descripcion: 'La vida sencilla y el pensamiento elevado. Practicamos el desapego de lo material para enfocarnos en lo esencial: el crecimiento interior y el servicio.',
+    titulo: 'Vínculos con propósito',
+    descripcion: 'Fomentamos vínculos basados en el respeto, el cuidado mutuo y el crecimiento personal y espiritual.',
   },
   {
     etiqueta: 'Veracidad',
-    titulo: 'Satyam — Vivir en verdad',
-    descripcion: 'La honestidad con uno mismo y con los demás es el camino hacia la libertad. Cultivamos la autenticidad en cada pensamiento, palabra y acción.',
+    titulo: 'No apostar ni especular',
+    descripcion: 'Impulsamos una vida estable y consciente, basada en la honestidad, la responsabilidad y el equilibrio interior.',
   },
 ];
 ---
@@ -31,7 +31,8 @@ const principios = [
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
     <PageBanner
       title="Práctica Espiritual"
-      subtitle="Descubre los principios que guían la vida en Varsana y las prácticas que cultivamos a diario para el bienestar integral."
+      subtitle="Basada en la conciencia, la armonía y el bienestar integral"
+      cta={{ label: 'Voluntariados', url: '/voluntariado' }}
       breadcrumb={[
         { label: 'Inicio', url: '/' },
         { label: 'Práctica Espiritual', url: '/practica-espiritual' },
@@ -70,10 +71,10 @@ const principios = [
   </main>
 
   <SplitSection
-    title="Una práctica diaria al alcance de todos"
-    description="No necesitas experiencia previa. Nuestras prácticas están diseñadas para integrarse naturalmente en tu vida: meditación guiada, canto de mantras, clases de yoga para todos los niveles y espacios de reflexión personal. Cada actividad es una invitación, no una obligación."
-    ctaLabel="Ver experiencias"
-    ctaUrl="/experiencias"
+    title="Varsana está inspirada en las enseñanzas ancestrales del Bhakti Yoga."
+    description="Más que una creencia, entendemos la espiritualidad como una forma de vivir basada en acciones concientes, hábitos saludables y principios que favorecen el bienestar físico, mental y espiritual."
+    ctaLabel="¿Qué es Bhakti Yoga?"
+    ctaUrl="https://es.wikipedia.org/wiki/Bhakti_yoga"
     imageAlt="Práctica espiritual en Varsana"
     reversed
     background="bg-light-surface"
