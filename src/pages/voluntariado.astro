@@ -1,22 +1,87 @@
 ---
-
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
-import { Leaf, Users, Heart, Coffee, Home, Info, CheckCircle2 } from 'lucide-react';
+import {
+  Leaf, Users, Heart, Coffee, Home, Info, CheckCircle2,
+  Clock, Wallet, Backpack, Flower2, Sun,
+} from 'lucide-react';
+
+const BANNER_IMAGE = '/api/images/1786983811308-banner-voluntariado.webp';
+const IMG_INTRO = '/api/images/1786983824550-carrusel-1-voluntariado.webp';
+const IMG_ACTIVIDADES = '/api/images/1786983825916-carrusel-2-voluntariado.webp';
+const IMG_INCLUYE = '/api/images/1786983827093-carrusel-3-voluntariado.webp';
+const IMG_APORTE = '/api/images/1786983828963-carrusel-5-voluntariado.webp';
+const IMG_PRACTICA = '/api/images/1786983828296-carrusel-4-voluntariado.webp';
+
+const introParagraphs = [
+  "Una experiencia para quienes quieren conocer la vida de una ecoaldea, participar en sus labores cotidianas y compartir con personas de diferentes lugares. Ser voluntario en Varsana es una oportunidad para vivir por un tiempo el ritmo de una ecoaldea y participar activamente en su día a día.",
+  "Durante tu estancia podrás aportar en diferentes labores, aprender nuevas habilidades y compartir tus conocimientos. La experiencia puede incluir actividades de agricultura orgánica, jardinería, cocina vegetariana, limpieza y apoyo en el restaurante, de acuerdo con las necesidades de Varsana.",
+  "También tendrás espacios para caminar, conocer el entorno, acercarte a la naturaleza y participar voluntariamente en clases y talleres como yoga, meditación, biodanza, arteterapia, sonoterapia y cine consciente.",
+  "La convivencia con personas de diferentes lugares permite compartir ideas, experiencias y conocimientos, mientras encuentras también momentos para ti.",
+];
 
 const activities = [
-  { title: "Agricultura Orgánica", description: "Participa en la siembra, cuidado y cosecha de alimentos saludables en nuestra huerta.", icon: Leaf },
-  { title: "Cocina Vegetariana", description: "Aprende el arte de la cocina consciente y saludable preparando alimentos para la community.", icon: Coffee },
-  { title: "Mantenimiento y Bioconstrucción", description: "Ayuda en el mejoramiento de las instalaciones usando técnicas sostenibles.", icon: Home },
-  { title: "Proyectos Especiales", description: "Si tienes habilidades en diseño, comunicaciones o artes, puedes aportar a la visibilidad de la aldea.", icon: Heart },
+  "Agricultura orgánica.",
+  "Jardinería.",
+  "Cocina vegetariana.",
+  "Limpieza de espacios comunes.",
+  "Apoyo en el restaurante, como ayudante de cocina, mesero o labores de limpieza.",
+  "Otras actividades relacionadas con tus conocimientos y habilidades, previa coordinación.",
 ];
 
 const includes = [
-  "Alojamiento en la eco-aldea",
-  "Alimentación vegetariana completa (3 comidas al día)",
-  "Participación en programas de yoga y meditación",
-  "Conexión profunda con la naturaleza",
-  "Descubrimiento de nuevas habilidades sostenibles",
+  "Hospedaje compartido en la cabaña destinada a voluntarios.",
+  "Alimentación vegetariana: 3 comidas al día.",
+  "4½ horas de actividades de voluntariado al día.",
+  "Clases de yoga.",
+  "Talleres y actividades programadas.",
+  "Materiales para clases y talleres.",
+  "Acceso a agua caliente.",
+  "Uso de lavadora.",
+  "WiFi.",
+  "Espacios para caminar y conocer el entorno de Varsana.",
+];
+
+const priceTiers = [
+  { range: "1 a 3 días", price: "$50.000 COP", per: "por noche" },
+  { range: "4 a 14 días", price: "$45.000 COP", per: "por noche" },
+  { range: "15 días a 1 mes", price: "$38.000 COP", per: "por noche" },
+];
+
+const recommendations = [
+  "Ropa cómoda y abrigada.",
+  "Ropa y calzado para lluvia y trabajo de campo.",
+  "Toalla y elementos de aseo personal.",
+  "Sleeping bag o cobija abrigada.",
+  "Linterna, preferiblemente de cabeza.",
+  "Guantes de jardinería y de caucho.",
+  "Botella de agua y botella térmica.",
+  "Protector solar, sombrero y gafas de sol.",
+  "Traje de baño.",
+  "Cuaderno y, si quieres, un libro para tus momentos personales.",
+];
+
+const faqs = [
+  {
+    question: "¿Qué edad mínima o máxima exigen?",
+    answer: "Si vas a vivir la experiencia de manera individual, la edad mínima para participar es de 18 años. Si vienes como grupo familiar, puedes participar con niños siempre que estén acompañados por adultos responsables durante toda la experiencia.",
+  },
+  {
+    question: "¿Con quién me comunico si tengo un problema grave?",
+    answer: "Ante cualquier situación importante o problema, debes dirigirte directamente al líder de voluntariado asignado en la Ecoaldea. Es importante recibir las orientaciones y directrices únicamente de la persona responsable de tu proceso de voluntariado y no asumir instrucciones de líderes de otras áreas.",
+  },
+  {
+    question: "¿Qué normas de convivencia debo respetar?",
+    answer: "Nuestra vida comunitaria y práctica diaria se fundamentan en principios esenciales que favorecen una convivencia armoniosa, consciente y respetuosa:",
+    bullets: [
+      "Alimentación consciente y no violencia: promovemos una alimentación vegetariana basada en el respeto por la vida y la conexión consciente con aquello que consumimos.",
+      "Vida libre de intoxicación: fomentamos una vida clara y equilibrada, evitando sustancias que alteren la conciencia, como el alcohol, las drogas y otras formas de intoxicación.",
+    ],
+  },
+  {
+    question: "¿Puedo utilizar internet o trabajar de manera remota?",
+    answer: "Sí, es posible utilizar internet o realizar actividades de trabajo remoto, siempre que exista una coordinación previa y se respeten plenamente los horarios y responsabilidades asignados dentro del servicio de voluntariado.",
+  },
 ];
 ---
 
@@ -25,8 +90,9 @@ const includes = [
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
     <!-- Page Banner -->
     <PageBanner
-      title="Programa de Voluntariado Cerca a Bogotá"
-      subtitle="Una experiencia especial para quienes desean vivir en una eco-aldea, conectar con la naturaleza y descubrir nuevas habilidades."
+      title="Programa de Voluntariado"
+      subtitle="Una experiencia de desconexión"
+      image={BANNER_IMAGE}
       breadcrumb={[
         { label: 'Inicio', url: '/' },
         { label: 'Voluntariado', url: '/voluntariado' },
@@ -35,81 +101,217 @@ const includes = [
 
     <!-- CTA row -->
     <div class="flex flex-wrap justify-center gap-4 mt-8 mb-16">
-      <button class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
+      <a href="/contacto" class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg inline-block">
         Inscribirme ahora
-      </button>
-      <button class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors">
+      </a>
+      <a href="#actividades" class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-block">
         Ver actividades
-      </button>
+      </a>
     </div>
 
-    <!-- Activities Grid -->
-    <section class="mb-24">
-      <div class="mb-12">
-        <h2 class="text-3xl font-bold tracking-tightest mb-4">¿Qué harás como voluntario?</h2>
-        <p class="text-gray-500 text-lg">Participa en actividades sostenibles y descubre el ritmo de la vida consciente.</p>
+    <!-- Introducción -->
+    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-5">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">Vive el ritmo de una ecoaldea</h2>
+        {introParagraphs.map((p) => (
+          <p class="text-gray-600 text-lg leading-relaxed">{p}</p>
+        ))}
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {activities.map((act) => (
-          <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
-            <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
-              <act.icon size={24} />
+      <img
+        src={IMG_INTRO}
+        alt="Voluntarios compartiendo la vida cotidiana en Varsana"
+        class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
+        decoding="async"
+      />
+    </section>
+
+    <!-- Qué harás como voluntario -->
+    <section id="actividades" class="mb-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <img
+          src={IMG_ACTIVIDADES}
+          alt="Labores de voluntariado en la huerta de Varsana"
+          class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover order-2 lg:order-1"
+          decoding="async"
+        />
+        <div class="order-1 lg:order-2">
+          <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">¿Qué harás como voluntario?</h2>
+          <p class="text-gray-500 text-lg mb-6">
+            Durante aproximadamente 4 horas al día podrás participar, según las necesidades de Varsana, en:
+          </p>
+          <ul class="space-y-4">
+            {activities.map((item) => (
+              <li class="flex items-start gap-4 text-lg font-medium">
+                <CheckCircle2 className="text-rausch shrink-0 mt-1" size={24} />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="pt-6">
+            <div class="flex items-start gap-4 p-6 bg-light-surface rounded-2xl border border-sacred-sand">
+              <Info className="text-rausch shrink-0 mt-1" size={24} />
+              <p class="text-sm text-gray-600">
+                Tu participación en las clases y talleres es voluntaria.
+              </p>
             </div>
-            <h3 class="text-xl font-bold tracking-tightest">{act.title}</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">{act.description}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Incluye -->
+    <section class="mb-24 bg-light-surface rounded-[32px] p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-8">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">Tu estancia incluye</h2>
+        <ul class="space-y-4">
+          {includes.map((item) => (
+            <li class="flex items-start gap-4 text-lg font-medium">
+              <CheckCircle2 className="text-rausch shrink-0 mt-1" size={24} />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="space-y-4">
+        <img
+          src={IMG_INCLUYE}
+          alt="Alojamiento y alimentación vegetariana en la cabaña de voluntarios"
+          class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
+          decoding="async"
+        />
+      </div>
+    </section>
+
+    <!-- Aporte de manutención -->
+    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-8">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">Aporte de manutención</h2>
+        <p class="text-gray-600 text-lg leading-relaxed">
+          Varsana es una comunidad monástica y sin ánimo de lucro. Para apoyar la alimentación, estadía
+          y materiales utilizados durante la experiencia, se solicita un aporte de manutención:
+        </p>
+        <div class="space-y-4">
+          {priceTiers.map((tier) => (
+            <div class="flex items-center justify-between gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand shadow-airbnb">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch shrink-0">
+                  <Wallet size={24} />
+                </div>
+                <span class="font-bold text-lg">{tier.range}</span>
+              </div>
+              <div class="text-right">
+                <span class="block font-bold text-rausch text-lg">{tier.price}</span>
+                <span class="text-sm text-gray-500">{tier.per}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="flex items-start gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand">
+          <Clock className="text-rausch shrink-0 mt-1" size={24} />
+          <div>
+            <p class="font-bold text-lg mb-1">Ingreso</p>
+            <p class="text-gray-600">8:00 a. m. a 5:00 p. m. No hay recepción durante la noche.</p>
+          </div>
+        </div>
+      </div>
+      <img
+        src={IMG_APORTE}
+        alt="Espacios y ambiente de la ecoaldea Varsana"
+        class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
+        decoding="async"
+      />
+    </section>
+
+    <!-- Recomendaciones -->
+    <section class="mb-24 bg-light-surface rounded-[32px] p-8 md:p-16">
+      <div class="max-w-3xl mx-auto mb-12 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">Recomendaciones</h2>
+        <p class="text-gray-500 text-lg">
+          Te recomendamos venir preparado para el clima de montaña y para las actividades de campo:
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 max-w-4xl mx-auto">
+        {recommendations.map((item) => (
+          <div class="flex items-start gap-3">
+            <Backpack className="text-saffron shrink-0 mt-1" size={22} />
+            <span class="text-lg font-medium">{item}</span>
           </div>
         ))}
       </div>
     </section>
 
-    <!-- What's Included -->
-    <section class="mb-24 bg-light-surface rounded-lg p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-8">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">Tu estancia incluye</h2>
-        <ul class="space-y-4">
-          {includes.map((item) => (
-            <li class="flex items-center gap-4 text-lg font-medium">
-              <CheckCircle2 className="text-rausch shrink-0" size={24} />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <div class="pt-4">
-          <div class="flex items-center gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand shadow-airbnb">
-            <Info className="text-rausch shrink-0" size={32} />
-            <p class="text-sm text-gray-600">
-              Buscamos voluntarios comprometidos, con ganas de aprender y compartir en un ambiente de respeto y espiritualidad.
-            </p>
-          </div>
+    <!-- Práctica y vida en Varsana -->
+    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-5">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">Práctica y vida en Varsana</h2>
+        <p class="text-gray-600 text-lg leading-relaxed">
+          Como parte de la experiencia, podrás acercarte a la práctica espiritual de Varsana y conocer
+          la vida cotidiana de la comunidad. Hay espacios de práctica espiritual (Sadhana) abiertos al
+          público en el templo principal, en la mañana y en la tarde.
+        </p>
+        <p class="text-gray-600 text-lg leading-relaxed">
+          La cabaña de voluntarios cuenta con habitaciones y baños compartidos, con zonas separadas
+          para hombres y mujeres y un espacio social común con chimenea. Las parejas pueden solicitar
+          compartir habitación, sujeto a disponibilidad.
+        </p>
+        <div class="flex items-start gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand shadow-airbnb pt-4">
+          <Sun className="text-saffron shrink-0 mt-1" size={24} />
+          <p class="text-sm text-gray-600">
+            Buscamos voluntarios comprometidos, con ganas de aprender y compartir en un ambiente de
+            respeto y espiritualidad.
+          </p>
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-4">
-        <img src="https://picsum.photos/seed/garden2/600/800" class="rounded-3xl shadow-md" alt="Huerta" referrerpolicy="no-referrer" />
-        <img src="https://picsum.photos/seed/community2/600/800" class="rounded-3xl shadow-md mt-8" alt="Comunidad" referrerpolicy="no-referrer" />
-      </div>
+      <img
+        src={IMG_PRACTICA}
+        alt="Práctica espiritual y espacios de la ecoaldea Varsana"
+        class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
+        decoding="async"
+      />
     </section>
 
-    <!-- FAQ / Info Section -->
+    <!-- FAQ -->
     <section class="max-w-3xl mx-auto mb-24 space-y-12">
       <div class="text-center">
         <h2 class="text-3xl font-bold tracking-tightest mb-4">Preguntas Frecuentes</h2>
         <p class="text-gray-500">Todo lo que necesitas saber antes de venir.</p>
       </div>
       <div class="space-y-6">
-        <div class="border-b border-sacred-sand pb-6">
-          <h4 class="font-bold text-lg mb-2">¿Qué debo traer?</h4>
-          <p class="text-gray-600">Ropa cómoda para trabajo de campo, botas de caucho, linterna, artículos de aseo personal biodegradables y muchas ganas de aprender.</p>
-        </div>
-        <div class="border-b border-sacred-sand pb-6">
-          <h4 class="font-bold text-lg mb-2">¿Hay requisitos de alimentación?</h4>
-          <p class="text-gray-600">En Varsana seguimos una dieta vegetariana consciente. No se permite el consumo de carne, huevos, alcohol ni tabaco dentro de la aldea.</p>
-        </div>
-        <div class="border-b border-sacred-sand pb-6">
-          <h4 class="font-bold text-lg mb-2">¿Cuál es la duración mínima?</h4>
-          <p class="text-gray-600">Recomendamos una estancia mínima de una semana para poder integrarte plenamente en las actividades y el ritmo de la comunidad.</p>
-        </div>
+        {faqs.map((faq) => (
+          <div class="border-b border-sacred-sand pb-6">
+            <h4 class="font-bold text-lg mb-2">{faq.question}</h4>
+            <p class="text-gray-600">{faq.answer}</p>
+            {faq.bullets && (
+              <ul class="mt-4 space-y-3">
+                {faq.bullets.map((b) => (
+                  <li class="flex items-start gap-3">
+                    <CheckCircle2 className="text-rausch shrink-0 mt-1.5" size={18} />
+                    <span class="text-gray-600">{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
       </div>
     </section>
+
+    <!-- CTA final -->
+    <section class="mb-24 bg-rausch rounded-[32px] p-10 md:p-16 text-center text-white shadow-airbnb">
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">¿Listo para vivir la experiencia?</h2>
+      <p class="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
+        Únete al programa de voluntariado y descubre el ritmo de la vida consciente en la ecoaldea.
+      </p>
+      <a href="/contacto" class="inline-block bg-white text-rausch px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
+        Inscribirme ahora
+      </a>
+    </section>
+
+    <!-- Nota legal -->
+    <p class="text-sm text-gray-400 text-center max-w-2xl mx-auto">
+      * Cada persona es responsable del cuidado de sus objetos personales de valor. Las reservas de
+      nuestros servicios no tienen devolución de dinero.
+    </p>
   </main>
 </Layout>
 
