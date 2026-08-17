@@ -10,8 +10,8 @@ const BANNER_IMAGE = '/api/images/1786983811308-banner-voluntariado.webp';
 const IMG_INTRO = '/api/images/1786983824550-carrusel-1-voluntariado.webp';
 const IMG_ACTIVIDADES = '/api/images/1786983825916-carrusel-2-voluntariado.webp';
 const IMG_INCLUYE = '/api/images/1786983827093-carrusel-3-voluntariado.webp';
-const IMG_APORTE = '/api/images/1786983828296-carrusel-4-voluntariado.webp';
-const IMG_PRACTICA = '/api/images/1786983828963-carrusel-5-voluntariado.webp';
+const IMG_APORTE = '/api/images/1786983828963-carrusel-5-voluntariado.webp';
+const IMG_PRACTICA = '/api/images/1786983828296-carrusel-4-voluntariado.webp';
 
 const introParagraphs = [
   "Una experiencia para quienes quieren conocer la vida de una ecoaldea, participar en sus labores cotidianas y compartir con personas de diferentes lugares. Ser voluntario en Varsana es una oportunidad para vivir por un tiempo el ritmo de una ecoaldea y participar activamente en su día a día.",
@@ -63,16 +63,24 @@ const recommendations = [
 
 const faqs = [
   {
-    question: "¿Qué debo traer?",
-    answer: "Ropa cómoda para trabajo de campo, botas de caucho, linterna, artículos de aseo personal biodegradables y muchas ganas de aprender.",
+    question: "¿Qué edad mínima o máxima exigen?",
+    answer: "Si vas a vivir la experiencia de manera individual, la edad mínima para participar es de 18 años. Si vienes como grupo familiar, puedes participar con niños siempre que estén acompañados por adultos responsables durante toda la experiencia.",
   },
   {
-    question: "¿Hay requisitos de alimentación?",
-    answer: "En Varsana seguimos una dieta vegetariana consciente. No se permite el consumo de carne, huevos, alcohol ni tabaco dentro de la aldea.",
+    question: "¿Con quién me comunico si tengo un problema grave?",
+    answer: "Ante cualquier situación importante o problema, debes dirigirte directamente al líder de voluntariado asignado en la Ecoaldea. Es importante recibir las orientaciones y directrices únicamente de la persona responsable de tu proceso de voluntariado y no asumir instrucciones de líderes de otras áreas.",
   },
   {
-    question: "¿Cuál es la duración mínima?",
-    answer: "Recomendamos una estancia mínima de una semana para poder integrarte plenamente en las actividades y el ritmo de la comunidad.",
+    question: "¿Qué normas de convivencia debo respetar?",
+    answer: "Nuestra vida comunitaria y práctica diaria se fundamentan en principios esenciales que favorecen una convivencia armoniosa, consciente y respetuosa:",
+    bullets: [
+      "Alimentación consciente y no violencia: promovemos una alimentación vegetariana basada en el respeto por la vida y la conexión consciente con aquello que consumimos.",
+      "Vida libre de intoxicación: fomentamos una vida clara y equilibrada, evitando sustancias que alteren la conciencia, como el alcohol, las drogas y otras formas de intoxicación.",
+    ],
+  },
+  {
+    question: "¿Puedo utilizar internet o trabajar de manera remota?",
+    answer: "Sí, es posible utilizar internet o realizar actividades de trabajo remoto, siempre que exista una coordinación previa y se respeten plenamente los horarios y responsabilidades asignados dentro del servicio de voluntariado.",
   },
 ];
 ---
@@ -273,6 +281,16 @@ const faqs = [
           <div class="border-b border-sacred-sand pb-6">
             <h4 class="font-bold text-lg mb-2">{faq.question}</h4>
             <p class="text-gray-600">{faq.answer}</p>
+            {faq.bullets && (
+              <ul class="mt-4 space-y-3">
+                {faq.bullets.map((b) => (
+                  <li class="flex items-start gap-3">
+                    <CheckCircle2 className="text-rausch shrink-0 mt-1.5" size={18} />
+                    <span class="text-gray-600">{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ))}
       </div>
