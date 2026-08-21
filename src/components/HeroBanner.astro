@@ -44,7 +44,19 @@ const experienciasItem: FeaturedItem = {
   _orden: 997,
 };
 
-const allItems = [...items, hospedajeItem, experienciasItem, temploItem];
+// Permanent slide: Yoga Planetario (bienvenida)
+const yogaPlanetarioItem: FeaturedItem = {
+  collection: 'static',
+  slug: 'bienvenida-yoga-planetario',
+  image: '/api/images/1787355699024-slide-nuevo.webp',
+  title: 'Bienvenidos a nuestro Yoga Planetario',
+  description: 'Donde el ingreso a las conferencias y meditaciones son gratuitas. Conozca también nuestro programa monástico y de voluntariado.',
+  url: '/nuestra-historia',
+  ctaLabel: 'Nuestra historia',
+  _orden: 996,
+};
+
+const allItems = [...items, yogaPlanetarioItem, hospedajeItem, experienciasItem, temploItem];
 const hasMultiple = allItems.length > 1;
 ---
 
