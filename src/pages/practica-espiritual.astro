@@ -8,21 +8,25 @@ const principios = [
     etiqueta: 'Compasión',
     titulo: 'Nutrición consciente',
     descripcion: 'Alimentación lacto vegetariana basada en el respeto por la vida, preparada para nutrir cuerpo, mente y conciencia. Ahimsa.',
+    imagen: '/api/images/1787359188810-icono-compasion.webp',
   },
   {
     etiqueta: 'Limpieza',
     titulo: 'Vida libre de intoxicación',
     descripcion: 'Promovemos hábitos saludables, cultivando bienestar interior y equilibrio físico, mental y espiritual. No consumir sustancias intoxicantes.',
+    imagen: '/api/images/1787359190604-icono-limpieza.webp',
   },
   {
     etiqueta: 'Austeridad',
     titulo: 'Vínculos con propósito',
     descripcion: 'Fomentamos vínculos basados en el respeto, el cuidado mutuo y el crecimiento personal y espiritual.',
+    imagen: '/api/images/1787359191818-icono-austeridad.webp',
   },
   {
     etiqueta: 'Veracidad',
     titulo: 'No apostar ni especular',
     descripcion: 'Impulsamos una vida estable y consciente, basada en la honestidad, la responsabilidad y el equilibrio interior.',
+    imagen: '/api/images/1787359193004-icono-veracidad.webp',
   },
 ];
 ---
@@ -53,7 +57,7 @@ const principios = [
 
             <div class="w-24 h-24 rounded-full bg-sacred-sand border-4 border-rausch/20 overflow-hidden mb-6 shrink-0">
               <img
-                src="https://picsum.photos/seed/{p.etiqueta.toLowerCase()}/200/200"
+                src={p.imagen}
                 alt={p.titulo}
                 class="w-full h-full object-cover"
                 loading="lazy"
