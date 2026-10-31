@@ -35,3 +35,13 @@ CREATE INDEX idx_inventory_lookup ON inventory(content_type, content_id, event_d
 CREATE INDEX idx_orders_bold_id ON orders(bold_order_id);
 CREATE INDEX idx_orders_status ON orders(status);
 CREATE INDEX idx_orders_email ON orders(customer_email);
+
+-- Tabla de contactos (formulario /contacto → POST /api/contact)
+CREATE TABLE IF NOT EXISTS contacts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre TEXT NOT NULL,
+  email TEXT NOT NULL,
+  mensaje TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_contacts_created ON contacts(created_at);

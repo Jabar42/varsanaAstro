@@ -2,7 +2,8 @@
 
 declare namespace App {
   interface Locals {
-    locale?: string;
+    /** Fijado por src/middleware.ts para toda página HTML. */
+    locale?: 'es' | 'en';
   }
 }
 
@@ -26,5 +27,7 @@ declare namespace Cloudflare {
     RESEND_FROM_EMAIL: string;
     TELEGRAM_BOT_TOKEN: string;
     TELEGRAM_CHAT_ID: string;
+    /** Token requerido en `Authorization: Bearer` para POST /api/images. */
+    IMAGES_UPLOAD_TOKEN: string;
   }
 }
