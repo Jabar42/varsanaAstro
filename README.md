@@ -1,26 +1,39 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Varsana Eco Yoga Aldea — sitio web
 
-# Run and deploy your AI Studio app
+Sitio de [Varsana](https://varsana.com) construido con **Astro 6** en modo SSR y desplegado en **Cloudflare Workers** (worker `varsana-co`), con **D1** (órdenes e inventario), **R2** (imágenes) y pagos con **Bold**.
 
-This contains everything you need to run your app locally.
+## Requisitos
 
-View your app in AI Studio: https://ai.studio/apps/cd5c0ee8-8341-4299-9986-e6c569a1f7bf
+- Node.js 20+
+- Cuenta de Cloudflare con acceso al worker (solo para desplegar)
 
-## Run Locally
+## Desarrollo
 
-**Prerequisites:**  Node.js
+```bash
+npm install
+cp .env.example .dev.vars   # completar secretos locales
+npm run dev                 # http://localhost:3000
+```
 
+| Comando | Qué hace |
+|---|---|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` | Build de producción en `dist/` |
+| `npm run lint` | `astro check` (tipos) + lint de clases Tailwind |
+| `npm run deploy` | Build + `wrangler deploy` |
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Idiomas
 
-## Content Formatting Guidelines
+El sitio es bilingüe (español por defecto, inglés bajo `/en/...`). La URL manda: `/x` siempre es español y `/en/x` siempre inglés. Solo la raíz `/` redirige a `/en` según la cookie `varsana_locale` o el idioma del navegador en la primera visita. Detalles en `src/middleware.ts` y `src/i18n/`.
 
-For events and pasadías, follow the formatting standards documented in [`.roo/event-content-formatting.md`](.roo/event-content-formatting.md). These guidelines ensure legible, well‑structured content with proper tables, spacing, and frontmatter consistency.
+Para traducir una página: crea `src/i18n/dictionaries/<pagina>.ts` exportando `es` y `en`, y en la página usa `const t = useTranslations(getLocale(Astro))` → `t('<pagina>.clave')`.
 
-Refer to the existing examples (e.g., [`src/content/events/holi-fest-2026.md`](src/content/events/holi-fest-2026.md)) as a model.
+## Contenido
+
+Las colecciones viven en `src/content/` (`events`, `pasadias`, `blog`, `hospedaje`, `nosotros`) en formato Markdoc con esquema Zod en `src/content.config.ts`. Las guías para publicar contenido están en `.agents/` (`publish-new-event`, `publish-new-pasadia`, `publish-new-blog`, `publish-new-member`, `upload-image`).
+
+## Más documentación
+
+- `CLAUDE.md` — arquitectura, endpoints, variables de entorno
+- `DESIGN.md` — sistema de diseño (tokens en `src/styles/design-tokens.css`)
+- `docs/` — integración con Bold, emails transaccionales, decisiones
