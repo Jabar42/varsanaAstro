@@ -7,12 +7,11 @@ import EventCard from '@/src/components/EventCard.astro';
 import { ArrowUpRight } from 'lucide-react';
 import { getUpcomingEvents } from '@/src/lib/events';
 import { getFeaturedItems } from '@/src/lib/slider';
-import { useTranslations } from '@/src/i18n/utils';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations, getLocale, localizePath } from '@/src/i18n/utils';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const locale = getLocale(Astro);
 const t = useTranslations(locale);
-const l = (path: string) => getRelativeLocaleUrl(locale, path);
+const l = (path: string) => localizePath(locale, path);
 
 const upcomingEvents = await getUpcomingEvents(locale);
 const featuredEvents = upcomingEvents.slice(0, 3);
@@ -22,16 +21,19 @@ const featuredItems = await getFeaturedItems({
   locale,
 });
 
+// Tarjetas de descubrimiento. Alimentación apunta a la página completa /alimentacion
+// (la ruta /experiencias/alimentacion es solo un placeholder "Próximamente").
 const discoveryCards = [
-  { title: 'Temazcal', slug: 'temazcal', image: '/api/images/1783043616931-Temazcal.webp' },
-  { title: 'Yoga', slug: 'yoga', image: '/api/images/1783043619441-Yoga.webp' },
-  { title: 'Alimentación', slug: 'alimentacion', image: '/api/images/1783043620669-Alimentacion.webp' },
-  { title: 'Huerta', slug: 'huerta', image: '/api/images/1783043621950-Huerta.webp' },
-  { title: 'Cuevas', slug: 'cuevas', image: '/api/images/1783043618248-Cuevas.webp' },
+  { title: t('home.cards.temazcal'), href: l('/experiencias/temazcal'), image: '/api/images/1783043616931-Temazcal.webp' },
+  { title: t('home.cards.yoga'), href: l('/experiencias/yoga'), image: '/api/images/1783043619441-Yoga.webp' },
+  { title: t('home.cards.alimentacion'), href: l('/alimentacion'), image: '/api/images/1783043620669-Alimentacion.webp' },
+  { title: t('home.cards.huerta'), href: l('/experiencias/huerta'), image: '/api/images/1783043621950-Huerta.webp' },
+  { title: t('home.cards.cuevas'), href: l('/experiencias/cuevas'), image: '/api/images/1783043618248-Cuevas.webp' },
 ];
 ---
 
-<Layout title="Varsana Eco Yoga Aldea | Eventos y Retiros" description={t('home.metaDescription')}>
+<Layout title={t('home.pageTitle')} description={t('home.metaDescription')}>
+
 
   <HeroBanner items={featuredItems} />
 
@@ -66,7 +68,7 @@ const discoveryCards = [
       <div class="flex sm:hidden overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-6 px-6 py-2 overscroll-x-contain">
         {discoveryCards.map((card) => (
           <a
-            href={`/experiencias/${card.slug}`}
+            href={card.href}
             draggable="false"
             class="group w-[40vw] shrink-0 snap-start select-none"
           >
@@ -91,7 +93,7 @@ const discoveryCards = [
       <div class="hidden sm:grid grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
         {discoveryCards.map((card) => (
           <a
-            href={`/experiencias/${card.slug}`}
+            href={card.href}
             class="group block"
           >
             <div class="aspect-1/2 overflow-hidden rounded-2xl relative">
@@ -145,7 +147,7 @@ const discoveryCards = [
       ctaLabel={t('home.aboutCta')}
       ctaUrl={l('/nosotros')}
       videoUrl="https://www.youtube.com/watch?v=2TXMwJ7FHgY"
-      imageAlt="Video sobre Varsana Eco Yoga Aldea"
+      imageAlt={t('home.aboutVideoAlt')}
       reversed
     />
 
@@ -158,7 +160,7 @@ const discoveryCards = [
     ctaLabel={t('home.huertaCta')}
     ctaUrl={l('/huerta')}
     imageSrc="/api/images/1785287604008-huerta-section.webp"
-    imageAlt="Huerta orgánica de Varsana"
+    imageAlt={t('home.huertaImageAlt')}
     background="bg-forest/10"
     ctaVariant="forest"
     reversed
@@ -179,15 +181,16 @@ const discoveryCards = [
           {t('home.ctaFinalText')}
         </p>
         <div class="flex flex-wrap gap-4 md:gap-6 justify-center lg:justify-start">
-          <a href="/contacto" class="w-full sm:w-auto bg-rausch hover:bg-rausch-dark text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-lg transition-all hover:shadow-lg active:scale-95 text-center no-underline">
-            Contáctanos
+          <a href={l('/contacto')} class="w-full sm:w-auto bg-rausch hover:bg-rausch-dark text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-lg transition-all hover:shadow-lg active:scale-95 text-center no-underline">
+            {t('home.ctaContact')}
           </a>
         </div>
       </div>
       <div class="relative w-full lg:w-1/2 aspect-video rounded-3xl overflow-hidden shadow-airbnb rotate-0 lg:rotate-2 hover:rotate-0 transition-transform duration-500">
         <img
           src="/api/images/1785287866166-cta-transformacion.webp"
-          alt="Meditación"
+          alt={t('home.ctaImageAlt')}
+
           class="w-full h-full object-cover"
           referrerpolicy="no-referrer"
         />
