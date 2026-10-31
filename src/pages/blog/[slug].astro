@@ -2,26 +2,31 @@
 import Layout from '@/src/layouts/Layout.astro';
 import { getEntry, render } from 'astro:content';
 import { Calendar, User } from 'lucide-react';
+import { getLocale, useTranslations, localizePath, formatDate } from '@/src/i18n/utils';
+
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (p: string) => localizePath(locale, p);
 
 const { slug } = Astro.params;
-const post = await getEntry('blog', slug!);
-if (!post) return Astro.redirect('/404');
+const post = slug ? await getEntry('blog', slug) : undefined;
+if (!post) return Astro.redirect(l('/404'));
 
 const { title, description, image, date, author, tags = [] } = post.data;
 const { Content } = await render(post);
 
-const formattedDate = date.toLocaleDateString('es-ES', {
+const formattedDate = formatDate(date, locale, {
   weekday: 'long',
   day: 'numeric',
   month: 'long',
-  year: 'numeric'
+  year: 'numeric',
 });
 
 // SEO Data
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.com');
+const canonicalURL = new URL(Astro.originPathname, Astro.site || 'https://varsana.com');
 ---
 
-<Layout title={`${title} | Varsana Eco Yoga Aldea`} description={description}>
+<Layout title={`${title} | ${t('blogPost.titleSuffix')}`} description={description}>
   <Fragment slot="head">
     <!-- SEO / OpenGraph -->
     <meta property="og:type" content="article" />
@@ -52,11 +57,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
           <h1 class="text-4xl md:text-5xl font-bold tracking-tightest mb-4 font-display">{title}</h1>
           <div class="flex flex-wrap gap-6 text-sm font-medium text-gray-500">
             <div class="flex items-center gap-2">
-              <Calendar size={18} class="text-saffron" />
+              <Calendar size={18} className="text-saffron" />
               <span>{formattedDate}</span>
             </div>
             <div class="flex items-center gap-2">
-              <User size={18} class="text-saffron" />
+              <User size={18} className="text-saffron" />
               <span>{author}</span>
             </div>
           </div>
@@ -81,25 +86,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
       <!-- Sidebar -->
       <div class="relative">
         <div class="sticky top-28 bg-lotus-white border border-sacred-sand rounded-[24px] p-6 shadow-airbnb space-y-4">
-          <h3 class="font-bold text-lg">Sobre el autor</h3>
+          <h3 class="font-bold text-lg">{t('blogPost.aboutAuthor')}</h3>
           <div class="flex items-center gap-3">
             <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
               <img src="https://picsum.photos/seed/author/100/100" alt={author} class="w-full h-full object-cover" />
             </div>
             <div>
               <p class="font-bold text-sm">{author}</p>
-              <p class="text-gray-500 text-xs">Comunidad Varsana</p>
+              <p class="text-gray-500 text-xs">{t('blogPost.authorCommunity')}</p>
             </div>
           </div>
 
           <div class="border-t border-sacred-sand pt-4">
             <p class="text-gray-500 text-sm">
-              Historias, sabiduría y noticias de nuestra comunidad consciente en Granada, Cundinamarca.
+              {t('blogPost.sidebarText')}
             </p>
           </div>
 
-          <a href={`${Astro.url.origin}/blog`} class="block text-center text-rausch font-bold text-sm underline mt-4">
-            ← Volver al blog
+          <a href={l('/blog')} class="block text-center text-rausch font-bold text-sm underline mt-4">
+            {t('blogPost.backToBlog')}
           </a>
         </div>
       </div>

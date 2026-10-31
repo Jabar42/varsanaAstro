@@ -1,8 +1,8 @@
 ---
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getLocale, localizePath, formatDate } from '@/src/i18n/utils';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
-const l = (path: string) => getRelativeLocaleUrl(locale, path);
+const locale = getLocale(Astro);
+const l = (path: string) => localizePath(locale, path);
 
 interface Props {
   title: string;
@@ -16,10 +16,10 @@ interface Props {
 
 const { title, description, image, date, author, tags = [], slug } = Astro.props;
 
-const formattedDate = date.toLocaleDateString('es-ES', {
+const formattedDate = formatDate(date, locale, {
   day: 'numeric',
   month: 'long',
-  year: 'numeric'
+  year: 'numeric',
 });
 ---
 

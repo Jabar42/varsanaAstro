@@ -38,23 +38,104 @@ interface PriceTier {
   min_quantity?: number;
 }
 
+type Locale = "es" | "en";
+
 interface BoldPaymentButtonProps {
   contentType: "event" | "pasadia";
   contentId: string;
   prices: PriceTier[];
   fixedDate?: string;
+  /** Idioma de la interfaz (solo afecta textos y formato de números). */
+  locale?: Locale;
   onSuccess?: (orderId: string) => void;
   onError?: (error: Error) => void;
 }
+
+// ---------------------------------------------------------------------------
+// Textos de la interfaz (ES/EN). El español es el copy original.
+// ---------------------------------------------------------------------------
+
+const TEXTS = {
+  es: {
+    loadFailed: "No se pudo cargar la pasarela de pago. Intenta recargar la página.",
+    notReady: "La pasarela de pago aún no está lista. Intenta de nuevo en un momento.",
+    invalidDate: "La fecha seleccionada no es válida.",
+    paymentFailed: "El pago no pudo completarse. Intenta nuevamente.",
+    statusNotify: "Estado: {status}. Te notificaremos cuando se confirme.",
+    serverError: "Error del servidor",
+    unexpectedError: "Error inesperado",
+    boldUnavailable: "BoldCheckout no está disponible. Recarga la página.",
+    successTitle: "¡Pago exitoso!",
+    successMessage:
+      "Pronto recibirás un correo de confirmación con los detalles de tu reserva.",
+    errorTitle: "Error",
+    errorFallback: "Ocurrió un error inesperado.",
+    retry: "Intentar nuevamente",
+    checking: "Verificando disponibilidad...",
+    chooseDate: "Elige la fecha",
+    people: "Personas",
+    perPerson: "{price} / persona",
+    selectQuantity: "Selecciona la cantidad",
+    discountApplied: "¡Descuento por volumen aplicado!",
+    buyForDiscount: "Compra {n}+ para obtener descuento",
+    decrease: "Quitar una persona",
+    increase: "Agregar una persona",
+    total: "Total",
+    yourDetails: "Tus datos",
+    emailPlaceholder: "Correo electrónico *",
+    namePlaceholder: "Nombre completo *",
+    phonePlaceholder: "Teléfono (opcional)",
+    loadingGateway: "Cargando pasarela de pago...",
+    pickDate: "Elige una fecha",
+    selectOnePerson: "Selecciona al menos una persona",
+    reserveNow: "Reservar ahora",
+  },
+  en: {
+    loadFailed: "We couldn't load the payment gateway. Please try reloading the page.",
+    notReady: "The payment gateway isn't ready yet. Please try again in a moment.",
+    invalidDate: "The selected date is not valid.",
+    paymentFailed: "The payment could not be completed. Please try again.",
+    statusNotify: "Status: {status}. We'll let you know once it's confirmed.",
+    serverError: "Server error",
+    unexpectedError: "Unexpected error",
+    boldUnavailable: "BoldCheckout is not available. Please reload the page.",
+    successTitle: "Payment successful!",
+    successMessage:
+      "You'll soon receive a confirmation email with the details of your booking.",
+    errorTitle: "Error",
+    errorFallback: "An unexpected error occurred.",
+    retry: "Try again",
+    checking: "Checking availability...",
+    chooseDate: "Choose a date",
+    people: "Guests",
+    perPerson: "{price} / person",
+    selectQuantity: "Select the number of guests",
+    discountApplied: "Group discount applied!",
+    buyForDiscount: "Book {n}+ to get a discount",
+    decrease: "Remove one guest",
+    increase: "Add one guest",
+    total: "Total",
+    yourDetails: "Your details",
+    emailPlaceholder: "Email address *",
+    namePlaceholder: "Full name *",
+    phonePlaceholder: "Phone (optional)",
+    loadingGateway: "Loading payment gateway...",
+    pickDate: "Choose a date",
+    selectOnePerson: "Select at least one guest",
+    reserveNow: "Book now",
+  },
+} as const satisfies Record<Locale, Record<string, string>>;
+
+type Texts = (typeof TEXTS)[Locale];
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 // FIX Leg 3: formatCOP ahora maneja valores inválidos
-function formatCOP(amount: number): string {
+function formatCOP(amount: number, locale: Locale = "es"): string {
   if (!Number.isFinite(amount) || amount < 0) return "$0";
-  return "$" + amount.toLocaleString("es-CO");
+  return "$" + amount.toLocaleString(locale === "en" ? "en-US" : "es-CO");
 }
 
 // FIX Seg 3: validación de formato de email en cliente
@@ -126,9 +207,10 @@ function loadBoldScript(): Promise<void> {
 function openBoldCheckout(
   payload: CheckoutPayload,
   customer: CustomerData,
+  unavailableMessage: string,
 ): void {
   if (typeof window.BoldCheckout === "undefined") {
-    throw new Error("BoldCheckout no está disponible. Recarga la página.");
+    throw new Error(unavailableMessage);
   }
 
   // Nota: payload.apiKey viene del servidor. Confirmar con Bold que es una
@@ -162,9 +244,11 @@ export default function BoldPaymentButton({
   contentId,
   prices,
   fixedDate,
+  locale = "es",
   onSuccess,
   onError,
 }: BoldPaymentButtonProps) {
+  const tx: Texts = TEXTS[locale] ?? TEXTS.es;
   const [phase, setPhase] = useState<"idle" | "loading" | "success" | "error">(
     "idle",
   );
@@ -229,11 +313,9 @@ export default function BoldPaymentButton({
       .catch((err) => {
         const msg = err instanceof Error ? err.message : "Unknown error";
         console.error("Bold script load failed:", msg);
-        setErrorMsg(
-          "No se pudo cargar la pasarela de pago. Intenta recargar la página.",
-        );
+        setErrorMsg(tx.loadFailed);
       });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ------------------------------------------------------------------
   // 2. Handle payment result from redirection URL params
@@ -255,8 +337,8 @@ export default function BoldPaymentButton({
         setPhase("error");
         setErrorMsg(
           boldTxStatus === "declined" || boldTxStatus === "failed"
-            ? "El pago no pudo completarse. Intenta nuevamente."
-            : `Estado: ${boldTxStatus}. Te notificaremos cuando se confirme.`,
+            ? tx.paymentFailed
+            : tx.statusNotify.replace("{status}", boldTxStatus),
         );
       }
 
@@ -275,16 +357,14 @@ export default function BoldPaymentButton({
   const handleReserve = useCallback(async () => {
     if (phase === "loading") return;
     if (!boldReady) {
-      setErrorMsg(
-        "La pasarela de pago aún no está lista. Intenta de nuevo en un momento.",
-      );
+      setErrorMsg(tx.notReady);
       return;
     }
 
     if (needsDatePicker && selectedDate) {
       const chosen = new Date(selectedDate);
       if (isNaN(chosen.getTime())) {
-        setErrorMsg("La fecha seleccionada no es válida.");
+        setErrorMsg(tx.invalidDate);
         return;
       }
     }
@@ -308,19 +388,19 @@ export default function BoldPaymentButton({
       if (!response.ok) {
         const errBody = (await response
           .json()
-          .catch(() => ({ error: "Error del servidor" }))) as {
+          .catch(() => ({ error: tx.serverError }))) as {
           error?: string;
         };
         throw new Error(errBody.error || `HTTP ${response.status}`);
       }
 
-      const payload: CheckoutPayload = await response.json();
+      const payload = (await response.json()) as CheckoutPayload;
 
-      openBoldCheckout(payload, customerData);
+      openBoldCheckout(payload, customerData, tx.boldUnavailable);
 
       setPhase("idle");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Error inesperado";
+      const message = err instanceof Error ? err.message : tx.unexpectedError;
       setPhase("error");
       setErrorMsg(message);
       onErrorRef.current?.(err instanceof Error ? err : new Error(message));
@@ -336,6 +416,7 @@ export default function BoldPaymentButton({
     phase,
     boldReady,
     needsDatePicker,
+    tx,
   ]);
 
   const canSubmit =
@@ -351,11 +432,8 @@ export default function BoldPaymentButton({
   if (phase === "success") {
     return (
       <div className="rounded-xl bg-forest/10 border border-forest/20 p-4 text-center">
-        <p className="text-forest font-semibold">¡Pago exitoso!</p>
-        <p className="text-forest/80 text-sm mt-1">
-          Pronto recibirás un correo de confirmación con los detalles de tu
-          reserva.
-        </p>
+        <p className="text-forest font-semibold">{tx.successTitle}</p>
+        <p className="text-forest/80 text-sm mt-1">{tx.successMessage}</p>
       </div>
     );
   }
@@ -364,9 +442,9 @@ export default function BoldPaymentButton({
     return (
       <div className="space-y-3">
         <div className="rounded-xl bg-rausch/10 border border-rausch/20 p-4 text-center">
-          <p className="text-rausch font-semibold">Error</p>
+          <p className="text-rausch font-semibold">{tx.errorTitle}</p>
           <p className="text-rausch/80 text-sm mt-1">
-            {errorMsg || "Ocurrió un error inesperado."}
+            {errorMsg || tx.errorFallback}
           </p>
         </div>
         <button
@@ -376,7 +454,7 @@ export default function BoldPaymentButton({
           }}
           className="w-full cursor-pointer rounded-xl bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/50"
         >
-          Intentar nuevamente
+          {tx.retry}
         </button>
       </div>
     );
@@ -406,7 +484,7 @@ export default function BoldPaymentButton({
           />
         </svg>
         <span className="text-sm font-medium text-near-black">
-          Verificando disponibilidad...
+          {tx.checking}
         </span>
       </div>
     );
@@ -422,10 +500,14 @@ export default function BoldPaymentButton({
       {/* Date Picker — pasadias only */}
       {needsDatePicker && (
         <div className="space-y-1">
-          <label className="text-sm font-semibold text-near-black font-display tracking-tightest">
-            Elige la fecha
+          <label
+            htmlFor="bold-selected-date"
+            className="text-sm font-semibold text-near-black font-display tracking-tightest"
+          >
+            {tx.chooseDate}
           </label>
           <input
+            id="bold-selected-date"
             type="date"
             min={minDate}
             value={selectedDate}
@@ -438,26 +520,30 @@ export default function BoldPaymentButton({
       {/* Person Counter */}
       <div className="space-y-2">
         <h4 className="text-sm font-semibold text-near-black font-display tracking-tightest">
-          Personas
+          {tx.people}
         </h4>
         <div className="flex items-center justify-between rounded-xl border border-sacred-sand bg-lotus-white px-3 py-3">
           <div className="flex-1">
             <p className="text-sm font-medium text-near-black">
               {quantity > 0
-                ? `${formatCOP(effectivePrice)} / persona`
-                : "Selecciona la cantidad"}
+                ? tx.perPerson.replace("{price}", formatCOP(effectivePrice, locale))
+                : tx.selectQuantity}
             </p>
             {hasVolumeDiscount && quantity > 0 && (
               <p className="text-xs text-forest mt-0.5">
                 {discountApplied
-                  ? "¡Descuento por volumen aplicado!"
-                  : `Compra ${discountTier?.min_quantity ?? 2}+ para obtener descuento`}
+                  ? tx.discountApplied
+                  : tx.buyForDiscount.replace(
+                      "{n}",
+                      String(discountTier?.min_quantity ?? 2),
+                    )}
               </p>
             )}
           </div>
           <div className="flex items-center gap-3">
             <button
               type="button"
+              aria-label={tx.decrease}
               onClick={() => setQuantity((q) => Math.max(0, q - 1))}
               disabled={quantity === 0}
               className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50 disabled:cursor-not-allowed disabled:opacity-30"
@@ -469,6 +555,7 @@ export default function BoldPaymentButton({
             </span>
             <button
               type="button"
+              aria-label={tx.increase}
               onClick={() => setQuantity((q) => q + 1)}
               className="flex h-7 w-7 items-center justify-center rounded-full border border-sacred-sand text-sm font-medium text-near-black transition-colors hover:bg-sacred-sand/50"
             >
@@ -481,19 +568,20 @@ export default function BoldPaymentButton({
       {/* Running Total */}
       {totalAmount > 0 && (
         <div className="flex items-center justify-between border-t border-sacred-sand pt-2">
-          <span className="text-sm font-medium text-near-black">Total</span>
+          <span className="text-sm font-medium text-near-black">{tx.total}</span>
           <span className="text-lg font-bold text-near-black">
-            {formatCOP(totalAmount)}
+            {formatCOP(totalAmount, locale)}
           </span>
         </div>
       )}
 
       {/* Customer Form */}
       <div className="space-y-3 rounded-lg border border-sacred-sand bg-lotus-white p-4">
-        <h4 className="text-sm font-semibold text-near-black font-display tracking-tightest">Tus datos</h4>
+        <h4 className="text-sm font-semibold text-near-black font-display tracking-tightest">{tx.yourDetails}</h4>
         <input
           type="email"
-          placeholder="Correo electrónico *"
+          placeholder={tx.emailPlaceholder}
+          aria-label={tx.emailPlaceholder}
           required
           value={customerData.email}
           onChange={(e) =>
@@ -503,7 +591,8 @@ export default function BoldPaymentButton({
         />
         <input
           type="text"
-          placeholder="Nombre completo *"
+          placeholder={tx.namePlaceholder}
+          aria-label={tx.namePlaceholder}
           required
           value={customerData.fullName}
           onChange={(e) =>
@@ -513,7 +602,8 @@ export default function BoldPaymentButton({
         />
         <input
           type="tel"
-          placeholder="Teléfono (opcional)"
+          placeholder={tx.phonePlaceholder}
+          aria-label={tx.phonePlaceholder}
           value={customerData.phone || ""}
           onChange={(e) =>
             setCustomerData((prev) => ({ ...prev, phone: e.target.value }))
@@ -527,12 +617,12 @@ export default function BoldPaymentButton({
           className="w-full cursor-pointer rounded-xl bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {!boldReady
-            ? "Cargando pasarela de pago..."
+            ? tx.loadingGateway
             : needsDatePicker && !selectedDate
-              ? "Elige una fecha"
+              ? tx.pickDate
               : quantity === 0
-                ? "Selecciona al menos una persona"
-                : "Reservar ahora"}
+                ? tx.selectOnePerson
+                : tx.reserveNow}
         </button>
       </div>
     </div>

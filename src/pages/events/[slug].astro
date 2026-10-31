@@ -5,6 +5,10 @@ import { getEntry, render } from 'astro:content';
 import { getAvailablePrices, getBasePrice } from '@/src/lib/events';
 import BoldPaymentButton from '@/src/components/BoldPaymentButton';
 import { Calendar, MapPin } from 'lucide-react';
+import { getLocale, useTranslations, formatDate } from '@/src/i18n/utils';
+
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
 
 const { slug } = Astro.params;
 const event = await getEntry('events', slug!);
@@ -16,25 +20,23 @@ const { Content } = await render(event);
 const availablePrices = getAvailablePrices(prices, event_start);
 const basePrice = getBasePrice(availablePrices);
 
-const formattedStart = event_start.toLocaleDateString('es-ES', {
+const longDate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
   day: 'numeric',
   month: 'long',
   year: 'numeric'
-});
+};
 
-const formattedEnd = event_end?.toLocaleDateString('es-ES', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric'
-});
+const formattedStart = formatDate(event_start, locale, longDate);
+const formattedEnd = event_end ? formatDate(event_end, locale, longDate) : undefined;
+const shortStart = formatDate(event_start, locale, { day: 'numeric', month: 'numeric', year: 'numeric' });
+const numberLocale = locale === 'en' ? 'en-US' : 'es-CO';
 
 // SEO Data
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.com');
 ---
 
-<Layout title={`${title} | Varsana Eco Yoga Aldea`} description={description}>
+<Layout title={t('eventDetail.metaTitle', { title })} description={description}>
   <Fragment slot="head">
     <!-- SEO / OpenGraph -->
     <meta property="og:type" content="website" />
@@ -48,9 +50,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
   <div class="max-w-7xl mx-auto px-0 md:px-12 lg:px-20 py-0 md:py-8">
     <!-- Photography-first Header -->
     <div class="md:rounded-[24px] overflow-hidden relative h-75 md:h-125 lg:h-150 shadow-airbnb">
-      <img 
-        src={image} 
-        alt={title} 
+      <img
+        src={image}
+        alt={title}
         class="w-full h-full object-cover"
         referrerpolicy="no-referrer"
       />
@@ -74,27 +76,27 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
         </div>
 
         <!-- Countdown -->
-        <div class="border-b border-sacred-sand pb-8" id="event-countdown" data-event-date={event_start.toISOString()} style="display:none">
-          <p class="text-sm font-semibold text-secondary-gray mb-2">Tiempo restante</p>
+        <div class="border-b border-sacred-sand pb-8" id="event-countdown" data-event-date={event_start.toISOString()} data-locale={locale} style="display:none">
+          <p class="text-sm font-semibold text-secondary-gray mb-2">{t('eventDetail.countdownTitle')}</p>
           <div class="flex gap-4 text-center">
-            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-days">00</span><p class="text-xs text-secondary-gray">días</p></div>
+            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-days">00</span><p class="text-xs text-secondary-gray">{t('eventDetail.days')}</p></div>
             <span class="text-2xl font-bold text-sacred-sand">:</span>
-            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-hours">00</span><p class="text-xs text-secondary-gray">horas</p></div>
+            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-hours">00</span><p class="text-xs text-secondary-gray">{t('eventDetail.hours')}</p></div>
             <span class="text-2xl font-bold text-sacred-sand">:</span>
-            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-mins">00</span><p class="text-xs text-secondary-gray">mins</p></div>
+            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-mins">00</span><p class="text-xs text-secondary-gray">{t('eventDetail.mins')}</p></div>
             <span class="text-2xl font-bold text-sacred-sand">:</span>
-            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-secs">00</span><p class="text-xs text-secondary-gray">segs</p></div>
+            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-secs">00</span><p class="text-xs text-secondary-gray">{t('eventDetail.secs')}</p></div>
           </div>
         </div>
 
         <!-- Host Info -->
         <div class="flex items-center justify-between border-b border-sacred-sand pb-8">
           <div class="space-y-1">
-            <h2 class="text-2xl font-bold font-display">Experiencia organizada por {host_name}</h2>
+            <h2 class="text-2xl font-bold font-display">{t('eventDetail.organizedBy', { host: host_name })}</h2>
             <p class="text-secondary-gray text-sm">{host_tagline}</p>
           </div>
           <div class="w-14 h-14 bg-sacred-sand rounded-full flex items-center justify-center overflow-hidden">
-             <img src={host_image || '/logo/LogoPrincipal.svg'} alt={host_name} class="w-full h-full object-cover" />
+             <img src={host_image || '/logo/LogoPrincipal.svg'} alt={t('eventDetail.hostImageAlt', { host: host_name })} class="w-full h-full object-cover" />
           </div>
         </div>
 
@@ -109,20 +111,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
       <div class="relative">
         <div class="sticky top-28 bg-lotus-white border border-sacred-sand rounded-[24px] p-6 shadow-airbnb space-y-6">
           <div>
-            <span class="text-3xl font-bold tracking-tightest font-display">${basePrice ? basePrice.amount.toLocaleString('es-CO') : '—'}</span>
-            <span class="text-secondary-gray text-base font-normal"> / persona</span>
+            <span class="text-3xl font-bold tracking-tightest font-display">${basePrice ? basePrice.amount.toLocaleString(numberLocale) : '—'}</span>
+            <span class="text-secondary-gray text-base font-normal">{t('events.perPerson')}</span>
           </div>
 
           <!-- Booking Details Box -->
           <div class="border border-sacred-sand rounded-xl overflow-hidden">
             <div class="grid grid-cols-2 border-b border-sacred-sand">
               <div class="p-3 border-r border-sacred-sand">
-                <p class="text-xs font-bold uppercase">Fecha</p>
-                <p class="text-sm">{event_start.toLocaleDateString('es-ES')}</p>
+                <p class="text-xs font-bold uppercase">{t('events.date')}</p>
+                <p class="text-sm">{shortStart}</p>
               </div>
               <div class="p-3">
-                <p class="text-xs font-bold uppercase">Cupos</p>
-                <p class="text-sm">{stock_max} personas</p>
+                <p class="text-xs font-bold uppercase">{t('events.spots')}</p>
+                <p class="text-sm">{t('eventDetail.people', { n: stock_max })}</p>
               </div>
             </div>
           </div>
@@ -130,13 +132,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
           <!-- Payment Button -->
           <BoldPaymentButton
             client:load
+            locale={locale}
             contentType="event"
             contentId={event.id}
             prices={availablePrices}
             fixedDate={event_start.toISOString().slice(0, 10)}
           />
 
-          <p class="text-center text-secondary-gray text-xs">Asegura tu cupo con anticipación</p>
+          <p class="text-center text-secondary-gray text-xs">{t('events.secureSpot')}</p>
         </div>
       </div>
     </div>
@@ -144,32 +147,58 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
 </Layout>
 
 <script>
-  const el = document.getElementById('event-countdown');
-  if (el) {
-    const target = new Date(el.dataset.eventDate).getTime();
-    const now = Date.now();
-    if (target > now && (target - now) < 90 * 24 * 60 * 60 * 1000) {
-      el.style.display = '';
-      const days = document.getElementById('cd-days');
-      const hours = document.getElementById('cd-hours');
-      const mins = document.getElementById('cd-mins');
-      const secs = document.getElementById('cd-secs');
-      function tick() {
-        const diff = target - Date.now();
-        if (diff <= 0) { el.style.display = 'none'; return; }
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-        days.textContent = String(d).padStart(2, '0');
-        hours.textContent = String(h).padStart(2, '0');
-        mins.textContent = String(m).padStart(2, '0');
-        secs.textContent = String(s).padStart(2, '0');
-      }
-      tick();
-      setInterval(tick, 1000);
+  // Con <ClientRouter /> este módulo corre una sola vez por sesión:
+  // inicializamos en astro:page-load y limpiamos el intervalo en astro:before-swap.
+  let countdownTimer: ReturnType<typeof setInterval> | null = null;
+
+  function stopCountdown() {
+    if (countdownTimer !== null) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
     }
   }
+
+  function initCountdown() {
+    stopCountdown();
+    const el = document.getElementById('event-countdown') as HTMLElement | null;
+    if (!el || !el.dataset.eventDate) return;
+
+    const target = new Date(el.dataset.eventDate).getTime();
+    if (Number.isNaN(target)) return;
+
+    const now = Date.now();
+    if (!(target > now && (target - now) < 90 * 24 * 60 * 60 * 1000)) return;
+
+    el.style.display = '';
+    const days = document.getElementById('cd-days') as HTMLElement | null;
+    const hours = document.getElementById('cd-hours') as HTMLElement | null;
+    const mins = document.getElementById('cd-mins') as HTMLElement | null;
+    const secs = document.getElementById('cd-secs') as HTMLElement | null;
+    if (!days || !hours || !mins || !secs) return;
+
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        el.style.display = 'none';
+        stopCountdown();
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      days.textContent = String(d).padStart(2, '0');
+      hours.textContent = String(h).padStart(2, '0');
+      mins.textContent = String(m).padStart(2, '0');
+      secs.textContent = String(s).padStart(2, '0');
+    };
+
+    tick();
+    countdownTimer = setInterval(tick, 1000);
+  }
+
+  document.addEventListener('astro:page-load', initCountdown);
+  document.addEventListener('astro:before-swap', stopCountdown);
 </script>
 
 <style>
