@@ -1,22 +1,31 @@
 ---
+import { getLocale, useTranslations, localizePath, formatCOP } from '@/src/i18n/utils';
 
 import Layout from '@/src/layouts/Layout.astro';
 import { getEntry, render } from 'astro:content';
 import { Check, Users, Clock, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
 
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (path: string) => localizePath(locale, path);
+
 const { slug } = Astro.params;
-const hospedaje = await getEntry('hospedaje', slug!);
+if (!slug) return Astro.redirect('/404');
+const hospedaje = await getEntry('hospedaje', slug);
 if (!hospedaje) return Astro.redirect('/404');
 
 const { nombre, descripcion, num_huespedes, noches, servicios_incluidos, check_in_out, ten_en_cuenta, valor_por_persona_noche, fotos } = hospedaje.data;
 const { Content } = await render(hospedaje);
 
+/** "$140,000" → "$140.000 COP" / "$140,000 COP" según idioma; si no es numérico, deja el texto original. */
+const priceNumber = Number(valor_por_persona_noche.replace(/[^\d]/g, ''));
+const priceLabel = Number.isFinite(priceNumber) && priceNumber > 0 ? formatCOP(priceNumber, locale) : valor_por_persona_noche;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.com');
 const host_name = 'Varsana';
-const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
 ---
 
-<Layout title={`${nombre} | Hospedaje Varsana`} description={descripcion}>
+<Layout title={t('hospedajeDetail.metaTitle', { name: nombre })} description={descripcion}>
   <Fragment slot="head">
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
@@ -33,7 +42,7 @@ const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
         {fotos.map((foto, i) => (
           <img
             src={foto}
-            alt={`${nombre} - Foto ${i + 1}`}
+            alt={t('hospedajeDetail.gallery.photoAlt', { name: nombre, n: i + 1 })}
             class:list={['w-full h-full object-cover absolute inset-0 transition-opacity duration-500', { 'opacity-100 z-10': i === 0, 'opacity-0 z-0': i !== 0 }]}
             data-gallery-img={i}
             referrerpolicy="no-referrer"
@@ -41,15 +50,15 @@ const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
         ))}
         {fotos.length > 1 && (
           <>
-            <button data-gallery-prev class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-md" aria-label="Anterior">
+            <button data-gallery-prev class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-md" aria-label={t('hospedajeDetail.gallery.prev')}>
               <ChevronLeft size={20} />
             </button>
-            <button data-gallery-next class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-md" aria-label="Siguiente">
+            <button data-gallery-next class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-md" aria-label={t('hospedajeDetail.gallery.next')}>
               <ChevronRight size={20} />
             </button>
             <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
               {fotos.map((_, i) => (
-                <button data-gallery-dot={i} class:list={['w-2.5 h-2.5 rounded-full transition-all', i === 0 ? 'bg-white w-6' : 'bg-white/60']} aria-label={`Ir a foto ${i + 1}`} />
+                <button data-gallery-dot={i} class:list={['w-2.5 h-2.5 rounded-full transition-all', i === 0 ? 'bg-white w-6' : 'bg-white/60']} aria-label={t('hospedajeDetail.gallery.goTo', { n: i + 1 })} />
               ))}
             </div>
           </>
@@ -64,11 +73,11 @@ const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
           <h1 class="text-4xl md:text-6xl font-bold tracking-tightest mb-4 font-display">{nombre}</h1>
           <div class="flex flex-wrap gap-6 text-sm font-medium">
             <div class="flex items-center gap-2">
-              <Users size={18} class="text-saffron" />
+              <Users size={18} className="text-saffron" />
               <span>{num_huespedes}</span>
             </div>
             <div class="flex items-center gap-2">
-              <Clock size={18} class="text-saffron" />
+              <Clock size={18} className="text-saffron" />
               <span>{check_in_out}</span>
             </div>
           </div>
@@ -77,8 +86,8 @@ const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
         <!-- Host Info -->
         <div class="flex items-center justify-between border-b border-sacred-sand pb-8">
           <div class="space-y-1">
-            <h2 class="text-2xl font-bold font-display">Alojamiento ofrecido por {host_name}</h2>
-            <p class="text-secondary-gray text-sm">{host_tagline}</p>
+            <h2 class="text-2xl font-bold font-display">{t('hospedajeDetail.host.offeredBy', { name: host_name })}</h2>
+            <p class="text-secondary-gray text-sm">{t('hospedajeDetail.host.tagline')}</p>
           </div>
           <div class="w-14 h-14 bg-sacred-sand rounded-full flex items-center justify-center overflow-hidden">
             <img src="/logo/LogoPrincipal.svg" alt={host_name} class="w-full h-full object-cover" />
@@ -93,11 +102,11 @@ const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
         <!-- Included Services -->
         {servicios_incluidos && servicios_incluidos.length > 0 && (
           <div class="border-t border-sacred-sand pt-8">
-            <h3 class="text-2xl font-bold mb-6 font-display">Servicios incluidos</h3>
+            <h3 class="text-2xl font-bold mb-6 font-display">{t('hospedajeDetail.includedServices')}</h3>
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
               {servicios_incluidos.map((service) => (
                 <li class="flex items-center gap-3">
-                  <Check size={18} class="text-saffron shrink-0" />
+                  <Check size={18} className="text-saffron shrink-0" />
                   <span>{service}</span>
                 </li>
               ))}
@@ -108,9 +117,9 @@ const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
         <!-- Important Note -->
         <div class="border-t border-sacred-sand pt-8">
           <div class="flex items-start gap-3 p-6 bg-saffron/5 rounded-2xl border border-saffron/20">
-            <AlertTriangle size={20} class="text-saffron shrink-0 mt-0.5" />
+            <AlertTriangle size={20} className="text-saffron shrink-0 mt-0.5" />
             <div>
-              <h3 class="font-bold text-lg mb-2 font-display">Ten en cuenta</h3>
+              <h3 class="font-bold text-lg mb-2 font-display">{t('hospedajeDetail.keepInMind')}</h3>
               <p class="text-secondary-gray whitespace-pre-line leading-relaxed">{ten_en_cuenta}</p>
             </div>
           </div>
@@ -121,36 +130,36 @@ const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
       <div class="relative">
         <div class="sticky top-28 bg-lotus-white border border-sacred-sand rounded-[24px] p-6 shadow-airbnb space-y-6">
           <div>
-            <span class="text-3xl font-bold tracking-tightest font-display">{valor_por_persona_noche}</span>
-            <span class="text-secondary-gray text-base font-normal"> / persona · noche</span>
+            <span class="text-3xl font-bold tracking-tightest font-display">{priceLabel}</span>
+            <span class="text-secondary-gray text-base font-normal">{t('hospedajeDetail.price.perPersonNight')}</span>
           </div>
 
           <!-- Booking Details Box -->
           <div class="border border-sacred-sand rounded-xl overflow-hidden">
             <div class="grid grid-cols-2 border-b border-sacred-sand">
               <div class="p-3 border-r border-sacred-sand">
-                <p class="text-xs font-bold uppercase">Huéspedes</p>
+                <p class="text-xs font-bold uppercase">{t('hospedajeDetail.price.guests')}</p>
                 <p class="text-sm">{num_huespedes}</p>
               </div>
               <div class="p-3">
-                <p class="text-xs font-bold uppercase">Noches</p>
+                <p class="text-xs font-bold uppercase">{t('hospedajeDetail.price.nights')}</p>
                 <p class="text-sm">{noches}</p>
               </div>
             </div>
             <div class="p-3">
-              <p class="text-xs font-bold uppercase">Check-in / Check-out</p>
+              <p class="text-xs font-bold uppercase">{t('hospedajeDetail.price.checkInOut')}</p>
               <p class="text-sm text-secondary-gray">{check_in_out}</p>
             </div>
           </div>
 
           <a
-            href="/contacto"
+            href={l('/contacto')}
             class="block text-center bg-rausch text-white px-6 py-4 rounded-xl font-bold text-lg hover:bg-rausch-dark transition-all duration-300 shadow-md"
           >
-            Consultar disponibilidad
+            {t('hospedajeDetail.price.cta')}
           </a>
 
-          <p class="text-center text-secondary-gray text-xs">Te responderemos en menos de 24 horas</p>
+          <p class="text-center text-secondary-gray text-xs">{t('hospedajeDetail.price.replyTime')}</p>
         </div>
       </div>
     </div>
@@ -158,8 +167,12 @@ const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
 </Layout>
 
 <script>
-  // Simple gallery navigation
+  // Galería simple. Con <ClientRouter /> este módulo corre una vez por sesión,
+  // así que la inicialización se engancha a cada navegación vía astro:page-load.
   function initGallery(el: HTMLElement) {
+    if (el.dataset.galleryReady === 'true') return;
+    el.dataset.galleryReady = 'true';
+
     const imgs = el.querySelectorAll<HTMLImageElement>('[data-gallery-img]');
     const dots = el.querySelectorAll<HTMLButtonElement>('[data-gallery-dot]');
     const prev = el.querySelector<HTMLButtonElement>('[data-gallery-prev]');
@@ -189,7 +202,9 @@ const host_tagline = 'Comunidad intencional · 15 años de sabiduría';
     dots.forEach((dot, i) => dot.addEventListener('click', () => show(i)));
   }
 
-  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach(initGallery);
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-gallery]').forEach(initGallery);
+  });
 </script>
 
 <style>

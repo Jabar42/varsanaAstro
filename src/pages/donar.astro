@@ -1,44 +1,34 @@
 ---
+import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
+import { es as donarEs, en as donarEn } from '@/src/i18n/dictionaries/donarPage';
 
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
-import { getRelativeLocaleUrl } from 'astro:i18n';
-
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
-const l = (path: string) => getRelativeLocaleUrl(locale, path);
 
 import { Heart, Sprout, Home } from 'lucide-react';
 
-const supportAreas = [
-  {
-    title: "Huerta Orgánica",
-    description: "Expandimos nuestra huerta para producir alimentos frescos y saludables que nutren a la comunidad y protegen la tierra.",
-    icon: Sprout,
-  },
-  {
-    title: "Templo y Espiritualidad",
-    description: "Mantenemos el templo como un espacio sagrado para la práctica de yoga, meditación y ceremonias que elevan la conciencia.",
-    icon: Home,
-  },
-  {
-    title: "Comunidad Consciente",
-    description: "Fortalecemos los lazos entre voluntarios, visitantes y residentes creando un tejido social basado en el respeto y el servicio.",
-    icon: Heart,
-  },
-];
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (path: string) => localizePath(locale, path);
+
+const impactIcons = [Sprout, Home, Heart];
+const impactAreas = (locale === 'en' ? donarEn : donarEs).impactAreas.map((area, i) => ({
+  ...area,
+  icon: impactIcons[i] ?? Heart,
+}));
 ---
 
-<Layout title="Donar | Varsana Eco Yoga Aldea">
+<Layout title={t('donar.title')} description={t('donar.subtitle')}>
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
 
     <!-- Page Banner -->
     <PageBanner
-      title="Apoya Nuestra Misión"
-      subtitle="Tu donación sostiene los proyectos de la eco-aldea: la huerta orgánica, el templo, y los espacios que hacen posible una vida más consciente y conectada con la naturaleza."
+      title={t('donar.heading')}
+      subtitle={t('donar.subtitle')}
       breadcrumb={[
-        { label: 'Inicio', url: '/' },
-        { label: 'Donar', url: '/donar' },
+        { label: t('nav.home'), url: l('/') },
+        { label: t('nav.donate'), url: l('/donar') },
       ]}
     />
 
@@ -48,25 +38,25 @@ const supportAreas = [
         href="#donar"
         class="bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-all duration-300 shadow-lg inline-block"
       >
-        Hacer una Donación
+        {t('donar.ctaDonate')}
       </a>
       <a
         href={l('/nosotros')}
         class="border border-near-black px-10 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-block"
       >
-        Conócenos
+        {t('donar.ctaAbout')}
       </a>
     </div>
 
     <!-- What Donations Support -->
     <section class="mb-24">
       <div class="mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">¿Qué haces posible?</h2>
-        <p class="text-gray-500 text-lg">Tres pilares que tu generosidad ayuda a sostener.</p>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('donar.impactHeading')}</h2>
+        <p class="text-gray-500 text-lg">{t('donar.impactSubtitle')}</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {supportAreas.map((area) => (
+        {impactAreas.map((area) => (
           <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover hover:scale-[1.02] transition-all duration-600 ease-in-out space-y-4">
             <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
               <area.icon size={24} />
@@ -83,13 +73,13 @@ const supportAreas = [
       <div class="w-full lg:w-1/2 grid grid-cols-2 gap-4">
         <img
           src="https://picsum.photos/seed/huerta-donar/600/800"
-          alt="Huerta orgánica"
+          alt={t('donarPage.huertaImageAlt')}
           class="rounded-3xl shadow-airbnb w-full h-full object-cover aspect-3/4"
           referrerpolicy="no-referrer"
         />
         <img
           src="https://picsum.photos/seed/templo-donar/600/800"
-          alt="Templo Varsana"
+          alt={t('donarPage.temploImageAlt')}
           class="rounded-3xl shadow-airbnb w-full h-full object-cover aspect-3/4 mt-8"
           referrerpolicy="no-referrer"
         />
@@ -97,13 +87,13 @@ const supportAreas = [
 
       <div class="w-full lg:w-1/2 space-y-6 lg:space-y-8">
         <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display text-near-black leading-tight">
-          Una aldea que se cultiva<br />con amor colectivo
+          {t('donarPage.storyHeadingLine1')}<br />{t('donarPage.storyHeadingLine2')}
         </h2>
         <p class="text-lg text-gray-500 leading-relaxed max-w-lg">
-          Varsana no es solo un lugar — es un proyecto vivo que crece gracias a quienes creen en una forma distinta de habitar el mundo. Cada donación riega las raíces de esta comunidad.
+          {t('donar.storyText1')}
         </p>
         <p class="text-lg text-gray-500 leading-relaxed max-w-lg">
-          Desde las semillas en la huerta hasta las velas del templo, tu apoyo se traduce en acciones concretas que cuidan la tierra, el cuerpo y el espíritu.
+          {t('donar.storyText2')}
         </p>
       </div>
     </section>
@@ -112,23 +102,23 @@ const supportAreas = [
     <section id="donar" class="bg-near-black rounded-[32px] md:rounded-[40px] p-8 md:p-16 lg:p-24 text-white flex flex-col lg:flex-row items-center justify-between gap-12 overflow-hidden relative shadow-airbnb text-center lg:text-left">
       <div class="space-y-8 z-10 max-w-2xl">
         <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tightest">
-          Tu generosidad transforma vidas
+          {t('donar.ctaBannerTitle')}
         </h2>
         <p class="text-gray-400 text-lg md:text-xl leading-relaxed">
-          Cada aporte nutre este sueño colectivo. Dona hoy y sé parte de la familia que hace posible Varsana.
+          {t('donar.ctaBannerText')}
         </p>
         <div class="flex flex-wrap gap-4 md:gap-6 justify-center lg:justify-start">
           <a
             href={import.meta.env.PUBLIC_DONATION_URL || '#'}
             class="w-full sm:w-auto bg-rausch hover:bg-rausch-dark text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-lg transition-all duration-300 hover:shadow-lg active:scale-95 inline-block text-center"
           >
-            Hacer una Donación
+            {t('donar.ctaBannerDonate')}
           </a>
           <a
             href={l('/nosotros')}
             class="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-lg transition-all duration-300 inline-block text-center"
           >
-            Conoce más
+            {t('donar.ctaBannerMore')}
           </a>
         </div>
       </div>
@@ -136,7 +126,7 @@ const supportAreas = [
       <div class="relative w-full lg:w-1/2 aspect-video rounded-3xl overflow-hidden shadow-airbnb rotate-0 lg:rotate-2 hover:rotate-0 transition-transform duration-500">
         <img
           src="https://picsum.photos/seed/donar-cta/1200/750"
-          alt="Comunidad Varsana"
+          alt={t('donarPage.comunidadImageAlt')}
           class="w-full h-full object-cover"
           referrerpolicy="no-referrer"
         />

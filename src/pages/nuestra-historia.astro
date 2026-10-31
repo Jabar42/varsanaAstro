@@ -1,55 +1,58 @@
 ---
+import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
 import SplitSection from '@/src/components/SplitSection.astro';
 import TextSection from '@/src/components/TextSection.astro';
 import Timeline from '@/src/components/Timeline.astro';
 
-const text = "En Varsana Ecoaldea converge la vida, es un lugar de dialogo e integracion de las emociones, es un proyecto enfocado en la espiritualidad y ecologia. Esta ubicado en las estribaciones del paramo de Sumapaz, a menos de dos horas de Bogota. En un terreno de siete hectareas, en Granada – Cundinamarca, es un area concebida como una aldea sostenible inspirada en la sabiduria ancestral y milenaria de la india, para recuperar la relacion con la naturaleza y la conciencia interior.";
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (path: string) => localizePath(locale, path);
 ---
 
-<Layout title="Nuestra Historia | Varsana Eco Yoga Aldea">
+<Layout title={t('historiaPage.metaTitle')} description={t('historiaPage.metaDescription')}>
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8">
     <PageBanner
-      title="Nuestra Historia"
-      subtitle="Conoce el origen y la esencia de Varsana Eco Yoga Aldea"
+      title={t('historiaPage.bannerTitle')}
+      subtitle={t('historiaPage.bannerSubtitle')}
       image="/api/images/1785285453165-banner-historia.webp"
       breadcrumb={[
-        { label: 'Inicio', url: '/' },
-        { label: 'Nuestra Historia', url: '/nuestra-historia' },
+        { label: t('historiaPage.breadcrumbHome'), url: l('/') },
+        { label: t('historiaPage.breadcrumbHistoria'), url: l('/nuestra-historia') },
       ]}
     />
-    <TextSection text={text} />
+    <TextSection text={t('historiaPage.introText')} />
     <Timeline />
   </main>
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
     <SplitSection
-      title="Un lugar guiado por principios"
-      description="En sus jardines se vive una filosofia de vida basada en la no violencia, el respeto por todos los seres vivos y el cuidado del planeta. Las huertas organicas, los sistemas de permacultura, el uso responsable del agua, los espacios de descanso y contemplacion reflejan un compromiso con la sostenibilidad y el bienestar."
+      title={t('historiaPage.principios.title')}
+      description={t('historiaPage.principios.description')}
       videoUrl="https://www.youtube.com/watch?v=O6WYfE--_k8"
     />
   </main>
 
   <SplitSection
-    title="Inspiracion y practica"
-    description="Inspirada en el Bhakti Yoga, una filosofia ancestral que promueve la conexion consciente a traves de la meditacion, el canto de mantras, la contemplacion y una vida en armonia con la naturaleza. Mas que un lugar de retiro, Varsana es un espacio para cultivar equilibrio interior, comunidad y bienestar consciente."
-    ctaLabel="Conoce nuestras practicas"
-    ctaUrl="/practica-espiritual"
+    title={t('historiaPage.inspiracion.title')}
+    description={t('historiaPage.inspiracion.description')}
+    ctaLabel={t('historiaPage.inspiracion.ctaLabel')}
+    ctaUrl={l('/practica-espiritual')}
     imageSrc="/api/images/1785285876570-inspiracion-practica.webp"
-    imageAlt="Practica de yoga y meditacion en Varsana"
+    imageAlt={t('historiaPage.inspiracion.imageAlt')}
     reversed
     background="bg-light-surface"
   />
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
     <SplitSection
-      title="Ecosistema de vida consciente"
-      description="Varsana es un refugio donde la naturaleza, la vida consciente y la espiritualidad conviven en armonia. Entre montanas, jardines ecologicos y espacios de contemplacion, cada experiencia invita a detenerse, respirar y reconectar con lo esencial."
-      ctaLabel="Hospedajes"
-      ctaUrl="/hospedaje"
+      title={t('historiaPage.ecosistema.title')}
+      description={t('historiaPage.ecosistema.description')}
+      ctaLabel={t('historiaPage.ecosistema.ctaLabel')}
+      ctaUrl={l('/hospedaje')}
       imageSrc="/api/images/1785285937737-ecosistema-vida.webp"
-      imageAlt="Hospedaje ecologico en Varsana"
+      imageAlt={t('historiaPage.ecosistema.imageAlt')}
       ctaVariant="forest"
     />
   </main>

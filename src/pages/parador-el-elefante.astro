@@ -1,33 +1,30 @@
 ---
+import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
+import { es as dict } from '@/src/i18n/dictionaries/paradorPage';
 
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
-import { getRelativeLocaleUrl } from 'astro:i18n';
-import { Coffee, MapPin, Clock, CheckCircle2 } from 'lucide-react';
+import { Coffee, MapPin, CheckCircle2 } from 'lucide-react';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
-const l = (path: string) => getRelativeLocaleUrl(locale, path);
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (path: string) => localizePath(locale, path);
 
-const servicios = [
-  'Bebidas calientes y frías',
-  'Snacks y pasabocas vegetarianos',
-  'Zona de descanso con hamacas',
-  'Vista panorámica de las montañas',
-  'Acceso a senderos ecológicos',
-];
+// Se itera por índice para que t() resuelva cada servicio en el idioma actual.
+const servicios = dict.services.map((_, i) => t(`paradorPage.services.${i}`));
 ---
 
-<Layout title="Parador el Elefante | Varsana Eco Yoga Aldea">
+<Layout title={t('paradorPage.metaTitle')} description={t('paradorPage.metaDescription')}>
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
     <PageBanner
-      title="Parador el Elefante"
-      subtitle="Una parada para renovar el cuerpo y el espíritu. Bebidas artesanales, snacks vegetarianos y un espacio de descanso con vista a las montañas del Sumapaz."
-      badge="Parador de montaña"
+      title={t('paradorPage.banner.title')}
+      subtitle={t('paradorPage.banner.subtitle')}
+      badge={t('paradorPage.banner.badge')}
       breadcrumb={[
-        { label: 'Inicio', url: '/' },
-        { label: 'Alimentación', url: '/alimentacion' },
-        { label: 'Parador el Elefante', url: '/parador-el-elefante' },
+        { label: t('paradorPage.breadcrumb.home'), url: l('/') },
+        { label: t('paradorPage.breadcrumb.alimentacion'), url: l('/alimentacion') },
+        { label: t('paradorPage.breadcrumb.parador'), url: l('/parador-el-elefante') },
       ]}
     />
 
@@ -36,28 +33,28 @@ const servicios = [
         <div>
           <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold mb-6">
             <Coffee size={16} />
-            <span>Parador el Elefante</span>
+            <span>{t('paradorPage.sectionBadge')}</span>
           </div>
           <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
-            El descanso del viajero consciente
+            {t('paradorPage.heading')}
           </h2>
           <p class="text-secondary-gray text-lg leading-relaxed">
-            Un espacio acogedor para hacer una pausa, recargar energías y disfrutar de bebidas artesanales rodeado de naturaleza. El parador es el punto de encuentro perfecto antes o después de recorrer los senderos de Varsana.
+            {t('paradorPage.text')}
           </p>
         </div>
 
         <ul class="space-y-3">
           {servicios.map((s) => (
             <li class="flex items-center gap-3 text-lg">
-              <CheckCircle2 class="text-saffron shrink-0" size={22} />
+              <CheckCircle2 className="text-saffron shrink-0" size={22} />
               <span>{s}</span>
             </li>
           ))}
         </ul>
 
         <div class="flex items-center gap-3 text-secondary-gray">
-          <MapPin size={18} class="text-saffron shrink-0" />
-          <span>Granada, Cundinamarca — Varsana Eco Yoga Aldea</span>
+          <MapPin size={18} className="text-saffron shrink-0" />
+          <span>{t('paradorPage.location')}</span>
         </div>
       </div>
 
@@ -65,14 +62,14 @@ const servicios = [
         <img
           src="https://picsum.photos/seed/parador-1/600/800"
           class="rounded-3xl shadow-md aspect-3/4 object-cover"
-          alt="Parador el Elefante Varsana"
+          alt={t('paradorPage.image1Alt')}
           referrerpolicy="no-referrer"
           loading="lazy"
         />
         <img
           src="https://picsum.photos/seed/parador-2/600/800"
           class="rounded-3xl shadow-md mt-8 aspect-3/4 object-cover"
-          alt="Vista montañas Varsana"
+          alt={t('paradorPage.image2Alt')}
           referrerpolicy="no-referrer"
           loading="lazy"
         />

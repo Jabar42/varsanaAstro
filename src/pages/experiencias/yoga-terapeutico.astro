@@ -1,10 +1,17 @@
 ---
+import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
 import {
-  CheckCircle2, Info, Wallet, Monitor, MapPin, GraduationCap,
+  CheckCircle2, Wallet, Monitor, MapPin, GraduationCap,
   MessageCircle, Flower2, BookOpen, Users,
 } from 'lucide-react';
+import { es as ytEs, en as ytEn } from '@/src/i18n/dictionaries/yogaTerapeuticoPage';
+
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (path: string) => localizePath(locale, path);
+const dict = locale === 'en' ? ytEn : ytEs;
 
 const BANNER_IMAGE = '/api/images/1786986727764-yoga-certificado-banner.webp';
 // Placeholders: reemplazar cuando lleguen las imágenes reales
@@ -14,48 +21,25 @@ const IMG_INVERSION = '';
 
 const WHATSAPP_URL = 'https://wa.me/573214538242';
 
-const introParagraphs = [
-  "Formaciones para profundizar en el yoga terapéutico y adquirir herramientas para acompañar procesos de bienestar y transformación.",
-  "La formación busca preparar maestros y terapeutas de yoga con herramientas para acompañar procesos de bienestar, autoconocimiento y transformación, integrando el conocimiento y la práctica del yoga en diferentes contextos.",
-];
-
-const includes = [
-  "Material académico.",
-  "Clases prácticas.",
-  "Evaluaciones.",
-  "Certificación.",
-  "Acceso a contenidos virtuales.",
-  "Acompañamiento de maestros.",
-  "Prácticas presenciales.",
-];
-
-const priceTiers = [
-  { title: "Certificación 200 horas", price: "$___" },
-  { title: "Certificación 500 horas", price: "$___" },
-];
-
-const faqs = [
-  "¿Se necesita experiencia previa en yoga?",
-  "¿Existe una edad mínima?",
-  "¿Se requiere haber realizado algún curso previo?",
-  "¿Qué debe llevar el estudiante a las clases presenciales?",
-  "¿Existen requisitos para obtener la certificación?",
-];
+const introParagraphs = dict.introParagraphs;
+const includes = dict.includes.items;
+const priceTiers = dict.inversion.tiers;
+const faqs = dict.faq.items;
 ---
 
-<Layout title="Certificación Yoga Terapéutico | Varsana Eco Yoga Aldea">
+<Layout title={t('yogaTerapeuticoPage.metaTitle')} description={t('yogaTerapeuticoPage.metaDescription')}>
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
     <!-- Page Banner -->
     <PageBanner
-      title="Certificación Yoga Terapéutico"
-      subtitle="Formación de 200 y 500 horas"
+      title={t('yogaTerapeuticoPage.bannerTitle')}
+      subtitle={t('yogaTerapeuticoPage.bannerSubtitle')}
       image={BANNER_IMAGE}
       breadcrumb={[
-        { label: 'Inicio', url: '/' },
-        { label: 'Experiencias', url: '/experiencias' },
-        { label: 'Yoga', url: '/experiencias/yoga' },
-        { label: 'Certificación', url: '/experiencias/yoga-terapeutico' },
+        { label: t('yogaTerapeuticoPage.breadcrumbHome'), url: l('/') },
+        { label: t('yogaTerapeuticoPage.breadcrumbExperiencias'), url: l('/experiencias') },
+        { label: t('yogaTerapeuticoPage.breadcrumbYoga'), url: l('/experiencias/yoga') },
+        { label: t('yogaTerapeuticoPage.breadcrumbCertificacion'), url: l('/experiencias/yoga-terapeutico') },
       ]}
     />
 
@@ -63,18 +47,18 @@ const faqs = [
     <div class="flex flex-wrap justify-center gap-4 mt-8 mb-16">
       <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg inline-flex items-center gap-2">
         <MessageCircle size={22} />
-        Escríbenos a WhatsApp
+        {t('yogaTerapeuticoPage.ctaWhatsapp')}
       </a>
-      <a href="/experiencias/yoga" class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
+      <a href={l('/experiencias/yoga')} class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
         <BookOpen size={22} />
-        Volver a clases de yoga
+        {t('yogaTerapeuticoPage.ctaBack')}
       </a>
     </div>
 
     <!-- Introducción -->
     <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <div class="space-y-5">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">Formación en yoga terapéutico</h2>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">{t('yogaTerapeuticoPage.introHeading')}</h2>
         {introParagraphs.map((p) => (
           <p class="text-gray-600 text-lg leading-relaxed">{p}</p>
         ))}
@@ -82,7 +66,7 @@ const faqs = [
       {IMG_INTRO ? (
         <img
           src={IMG_INTRO}
-          alt="Formación en yoga terapéutico en Varsana"
+          alt={t('yogaTerapeuticoPage.introImageAlt')}
           class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
           decoding="async"
         />
@@ -90,7 +74,7 @@ const faqs = [
         <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
           <Flower2 size={48} />
           <p class="font-medium">IMG_INTRO</p>
-          <p class="text-sm">placeholder — reemplazar con imagen real</p>
+          <p class="text-sm">{t('yogaTerapeuticoPage.placeholderNote')}</p>
         </div>
       )}
     </section>
@@ -98,22 +82,22 @@ const faqs = [
     <!-- Modalidad y lugar -->
     <section class="mb-24 bg-light-surface rounded-[32px] p-8 md:p-16">
       <div class="max-w-3xl mx-auto mb-12 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">Modalidad y lugar</h2>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('yogaTerapeuticoPage.modalidad.heading')}</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
         <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
           <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
             <Monitor size={24} />
           </div>
-          <h3 class="text-xl font-bold tracking-tightest">Modalidad</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Presencial y Virtual.</p>
+          <h3 class="text-xl font-bold tracking-tightest">{t('yogaTerapeuticoPage.modalidad.cardTitle')}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">{t('yogaTerapeuticoPage.modalidad.cardText')}</p>
         </div>
         <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
           <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
             <MapPin size={24} />
           </div>
-          <h3 class="text-xl font-bold tracking-tightest">Academia de formación - Bogotá</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Avenida Caracas #32-69, Teusaquillo.</p>
+          <h3 class="text-xl font-bold tracking-tightest">{t('yogaTerapeuticoPage.modalidad.locationName')}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">{t('yogaTerapeuticoPage.modalidad.locationAddress')}</p>
         </div>
       </div>
     </section>
@@ -121,7 +105,7 @@ const faqs = [
     <!-- Qué incluye -->
     <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <div class="space-y-8">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">La formación incluye</h2>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('yogaTerapeuticoPage.includes.heading')}</h2>
         <ul class="space-y-4">
           {includes.map((item) => (
             <li class="flex items-start gap-4 text-lg font-medium">
@@ -134,7 +118,7 @@ const faqs = [
       {IMG_INCLUYE ? (
         <img
           src={IMG_INCLUYE}
-          alt="Materiales académicos de la formación en yoga terapéutico"
+          alt={t('yogaTerapeuticoPage.includes.imageAlt')}
           class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
           decoding="async"
         />
@@ -142,7 +126,7 @@ const faqs = [
         <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
           <Flower2 size={48} />
           <p class="font-medium">IMG_INCLUYE</p>
-          <p class="text-sm">placeholder — reemplazar con imagen real</p>
+          <p class="text-sm">{t('yogaTerapeuticoPage.placeholderNote')}</p>
         </div>
       )}
     </section>
@@ -152,7 +136,7 @@ const faqs = [
       {IMG_INVERSION ? (
         <img
           src={IMG_INVERSION}
-          alt="Formación en yoga terapéutico"
+          alt={t('yogaTerapeuticoPage.inversion.imageAlt')}
           class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
           decoding="async"
         />
@@ -160,11 +144,11 @@ const faqs = [
         <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
           <Flower2 size={48} />
           <p class="font-medium">IMG_INVERSION</p>
-          <p class="text-sm">placeholder — reemplazar con imagen real</p>
+          <p class="text-sm">{t('yogaTerapeuticoPage.placeholderNote')}</p>
         </div>
       )}
       <div class="space-y-8">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">Inversión</h2>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('yogaTerapeuticoPage.inversion.heading')}</h2>
         <div class="space-y-4">
           {priceTiers.map((tier) => (
             <div class="flex items-center justify-between gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand shadow-airbnb">
@@ -183,7 +167,7 @@ const faqs = [
         <div class="flex items-start gap-4 p-6 bg-light-surface rounded-2xl border border-sacred-sand">
           <Wallet className="text-rausch shrink-0 mt-1" size={24} />
           <p class="text-sm text-gray-600">
-            Formas de pago disponibles. Pregunta por nuestras opciones al escribirnos.
+            {t('yogaTerapeuticoPage.inversion.note')}
           </p>
         </div>
       </div>
@@ -192,8 +176,8 @@ const faqs = [
     <!-- FAQ -->
     <section class="max-w-3xl mx-auto mb-24 space-y-12">
       <div class="text-center">
-        <h2 class="text-3xl font-bold tracking-tightest mb-4">Preguntas Frecuentes</h2>
-        <p class="text-gray-500">Todo lo que necesitas saber antes de iniciar tu formación.</p>
+        <h2 class="text-3xl font-bold tracking-tightest mb-4">{t('yogaTerapeuticoPage.faq.heading')}</h2>
+        <p class="text-gray-500">{t('yogaTerapeuticoPage.faq.subtitle')}</p>
       </div>
       <div class="space-y-6">
         {faqs.map((q) => (
@@ -206,7 +190,7 @@ const faqs = [
       <div class="text-center">
         <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-rausch font-bold hover:underline">
           <MessageCircle size={20} />
-          Resuelve tus dudas por WhatsApp
+          {t('yogaTerapeuticoPage.faq.cta')}
         </a>
       </div>
     </section>
@@ -216,13 +200,13 @@ const faqs = [
       <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-6">
         <Users size={28} />
       </div>
-      <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">¿Listo para profundizar?</h2>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('yogaTerapeuticoPage.final.heading')}</h2>
       <p class="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-        Formaciones de 200 y 500 horas con acompañamiento de maestros y práctica presencial.
+        {t('yogaTerapeuticoPage.final.text')}
       </p>
       <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-white text-rausch px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
         <MessageCircle size={22} />
-        Escríbenos a WhatsApp
+        {t('yogaTerapeuticoPage.final.cta')}
       </a>
     </section>
   </main>

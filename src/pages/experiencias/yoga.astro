@@ -1,11 +1,17 @@
 ---
+import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
 import {
-  Leaf, Users, Heart, Coffee, Home, Info, CheckCircle2,
-  Clock, Wallet, Backpack, Flower2, Sun, MapPin, Monitor,
-  Sparkles, MessageCircle, BookOpen, GraduationCap,
+  Leaf, Info, CheckCircle2, Wallet, Flower2, MapPin, Monitor,
+  MessageCircle, GraduationCap,
 } from 'lucide-react';
+import { es as yogaEs, en as yogaEn } from '@/src/i18n/dictionaries/yogaPage';
+
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (path: string) => localizePath(locale, path);
+const dict = locale === 'en' ? yogaEn : yogaEs;
 
 const BANNER_IMAGE = '/api/images/1786986725378-yoga-banner.webp';
 const IMG_CLASE = '/api/images/1786986726696-yoga-clase.webp';
@@ -15,56 +21,25 @@ const IMG_INVERSION = '';
 
 const WHATSAPP_URL = 'https://wa.me/573214538242';
 
-const introParagraphs = [
-  "Prácticas de yoga y meditación para cultivar el autoconocimiento, el autocuidado y una mayor conexión con tu cuerpo, mente y conciencia.",
-  "En Varsana, la práctica milenaria del yoga acompaña los procesos de autoconocimiento, autocuidado y desarrollo integral desde nuestros inicios. Nuestros maestros son practicantes comprometidos que profundizan constantemente en su propio camino. Desde esa experiencia, comparten sus enseñanzas para acompañar a cada estudiante a avanzar con mayor claridad, conciencia y profundidad.",
-];
-
-const locations = [
-  {
-    name: "Ecoaldea Varsana",
-    address: "Granada, Cundinamarca.",
-    icon: Leaf,
-  },
-  {
-    name: "Academia de formación - Bogotá",
-    address: "Avenida Caracas #32-69, Teusaquillo.",
-    icon: MapPin,
-  },
-];
-
-const includes = [
-  "Materiales.",
-  "Elementos para la práctica.",
-  "Acceso a instalaciones.",
-  "Clase de prueba.",
-  "Grabaciones en modalidad virtual.",
-  "Material complementario.",
-];
-
-const faqs = [
-  "¿Qué debe llevar el estudiante?",
-  "¿Debe llevar mat de yoga?",
-  "¿Cuál es la duración de cada clase?",
-  "¿Qué nivel se requiere: inicial, intermedio, avanzado o todos?",
-  "¿Cuál es la edad mínima?",
-  "¿Con qué frecuencia se realizan las clases?",
-  "¿Es necesario reservar previamente?",
-];
+const introParagraphs = dict.introParagraphs;
+const locationIcons = [Leaf, MapPin];
+const locations = dict.locations.map((loc, i) => ({ ...loc, icon: locationIcons[i] ?? MapPin }));
+const includes = dict.includes.items;
+const faqs = dict.faq.items;
 ---
 
-<Layout title="Clases de Yoga y Meditación | Varsana Eco Yoga Aldea">
+<Layout title={t('yogaPage.metaTitle')} description={t('yogaPage.metaDescription')}>
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
     <!-- Page Banner -->
     <PageBanner
-      title="Clases de Yoga y Meditación"
-      subtitle="Presenciales y virtuales"
+      title={t('yogaPage.bannerTitle')}
+      subtitle={t('yogaPage.bannerSubtitle')}
       image={BANNER_IMAGE}
       breadcrumb={[
-        { label: 'Inicio', url: '/' },
-        { label: 'Experiencias', url: '/experiencias' },
-        { label: 'Yoga', url: '/experiencias/yoga' },
+        { label: t('yogaPage.breadcrumbHome'), url: l('/') },
+        { label: t('yogaPage.breadcrumbExperiencias'), url: l('/experiencias') },
+        { label: t('yogaPage.breadcrumbYoga'), url: l('/experiencias/yoga') },
       ]}
     />
 
@@ -72,25 +47,25 @@ const faqs = [
     <div class="flex flex-wrap justify-center gap-4 mt-8 mb-16">
       <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg inline-flex items-center gap-2">
         <MessageCircle size={22} />
-        Escríbenos a WhatsApp
+        {t('yogaPage.ctaWhatsapp')}
       </a>
-      <a href="/experiencias/yoga-terapeutico" class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
+      <a href={l('/experiencias/yoga-terapeutico')} class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
         <GraduationCap size={22} />
-        Ver certificación
+        {t('yogaPage.ctaCertification')}
       </a>
     </div>
 
     <!-- Introducción -->
     <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <div class="space-y-5">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">Yoga para el autoconocimiento</h2>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">{t('yogaPage.introHeading')}</h2>
         {introParagraphs.map((p) => (
           <p class="text-gray-600 text-lg leading-relaxed">{p}</p>
         ))}
       </div>
       <img
         src={IMG_CLASE}
-        alt="Clase de yoga y meditación en Varsana"
+        alt={t('yogaPage.introImageAlt')}
         class="rounded-[32px] shadow-airbnb w-full aspect-video object-cover"
         decoding="async"
       />
@@ -99,9 +74,9 @@ const faqs = [
     <!-- Modalidad y lugares -->
     <section class="mb-24 bg-light-surface rounded-[32px] p-8 md:p-16">
       <div class="max-w-3xl mx-auto mb-12 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">Modalidad y lugares</h2>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('yogaPage.modalidad.heading')}</h2>
         <p class="text-gray-500 text-lg">
-          Prácticas presenciales y virtuales, donde prefieras.
+          {t('yogaPage.modalidad.subtitle')}
         </p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -109,8 +84,8 @@ const faqs = [
           <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
             <Monitor size={24} />
           </div>
-          <h3 class="text-xl font-bold tracking-tightest">Modalidad</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Presencial y Virtual.</p>
+          <h3 class="text-xl font-bold tracking-tightest">{t('yogaPage.modalidad.cardTitle')}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">{t('yogaPage.modalidad.cardText')}</p>
         </div>
         {locations.map((loc) => (
           <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
@@ -127,9 +102,9 @@ const faqs = [
     <!-- Qué incluye -->
     <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <div class="space-y-8">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">La experiencia incluye</h2>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('yogaPage.includes.heading')}</h2>
         <p class="text-gray-600 text-lg leading-relaxed">
-          La experiencia incluye la práctica guiada por maestros de yoga y espacios de aprendizaje y conexión.
+          {t('yogaPage.includes.text')}
         </p>
         <ul class="space-y-4">
           {includes.map((item) => (
@@ -143,7 +118,7 @@ const faqs = [
       {IMG_INCLUYE ? (
         <img
           src={IMG_INCLUYE}
-          alt="Elementos de la práctica de yoga en Varsana"
+          alt={t('yogaPage.includes.imageAlt')}
           class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
           decoding="async"
         />
@@ -151,7 +126,7 @@ const faqs = [
         <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
           <Flower2 size={48} />
           <p class="font-medium">IMG_INCLUYE</p>
-          <p class="text-sm">placeholder — reemplazar con imagen real</p>
+          <p class="text-sm">{t('yogaPage.placeholderNote')}</p>
         </div>
       )}
     </section>
@@ -161,7 +136,7 @@ const faqs = [
       {IMG_INVERSION ? (
         <img
           src={IMG_INVERSION}
-          alt="Espacio de práctica de yoga"
+          alt={t('yogaPage.inversion.imageAlt')}
           class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
           decoding="async"
         />
@@ -169,18 +144,18 @@ const faqs = [
         <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
           <Flower2 size={48} />
           <p class="font-medium">IMG_INVERSION</p>
-          <p class="text-sm">placeholder — reemplazar con imagen real</p>
+          <p class="text-sm">{t('yogaPage.placeholderNote')}</p>
         </div>
       )}
       <div class="space-y-8">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">Inversión</h2>
+        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('yogaPage.inversion.heading')}</h2>
         <div class="space-y-4">
           <div class="flex items-center justify-between gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand shadow-airbnb">
             <div class="flex items-center gap-4">
               <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch shrink-0">
                 <Wallet size={24} />
               </div>
-              <span class="font-bold text-lg">Clase presencial</span>
+              <span class="font-bold text-lg">{t('yogaPage.inversion.presencial')}</span>
             </div>
             <div class="text-right">
               <span class="block font-bold text-rausch text-lg">$___</span>
@@ -191,7 +166,7 @@ const faqs = [
               <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch shrink-0">
                 <Monitor size={24} />
               </div>
-              <span class="font-bold text-lg">Clase virtual</span>
+              <span class="font-bold text-lg">{t('yogaPage.inversion.virtual')}</span>
             </div>
             <div class="text-right">
               <span class="block font-bold text-rausch text-lg">$___</span>
@@ -201,7 +176,7 @@ const faqs = [
         <div class="flex items-start gap-4 p-6 bg-light-surface rounded-2xl border border-sacred-sand">
           <Info className="text-rausch shrink-0 mt-1" size={24} />
           <p class="text-sm text-gray-600">
-            Pregunta por nuestros bonos, mensualidades y paquetes.
+            {t('yogaPage.inversion.note')}
           </p>
         </div>
       </div>
@@ -210,8 +185,8 @@ const faqs = [
     <!-- FAQ -->
     <section class="max-w-3xl mx-auto mb-24 space-y-12">
       <div class="text-center">
-        <h2 class="text-3xl font-bold tracking-tightest mb-4">Preguntas Frecuentes</h2>
-        <p class="text-gray-500">Todo lo que necesitas saber antes de tu primera clase.</p>
+        <h2 class="text-3xl font-bold tracking-tightest mb-4">{t('yogaPage.faq.heading')}</h2>
+        <p class="text-gray-500">{t('yogaPage.faq.subtitle')}</p>
       </div>
       <div class="space-y-6">
         {faqs.map((q) => (
@@ -224,7 +199,7 @@ const faqs = [
       <div class="text-center">
         <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-rausch font-bold hover:underline">
           <MessageCircle size={20} />
-          Resuelve tus dudas por WhatsApp
+          {t('yogaPage.faq.cta')}
         </a>
       </div>
     </section>
@@ -234,24 +209,24 @@ const faqs = [
       <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-6">
         <GraduationCap size={28} />
       </div>
-      <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">Certificación en Yoga Terapéutico</h2>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('yogaPage.certificacion.heading')}</h2>
       <p class="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-        Formación de 200 y 500 horas para profundizar en el yoga terapéutico y acompañar procesos de bienestar y transformación.
+        {t('yogaPage.certificacion.text')}
       </p>
-      <a href="/experiencias/yoga-terapeutico" class="inline-block bg-white text-rausch px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
-        Conocer la formación
+      <a href={l('/experiencias/yoga-terapeutico')} class="inline-block bg-white text-rausch px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
+        {t('yogaPage.certificacion.cta')}
       </a>
     </section>
 
     <!-- CTA final -->
     <section class="mb-24 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">¿Listo para tu primera práctica?</h2>
+      <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('yogaPage.final.heading')}</h2>
       <p class="text-gray-500 text-lg mb-8 max-w-2xl mx-auto">
-        Clases presenciales y virtuales guiadas por maestros comprometidos con tu bienestar.
+        {t('yogaPage.final.text')}
       </p>
       <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
         <MessageCircle size={22} />
-        Escríbenos a WhatsApp
+        {t('yogaPage.final.cta')}
       </a>
     </section>
   </main>

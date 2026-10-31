@@ -5,20 +5,21 @@
 DIR="${1:-src}"
 EXIT=0
 
-# Patterns that have v4 shorthands
-declare -A CHECKS=(
-  ["flex-shrink-0"]="shrink-0"
-  ["flex-shrink"]="shrink (cuando el valor no es 0)"
-  ["flex-grow-0"]="grow-0"
-  ["flex-grow"]="grow"
-  ["decoration-slice"]="box-decoration-slice"
-  ["decoration-clone"]="box-decoration-clone"
+# Patterns that have v4 shorthands (formato OLD|NEW; compatible con bash 3 de macOS)
+CHECKS=(
+  "flex-shrink-0|shrink-0"
+  "flex-shrink|shrink (cuando el valor no es 0)"
+  "flex-grow-0|grow-0"
+  "flex-grow|grow"
+  "decoration-slice|box-decoration-slice"
+  "decoration-clone|box-decoration-clone"
 )
 
 echo "🔍 Tailwind v4 shorthand check..."
 
-for OLD in "${!CHECKS[@]}"; do
-  NEW="${CHECKS[$OLD]}"
+for PAIR in "${CHECKS[@]}"; do
+  OLD="${PAIR%%|*}"
+  NEW="${PAIR#*|}"
   MATCHES=$(grep -rn "$OLD" "$DIR" --include="*.astro" --include="*.tsx" --include="*.jsx" --include="*.html" 2>/dev/null)
   if [ -n "$MATCHES" ]; then
     EXIT=1

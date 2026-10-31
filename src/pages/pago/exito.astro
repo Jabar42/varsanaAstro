@@ -1,11 +1,14 @@
 ---
 import Layout from '@/src/layouts/Layout.astro';
-import { useTranslations } from '@/src/i18n/utils';
+import { useTranslations, getLocale, localizePath } from '@/src/i18n/utils';
 import { CheckCircle, XCircle, Clock, Search, ArrowLeft } from 'lucide-react';
 import { env } from 'cloudflare:workers';
 import { getDB } from '@/src/lib/d1';
 
-const t = useTranslations((Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es');
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (p: string) => localizePath(locale, p);
+
 
 const boldOrderId = Astro.url.searchParams.get('bold-order-id');
 
@@ -105,20 +108,25 @@ const ResultIcon = config.icon;
 const isPending = orderStatus === 'pending';
 ---
 
-<Layout title="Resultado del pago | Varsana Eco Yoga Aldea" description="Resultado de tu transacción de pago">
+<Layout title={t('paymentPage.metaTitle')} description={t('paymentPage.metaDescription')}>
   <main class="min-h-[70vh] flex items-center justify-center px-4 py-16">
-    <div class={`w-full max-w-md rounded-[24px] border ${config.borderColor} ${config.bgColor} p-8 shadow-airbnb text-center space-y-6`}>
+    <div
+      id="payment-result"
+      data-locale={locale}
+      data-order-id={isPending && boldOrderId ? boldOrderId : undefined}
+      class={`w-full max-w-md rounded-[24px] border ${config.borderColor} ${config.bgColor} p-8 shadow-airbnb text-center space-y-6`}
+    >
 
       <!-- Icon -->
       <div class="flex justify-center">
         {
           isPending ? (
-            <svg class="h-14 w-14 animate-spin text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg class="h-14 w-14 animate-spin text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" role="img" aria-label={t('payment.processing')}>
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
           ) : (
-            <ResultIcon size={56} className={config.color} strokeWidth={1.5} />
+            <ResultIcon size={56} className={config.color} strokeWidth={1.5} aria-label={t('paymentPage.statusIconAlt')} />
           )
         }
       </div>
@@ -159,10 +167,10 @@ const isPending = orderStatus === 'pending';
           </a>
         )}
         <a
-          href="/"
+          href={l('/')}
           class="flex items-center justify-center gap-2 w-full rounded-xl border border-sacred-sand px-4 py-3 font-medium text-sacred-900 transition-colors hover:bg-sacred-sand/50"
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={16} aria-hidden="true" />
           {t('payment.backHome')}
         </a>
       </div>
@@ -170,31 +178,50 @@ const isPending = orderStatus === 'pending';
   </main>
 </Layout>
 
-<!-- Polling: only when the order exists but is still pending (webhook not arrived yet) -->
-{isPending && boldOrderId && (
-  <script>
-    (function pollOrderStatus() {
-      const orderId = '{boldOrderId}';
-      let attempts = 0;
-      const maxAttempts = 6;
+<!-- Polling: only when the order exists but is still pending (webhook not arrived yet).
+     The order id is read from data-order-id, which is only rendered in that case. -->
+<script>
+  // Con <ClientRouter /> este módulo corre una sola vez por sesión:
+  // inicializamos en astro:page-load y limpiamos el intervalo en astro:before-swap.
+  let pollTimer: ReturnType<typeof setInterval> | null = null;
 
-      const interval = setInterval(async () => {
-        attempts++;
-        try {
-          const res = await fetch('/api/order-status?bold-order-id=' + encodeURIComponent(orderId));
-          if (!res.ok) return;
-          const data = await res.json();
-          if (data.status !== 'pending') {
-            clearInterval(interval);
+  function stopPolling() {
+    if (pollTimer !== null) {
+      clearInterval(pollTimer);
+      pollTimer = null;
+    }
+  }
+
+  function startPolling() {
+    stopPolling();
+    const root = document.getElementById('payment-result') as HTMLElement | null;
+    const orderId = root?.dataset.orderId;
+    if (!orderId) return;
+
+    let attempts = 0;
+    const maxAttempts = 6;
+
+    pollTimer = setInterval(async () => {
+      attempts++;
+      try {
+        const res = await fetch('/api/order-status?bold-order-id=' + encodeURIComponent(orderId));
+        if (res.ok) {
+          const data = (await res.json()) as { status?: string };
+          if (data.status && data.status !== 'pending') {
+            stopPolling();
             window.location.reload();
+            return;
           }
-        } catch (err) {
-          // Network hiccup — keep polling until maxAttempts
         }
-        if (attempts >= maxAttempts) {
-          clearInterval(interval);
-        }
-      }, 2000);
-    })();
-  </script>
-)}
+      } catch {
+        // Network hiccup — keep polling until maxAttempts
+      }
+      if (attempts >= maxAttempts) {
+        stopPolling();
+      }
+    }, 2000);
+  }
+
+  document.addEventListener('astro:page-load', startPolling);
+  document.addEventListener('astro:before-swap', stopPolling);
+</script>

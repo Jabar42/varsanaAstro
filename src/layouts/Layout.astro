@@ -4,6 +4,7 @@ import AnnouncementBar from '@/src/components/AnnouncementBar.astro';
 import Header from '@/src/components/Header.astro';
 import Footer from '@/src/components/Footer.astro';
 import ChatWidget from '@tp3/chat-widget';
+import { getLocale, localizePath } from '@/src/i18n/utils';
 
 import { ClientRouter } from 'astro:transitions';
 
@@ -13,9 +14,16 @@ export interface Props {
 }
 
 const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
+
+// originPathname es la URL pedida por el navegador (antes del rewrite /en → /).
+const locale = getLocale(Astro);
+const site = Astro.site ?? new URL('https://varsana.com');
+const canonicalUrl = new URL(localizePath(locale, Astro.originPathname), site).href;
+const alternateEs = new URL(localizePath('es', Astro.originPathname), site).href;
+const alternateEn = new URL(localizePath('en', Astro.originPathname), site).href;
 ---
 
-<html lang={(Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es'}>
+<html lang={locale}>
   <head>
     <style is:inline>
       html, body {
@@ -34,27 +42,18 @@ const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/logo/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="alternate" hreflang="es" href={new URL(Astro.url.pathname.replace(/^\/en\//, '/').replace(/^\/en$/, '/'), Astro.site).href} />
-    <link rel="alternate" hreflang="en" href={new URL('/en' + Astro.url.pathname.replace(/^\/en\//, '/').replace(/^\/en$/, '/'), Astro.site).href} />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).href} />
+    <link rel="alternate" hreflang="es" href={alternateEs} />
+    <link rel="alternate" hreflang="en" href={alternateEn} />
+    <link rel="alternate" hreflang="x-default" href={alternateEs} />
+    <link rel="canonical" href={canonicalUrl} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preload" as="font" type="font/woff2" href="/fonts/proza-libre/proza-libre-latin-700-normal.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter/inter-latin-400-normal.woff2" crossorigin />
+
     <link rel="preload" as="image" href="/logo/LogoPrincipal.svg" />
     <ClientRouter />
-    <!-- Language switch: event delegation on document survives ClientRouter SPA navigations -->
-    <script>
-      document.addEventListener('click', (e) => {
-        const switcher = e.target.closest('[data-locale-switch]');
-        if (switcher) {
-          const targetLocale = switcher.getAttribute('data-locale-switch');
-          document.cookie = 'varsana_locale=' + targetLocale + '; Path=/; Max-Age=31536000; SameSite=Lax';
-        }
-      });
-    </script>
+
     <script defer src='https://umami-beta-livid.vercel.app/script.js' data-website-id='ed874ce2-f14c-41ab-badb-0b7bc360bee7'></script>
     <slot name="head" />
   </head>

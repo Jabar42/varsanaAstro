@@ -1,19 +1,16 @@
 ---
 import { Globe, Heart, MessageCircle } from 'lucide-react';
 import CategoryBar from '@/src/components/CategoryBar.astro';
-import { useTranslations } from '@/src/i18n/utils';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations, getLocale, localizePath, type Locale } from '@/src/i18n/utils';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
-const otherLocale = locale === 'en' ? 'es' : 'en';
+const locale = getLocale(Astro);
+const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const otherLabel = otherLocale === 'en' ? 'EN' : 'ES';
 const t = useTranslations(locale);
-const l = (path: string) => getRelativeLocaleUrl(locale, path);
-// URL to switch language: go to current page in the other locale
-const switchUrl = (() => {
-  const p = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '');
-  return getRelativeLocaleUrl(otherLocale, p || '/');
-})();
+const l = (path: string) => localizePath(locale, path);
+// Cambio de idioma: misma página en el otro idioma. Es un enlace normal (sin JS):
+// la URL manda y el servidor recuerda el idioma en la cookie.
+const switchUrl = localizePath(otherLocale, Astro.originPathname + Astro.url.search);
 ---
 
 <header class="sticky top-0 z-50 bg-lotus-white border-b border-sacred-sand">
@@ -66,10 +63,15 @@ const switchUrl = (() => {
             <!-- Language switcher -->
             <a
               href={switchUrl}
-              data-locale-switch={otherLocale}
-              class="flex items-center gap-1.5 hover:bg-sacred-sand rounded-full  py-1 cursor-pointer transition-colors group"
+              hreflang={otherLocale}
+              lang={otherLocale}
+              data-astro-reload
+              data-astro-prefetch="false"
+              class="flex items-center gap-1.5 hover:bg-sacred-sand rounded-full px-2 py-1 cursor-pointer transition-colors group"
               title={otherLabel === 'EN' ? 'Switch to English' : 'Cambiar a Español'}
+              aria-label={otherLabel === 'EN' ? 'Switch to English' : 'Cambiar a Español'}
             >
+
               <Globe size={16} />
               <span class="text-xs font-bold opacity-70 group-hover:opacity-100 transition-opacity">{otherLabel}</span>
             </a>
