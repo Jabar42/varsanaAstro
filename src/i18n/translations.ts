@@ -15,7 +15,9 @@ export interface TranslationDict {
     contact: string;
     donate: string;
     menu: string;
+    viewAll: string;
   };
+
   home: {
     tagline: string;
     taglinePart1?: string;
@@ -334,6 +336,7 @@ export const translations: Record<Locale, TranslationDict> = {
       contact: 'Contacto',
       donate: 'Donar',
       menu: 'Menú',
+      viewAll: 'Ver todas',
     },
     home: {
       taglinePart1: 'Más que un lugar,',
@@ -847,6 +850,8 @@ export const translations: Record<Locale, TranslationDict> = {
       contact: 'Contact',
       donate: 'Donate',
       menu: 'Menu',
+      viewAll: 'View all',
+
     },
     events: {
       heading: 'Events Calendar',
