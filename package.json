@@ -22,7 +22,7 @@
     "@astrojs/react": "^5.0.3",
     "@astrojs/sitemap": "^3.7.2",
     "@tailwindcss/vite": "^4.1.14",
-    "@tp3/chat-widget": "^0.2.4",
+    "@tp3/chat-widget": "^0.2.5",
     "astro": "^6.3.7",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",

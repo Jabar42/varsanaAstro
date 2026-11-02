@@ -4,6 +4,7 @@ import AnnouncementBar from '@/src/components/AnnouncementBar.astro';
 import Header from '@/src/components/Header.astro';
 import Footer from '@/src/components/Footer.astro';
 import ChatWidget from '@tp3/chat-widget';
+import { env } from 'cloudflare:workers';
 import { getLocale, localizePath } from '@/src/i18n/utils';
 
 import { ClientRouter } from 'astro:transitions';
@@ -14,6 +15,13 @@ export interface Props {
 }
 
 const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
+
+// URL del WebSocket del agente de atención: var de runtime del Worker
+// (`PUBLIC_HERMES_WS_URL` en wrangler.jsonc), no constante de build. Sin var,
+// cae a localhost para desarrollo; en producción hay que apuntarla al túnel wss.
+const hermesWsUrl =
+  ((env as unknown as Cloudflare.Env).PUBLIC_HERMES_WS_URL as string | undefined) ||
+  'ws://localhost:8766';
 
 // originPathname es la URL pedida por el navegador (antes del rewrite /en → /).
 const locale = getLocale(Astro);
@@ -65,7 +73,7 @@ const alternateEn = new URL(localizePath('en', Astro.originPathname), site).href
     </main>
     <Footer />
     <ChatWidget
-      hermesUrl="ws://localhost:8766"
+      hermesUrl={hermesWsUrl}
       brandName="Varsana"
       brandSubtitle="Asistente virtual"
       welcomeMessage="🙏 ¡Bienvenida a Varsana Eco Yoga Aldea! Soy Ananda, tu asistente virtual. ¿En qué puedo ayudarte?"

@@ -15,6 +15,8 @@ declare namespace Cloudflare {
     // Variables (wrangler.jsonc vars)
     ENVIRONMENT: string;
     PUBLIC_DONATION_URL: string;
+    /** URL wss:// del gateway del agente de chat (túnel cloudflared). */
+    PUBLIC_HERMES_WS_URL: string;
     // D1
     DB: D1Database;
     // R2
