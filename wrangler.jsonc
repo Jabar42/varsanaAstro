@@ -14,7 +14,7 @@
   "vars": {
     "ENVIRONMENT": "staging",
     "PUBLIC_DONATION_URL": "https://donar.varsana.com",
-    "PUBLIC_HERMES_WS_URL": ""
+    "PUBLIC_HERMES_WS_URL": "wss://varsana.syberloop.com"
   },
   "d1_databases": [
     {
