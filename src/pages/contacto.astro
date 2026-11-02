@@ -1,7 +1,7 @@
 ---
-
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
+import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
 import {
   Send,
   MessageCircle,
@@ -12,21 +12,24 @@ import {
   Clock,
   Car,
   Bus,
-  ArrowRight,
 } from 'lucide-react';
+
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (p: string) => localizePath(locale, p);
 ---
 
-<Layout title="Contacto | Varsana Eco Yoga Aldea">
+<Layout title={t('contacto.title')} description={t('contacto.subtitle')}>
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
     <!-- Page Banner -->
     <PageBanner
-      title="Estamos aquí para ti"
-      subtitle="Escríbenos, llámanos o visítanos. Queremos acompañarte en tu camino hacia una experiencia de bienestar, naturaleza y espiritualidad en Varsana."
-      badge="Contáctanos"
+      title={t('contacto.heading')}
+      subtitle={t('contacto.subtitle')}
+      badge={t('contacto.badge')}
       breadcrumb={[
-        { label: 'Inicio', url: '/' },
-        { label: 'Contacto', url: '/contacto' },
+        { label: t('nav.home'), url: l('/') },
+        { label: t('nav.contact'), url: l('/contacto') },
       ]}
     />
 
@@ -42,11 +45,11 @@ import {
         <div class="w-14 h-14 bg-saffron/10 rounded-2xl flex items-center justify-center text-saffron mx-auto group-hover:bg-saffron group-hover:text-white transition-colors duration-300">
           <MessageCircle size={28} />
         </div>
-        <h3 class="text-xl font-bold font-display tracking-tightest">WhatsApp</h3>
-        <p class="text-secondary-gray text-sm">Chatea con nosotros</p>
+        <h3 class="text-xl font-bold font-display tracking-tightest">{t('contacto.whatsapp')}</h3>
+        <p class="text-secondary-gray text-sm">{t('contacto.whatsappDesc')}</p>
         <p class="text-near-black font-bold font-display">+57 321 4538242</p>
         <span class="inline-flex items-center gap-1 text-saffron text-sm font-bold group-hover:gap-2 transition-all">
-          Abrir chat
+          {t('contacto.whatsappCta')}
           <ChevronRight size={14} />
         </span>
       </a>
@@ -59,11 +62,11 @@ import {
         <div class="w-14 h-14 bg-rausch/10 rounded-2xl flex items-center justify-center text-rausch mx-auto group-hover:bg-rausch group-hover:text-white transition-colors duration-300">
           <Mail size={28} />
         </div>
-        <h3 class="text-xl font-bold font-display tracking-tightest">Correo electrónico</h3>
-        <p class="text-secondary-gray text-sm">Escríbenos tus preguntas</p>
+        <h3 class="text-xl font-bold font-display tracking-tightest">{t('contacto.emailLabel')}</h3>
+        <p class="text-secondary-gray text-sm">{t('contacto.emailDesc')}</p>
         <p class="text-near-black font-bold font-display">contacto@varsana.com</p>
         <span class="inline-flex items-center gap-1 text-rausch text-sm font-bold group-hover:gap-2 transition-all">
-          Enviar correo
+          {t('contacto.emailCta')}
           <ChevronRight size={14} />
         </span>
       </a>
@@ -73,13 +76,13 @@ import {
         <div class="w-14 h-14 bg-forest/10 rounded-2xl flex items-center justify-center text-forest mx-auto group-hover:bg-forest group-hover:text-white transition-colors duration-300">
           <MapPin size={28} />
         </div>
-        <h3 class="text-xl font-bold font-display tracking-tightest">Visítanos</h3>
-        <p class="text-secondary-gray text-sm">Te recibimos con los brazos abiertos</p>
+        <h3 class="text-xl font-bold font-display tracking-tightest">{t('contacto.visit')}</h3>
+        <p class="text-secondary-gray text-sm">{t('contacto.visitDesc')}</p>
         <p class="text-near-black font-bold font-display leading-relaxed">
-          Km 28, Vía Silvania – Granada<br />Granada, Cundinamarca
+          {t('contactoPage.addressLine1')}<br />{t('contactoPage.addressLine2')}
         </p>
         <span class="inline-flex items-center gap-1 text-forest text-sm font-bold">
-          Colombia
+          {t('contacto.visitCountry')}
         </span>
       </div>
     </section>
@@ -94,7 +97,7 @@ import {
           style="border:0"
           loading="lazy"
           allowfullscreen
-          title="Ubicación de Varsana Eco Yoga Aldea en Granada, Cundinamarca"
+          title={t('contactoPage.mapTitle')}
         ></iframe>
       </div>
     </section>
@@ -104,58 +107,74 @@ import {
       <div class="text-center mb-10">
         <div class="inline-flex items-center gap-2 bg-rausch/10 text-rausch px-4 py-2 rounded-full text-sm font-bold mb-6">
           <Sparkles size={16} />
-          <span>Envíanos un mensaje</span>
+          <span>{t('contacto.formBadge')}</span>
         </div>
         <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
-          ¿Tienes una pregunta?
+          {t('contacto.formHeading')}
         </h2>
         <p class="text-secondary-gray text-lg">
-          Completa el formulario y te responderemos lo antes posible.
+          {t('contacto.formSubtitle')}
         </p>
       </div>
 
-      <form id="contact-form" class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 md:p-12 space-y-6">
+      <form
+        id="contact-form"
+        class="relative bg-lotus-white rounded-[24px] shadow-airbnb p-8 md:p-12 space-y-6"
+        data-msg-sending={t('contactoPage.sending')}
+        data-msg-success={t('contactoPage.success')}
+        data-msg-error-prefix={t('contactoPage.errorPrefix')}
+        data-msg-generic-error={t('contactoPage.genericError')}
+        data-msg-connection-error={t('contactoPage.connectionError')}
+        data-msg-submit={t('contacto.formSubmit')}
+      >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
-            <label for="nombre" class="text-sm font-bold text-near-black">Nombre</label>
+            <label for="nombre" class="text-sm font-bold text-near-black">{t('contacto.formName')}</label>
             <input
               type="text"
               id="nombre"
               name="nombre"
               required
-              placeholder="Tu nombre completo"
+              placeholder={t('contacto.formNamePlaceholder')}
               class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all"
             />
           </div>
           <div class="space-y-2">
-            <label for="email" class="text-sm font-bold text-near-black">Correo electrónico</label>
+            <label for="email" class="text-sm font-bold text-near-black">{t('contacto.formEmail')}</label>
             <input
               type="email"
               id="email"
               name="email"
               required
-              placeholder="tucorreo@ejemplo.com"
+              placeholder={t('contacto.formEmailPlaceholder')}
               class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all"
             />
           </div>
         </div>
         <div class="space-y-2">
-          <label for="mensaje" class="text-sm font-bold text-near-black">Mensaje</label>
+          <label for="mensaje" class="text-sm font-bold text-near-black">{t('contacto.formMessage')}</label>
           <textarea
             id="mensaje"
             name="mensaje"
             rows={5}
-            placeholder="Cuéntanos cómo podemos ayudarte..."
+            placeholder={t('contacto.formMessagePlaceholder')}
             class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all resize-y"
           ></textarea>
         </div>
-        <p id="form-msg" class="hidden text-sm font-bold text-center"></p>
+
+        <!-- Honeypot anti-spam: oculto para personas, los bots suelen rellenarlo. El servidor descarta el envío si llega lleno. -->
+        <div class="absolute -left-[9999px] w-px h-px overflow-hidden" aria-hidden="true">
+          <label for="website">{t('contactoPage.honeypotLabel')}</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        </div>
+
+        <p id="form-msg" class="hidden text-sm font-bold text-center" role="status" aria-live="polite"></p>
         <button
           type="submit"
           id="submit-btn"
           class="bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2"
         >
-          Enviar mensaje
+          <span data-submit-label>{t('contacto.formSubmit')}</span>
           <Send size={18} />
         </button>
       </form>
@@ -167,13 +186,13 @@ import {
         <div>
           <div class="inline-flex items-center gap-2 bg-forest/10 text-forest px-4 py-2 rounded-full text-sm font-bold mb-6">
             <MapPin size={16} />
-            <span>Cómo llegar</span>
+            <span>{t('contacto.howToBadge')}</span>
           </div>
           <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
-            Encuentra el camino a Varsana
+            {t('contacto.howToHeading')}
           </h2>
           <p class="text-secondary-gray text-lg">
-            Estamos a hora y media de Bogotá. La ruta es sencilla y el paisaje hace que el viaje valga la pena.
+            {t('contacto.howToSubtitle')}
           </p>
         </div>
 
@@ -183,9 +202,9 @@ import {
               <Car size={20} />
             </div>
             <div>
-              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">En carro</h4>
+              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">{t('contacto.byCar')}</h4>
               <p class="text-secondary-gray leading-relaxed">
-                Toma la vía Bogotá – Silvania – Granada. Al llegar al Km 28, encontrarás la entrada de Varsana. El trayecto dura aproximadamente hora y media. Hay estacionamiento gratuito en la aldea.
+                {t('contacto.byCarDesc')}
               </p>
             </div>
           </div>
@@ -195,9 +214,9 @@ import {
               <Bus size={20} />
             </div>
             <div>
-              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">En bus</h4>
+              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">{t('contacto.byBus')}</h4>
               <p class="text-secondary-gray leading-relaxed">
-                Desde el Terminal del Sur de Bogotá salen buses intermunicipales hacia Granada. Pide al conductor que te deje en el Km 28 de la vía Silvania – Granada, justo en la entrada de Varsana.
+                {t('contacto.byBusDesc')}
               </p>
             </div>
           </div>
@@ -207,9 +226,9 @@ import {
               <Clock size={20} />
             </div>
             <div>
-              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">Horario de llegada</h4>
+              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">{t('contacto.arrivalTime')}</h4>
               <p class="text-secondary-gray leading-relaxed">
-                Recomendamos llegar antes de las 5:00 p. m. para que puedas instalarte con luz natural y disfrutar el atardecer desde nuestra montaña.
+                {t('contacto.arrivalTimeDesc')}
               </p>
             </div>
           </div>
@@ -219,7 +238,7 @@ import {
       <div class="relative aspect-3/4 rounded-[32px] overflow-hidden shadow-airbnb">
         <img
           src="https://picsum.photos/seed/road-varsana/800/1067"
-          alt="Carretera hacia Varsana entre montañas"
+          alt={t('contactoPage.roadImageAlt')}
           class="w-full h-full object-cover"
           referrerpolicy="no-referrer"
           loading="lazy"
@@ -231,38 +250,64 @@ import {
 </Layout>
 
 <script>
-  const form = document.getElementById('contact-form');
-  const msg = document.getElementById('form-msg');
-  const btn = document.getElementById('submit-btn');
+  // Con <ClientRouter /> este módulo se ejecuta una sola vez por sesión:
+  // la inicialización va en `astro:page-load` y se marca el form para no
+  // registrar listeners duplicados.
+  function initContactForm(): void {
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    const msg = document.getElementById('form-msg') as HTMLParagraphElement | null;
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+    if (!form || !msg || !btn || form.dataset.bound === 'true') return;
+    form.dataset.bound = 'true';
 
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-    msg.className = 'hidden';
+    const label = btn.querySelector<HTMLSpanElement>('[data-submit-label]');
+    const texts = {
+      sending: form.dataset.msgSending ?? 'Enviando...',
+      success: form.dataset.msgSuccess ?? '',
+      errorPrefix: form.dataset.msgErrorPrefix ?? '',
+      genericError: form.dataset.msgGenericError ?? '',
+      connectionError: form.dataset.msgConnectionError ?? '',
+      submit: form.dataset.msgSubmit ?? '',
+    };
 
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        body: new FormData(form),
-      });
-      const data = await res.json();
-      if (data.success) {
-        msg.textContent = '✅ ¡Mensaje enviado! Te responderemos pronto.';
-        msg.className = 'text-sm font-bold text-center text-forest';
-        form.reset();
-      } else {
-        msg.textContent = '❌ ' + data.message;
+    const setLabel = (text: string) => {
+      if (label) label.textContent = text;
+      else btn.textContent = text;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      btn.disabled = true;
+      setLabel(texts.sending);
+      msg.className = 'hidden';
+
+      try {
+        const formData = new FormData(form);
+        // El honeypot `website` viaja en el cuerpo; el servidor descarta el envío si viene lleno.
+        if (!formData.has('website')) formData.set('website', '');
+
+        const res = await fetch('/api/contact', { method: 'POST', body: formData });
+        const data = (await res.json()) as { success: boolean; message?: string };
+
+        if (data.success) {
+          msg.textContent = texts.success;
+          msg.className = 'text-sm font-bold text-center text-forest';
+          form.reset();
+        } else {
+          msg.textContent = texts.errorPrefix + (data.message || texts.genericError);
+          msg.className = 'text-sm font-bold text-center text-red-500';
+        }
+      } catch {
+        msg.textContent = texts.connectionError;
         msg.className = 'text-sm font-bold text-center text-red-500';
+      } finally {
+        btn.disabled = false;
+        setLabel(texts.submit);
       }
-    } catch {
-      msg.textContent = '❌ Error de conexión. Intenta de nuevo.';
-      msg.className = 'text-sm font-bold text-center text-red-500';
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Enviar mensaje';
-    }
-  });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initContactForm);
 </script>
 
 <style>

@@ -523,7 +523,7 @@ import {
               { Icon: Send, label: 'Send' },
             ]).map(({ Icon, label }) => (
               <div class="flex flex-col items-center gap-2 w-16">
-                <Icon size={24} strokeWidth={1.5} class="text-near-black" />
+                <Icon size={24} strokeWidth={1.5} className="text-near-black" />
                 <span class="text-xs font-mono text-secondary-gray text-center">{label}</span>
               </div>
             ))}
@@ -544,7 +544,7 @@ import {
               { Icon: ArrowLeft, label: 'ArrowLeft' },
             ]).map(({ Icon, label }) => (
               <div class="flex flex-col items-center gap-2 w-16">
-                <Icon size={24} strokeWidth={1.5} class="text-near-black" />
+                <Icon size={24} strokeWidth={1.5} className="text-near-black" />
                 <span class="text-xs font-mono text-secondary-gray text-center">{label}</span>
               </div>
             ))}
@@ -565,7 +565,7 @@ import {
               { Icon: Check, label: 'Check' },
             ]).map(({ Icon, label }) => (
               <div class="flex flex-col items-center gap-2 w-16">
-                <Icon size={24} strokeWidth={1.5} class="text-near-black" />
+                <Icon size={24} strokeWidth={1.5} className="text-near-black" />
                 <span class="text-xs font-mono text-secondary-gray text-center">{label}</span>
               </div>
             ))}
@@ -585,7 +585,7 @@ import {
               { Icon: Phone, label: 'Phone' },
             ]).map(({ Icon, label }) => (
               <div class="flex flex-col items-center gap-2 w-16">
-                <Icon size={24} strokeWidth={1.5} class="text-near-black" />
+                <Icon size={24} strokeWidth={1.5} className="text-near-black" />
                 <span class="text-xs font-mono text-secondary-gray text-center">{label}</span>
               </div>
             ))}
@@ -611,7 +611,7 @@ import {
           ]).map(({ size, px, usage, Icon }) => (
             <div class="flex items-center gap-6 px-6 py-4">
               <div class="w-14 shrink-0 flex items-center justify-center">
-                <Icon size={size} strokeWidth={1.5} class="text-near-black" />
+                <Icon size={size} strokeWidth={1.5} className="text-near-black" />
               </div>
               <span class="w-14 text-sm font-mono text-rausch font-semibold shrink-0">{px}</span>
               <span class="text-sm text-secondary-gray">{usage}</span>
@@ -628,17 +628,17 @@ import {
       <div class="bg-lotus-white rounded-lg shadow-airbnb p-6 mb-14">
         <div class="flex flex-wrap gap-10">
           <div class="flex flex-col items-center gap-3">
-            <Leaf size={32} strokeWidth={1.5} class="text-near-black" />
+            <Leaf size={32} strokeWidth={1.5} className="text-near-black" />
             <span class="text-sm font-mono text-secondary-gray">1.5 — default</span>
             <span class="text-xs text-secondary-gray">Navegación, UI general</span>
           </div>
           <div class="flex flex-col items-center gap-3">
-            <Leaf size={32} strokeWidth={2} class="text-near-black" />
+            <Leaf size={32} strokeWidth={2} className="text-near-black" />
             <span class="text-sm font-mono text-secondary-gray">2.0 — énfasis</span>
             <span class="text-xs text-secondary-gray">Tarjetas, favoritos</span>
           </div>
           <div class="flex flex-col items-center gap-3">
-            <ArrowUpRight size={32} strokeWidth={2.5} class="text-near-black" />
+            <ArrowUpRight size={32} strokeWidth={2.5} className="text-near-black" />
             <span class="text-sm font-mono text-secondary-gray">2.5 — bold</span>
             <span class="text-xs text-secondary-gray">CTAs, flechas hero</span>
           </div>
@@ -660,7 +660,7 @@ import {
             { color: 'text-secondary-gray', label: 'Gris Secundario', usage: 'Muted — íconos deshabilitados o secundarios', Icon: Info },
           ]).map(({ color, label, usage, Icon }) => (
             <div class="flex items-center gap-6 px-6 py-4">
-              <Icon size={24} strokeWidth={1.5} class={`${color} shrink-0`} />
+              <Icon size={24} strokeWidth={1.5} className={`${color} shrink-0`} />
               <span class="w-32 text-sm font-semibold text-near-black shrink-0">{label}</span>
               <span class="text-sm text-secondary-gray">{usage}</span>
             </div>
@@ -677,15 +677,15 @@ import {
           <p class="text-xs text-secondary-gray">Navegación — CategoryBar</p>
           <div class="flex items-center gap-4 pt-2">
             <div class="flex flex-col items-center gap-0.5">
-              <House size={20} strokeWidth={1.5} class="text-near-black" />
+              <House size={20} strokeWidth={1.5} className="text-near-black" />
               <span class="text-xs font-medium text-near-black">Inicio</span>
             </div>
             <div class="flex flex-col items-center gap-0.5">
-              <Users size={20} strokeWidth={1.5} class="text-near-black" />
+              <Users size={20} strokeWidth={1.5} className="text-near-black" />
               <span class="text-xs font-medium text-near-black">Nosotros</span>
             </div>
             <div class="flex flex-col items-center gap-0.5">
-              <Leaf size={20} strokeWidth={1.5} class="text-near-black" />
+              <Leaf size={20} strokeWidth={1.5} className="text-near-black" />
               <span class="text-xs font-medium text-near-black">Voluntariado</span>
             </div>
           </div>
@@ -697,15 +697,15 @@ import {
           <p class="text-xs text-secondary-gray">Tarjetas de eventos y pasadías</p>
           <div class="space-y-2 pt-2">
             <div class="flex items-center gap-2">
-              <Calendar size={18} class="text-saffron" />
+              <Calendar size={18} className="text-saffron" />
               <span class="text-sm text-near-black">15–18 Mayo 2026</span>
             </div>
             <div class="flex items-center gap-2">
-              <MapPin size={18} class="text-saffron" />
+              <MapPin size={18} className="text-saffron" />
               <span class="text-sm text-near-black">Granada, Cundinamarca</span>
             </div>
             <div class="flex items-center gap-2">
-              <Clock size={18} class="text-saffron" />
+              <Clock size={18} className="text-saffron" />
               <span class="text-sm text-near-black">4 días · 3 noches</span>
             </div>
           </div>
@@ -717,11 +717,11 @@ import {
           <p class="text-xs text-secondary-gray">Listas de beneficios, voluntariado</p>
           <div class="space-y-3 pt-2">
             <div class="flex items-start gap-3">
-              <CheckCircle2 size={24} class="text-rausch shrink-0 mt-0.5" />
+              <CheckCircle2 size={24} className="text-rausch shrink-0 mt-0.5" />
               <span class="text-sm text-near-black">Alojamiento en cabañas compartidas</span>
             </div>
             <div class="flex items-start gap-3">
-              <CheckCircle2 size={24} class="text-rausch shrink-0 mt-0.5" />
+              <CheckCircle2 size={24} className="text-rausch shrink-0 mt-0.5" />
               <span class="text-sm text-near-black">Alimentación vegetariana incluida</span>
             </div>
           </div>

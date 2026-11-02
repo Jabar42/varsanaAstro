@@ -1,6 +1,10 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { Instagram, Twitter, Linkedin, Facebook, Youtube, Mail, Phone, Globe } from 'lucide-react';
+import { getLocale, localizePath } from '@/src/i18n/utils';
+
+const locale = getLocale(Astro);
+const l = (p: string) => localizePath(locale, p);
 
 type Props = {
   member: CollectionEntry<'nosotros'>;
@@ -31,7 +35,7 @@ const getSocialIcon = (platform: string) => {
 ---
 
 <article class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
-  <a href={`/nosotros/${member.id}`} class="block">
+  <a href={l(`/nosotros/${member.id}`)} class="block">
   <div class="aspect-square overflow-hidden relative shimmer">
     <img
       src={imagen}

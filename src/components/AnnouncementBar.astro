@@ -1,7 +1,7 @@
 ---
-import { useTranslations } from '@/src/i18n/utils';
+import { useTranslations, getLocale } from '@/src/i18n/utils';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const locale = getLocale(Astro);
 const t = useTranslations(locale);
 const pdfUrl = '/descargas/guia-varsana.pdf';
 const delayMs = 4500;
@@ -101,27 +101,35 @@ const delayMs = 4500;
 </style>
 
 <script>
-  // Re-ejecutado en cada navegación SPA (ClientRouter). sessionStorage
-  // evita que la barra reaparezca después de cerrarla.
-  const bar = document.getElementById('announcement-bar');
-  if (bar) {
-    const KEY = 'varsana_announcement_dismissed';
-    const delay = Number(bar.dataset.delay || 4500);
-    const alreadyDismissed = () => sessionStorage.getItem(KEY) === '1';
+  // Con <ClientRouter /> este módulo corre una sola vez por sesión, así que la
+  // inicialización va en `astro:page-load` (se dispara también en la primera
+  // carga). sessionStorage evita que la barra reaparezca después de cerrarla.
+  const KEY = 'varsana_announcement_dismissed';
+  let timer: number | undefined;
 
-    if (!alreadyDismissed()) {
-      const timer = window.setTimeout(() => {
-        bar.classList.add('show');
-      }, delay);
-
-      bar.addEventListener('click', (e) => {
-        const closeBtn = e.target.closest('[data-announcement-close]');
-        if (closeBtn) {
-          window.clearTimeout(timer);
-          bar.classList.remove('show');
-          sessionStorage.setItem(KEY, '1');
-        }
-      });
-    }
+  function safeGet(): boolean {
+    try { return sessionStorage.getItem(KEY) === '1'; } catch { return false; }
   }
+  function safeSet() {
+    try { sessionStorage.setItem(KEY, '1'); } catch { /* sin storage */ }
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    const bar = document.getElementById('announcement-bar');
+    if (!bar || safeGet()) return;
+    const delay = Number(bar.dataset.delay || 4500);
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => bar.classList.add('show'), delay);
+
+    bar.addEventListener('click', (e) => {
+      const target = e.target as Element | null;
+      if (target?.closest('[data-announcement-close]')) {
+        window.clearTimeout(timer);
+        bar.classList.remove('show');
+        safeSet();
+      }
+    }, { once: false });
+  });
+  document.addEventListener('astro:before-swap', () => window.clearTimeout(timer));
 </script>
+

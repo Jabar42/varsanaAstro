@@ -1,9 +1,10 @@
 ---
+import { getLocale, localizePath, useTranslations, formatDate } from '@/src/i18n/utils';
 import { getCurrentPrice } from '@/src/lib/events';
-import { getRelativeLocaleUrl } from 'astro:i18n';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
-const l = (path: string) => getRelativeLocaleUrl(locale, path);
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (path: string) => localizePath(locale, path);
 
 interface Price {
   label: string;
@@ -24,7 +25,7 @@ const { title, description, event_start, image, prices, slug } = Astro.props;
 
 const currentPrice = getCurrentPrice(prices);
 
-const formattedDate = event_start.toLocaleDateString('es-ES', {
+const formattedDate = formatDate(event_start, locale, {
   day: 'numeric',
   month: 'long',
   year: 'numeric'
@@ -34,20 +35,22 @@ const now = Date.now();
 const eventTime = new Date(event_start).getTime();
 const daysUntil = Math.ceil((eventTime - now) / (1000 * 60 * 60 * 24));
 const showCountdown = daysUntil > 0 && daysUntil <= 90;
+
+const numberLocale = locale === 'en' ? 'en-US' : 'es-CO';
 ---
 
 <a href={l(`/events/${slug}`)} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
   <div class="aspect-16/10 overflow-hidden relative shimmer">
-    <img 
-      src={image} 
-      alt={title} 
+    <img
+      src={image}
+      alt={title}
       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
       referrerpolicy="no-referrer"
       loading="lazy"
     />
     {showCountdown && (
       <div class="absolute top-4 right-4 bg-rausch text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
-        {daysUntil === 1 ? '¡Mañana!' : `Faltan ${daysUntil} días`}
+        {daysUntil === 1 ? t('cards.tomorrow') : t('cards.daysLeft', { n: daysUntil })}
       </div>
     )}
     {currentPrice?.label && currentPrice.label !== 'General' && (
@@ -56,34 +59,34 @@ const showCountdown = daysUntil > 0 && daysUntil <= 90;
       </div>
     )}
   </div>
-  
+
   <div class="p-6 flex flex-col grow space-y-3">
     <div class="space-y-1">
       <p class="text-saffron font-semibold text-sm uppercase tracking-wider">{formattedDate}</p>
       <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{title}</h3>
     </div>
-    
+
     <p class="text-gray-600 line-clamp-2 text-sm leading-relaxed">
       {description}
     </p>
-    
+
     <div class="pt-4 mt-auto border-t border-sacred-sand">
       <div class="flex items-center justify-between">
         <div>
           <p class="text-xs text-saffron uppercase font-bold tracking-widest">
-            {currentPrice?.label || 'Precio'}
+            {currentPrice?.label || t('cards.price')}
           </p>
           <p class="text-xl font-bold tracking-tightest">
-            ${currentPrice?.amount.toLocaleString('es-CO') || '0'}
+            ${currentPrice?.amount.toLocaleString(numberLocale) || '0'}
           </p>
         </div>
-        <button class="bg-rausch text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-rausch-dark transition-colors shadow-sm">
-          Reservar
-        </button>
+        <span class="bg-rausch text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-rausch-dark transition-colors shadow-sm">
+          {t('cards.reserve')}
+        </span>
       </div>
     </div>
   </div>
-</div>
+</a>
 
 <style>
   h3 {

@@ -89,8 +89,8 @@ const hasBackground = !!background && !fullBleed;
           />
         </div>
       ) : hasImages ? (
-        <div class="ss-slider" data-slider>
-          <div class="ss-slider-track" data-slider-track>
+        <div class="ss-slider" data-ss-slider>
+          <div class="ss-slider-track" data-ss-track>
             {images!.map((src, i) => (
               <div class="ss-slide">
                 <img
@@ -103,11 +103,11 @@ const hasBackground = !!background && !fullBleed;
               </div>
             ))}
           </div>
-          <div class="ss-slider-dots" data-slider-dots>
+          <div class="ss-slider-dots" data-ss-dots>
             {images!.map((_, i) => (
               <button
                 type="button"
-                data-slider-dot={i}
+                data-ss-dot={i}
                 class:list={['ss-slider-dot', { active: i === 0 }]}
                 aria-label={`Ir a la imagen ${i + 1}`}
               />
@@ -175,13 +175,20 @@ const hasBackground = !!background && !fullBleed;
 </section>
 
 <script>
-  function initSlider(container: HTMLElement) {
-    const track = container.querySelector<HTMLElement>('[data-slider-track]')!;
-    const dots = container.querySelectorAll<HTMLButtonElement>('[data-slider-dot]');
+  /**
+   * Carrusel de imágenes de SplitSection (scroll-snap). Se re-inicializa en
+   * `astro:page-load` (ClientRouter) y limpia sus timers en `astro:before-swap`.
+   */
+  function initSlider(container: HTMLElement): () => void {
+    const trackEl = container.querySelector<HTMLElement>('[data-ss-track]');
+    const dots = container.querySelectorAll<HTMLButtonElement>('[data-ss-dot]');
+    if (!trackEl) return () => {};
+    const track: HTMLElement = trackEl;
+
     const slides = track.children;
     const total = slides.length;
 
-    if (total < 2) return;
+    if (total < 2) return () => {};
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let current = 0;
@@ -240,10 +247,18 @@ const hasBackground = !!background && !fullBleed;
     }, { passive: true });
 
     startTimer();
+
+    return () => { stopTimer(); clearTimeout(scrollTimeout); };
   }
 
-  document.querySelectorAll<HTMLElement>('[data-slider]').forEach(initSlider);
+  let cleaners: Array<() => void> = [];
+  document.addEventListener('astro:page-load', () => {
+    cleaners.forEach((fn) => fn());
+    cleaners = Array.from(document.querySelectorAll<HTMLElement>('[data-ss-slider]')).map(initSlider);
+  });
+  document.addEventListener('astro:before-swap', () => { cleaners.forEach((fn) => fn()); cleaners = []; });
 </script>
+
 
 <style>
   .ss-slider {

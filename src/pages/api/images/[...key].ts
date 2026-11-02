@@ -3,13 +3,33 @@ import { env } from "cloudflare:workers";
 
 export const prerender = false;
 
+/** Comparación en tiempo constante para tokens. */
+function timingSafeEqual(a: string, b: string): boolean {
+  const enc = new TextEncoder();
+  const ab = enc.encode(a);
+  const bb = enc.encode(b);
+  if (ab.length !== bb.length) return false;
+  let diff = 0;
+  for (let i = 0; i < ab.length; i++) diff |= ab[i] ^ bb[i];
+  return diff === 0;
+}
+
 export const ALL: APIRoute = async ({ request, params }) => {
   const key = (params.key as string)?.replace(/^\//, "");
 
   const bucket = env.VARSANA_IMAGES as R2Bucket;
 
-  // POST: upload an image
+  // POST: upload an image. Requiere `Authorization: Bearer <IMAGES_UPLOAD_TOKEN>`.
+  // Si el secreto no está configurado, la subida queda deshabilitada (fail closed).
   if (request.method === "POST" && !key) {
+    const expected = env.IMAGES_UPLOAD_TOKEN as string | undefined;
+    const provided = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
+    if (!expected || !provided || !timingSafeEqual(provided, expected)) {
+      return new Response(JSON.stringify({ error: "No autorizado" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json", "WWW-Authenticate": "Bearer" },
+      });
+    }
     try {
       const formData = await request.formData();
       const file = formData.get("file") as File | null;
@@ -48,9 +68,15 @@ export const ALL: APIRoute = async ({ request, params }) => {
     }
   }
 
+  // Solo GET/HEAD para servir; cualquier otro método no está permitido.
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    return new Response("Method not allowed", { status: 405, headers: { Allow: "GET, HEAD, POST" } });
+  }
+
   // GET: serve image by key
   if (key) {
     const object = await bucket.get(key);
+
     if (!object) return new Response("Not found", { status: 404 });
 
     const headers = new Headers();

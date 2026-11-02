@@ -1,4 +1,5 @@
 ---
+import { getLocale } from '@/src/i18n/utils';
 import Layout from '@/src/layouts/Layout.astro';
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
 
 const { titleEs, titleEn, descriptionEs, descriptionEn, icon } = Astro.props;
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const locale = getLocale(Astro);
 const title = locale === 'en' ? titleEn : titleEs;
 const description = locale === 'en' ? descriptionEn : descriptionEs;
 const comingSoon = locale === 'en' ? 'Coming Soon' : 'Próximamente';

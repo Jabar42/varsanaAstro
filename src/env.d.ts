@@ -2,7 +2,8 @@
 
 declare namespace App {
   interface Locals {
-    locale?: string;
+    /** Fijado por src/middleware.ts para toda página HTML. */
+    locale?: 'es' | 'en';
   }
 }
 
@@ -26,5 +27,20 @@ declare namespace Cloudflare {
     RESEND_FROM_EMAIL: string;
     TELEGRAM_BOT_TOKEN: string;
     TELEGRAM_CHAT_ID: string;
+    /** Token requerido en `Authorization: Bearer` para POST /api/images. */
+    IMAGES_UPLOAD_TOKEN: string;
   }
+}
+
+/**
+ * Virtual module interno de Astro 6 (content layer data store).
+ * Astro lo registra en Vite (`DATA_STORE_VIRTUAL_ID`) pero no publica su
+ * declaración de tipos, así que `astro check` falla con TS2307 en
+ * `src/pages/api/collections.ts`. El valor por defecto es el store aplanado
+ * con `devalue` (o un `Map` en dev); se tipa de forma laxa a propósito
+ * porque es API interna y su forma cambia entre versiones.
+ */
+declare module 'astro:data-layer-content' {
+  const dataStore: any;
+  export default dataStore;
 }

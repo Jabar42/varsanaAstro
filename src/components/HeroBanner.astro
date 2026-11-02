@@ -1,5 +1,6 @@
 ---
 import { type FeaturedItem } from '@/src/lib/slider';
+import { getLocale, localizePath, useTranslations, formatDate } from '@/src/i18n/utils';
 
 interface Props {
   items: FeaturedItem[];
@@ -7,87 +8,95 @@ interface Props {
 }
 
 const { items, interval = 6000 } = Astro.props;
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (path: string) => localizePath(locale, path);
 
-// Permanent slide: Templo Aereo
-const temploItem: FeaturedItem = {
-  collection: 'static',
-  slug: 'templo-aereo',
-  image: 'https://varsana-co.iaforchange.workers.dev/api/images/1782335650801-templo-aereo.webp',
-  title: 'Visita nuestro Yoga Planetario',
-  description: 'Un espacio sagrado para la meditacion, el yoga y la conexion espiritual en las montañas del Sumapaz.',
-  url: '/contacto',
-  ctaLabel: 'Contactanos',
-  _orden: 999,
-};
+// Slides permanentes (textos en src/i18n/dictionaries/hero.ts)
+const staticSlides: FeaturedItem[] = [
+  {
+    collection: 'static',
+    slug: 'bienvenida-yoga-planetario',
+    image: '/api/images/1787355699024-slide-nuevo.webp',
+    title: t('hero.slides.bienvenida.title'),
+    description: t('hero.slides.bienvenida.description'),
+    url: l('/nuestra-historia'),
+    ctaLabel: t('hero.slides.bienvenida.cta'),
+    _orden: 996,
+  },
+  {
+    collection: 'static',
+    slug: 'hospedajes-con-proposito',
+    image: '/api/images/1785287420355-slide-hospedaje.webp',
+    title: t('hero.slides.hospedaje.title'),
+    description: t('hero.slides.hospedaje.description'),
+    url: l('/hospedaje'),
+    ctaLabel: t('hero.slides.hospedaje.cta'),
+    _orden: 998,
+  },
+  {
+    collection: 'static',
+    slug: 'experiencias-a-la-medida',
+    image: '/api/images/1785287371423-slide-experiencias.webp',
+    title: t('hero.slides.experiencias.title'),
+    description: t('hero.slides.experiencias.description'),
+    url: l('/experiencias'),
+    ctaLabel: t('hero.slides.experiencias.cta'),
+    _orden: 997,
+  },
+  {
+    collection: 'static',
+    slug: 'templo-aereo',
+    image: '/api/images/1782335650801-templo-aereo.webp',
+    title: t('hero.slides.templo.title'),
+    description: t('hero.slides.templo.description'),
+    url: l('/contacto'),
+    ctaLabel: t('hero.slides.templo.cta'),
+    _orden: 999,
+  },
+];
 
-// Permanent slide: Hospedajes
-const hospedajeItem: FeaturedItem = {
-  collection: 'static',
-  slug: 'hospedajes-con-proposito',
-  image: '/api/images/1785287420355-slide-hospedaje.webp',
-  title: 'Hospedajes con propósito',
-  description: 'Descubre la magia de despertar rodeado de naturaleza sagrada.',
-  url: '/hospedaje',
-  ctaLabel: 'Ver hospedajes',
-  _orden: 998,
-};
+// Los destacados de contenido van primero; sus URLs se localizan aquí.
+const dynamicSlides = items.map((item) => ({
+  ...item,
+  url: l(item.url),
+  ctaLabel: item.ctaLabel === 'Reservar' ? t('hero.reserve') : item.ctaLabel,
+}));
 
-// Permanent slide: Experiencias
-const experienciasItem: FeaturedItem = {
-  collection: 'static',
-  slug: 'experiencias-a-la-medida',
-  image: '/api/images/1785287371423-slide-experiencias.webp',
-  title: 'Experiencias a la medida',
-  description: 'Tu renovación el día de la semana que prefieras.',
-  url: '/experiencias',
-  ctaLabel: 'Ver experiencias',
-  _orden: 997,
-};
-
-// Permanent slide: Yoga Planetario (bienvenida)
-const yogaPlanetarioItem: FeaturedItem = {
-  collection: 'static',
-  slug: 'bienvenida-yoga-planetario',
-  image: '/api/images/1787355699024-slide-nuevo.webp',
-  title: 'Bienvenidos a Varsana',
-  description: 'Donde el ingreso a las conferencias y meditaciones son gratuitas. Conoce también nuestro programa monástico y de voluntariado.',
-  url: '/nuestra-historia',
-  ctaLabel: 'Nuestra historia',
-  _orden: 996,
-};
-
-const allItems = [...items, yogaPlanetarioItem, hospedajeItem, experienciasItem, temploItem];
+const allItems = [...dynamicSlides, ...staticSlides];
 const hasMultiple = allItems.length > 1;
 ---
 
-<div class="hero-banner shimmer" data-hero-banner data-interval={String(interval)}>
+<section class="hero-banner shimmer" data-hero-banner data-interval={String(interval)} aria-roledescription="carousel">
   {allItems.map((item, i) => (
     <div
       class:list={['hero-banner__slide', { 'hero-banner__slide--active': i === 0 }]}
       data-hero-slide={i}
+      role="group"
+      aria-roledescription="slide"
+      aria-label={`${i + 1} / ${allItems.length}`}
+      aria-hidden={i === 0 ? 'false' : 'true'}
     >
       <img
         src={item.image}
         alt={item.title}
         class="hero-banner__image"
         loading={i === 0 ? 'eager' : 'lazy'}
+        fetchpriority={i === 0 ? 'high' : 'auto'}
+        decoding="async"
       />
       <div class="hero-banner__overlay">
         <div class="hero-banner__overlay-inner">
           <div class="hero-banner__content">
             {item.date && (
               <span class="hero-banner__date">
-                {item.date.toLocaleDateString('es-CO', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
+                {formatDate(item.date, locale)}
               </span>
             )}
             <h2 class="hero-banner__title">{item.title}</h2>
             <p class="hero-banner__desc">{item.description}</p>
             <a href={item.url} class="hero-banner__cta">
-              {item.ctaLabel || 'Ver mas'}
+              {item.ctaLabel || t('hero.viewMore')}
             </a>
           </div>
         </div>
@@ -97,120 +106,136 @@ const hasMultiple = allItems.length > 1;
 
   {hasMultiple && (
     <div class="hero-banner__controls">
-      <button type="button" data-hero-prev class="hero-banner__arrow" aria-label="Anterior">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      <button type="button" data-hero-prev class="hero-banner__arrow" aria-label={t('hero.prev')}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
       </button>
-      <div class="hero-banner__dots" data-hero-dots>
-        {items.map((_, i) => (
+      <div class="hero-banner__dots" data-hero-dots role="tablist">
+        {allItems.map((_, i) => (
           <button
             type="button"
+            role="tab"
             data-hero-dot={i}
             class:list={['hero-banner__dot', { 'hero-banner__dot--active': i === 0 }]}
-            aria-label={`Ir al banner ${i + 1}`}
+            aria-label={t('hero.goTo', { n: i + 1 })}
+            aria-selected={i === 0 ? 'true' : 'false'}
           />
         ))}
       </div>
-      <button type="button" data-hero-next class="hero-banner__arrow" aria-label="Siguiente">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      <button type="button" data-hero-next class="hero-banner__arrow" aria-label={t('hero.next')}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
       </button>
     </div>
   )}
-</div>
+</section>
 
 <script>
-  function initHeroBanner(el: HTMLElement) {
-    const slides = el.querySelectorAll<HTMLElement>('[data-hero-slide]');
-    const dots = el.querySelectorAll<HTMLButtonElement>('[data-hero-dot]');
+  /**
+   * Carrusel del hero. Se (re)inicializa en `astro:page-load` porque con
+   * <ClientRouter /> los módulos solo se ejecutan una vez por sesión, y se
+   * limpia en `astro:before-swap` para no dejar timers huérfanos.
+   */
+  function initHeroBanner(el: HTMLElement): () => void {
+    const slides = Array.from(el.querySelectorAll<HTMLElement>('[data-hero-slide]'));
+    const dots = Array.from(el.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
     const prev = el.querySelector<HTMLButtonElement>('[data-hero-prev]');
     const next = el.querySelector<HTMLButtonElement>('[data-hero-next]');
     const total = slides.length;
-    if (total < 2) return;
+    if (total < 2) return () => {};
 
     const interval = Number(el.dataset.interval) || 6000;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let current = 0;
     let timer: ReturnType<typeof setInterval> | null = null;
+    let paused = false;
 
     function show(index: number) {
+      current = (index + total) % total;
       slides.forEach((s, i) => {
-        s.classList.toggle('hero-banner__slide--active', i === index);
+        const active = i === current;
+        s.classList.toggle('hero-banner__slide--active', active);
+        s.setAttribute('aria-hidden', active ? 'false' : 'true');
       });
       dots.forEach((d, i) => {
-        d.classList.toggle('hero-banner__dot--active', i === index);
+        const active = i === current;
+        d.classList.toggle('hero-banner__dot--active', active);
+        d.setAttribute('aria-selected', active ? 'true' : 'false');
       });
-      current = index;
-    }
-
-    function goNext() {
-      show((current + 1) % total);
-    }
-
-    function goPrev() {
-      show((current - 1 + total) % total);
-    }
-
-    function startTimer() {
-      if (reduced) return;
-      stopTimer();
-      timer = setInterval(goNext, interval);
     }
 
     function stopTimer() {
       if (timer) { clearInterval(timer); timer = null; }
     }
-
-    function resetTimer() {
+    function startTimer() {
       stopTimer();
-      startTimer();
+      if (reduced || paused || document.hidden) return;
+      timer = setInterval(() => show(current + 1), interval);
     }
+    const pause = () => { paused = true; stopTimer(); };
+    const resume = () => { paused = false; startTimer(); };
+    const onVisibility = () => startTimer();
 
-    // Named handlers para poder removerlos correctamente
-    function handlePrev() { goPrev(); resetTimer(); }
-    function handleNext() { goNext(); resetTimer(); }
-    const dotHandlers: Array<{ dot: HTMLButtonElement; fn: () => void }> = [];
-
-    if (prev) prev.addEventListener('click', handlePrev);
-    if (next) next.addEventListener('click', handleNext);
-
-    dots.forEach((dot, i) => {
-      const fn = () => { show(i); resetTimer(); };
+    const onPrev = () => { show(current - 1); startTimer(); };
+    const onNext = () => { show(current + 1); startTimer(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') onPrev();
+      if (e.key === 'ArrowRight') onNext();
+    };
+    const dotHandlers = dots.map((dot, i) => {
+      const fn = () => { show(i); startTimer(); };
       dot.addEventListener('click', fn);
-      dotHandlers.push({ dot, fn });
+      return fn;
     });
 
-    const pauseZone = el.querySelector('.hero-banner__content');
-    if (pauseZone) {
-      pauseZone.addEventListener('mouseenter', stopTimer);
-      pauseZone.addEventListener('mouseleave', startTimer);
-      pauseZone.addEventListener('focusin', stopTimer);
-      pauseZone.addEventListener('focusout', startTimer);
-    }
+    prev?.addEventListener('click', onPrev);
+    next?.addEventListener('click', onNext);
+    el.addEventListener('keydown', onKey);
+    // Pausa al interactuar con cualquier slide (texto/CTA) o con los controles.
+    el.addEventListener('mouseenter', pause);
+    el.addEventListener('mouseleave', resume);
+    el.addEventListener('focusin', pause);
+    el.addEventListener('focusout', resume);
+    document.addEventListener('visibilitychange', onVisibility);
+
+    // Swipe táctil
+    let touchX: number | null = null;
+    const onTouchStart = (e: TouchEvent) => { touchX = e.touches[0]?.clientX ?? null; pause(); };
+    const onTouchEnd = (e: TouchEvent) => {
+      const endX = e.changedTouches[0]?.clientX;
+      if (touchX !== null && endX !== undefined) {
+        const dx = endX - touchX;
+        if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      }
+      touchX = null;
+      resume();
+    };
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
 
     startTimer();
 
     return () => {
       stopTimer();
-      if (prev) prev.removeEventListener('click', handlePrev);
-      if (next) next.removeEventListener('click', handleNext);
-      dotHandlers.forEach(({ dot, fn }) => dot.removeEventListener('click', fn));
-      if (pauseZone) {
-        pauseZone.removeEventListener('mouseenter', stopTimer);
-        pauseZone.removeEventListener('mouseleave', startTimer);
-        pauseZone.removeEventListener('focusin', stopTimer);
-        pauseZone.removeEventListener('focusout', startTimer);
-      }
+      prev?.removeEventListener('click', onPrev);
+      next?.removeEventListener('click', onNext);
+      el.removeEventListener('keydown', onKey);
+      el.removeEventListener('mouseenter', pause);
+      el.removeEventListener('mouseleave', resume);
+      el.removeEventListener('focusin', pause);
+      el.removeEventListener('focusout', resume);
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchend', onTouchEnd);
+      document.removeEventListener('visibilitychange', onVisibility);
+      dots.forEach((dot, i) => dot.removeEventListener('click', dotHandlers[i]));
     };
   }
 
-  const cleaners: (() => void)[] = [];
-  document.querySelectorAll<HTMLElement>('[data-hero-banner]').forEach((el) => {
-    const clean = initHeroBanner(el);
-    if (clean) cleaners.push(clean);
-  });
-  document.addEventListener('astro:before-swap', () => {
-    cleaners.forEach(fn => fn());
-    cleaners.length = 0;
-  });
+  let cleaners: Array<() => void> = [];
+  function setup() {
+    cleaners.forEach((fn) => fn());
+    cleaners = Array.from(document.querySelectorAll<HTMLElement>('[data-hero-banner]')).map(initHeroBanner);
+  }
+  document.addEventListener('astro:page-load', setup);
+  document.addEventListener('astro:before-swap', () => { cleaners.forEach((fn) => fn()); cleaners = []; });
 </script>
 
 <style>

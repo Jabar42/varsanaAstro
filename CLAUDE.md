@@ -9,8 +9,20 @@ npm install              # Instalar dependencias
 npm run dev              # Dev server (port 3000)
 npm run build            # Build producción
 npm run deploy           # Build + deploy a Cloudflare Workers
-npm run lint             # Type-check con tsc --noEmit
+npm run lint             # astro check (tipos en .astro/.ts) + lint de clases Tailwind
 ```
+
+## Idiomas (i18n)
+
+- Español por defecto, inglés bajo `/en/...`. **La URL manda**: nunca se redirige una URL concreta por cookie. Solo la raíz `/` redirige a `/en` si la cookie `varsana_locale` dice `en` o, en la primera visita, si el navegador prefiere inglés.
+- La cookie la fija el servidor en cada página HTML (último idioma visto). No hay JavaScript involucrado en el cambio de idioma: el botón es un enlace a la misma página en el otro idioma (`data-astro-reload`).
+- `/en/x` se reescribe internamente a `/x` con `Astro.locals.locale = 'en'`. En páginas y componentes: `const locale = getLocale(Astro); const t = useTranslations(locale); const l = (p) => localizePath(locale, p);` (todo en `src/i18n/utils.ts`). Usa `l()` para TODO enlace interno y `formatDate`/`formatCOP` para fechas y dinero.
+- Textos compartidos en `src/i18n/translations.ts`; textos por página en `src/i18n/dictionaries/<pagina>.ts` (se cargan solos, namespace = nombre de archivo, fusión profunda). Para `<Layout>` el canonical/hreflang se calculan con `Astro.originPathname`.
+- URLs sin barra final (el middleware redirige 301 `/x/` → `/x`). Sitemap dinámico en `src/pages/sitemap.xml.ts` y `public/robots.txt`.
+
+## Scripts de cliente y ClientRouter
+
+El layout usa `<ClientRouter />`: los `<script>` de componentes se ejecutan **una sola vez por sesión**. Toda inicialización debe ir en `document.addEventListener('astro:page-load', ...)` y limpiar timers/listeners en `astro:before-swap` (ver `HeroBanner.astro`, `SplitSection.astro`, `AnnouncementBar.astro`).
 
 ## Arquitectura
 
@@ -44,11 +56,14 @@ Tres colecciones en `src/content/` (Zod + Markdoc):
 | `/api/order-status` | GET | Consulta estado de orden en D1 |
 | `/api/events` | GET | Lista eventos futuros (usado por el agente) |
 | `/api/pasadias` | GET | Lista pasadías (usado por el agente) |
-| `/api/images/[...key]` | GET/POST | Subida y servicio de imágenes desde R2 |
+| `/api/images/[...key]` | GET/POST | Servicio de imágenes desde R2; POST requiere `Authorization: Bearer $IMAGES_UPLOAD_TOKEN` |
+| `/api/contact` | POST | Formulario de contacto → D1 (`contacts`) + Telegram. Honeypot `website`, escape HTML |
+| `/sitemap.xml` | GET | Sitemap dinámico (ambos idiomas) |
 
 ### Database (D1)
 
-**D1** (`varsana-db`) con binding `DB`. Tablas: `inventory` (stock_max, stock_reserved) y `orders` (bold_order_id, status, ticket_details).
+**D1** (`varsana-db`) con binding `DB`. Tablas: `inventory` (stock_max, stock_reserved), `orders` (bold_order_id, status, ticket_details) y `contacts` (formulario). Esquema en `db/schema.sql`; aplicar cambios con `wrangler d1 execute varsana-db --remote --file db/schema.sql`.
+
 
 El acceso se hace via `import { env } from "cloudflare:workers"` → `env.DB` (D1Database). El wrapper está en `src/lib/d1.ts`. Las operaciones de inventario atómico en `src/lib/db-d1.ts`.
 
@@ -70,8 +85,11 @@ RESEND_API_KEY          # Resend para emails transaccionales (secret)
 RESEND_FROM_EMAIL       # Email remitente
 TELEGRAM_BOT_TOKEN      # Notificaciones admin (secret)
 TELEGRAM_CHAT_ID        # Chat destino Telegram (secret)
+IMAGES_UPLOAD_TOKEN     # Token Bearer para POST /api/images (secret; sin él la subida queda deshabilitada)
 PUBLIC_DONATION_URL     # URL de donación (var en wrangler.jsonc)
 ```
+
+Secretos: `wrangler secret put <NOMBRE>`. En local, `.dev.vars` (ignorado por git).
 
 ### Design System
 

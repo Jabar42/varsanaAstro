@@ -1,5 +1,7 @@
 ---
-import { Calendar, Building2, Flower2, Heart } from 'lucide-react';
+import { Calendar, Building2, Flower2, Heart, type LucideIcon } from 'lucide-react';
+import { getLocale, useTranslations } from '@/src/i18n/utils';
+import { es as histEs, en as histEn } from '@/src/i18n/dictionaries/historiaPage';
 
 interface TimelineItem {
   date: string;
@@ -7,30 +9,13 @@ interface TimelineItem {
   icon: string;
 }
 
-const items: TimelineItem[] = [
-  {
-    date: '1967',
-    text: 'Inicio del yoga-monasterio. Una fraccion del terreno fue donado, dando inicio al proyecto Vaisnava, Vrinda Parivar en Colombia.',
-    icon: 'calendar',
-  },
-  {
-    date: 'Decada de 1980',
-    text: 'En compania de maestros espirituales, se da inicio a la construccion del templo ecologico, inspirado en la arquitectura hindu.',
-    icon: 'building2',
-  },
-  {
-    date: 'Decada de 1990',
-    text: 'Evoluciona a un santuario que integra practicas de meditacion, yoga, alimentacion consciente y vida comunitaria.',
-    icon: 'flower2',
-  },
-  {
-    date: 'Hoy',
-    text: 'Seguimos cultivando comunidad, cuidando la tierra y compartiendo un camino de vida consciente con personas de todo el mundo.',
-    icon: 'heart',
-  },
-];
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const dict = locale === 'en' ? histEn : histEs;
 
-const iconMap: Record<string, any> = {
+const items: TimelineItem[] = dict.timeline.items;
+
+const iconMap: Record<string, LucideIcon> = {
   calendar: Calendar,
   building2: Building2,
   flower2: Flower2,
@@ -38,16 +23,16 @@ const iconMap: Record<string, any> = {
 };
 ---
 
-<h2 class="text-3xl md:text-4xl font-display font-bold tracking-tightest text-near-black text-center mb-2">Varsana Ecoaldea en el tiempo</h2>
-<p class="text-secondary-gray text-center mb-8 max-w-xl mx-auto">Casi seis decadas de comunidad, espiritualidad y conexion con la naturaleza</p>
+<h2 class="text-3xl md:text-4xl font-display font-bold tracking-tightest text-near-black text-center mb-2">{t('historiaPage.timeline.heading')}</h2>
+<p class="text-secondary-gray text-center mb-8 max-w-xl mx-auto">{t('historiaPage.timeline.subtitle')}</p>
 
 <div class="timeline">
   <!-- Mobile: linea vertical -->
   <div class="timeline__line md:hidden" aria-hidden="true"></div>
 
   <div class="timeline__items">
-    {items.map((item, i) => {
-      const IconComponent = iconMap[item.icon];
+    {items.map((item) => {
+      const IconComponent = iconMap[item.icon] ?? Calendar;
       return (
         <div class="timeline__item">
           <div class="timeline__dot">

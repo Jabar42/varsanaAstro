@@ -2,8 +2,7 @@
 Astro.response.status = 404;
 
 import Layout from '@/src/layouts/Layout.astro';
-import { useTranslations } from '@/src/i18n/utils';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations, getLocale, localizePath } from '@/src/i18n/utils';
 import {
   Compass,
   ArrowRight,
@@ -12,12 +11,12 @@ import {
   MessageCircle,
 } from 'lucide-react';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const locale = getLocale(Astro);
 const t = useTranslations(locale);
-const l = (path: string) => getRelativeLocaleUrl(locale, path);
+const l = (path: string) => localizePath(locale, path);
 ---
 
-<Layout title="Página no encontrada | Varsana Eco Yoga Aldea">
+<Layout title={t('notFound.title')} description={t('notFound.text')}>
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12 lg:py-20">
 
@@ -26,7 +25,7 @@ const l = (path: string) => getRelativeLocaleUrl(locale, path);
       <div class="space-y-8 max-w-xl">
         <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold">
           <Compass size={16} />
-          <span>Error 404</span>
+          <span>{t('notFoundPage.badge')}</span>
         </div>
 
         <p class="text-[8rem] md:text-[10rem] lg:text-[12rem] font-display font-bold leading-none tracking-tightest text-rausch/15 select-none">
@@ -52,7 +51,7 @@ const l = (path: string) => getRelativeLocaleUrl(locale, path);
 
       <div class="hidden lg:flex items-center justify-center relative w-72 h-72">
         <div class="absolute w-64 h-64 rounded-full bg-saffron/10 blur-3xl"></div>
-        <Compass size={180} class="text-saffron/40 relative z-10" strokeWidth={0.8} />
+        <Compass size={180} className="text-saffron/40 relative z-10" strokeWidth={0.8} />
       </div>
 
     </section>
@@ -68,24 +67,24 @@ const l = (path: string) => getRelativeLocaleUrl(locale, path);
             href={l('/events')}
             class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-sacred-sand hover:bg-saffron/10 text-near-black font-semibold transition-all duration-600 ease-in-out hover:scale-105 min-h-13"
           >
-            <Calendar size={20} class="text-saffron" />
-            Eventos
+            <Calendar size={20} className="text-saffron" />
+            {t('nav.events')}
           </a>
 
           <a
             href={l('/pasadias')}
             class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-sacred-sand hover:bg-forest/10 text-near-black font-semibold transition-all duration-600 ease-in-out hover:scale-105 min-h-13"
           >
-            <Leaf size={20} class="text-forest" />
-            Pasadías
+            <Leaf size={20} className="text-forest" />
+            {t('nav.pasadias')}
           </a>
 
           <a
             href={l('/contacto')}
             class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-sacred-sand hover:bg-rausch/10 text-near-black font-semibold transition-all duration-600 ease-in-out hover:scale-105 min-h-13"
           >
-            <MessageCircle size={20} class="text-rausch" />
-            Contacto
+            <MessageCircle size={20} className="text-rausch" />
+            {t('nav.contact')}
           </a>
         </div>
       </div>

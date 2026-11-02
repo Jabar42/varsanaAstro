@@ -1,6 +1,7 @@
 ---
-
 import Layout from '@/src/layouts/Layout.astro';
+import { getLocale, useTranslations } from '@/src/i18n/utils';
+import { es as redEs, en as redEn } from '@/src/i18n/dictionaries/redPage';
 import {
   Globe,
   Sun,
@@ -14,84 +15,47 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-const aldeas = [
-  {
-    name: 'Aldea Solar',
-    icon: Sun,
-    location: 'Sierra Nevada de Santa Marta, Colombia',
-    image: 'https://picsum.photos/seed/aldea-solar/800/600',
-    description: 'Comunidad autosuficiente que vive con energía solar y agricultura biodinámica. Referente de permacultura en la región caribe.',
-    features: ['Energía solar', 'Permacultura', 'Retiros de yoga'],
-    accent: 'saffron',
-  },
-  {
-    name: 'Tierra Viva',
-    icon: TreePine,
-    location: 'Valle de Sibundoy, Putumayo, Colombia',
-    image: 'https://picsum.photos/seed/tierra-viva/800/600',
-    description: 'Aldea indígena y mestiza dedicada a la preservación de plantas medicinales amazónicas y saberes ancestrales.',
-    features: ['Medicina ancestral', 'Reforestación', 'Trueque comunitario'],
-    accent: 'forest',
-  },
-  {
-    name: 'Monte Sagrado',
-    icon: Mountain,
-    location: 'Cajamarca, Perú',
-    image: 'https://picsum.photos/seed/monte-sagrado/800/600',
-    description: 'Santuario ecológico enclavado en los Andes. Protegen más de 200 hectáreas de bosque nativo y fuentes de agua.',
-    features: ['Reserva natural', 'Agua de manantial', 'Temazcal'],
-    accent: 'rausch',
-  },
-  {
-    name: 'Raíces del Agua',
-    icon: Droplets,
-    location: 'Guatapé, Antioquia, Colombia',
-    image: 'https://picsum.photos/seed/raices-agua/800/600',
-    description: 'Proyecto agroecológico a orillas del embalse. Cultivan alimentos orgánicos y realizan formación en bioconstrucción.',
-    features: ['Bioconstrucción', 'Huerta orgánica', 'Cursos y talleres'],
-    accent: 'saffron',
-  },
-  {
-    name: 'Casa Gaia',
-    icon: Flower2,
-    location: 'Vilcabamba, Ecuador',
-    image: 'https://picsum.photos/seed/casa-gaia/800/600',
-    description: 'Comunidad internacional que integra alimentación viva, arte terapia y diseño regenerativo en el valle de la longevidad.',
-    features: ['Alimentación viva', 'Arte terapia', 'Diseño regenerativo'],
-    accent: 'forest',
-  },
-  {
-    name: 'Semillas del Viento',
-    icon: Wind,
-    location: 'La Guajira, Colombia',
-    image: 'https://picsum.photos/seed/semillas-viento/800/600',
-    description: 'Iniciativa wayuu de soberanía alimentaria que combina técnicas tradicionales de cultivo en el desierto con energía eólica.',
-    features: ['Soberanía alimentaria', 'Energía eólica', 'Cultura wayuu'],
-    accent: 'rausch',
-  },
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+
+type Accent = 'saffron' | 'forest' | 'rausch';
+
+/** Datos no traducibles de cada aldea, en el mismo orden que el diccionario `redPage.aldeas`. */
+const aldeaMeta: { icon: typeof Sun; image: string; accent: Accent }[] = [
+  { icon: Sun, image: 'https://picsum.photos/seed/aldea-solar/800/600', accent: 'saffron' },
+  { icon: TreePine, image: 'https://picsum.photos/seed/tierra-viva/800/600', accent: 'forest' },
+  { icon: Mountain, image: 'https://picsum.photos/seed/monte-sagrado/800/600', accent: 'rausch' },
+  { icon: Droplets, image: 'https://picsum.photos/seed/raices-agua/800/600', accent: 'saffron' },
+  { icon: Flower2, image: 'https://picsum.photos/seed/casa-gaia/800/600', accent: 'forest' },
+  { icon: Wind, image: 'https://picsum.photos/seed/semillas-viento/800/600', accent: 'rausch' },
 ];
 
-const accentStyles: Record<string, { iconBg: string; iconText: string; badge: string; topBorder: string }> = {
+const aldeas = (locale === 'en' ? redEn : redEs).aldeas.map((aldea, i) => ({
+  ...aldea,
+  ...(aldeaMeta[i] ?? { icon: Globe, image: '', accent: 'forest' as Accent }),
+}));
+
+const accentStyles: Record<Accent, { iconBg: string; iconText: string; badge: string; topBorder: string }> = {
   saffron: { iconBg: 'bg-saffron/10', iconText: 'text-saffron', badge: 'bg-saffron/10 text-saffron', topBorder: 'border-t-saffron/20' },
   rausch: { iconBg: 'bg-rausch/10', iconText: 'text-rausch', badge: 'bg-rausch/10 text-rausch', topBorder: 'border-t-rausch/20' },
   forest: { iconBg: 'bg-forest/10', iconText: 'text-forest', badge: 'bg-forest/10 text-forest', topBorder: 'border-t-forest/20' },
 };
 ---
 
-<Layout title="Red de Eco Aldeas | Varsana Eco Yoga Aldea">
+<Layout title={t('red.title')} description={t('red.subtitle')}>
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12">
     <!-- Hero -->
     <section class="mb-20 text-center max-w-3xl mx-auto">
       <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold mb-6">
         <Globe size={16} />
-        <span>Red de eco aldeas</span>
+        <span>{t('red.badge')}</span>
       </div>
       <h1 class="text-4xl md:text-6xl font-bold tracking-tightest leading-tight mb-6">
-        Red de Eco Aldeas
+        {t('red.heading')}
       </h1>
       <p class="text-secondary-gray text-xl leading-relaxed">
-        Comunidades hermanas que comparten nuestra visión de un mundo más consciente, sostenible y conectado con la tierra. Descubre espacios donde florece una nueva forma de habitar el planeta.
+        {t('red.subtitle')}
       </p>
     </section>
 
@@ -111,7 +75,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; badge: st
                   loading="lazy"
                 />
                 <div class="absolute top-4 left-4 flex items-center gap-1.5 bg-lotus-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
-                  <MapPin size={12} class="text-rausch" />
+                  <MapPin size={12} className="text-rausch" />
                   <span class="text-secondary-gray truncate max-w-45">{aldea.location}</span>
                 </div>
               </div>
@@ -130,7 +94,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; badge: st
                   <ul class="space-y-1.5">
                     {aldea.features.map((feat) => (
                       <li class="flex items-center gap-2 text-sm text-secondary-gray">
-                        <CheckCircle2 size={14} class="text-forest shrink-0" />
+                        <CheckCircle2 size={14} className="text-forest shrink-0" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -138,7 +102,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; badge: st
 
                   <span class={`inline-flex items-center gap-1.5 mt-3 px-3 py-1.5 rounded-full text-xs font-bold ${s.badge}`}>
                     <Sparkles size={12} />
-                    Eco aldea
+                    {t('red.ecoAldeaBadge')}
                   </span>
                 </div>
               </div>
@@ -151,7 +115,7 @@ const accentStyles: Record<string, { iconBg: string; iconText: string; badge: st
     <!-- Info note -->
     <section class="text-center pb-12">
       <p class="text-secondary-gray text-sm italic">
-        Próximamente: conoce más eco aldeas, filtra por región y descubre cómo visitarlas o colaborar con ellas.
+        {t('red.upcomingNote')}
       </p>
     </section>
   </main>

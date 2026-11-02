@@ -37,10 +37,16 @@ Si el peso excede 150 KB, reducir calidad: `cwebp -q 50 ...` o redimensionar: `c
 
 ### 2. Subir via API
 
+La subida requiere el token `IMAGES_UPLOAD_TOKEN` (secreto del worker; pedirlo al administrador o leerlo de `.dev.vars` en local):
+
 ```bash
 curl -X POST https://varsana-co.iaforchange.workers.dev/api/images \
+  -H "Authorization: Bearer $IMAGES_UPLOAD_TOKEN" \
   -F "file=@ruta/de/la/imagen.webp;type=image/webp"
 ```
+
+Sin token (o con uno incorrecto) la API responde `401 {"error":"No autorizado"}`.
+
 
 Respuesta:
 ```json

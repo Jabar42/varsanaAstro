@@ -1,11 +1,10 @@
 ---
 import { Menu, Send, House, Megaphone, Store, Tent, Users, Sparkles, Salad, ChevronDown } from 'lucide-react';
-import { useTranslations } from '@/src/i18n/utils';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations, getLocale, localizePath, stripLocale } from '@/src/i18n/utils';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const locale = getLocale(Astro);
 const t = useTranslations(locale);
-const l = (path: string) => getRelativeLocaleUrl(locale, path);
+const l = (path: string) => localizePath(locale, path);
 
 interface NavChild {
   name: string;
@@ -26,7 +25,7 @@ const categories: NavItem[] = [
     name: t('nav.experiences'),
     icon: Sparkles,
     children: [
-      { name: 'Ver todas', href: l('/experiencias') },
+      { name: t('nav.viewAll'), href: l('/experiencias') },
       { name: t('nav.events'), href: l('/events') },
       { name: t('nav.pasadias'), href: l('/pasadias') },
       { name: t('nav.volunteering'), href: l('/voluntariado') },
@@ -44,7 +43,7 @@ const mobilePrimary: NavItem[] = [
   categories[2], // Experiencias
   categories[3], // Tienda
 ];
-const mobileOverflow = categories.filter(c => !mobilePrimary.includes(c) && c.name !== 'Inicio');
+const mobileOverflow = categories.filter(c => !mobilePrimary.includes(c) && c !== categories[0]);
 
 const desktopCategories: NavItem[] = [
   categories[0], // Inicio
@@ -57,15 +56,19 @@ const desktopCategories: NavItem[] = [
   categories[7], // Contacto
 ];
 
-const currentPath = Astro.url.pathname;
+// Comparamos rutas sin prefijo de idioma ni barra final para que el estado
+// activo funcione igual en /pasadias, /en/pasadias y /pasadias/.
+const currentPath = stripLocale(Astro.originPathname);
+
+const matches = (href: string): boolean => {
+  const target = stripLocale(href);
+  if (target === '/') return currentPath === '/';
+  return currentPath === target || currentPath.startsWith(target + '/');
+};
 
 const isActive = (item: NavItem): boolean => {
-  if (item.children) {
-    return item.children.some((child) => currentPath.startsWith(child.href));
-  }
-  if (!item.href) return false;
-  if (item.href === '/') return currentPath === '/';
-  return currentPath.startsWith(item.href);
+  if (item.children) return item.children.some((child) => matches(child.href));
+  return !!item.href && matches(item.href);
 };
 
 const triggerBase =
@@ -75,7 +78,8 @@ const iconClasses = 'size-5';
 const labelClasses = 'text-xs font-medium whitespace-nowrap leading-none';
 
 function menuItemClass(href: string) {
-  const active = currentPath.startsWith(href);
+  const active = matches(href);
+
   return `block px-4 py-2 text-sm whitespace-nowrap hover:bg-sacred-sand transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-saffron ${
     active ? 'text-rausch font-semibold' : 'text-near-black'
   }`;

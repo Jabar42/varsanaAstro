@@ -4,22 +4,23 @@ import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
 import PasadiaCard from '@/src/components/PasadiaCard.astro';
 import { getAllPasadias } from '@/src/lib/pasadias';
-import { useTranslations } from '@/src/i18n/utils';
+import { useTranslations, getLocale, localizePath } from '@/src/i18n/utils';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
+const locale = getLocale(Astro);
 const t = useTranslations(locale);
+const l = (p: string) => localizePath(locale, p);
 
 const allPasadias = await getAllPasadias(locale);
 ---
 
-<Layout title="Pasadías | Varsana Eco Yoga Aldea">
+<Layout title={t('pasadiasPage.metaTitle')} description={t('pasadiasPage.metaDescription')}>
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-16">
     <PageBanner
       title={t('pasadias.heading')}
       subtitle={t('pasadias.subtitle')}
       breadcrumb={[
-        { label: 'Inicio', url: '/' },
-        { label: t('nav.pasadias'), url: '/pasadias' },
+        { label: t('nav.home'), url: l('/') },
+        { label: t('nav.pasadias'), url: l('/pasadias') },
       ]}
     />
 
@@ -32,7 +33,7 @@ const allPasadias = await getAllPasadias(locale);
     ) : (
       <div class="py-20 text-center bg-gray-50 rounded-3xl">
         <p class="text-2xl font-medium text-gray-400">{t('pasadias.noPasadias')}</p>
-        <a href="/" class="mt-6 inline-block text-rausch font-bold underline">{t('pasadias.backHome')}</a>
+        <a href={l('/')} class="mt-6 inline-block text-rausch font-bold underline">{t('pasadias.backHome')}</a>
       </div>
     )}
   </main>

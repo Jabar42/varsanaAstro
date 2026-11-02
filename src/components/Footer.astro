@@ -1,16 +1,12 @@
 ---
 import { Globe, Facebook, Instagram, Youtube } from 'lucide-react';
-import { useTranslations } from '@/src/i18n/utils';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { useTranslations, getLocale, localizePath, type Locale } from '@/src/i18n/utils';
 
-const locale = (Astro.locals as any)?.locale ?? Astro.currentLocale ?? 'es';
-const otherLocale = locale === 'en' ? 'es' : 'en';
+const locale = getLocale(Astro);
+const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 const t = useTranslations(locale);
-const l = (path: string) => getRelativeLocaleUrl(locale, path);
-const switchUrl = (() => {
-  const p = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '');
-  return getRelativeLocaleUrl(otherLocale, p || '/');
-})();
+const l = (path: string) => localizePath(locale, path);
+const switchUrl = localizePath(otherLocale, Astro.originPathname + Astro.url.search);
 ---
 
 <footer class="bg-near-black mt-16 px-6 py-12 md:px-12 lg:px-20">
@@ -66,7 +62,8 @@ const switchUrl = (() => {
       </div>
 
       <div class="flex items-center gap-6 font-semibold text-gray-400">
-        <a href={switchUrl} data-locale-switch={otherLocale} class="flex items-center gap-2 hover:text-white hover:underline cursor-pointer transition-colors">
+        <a href={switchUrl} hreflang={otherLocale} lang={otherLocale} data-astro-reload data-astro-prefetch="false" class="flex items-center gap-2 hover:text-white hover:underline cursor-pointer transition-colors">
+
           <Globe size={16} />
           <span>{t('footer.language')}</span>
         </a>
@@ -75,9 +72,9 @@ const switchUrl = (() => {
           <span>COP</span>
         </div>
         <div class="flex items-center gap-4 text-gray-400">
-          <Facebook size={18} class="hover:text-white cursor-pointer transition-colors" />
-          <Instagram size={18} class="hover:text-white cursor-pointer transition-colors" />
-          <Youtube size={18} class="hover:text-white cursor-pointer transition-colors" />
+          <Facebook size={18} className="hover:text-white cursor-pointer transition-colors" />
+          <Instagram size={18} className="hover:text-white cursor-pointer transition-colors" />
+          <Youtube size={18} className="hover:text-white cursor-pointer transition-colors" />
         </div>
       </div>
     </div>
