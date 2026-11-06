@@ -60,6 +60,131 @@ export type ValidationResult =
   | { ok: true; value: ChangeRequestInput }
   | { ok: false; message: string };
 
+/**
+ * Adjuntos de una solicitud.
+ *
+ * Reglas de dominio (hardcodeadas a propósito: son el contrato con el equipo):
+ * - Máximo 3 archivos de 8 MB (20 MB en total): fotos de referencia y PDF.
+ * - El tipo se decide por los BYTES (magic number), nunca por el nombre ni por
+ *   el Content-Type que manda el navegador — un .jpg puede ser un HTML.
+ * - Nada de SVG/HTML: son vectores de XSS servidos desde el propio dominio.
+ * - La clave en R2 es impredecible (fecha + código + aleatorio) porque el link
+ *   se comparte por Telegram y no hay login.
+ */
+export const ATTACHMENTS = {
+  maxFiles: 3,
+  maxFileBytes: 8 * 1024 * 1024,
+  maxTotalBytes: 20 * 1024 * 1024,
+  prefix: 'change-requests/',
+  maxName: 80,
+} as const;
+
+export interface Attachment {
+  key: string;
+  name: string;
+  size: number;
+  type: string;
+  url: string;
+}
+
+/** Tipo real del archivo por magic number. Devuelve null si no está permitido. */
+export function sniffType(bytes: Uint8Array): { mime: string; ext: string } | null {
+  const b = bytes;
+  const starts = (sig: number[]) => sig.every((v, i) => b[i] === v);
+  if (starts([0xff, 0xd8, 0xff])) return { mime: 'image/jpeg', ext: 'jpg' };
+  if (starts([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return { mime: 'image/png', ext: 'png' };
+  if (starts([0x47, 0x49, 0x46, 0x38])) return { mime: 'image/gif', ext: 'gif' };
+  if (starts([0x52, 0x49, 0x46, 0x46]) && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) {
+    return { mime: 'image/webp', ext: 'webp' };
+  }
+  if (starts([0x25, 0x50, 0x44, 0x46])) return { mime: 'application/pdf', ext: 'pdf' };
+  // AVIF / HEIC: caja 'ftyp' en el offset 4.
+  if (b[4] === 0x66 && b[5] === 0x74 && b[6] === 0x79 && b[7] === 0x70) {
+    const brand = String.fromCharCode(b[8], b[9], b[10], b[11]);
+    if (brand === 'avif' || brand === 'avis') return { mime: 'image/avif', ext: 'avif' };
+    if (['heic', 'heix', 'hevc', 'mif1', 'msf1'].includes(brand)) return { mime: 'image/heic', ext: 'heic' };
+  }
+  return null;
+}
+
+/** Nombre para mostrar: sin rutas, sin caracteres de control, acotado. */
+export function sanitizeFileName(name: string): string {
+  const base = (name || '')
+    .split(/[\\/]/)
+    .pop()!
+    .replace(/[\u0000-\u001f\u007f]/g, '')
+    .trim();
+  return clamp(base || 'archivo', ATTACHMENTS.maxName);
+}
+
+function randomHex(bytes = 8): string {
+  const arr = new Uint8Array(bytes);
+  crypto.getRandomValues(arr);
+  return Array.from(arr)
+    .map((x) => x.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+export type StoreResult =
+  | { ok: true; attachments: Attachment[] }
+  | { ok: false; message: string };
+
+/**
+ * Guarda los adjuntos en R2 bajo `change-requests/AAAA/MM/DD/…`.
+ * Devuelve las URLs públicas (relativas) que van a D1 y a Telegram.
+ */
+export async function storeAttachments(
+  bucket: R2Bucket,
+  files: File[],
+  code: string,
+  origin: string,
+): Promise<StoreResult> {
+  const candidates = files.filter((f) => f && f.size > 0);
+  if (candidates.length > ATTACHMENTS.maxFiles) {
+    return { ok: false, message: `Máximo ${ATTACHMENTS.maxFiles} archivos por solicitud` };
+  }
+  const total = candidates.reduce((sum, f) => sum + f.size, 0);
+  if (total > ATTACHMENTS.maxTotalBytes) {
+    return { ok: false, message: 'Los archivos suman más de 20 MB' };
+  }
+
+  const now = new Date();
+  const yyyy = now.getUTCFullYear();
+  const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(now.getUTCDate()).padStart(2, '0');
+  const folder = `${ATTACHMENTS.prefix}${yyyy}/${mm}/${dd}/`;
+
+  const attachments: Attachment[] = [];
+  for (const [i, file] of candidates.entries()) {
+    const name = sanitizeFileName(file.name);
+    if (file.size > ATTACHMENTS.maxFileBytes) {
+      return { ok: false, message: `"${name}" pesa ${(file.size / 1024 / 1024).toFixed(1)} MB (máximo 8 MB)` };
+    }
+    const buffer = new Uint8Array(await file.arrayBuffer());
+    const kind = sniffType(buffer);
+    if (!kind) {
+      return {
+        ok: false,
+        message: `"${name}" no es una foto (JPG, PNG, WebP, GIF, AVIF) ni un PDF`,
+      };
+    }
+    const key = `${folder}${code}-${String(i + 1).padStart(2, '0')}-${randomHex(4)}.${kind.ext}`;
+    await bucket.put(key, buffer, {
+      httpMetadata: { contentType: kind.mime },
+      customMetadata: { request: code, original: name },
+    });
+    attachments.push({
+      key,
+      name,
+      size: file.size,
+      type: kind.mime,
+      url: `${origin}/api/change-requests/attachments/${key}`,
+    });
+  }
+
+  return { ok: true, attachments };
+}
+
 function str(v: unknown): string {
   return typeof v === 'string' ? v.trim() : v == null ? '' : String(v).trim();
 }
@@ -157,13 +282,13 @@ export async function countRecentByIp(db: D1Database, ipHash: string, minutes = 
 export async function insertChangeRequest(
   db: D1Database,
   input: ChangeRequestInput,
-  meta: { code: string; ipHash: string; userAgent: string },
+  meta: { code: string; ipHash: string; userAgent: string; attachments?: Attachment[] },
 ): Promise<string> {
   await db
     .prepare(
       `INSERT INTO change_requests
-        (code, requester_name, requester_contact, area, type, page, title, description, priority, deadline, reference_url, ip_hash, user_agent)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (code, requester_name, requester_contact, area, type, page, title, description, priority, deadline, reference_url, ip_hash, user_agent, attachments)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .bind(
       meta.code,
@@ -179,6 +304,7 @@ export async function insertChangeRequest(
       input.reference_url,
       meta.ipHash,
       meta.userAgent.slice(0, 300),
+      JSON.stringify(meta.attachments ?? []),
     )
     .run();
   return meta.code;
@@ -210,7 +336,13 @@ const TYPE_LABEL: Record<ChangeRequestType, string> = {
 export function buildChangeRequestMessage(
   input: ChangeRequestInput,
   code: string,
+  attachments: Attachment[] = [],
 ): string {
+  const adjuntos = attachments.map((a) => {
+    const icono = a.type === 'application/pdf' ? '📄' : '🖼️';
+    return `${icono} <a href="${escapeHtml(a.url)}">${escapeHtml(a.name)}</a> (${Math.max(1, Math.round(a.size / 1024))} KB)`;
+  });
+
   const lines = [
     `🛠️ <b>Nueva solicitud de cambio</b> — <code>${escapeHtml(code)}</code>`,
     '',
@@ -224,6 +356,7 @@ export function buildChangeRequestMessage(
     `<b>${escapeHtml(input.title)}</b>`,
     escapeHtml(input.description.slice(0, 1200)),
     input.reference_url ? `\n🔗 ${escapeHtml(input.reference_url)}` : '',
+    ...(adjuntos.length ? ['', `<b>Adjuntos (${adjuntos.length}):</b>`, ...adjuntos] : []),
   ];
   return lines.filter((l) => l !== '').join('\n');
 }

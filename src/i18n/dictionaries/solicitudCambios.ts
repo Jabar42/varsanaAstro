@@ -42,6 +42,15 @@ export const es = {
   requiredHint: 'Los campos marcados con * son obligatorios.',
   honeypotLabel: 'Sitio web (deja este campo vacío)',
 
+  files: 'Archivos de ejemplo (opcional)',
+  filesCta: 'Adjuntar fotos o PDF',
+  filesHint: 'Hasta 3 archivos de 8 MB: la foto que debería ir, un pantallazo del error o el PDF con el texto. Se adjuntan a la solicitud.',
+  filesRemove: 'Quitar',
+  filesErrorCount: 'Máximo 3 archivos por solicitud.',
+  filesErrorSize: 'Cada archivo debe pesar máximo 8 MB.',
+  filesErrorTotal: 'Los archivos suman más de 20 MB.',
+  filesErrorType: 'Solo fotos (JPG, PNG, WebP, GIF) o PDF.',
+
   areas: {
     direccion: 'Dirección',
     hospedaje: 'Hospedaje',
@@ -130,6 +139,15 @@ export const en = {
   genericError: 'We could not log the request. Please try again.',
   requiredHint: 'Fields marked with * are required.',
   honeypotLabel: 'Website (leave this field empty)',
+
+  files: 'Example files (optional)',
+  filesCta: 'Attach photos or a PDF',
+  filesHint: 'Up to 3 files of 8 MB: the photo you want used, a screenshot of the error, or a PDF with the text. They are attached to the request.',
+  filesRemove: 'Remove',
+  filesErrorCount: 'Up to 3 files per request.',
+  filesErrorSize: 'Each file must be 8 MB or less.',
+  filesErrorTotal: 'The files add up to more than 20 MB.',
+  filesErrorType: 'Photos only (JPG, PNG, WebP, GIF) or PDF.',
 
   areas: {
     direccion: 'Management',

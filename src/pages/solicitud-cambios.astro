@@ -8,7 +8,7 @@
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
 import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
-import { ClipboardList, Send, Sparkles } from 'lucide-react';
+import { ClipboardList, Paperclip, Send, Sparkles } from 'lucide-react';
 
 const locale = getLocale(Astro);
 const t = useTranslations(locale);
@@ -191,6 +191,36 @@ const label = 'text-sm font-bold text-near-black';
           <p class="text-xs text-secondary-gray">{t('solicitudCambios.descriptionHint')}</p>
         </div>
 
+        <!-- Adjuntos: fotos de ejemplo o PDF. El tipo real se valida por bytes
+             en el servidor; acá solo se filtra por MIME para dar feedback rápido. -->
+        <div class="space-y-2">
+          <span class={label}>{t('solicitudCambios.files')}</span>
+          <label
+            for="files"
+            id="files-drop"
+            class="flex items-center justify-center gap-3 w-full rounded-xl border-2 border-dashed border-sacred-sand bg-sacred-sand/30 px-4 py-6 cursor-pointer hover:border-rausch hover:bg-rausch/5 transition-all text-secondary-gray"
+          >
+            <Paperclip size={20} />
+            <span class="font-bold text-near-black">{t('solicitudCambios.filesCta')}</span>
+            <input
+              type="file"
+              id="files"
+              name="files"
+              multiple
+              accept="image/jpeg,image/png,image/webp,image/gif,image/avif,application/pdf"
+              class="sr-only"
+              data-msg-too-many={t('solicitudCambios.filesErrorCount')}
+              data-msg-too-big={t('solicitudCambios.filesErrorSize')}
+              data-msg-too-heavy={t('solicitudCambios.filesErrorTotal')}
+              data-msg-bad-type={t('solicitudCambios.filesErrorType')}
+              data-msg-remove={t('solicitudCambios.filesRemove')}
+            />
+          </label>
+          <p class="text-xs text-secondary-gray">{t('solicitudCambios.filesHint')}</p>
+          <ul id="files-list" class="hidden space-y-1 text-sm"></ul>
+          <p id="files-error" class="hidden text-sm font-bold text-red-500" role="alert"></p>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
             <label for="deadline" class={label}>{t('solicitudCambios.deadline')}</label>
@@ -234,6 +264,20 @@ const label = 'text-sm font-bold text-near-black';
 </Layout>
 
 <script>
+  // Límites espejo de src/lib/change-requests.ts (ATTACHMENTS). Si cambian allá,
+  // cambian acá: el servidor es la autoridad, esto es solo feedback inmediato.
+  const MAX_FILES = 3;
+  const MAX_FILE_BYTES = 8 * 1024 * 1024;
+  const MAX_TOTAL_BYTES = 20 * 1024 * 1024;
+  const ALLOWED_TYPES = new Set([
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/gif',
+    'image/avif',
+    'application/pdf',
+  ]);
+
   function initChangeRequestForm(): void {
     const form = document.getElementById('change-request-form') as HTMLFormElement | null;
     const msg = document.getElementById('form-msg') as HTMLParagraphElement | null;
@@ -255,35 +299,122 @@ const label = 'text-sm font-bold text-near-black';
       else btn.textContent = text;
     };
 
+    // --- Adjuntos -------------------------------------------------------
+    const input = document.getElementById('files') as HTMLInputElement | null;
+    const list = document.getElementById('files-list') as HTMLUListElement | null;
+    const fileError = document.getElementById('files-error') as HTMLParagraphElement | null;
+    // El input no deja borrar un archivo suelto: la lista vive acá y se vuelca
+    // al input con un DataTransfer en cada cambio.
+    let selected: File[] = [];
+
+    const fileTexts = {
+      tooMany: input?.dataset.msgTooMany ?? 'Máximo 3 archivos.',
+      tooBig: input?.dataset.msgTooBig ?? 'Cada archivo máximo 8 MB.',
+      tooHeavy: input?.dataset.msgTooHeavy ?? 'Los archivos suman más de 20 MB.',
+      badType: input?.dataset.msgBadType ?? 'Solo fotos o PDF.',
+      remove: input?.dataset.msgRemove ?? 'Quitar',
+    };
+
+    const humanSize = (n: number) =>
+      n >= 1024 * 1024 ? `${(n / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`;
+
+    const syncInput = () => {
+      if (!input) return;
+      const dt = new DataTransfer();
+      selected.forEach((f) => dt.items.add(f));
+      input.files = dt.files;
+    };
+
+    const showFileError = (text: string) => {
+      if (!fileError) return;
+      fileError.textContent = text;
+      fileError.className = text ? 'text-sm font-bold text-red-500' : 'hidden';
+    };
+
+    const validateFiles = (): boolean => {
+      const total = selected.reduce((sum, f) => sum + f.size, 0);
+      let error = '';
+      if (selected.length > MAX_FILES) error = fileTexts.tooMany;
+      else if (selected.some((f) => !ALLOWED_TYPES.has(f.type))) error = fileTexts.badType;
+      else if (selected.some((f) => f.size > MAX_FILE_BYTES)) error = fileTexts.tooBig;
+      else if (total > MAX_TOTAL_BYTES) error = fileTexts.tooHeavy;
+      showFileError(error);
+      return error === '';
+    };
+
+    const render = () => {
+      if (list) {
+        list.innerHTML = '';
+        list.classList.toggle('hidden', selected.length === 0);
+        selected.forEach((file, index) => {
+          const li = document.createElement('li');
+          li.className = 'flex items-center justify-between gap-3 bg-sacred-sand/60 rounded-lg px-3 py-2';
+          const name = document.createElement('span');
+          name.className = 'truncate text-near-black';
+          name.textContent = `${file.name} · ${humanSize(file.size)}`;
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.className = 'text-rausch text-xs font-bold shrink-0 hover:underline';
+          remove.textContent = fileTexts.remove;
+          remove.setAttribute('aria-label', `${fileTexts.remove}: ${file.name}`);
+          remove.addEventListener('click', () => {
+            selected.splice(index, 1);
+            syncInput();
+            render();
+            validateFiles();
+          });
+          li.appendChild(name);
+          li.appendChild(remove);
+          list.appendChild(li);
+        });
+      }
+      validateFiles();
+    };
+
+    input?.addEventListener('change', () => {
+      // Al elegir de nuevo, se acumula (salvo duplicados exactos).
+      const incoming = Array.from(input.files ?? []);
+      for (const file of incoming) {
+        const dup = selected.some((f) => f.name === file.name && f.size === file.size);
+        if (!dup) selected.push(file);
+      }
+      if (selected.length > MAX_FILES) selected = selected.slice(0, MAX_FILES + 1);
+      syncInput();
+      render();
+    });
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const data = new FormData(form);
-      const payload: Record<string, string> = {};
-      data.forEach((value, key) => {
-        payload[key] = String(value);
-      });
+      if (!validateFiles()) return;
 
-      // Si la página no está en la lista, se concatena el detalle libre.
-      const page = payload.page ?? '';
-      const detail = (payload.page_detail ?? '').trim();
-      payload.page = page === 'otra' ? detail : detail ? `${page} — ${detail}` : page;
+      // multipart: los archivos viajan en el mismo POST (sin subidas huérfanas).
+      const data = new FormData(form);
+      const page = String(data.get('page') ?? '');
+      const detail = String(data.get('page_detail') ?? '').trim();
+      data.set('page', page === 'otra' ? detail : detail ? `${page} — ${detail}` : page);
+      data.delete('page_detail');
 
       btn.disabled = true;
       setLabel(texts.sending);
       msg.className = 'hidden';
 
       try {
-        const res = await fetch('/api/change-requests', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        const json = (await res.json()) as { success: boolean; message?: string; code?: string };
+        const res = await fetch('/api/change-requests', { method: 'POST', body: data });
+        const json = (await res.json()) as {
+          success: boolean;
+          message?: string;
+          code?: string;
+          attachments?: number;
+        };
 
         if (json.success) {
-          msg.textContent = json.code ? `${texts.success} (${json.code})` : texts.success;
+          const extra = json.attachments ? ` · ${json.attachments} adjunto(s)` : '';
+          msg.textContent = json.code ? `${texts.success} (${json.code}${extra})` : texts.success;
           msg.className = 'text-sm font-bold text-center text-forest';
           form.reset();
+          selected = [];
+          syncInput();
+          render();
         } else {
           msg.textContent = texts.errorPrefix + (json.message || texts.genericError);
           msg.className = 'text-sm font-bold text-center text-red-500';

@@ -2,8 +2,10 @@
  * API de solicitudes de cambio al sitio.
  *
  * POST  /api/change-requests   — público (formulario /solicitud-cambios).
- *        Valida, guarda en D1 y avisa al chat del equipo por Telegram.
- *        Rate limit: 5 solicitudes / 10 min por IP (hash). Honeypot `website`.
+ *        Acepta JSON o multipart/form-data (adjuntos en el campo `files`).
+ *        Valida, guarda los adjuntos en R2, registra en D1 y avisa al chat del
+ *        equipo por Telegram. Rate limit: 5 solicitudes / 10 min por IP (hash).
+ *        Honeypot `website`.
  *
  * GET   /api/change-requests?token=…&status=…&limit=…
  * PATCH /api/change-requests   { token, id, status }
@@ -14,13 +16,16 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import {
+  ATTACHMENTS,
   STATUSES,
   buildChangeRequestMessage,
   countRecentByIp,
   hashIp,
   insertChangeRequest,
   nextCode,
+  storeAttachments,
   validate,
+  type Attachment,
   type ChangeRequestStatus,
 } from '@/src/lib/change-requests';
 
@@ -35,15 +40,27 @@ function json(payload: unknown, status = 200): Response {
   });
 }
 
-async function readBody(request: Request): Promise<Record<string, unknown>> {
+interface ParsedBody {
+  fields: Record<string, unknown>;
+  files: File[];
+}
+
+async function readBody(request: Request): Promise<ParsedBody> {
   const contentType = request.headers.get('content-type') || '';
   if (contentType.includes('application/json')) {
-    return (await request.json()) as Record<string, unknown>;
+    return { fields: (await request.json()) as Record<string, unknown>, files: [] };
   }
   const formData = await request.formData();
-  const out: Record<string, unknown> = {};
-  for (const [k, v] of formData.entries()) out[k] = typeof v === 'string' ? v : '';
-  return out;
+  const fields: Record<string, unknown> = {};
+  const files: File[] = [];
+  for (const [k, v] of formData.entries()) {
+    if (typeof v === 'string') {
+      fields[k] = v;
+    } else if (k === 'files' && v.size > 0) {
+      files.push(v);
+    }
+  }
+  return { fields, files };
 }
 
 async function notifyTelegram(text: string): Promise<void> {
@@ -85,14 +102,20 @@ function requireToken(url: URL, body?: Record<string, unknown>): boolean {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const body = await readBody(request);
+    // Cortafuegos barato antes de leer el cuerpo: 3 × 8 MB + margen de campos.
+    const declared = Number(request.headers.get('content-length') || 0);
+    if (declared > ATTACHMENTS.maxTotalBytes + 2 * 1024 * 1024) {
+      return json({ success: false, message: 'Los archivos suman más de 20 MB' }, 413);
+    }
+
+    const { fields, files } = await readBody(request);
 
     // Honeypot: invisible para personas. Respondemos éxito para no dar pistas.
-    if (String(body.website ?? '').trim()) {
+    if (String(fields.website ?? '').trim()) {
       return json({ success: true });
     }
 
-    const result = validate(body);
+    const result = validate(fields);
     if (!result.ok) return json({ success: false, message: result.message }, 400);
 
     const db = (env as unknown as Record<string, D1Database>).DB;
@@ -110,22 +133,43 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const code = await nextCode(db);
+
+    // Los adjuntos se validan y suben ANTES de insertar: si un archivo es
+    // inválido, no queda una solicitud a medias.
+    let attachments: Attachment[] = [];
+    if (files.length) {
+      const bucket = (env as unknown as Record<string, R2Bucket>).VARSANA_IMAGES;
+      if (!bucket) {
+        return json({ success: false, message: 'Almacenamiento no disponible' }, 500);
+      }
+      const origin = new URL(request.url).origin;
+      const stored = await storeAttachments(bucket, files, code, origin);
+      if (!stored.ok) return json({ success: false, message: stored.message }, 400);
+      attachments = stored.attachments;
+    }
+
     await insertChangeRequest(db, result.value, {
       code,
       ipHash,
       userAgent: request.headers.get('user-agent') || '',
+      attachments,
     });
 
-    await notifyTelegram(buildChangeRequestMessage(result.value, code));
+    await notifyTelegram(buildChangeRequestMessage(result.value, code, attachments));
 
-    return json({ success: true, code, message: 'Solicitud registrada' });
+    return json({
+      success: true,
+      code,
+      message: 'Solicitud registrada',
+      attachments: attachments.length,
+    });
   } catch (error) {
     console.error('[change-requests] POST error:', error);
     return json({ success: false, message: 'No pudimos registrar la solicitud' }, 500);
   }
 };
 
-export const GET: APIRoute = async ({ request, url }) => {
+export const GET: APIRoute = async ({ url }) => {
   if (!requireToken(url)) return json({ success: false, message: 'No encontrado' }, 404);
 
   const db = (env as unknown as Record<string, D1Database>).DB;
@@ -142,25 +186,38 @@ export const GET: APIRoute = async ({ request, url }) => {
   }
 
   const sql = `SELECT id, code, requester_name, requester_contact, area, type, page, title,
-                      description, priority, deadline, reference_url, status, created_at, updated_at
+                      description, priority, deadline, reference_url, status, attachments,
+                      created_at, updated_at
                FROM change_requests ${where.length ? `WHERE ${where.join(' AND ')}` : ''}
                ORDER BY CASE priority WHEN 'urgente' THEN 0 WHEN 'alta' THEN 1 WHEN 'media' THEN 2 ELSE 3 END,
                         created_at DESC
                LIMIT ?`;
   const { results } = await db.prepare(sql).bind(...params, limit).all();
 
-  return json({ success: true, count: results.length, requests: results });
+  // `attachments` viaja como texto JSON en D1; se devuelve ya parseado.
+  const requests = results.map((row) => {
+    const raw = (row as Record<string, unknown>).attachments;
+    let parsed: Attachment[] = [];
+    try {
+      parsed = typeof raw === 'string' && raw ? (JSON.parse(raw) as Attachment[]) : [];
+    } catch {
+      parsed = [];
+    }
+    return { ...row, attachments: parsed };
+  });
+
+  return json({ success: true, count: requests.length, requests });
 };
 
 export const PATCH: APIRoute = async ({ request, url }) => {
-  const body = await readBody(request);
-  if (!requireToken(url, body)) return json({ success: false, message: 'No encontrado' }, 404);
+  const { fields } = await readBody(request);
+  if (!requireToken(url, fields)) return json({ success: false, message: 'No encontrado' }, 404);
 
   const db = (env as unknown as Record<string, D1Database>).DB;
   if (!db) return json({ success: false, message: 'Base de datos no disponible' }, 500);
 
-  const id = Number(body.id);
-  const status = String(body.status ?? '');
+  const id = Number(fields.id);
+  const status = String(fields.status ?? '');
   if (!Number.isInteger(id) || !STATUSES.includes(status as ChangeRequestStatus)) {
     return json({ success: false, message: 'id o status inválido' }, 400);
   }
