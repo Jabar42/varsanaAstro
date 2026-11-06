@@ -1,0 +1,308 @@
+---
+/**
+ * Formulario interno de solicitudes de cambio al sitio.
+ * Ruta NO enlazada en la navegación (se comparte por WhatsApp al equipo) y
+ * marcada noindex. Envía a POST /api/change-requests, que guarda en D1 y
+ * avisa al chat del equipo por Telegram.
+ */
+import Layout from '@/src/layouts/Layout.astro';
+import PageBanner from '@/src/components/PageBanner.astro';
+import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
+import { ClipboardList, Send, Sparkles } from 'lucide-react';
+
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (p: string) => localizePath(locale, p);
+
+// Valores de los <select> — el vocabulario cerrado vive en src/lib/change-requests.ts
+// (TYPES / PRIORITIES). Si se agrega uno, debe existir también en el diccionario.
+const AREAS = ['direccion', 'hospedaje', 'cocina', 'eventos', 'huerta', 'comunicaciones', 'mantenimiento', 'otra'];
+const TYPES = ['contenido', 'correccion', 'imagen', 'precio_fechas', 'evento', 'funcionalidad', 'error', 'otro'];
+const PRIORITIES: Array<{ value: string; key: string }> = [
+  { value: 'baja', key: 'priorityLow' },
+  { value: 'media', key: 'priorityMedium' },
+  { value: 'alta', key: 'priorityHigh' },
+  { value: 'urgente', key: 'priorityUrgent' },
+];
+
+// value = ruta real del sitio; así la solicitud llega accionable al equipo.
+const PAGES: Array<{ key: string; value: string }> = [
+  { key: 'home', value: '/' },
+  { key: 'nosotros', value: '/nosotros' },
+  { key: 'historia', value: '/nuestra-historia' },
+  { key: 'practica', value: '/practica-espiritual' },
+  { key: 'experiencias', value: '/experiencias' },
+  { key: 'temazcal', value: '/experiencias/temazcal' },
+  { key: 'yoga', value: '/experiencias/yoga' },
+  { key: 'events', value: '/events' },
+  { key: 'pasadias', value: '/pasadias' },
+  { key: 'hospedaje', value: '/hospedaje' },
+  { key: 'alimentacion', value: '/alimentacion' },
+  { key: 'restaurante', value: '/restaurante-campestre' },
+  { key: 'parador', value: '/parador-el-elefante' },
+  { key: 'red', value: '/red-eco-aldeas' },
+  { key: 'blog', value: '/blog' },
+  { key: 'voluntariado', value: '/voluntariado' },
+  { key: 'contacto', value: '/contacto' },
+  { key: 'donar', value: '/donar' },
+  { key: 'tienda', value: '/tienda' },
+  { key: 'otra', value: 'otra' },
+];
+
+const field =
+  'w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all';
+const label = 'text-sm font-bold text-near-black';
+---
+
+<Layout title={t('solicitudCambios.pageTitle')} description={t('solicitudCambios.pageDescription')} noindex>
+
+  <main class="max-w-5xl mx-auto px-6 md:px-12 pt-6 md:pt-8 pb-12">
+    <PageBanner
+      title={t('solicitudCambios.heading')}
+      subtitle={t('solicitudCambios.subtitle')}
+      badge={t('solicitudCambios.badge')}
+      breadcrumb={[
+        { label: t('solicitudCambios.breadcrumbHome'), url: l('/') },
+        { label: t('solicitudCambios.breadcrumbThis'), url: l('/solicitud-cambios') },
+      ]}
+    />
+
+    <section class="mb-24 max-w-3xl mx-auto">
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-2 bg-rausch/10 text-rausch px-4 py-2 rounded-full text-sm font-bold mb-6">
+          <Sparkles size={16} />
+          <span>{t('solicitudCambios.badge')}</span>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+          {t('solicitudCambios.heading')}
+        </h2>
+        <p class="text-secondary-gray text-lg">{t('solicitudCambios.subtitle')}</p>
+      </div>
+
+      <form
+        id="change-request-form"
+        class="relative bg-lotus-white rounded-[24px] shadow-airbnb p-8 md:p-12 space-y-6"
+        novalidate
+        data-msg-sending={t('solicitudCambios.sending')}
+        data-msg-success={t('solicitudCambios.success')}
+        data-msg-error-prefix={t('solicitudCambios.errorPrefix')}
+        data-msg-generic-error={t('solicitudCambios.genericError')}
+        data-msg-connection-error={t('solicitudCambios.connectionError')}
+        data-msg-submit={t('solicitudCambios.submit')}
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label for="requester_name" class={label}>{t('solicitudCambios.requesterName')} *</label>
+            <input
+              type="text"
+              id="requester_name"
+              name="requester_name"
+              required
+              maxlength="120"
+              autocomplete="name"
+              placeholder={t('solicitudCambios.requesterNamePlaceholder')}
+              class={field}
+            />
+          </div>
+          <div class="space-y-2">
+            <label for="requester_contact" class={label}>{t('solicitudCambios.contact')} *</label>
+            <input
+              type="text"
+              id="requester_contact"
+              name="requester_contact"
+              required
+              maxlength="160"
+              placeholder={t('solicitudCambios.contactPlaceholder')}
+              class={field}
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="space-y-2">
+            <label for="area" class={label}>{t('solicitudCambios.area')}</label>
+            <select id="area" name="area" class={field}>
+              <option value="">{t('solicitudCambios.areaPlaceholder')}</option>
+              {AREAS.map((a) => <option value={a}>{t(`solicitudCambios.areas.${a}`)}</option>)}
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label for="type" class={label}>{t('solicitudCambios.type')} *</label>
+            <select id="type" name="type" required class={field}>
+              <option value="">{t('solicitudCambios.typePlaceholder')}</option>
+              {TYPES.map((v) => <option value={v}>{t(`solicitudCambios.types.${v}`)}</option>)}
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label for="priority" class={label}>{t('solicitudCambios.priority')} *</label>
+            <select id="priority" name="priority" required class={field}>
+              {PRIORITIES.map((p) => (
+                <option value={p.value} selected={p.value === 'media'}>{t(`solicitudCambios.${p.key}`)}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label for="page" class={label}>{t('solicitudCambios.page')} *</label>
+            <select id="page" name="page" required class={field}>
+              <option value="">{t('solicitudCambios.pagePlaceholder')}</option>
+              {PAGES.map((p) => <option value={p.value}>{t(`solicitudCambios.pages.${p.key}`)}</option>)}
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label for="page_detail" class={label}>{t('solicitudCambios.pageDetail')}</label>
+            <input
+              type="text"
+              id="page_detail"
+              name="page_detail"
+              maxlength="200"
+              placeholder={t('solicitudCambios.pageDetailPlaceholder')}
+              class={field}
+            />
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label for="title" class={label}>{t('solicitudCambios.formTitle')} *</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            required
+            maxlength="160"
+            placeholder={t('solicitudCambios.titlePlaceholder')}
+            class={field}
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label for="description" class={label}>{t('solicitudCambios.formDescription')} *</label>
+          <textarea
+            id="description"
+            name="description"
+            rows={6}
+            required
+            maxlength="4000"
+            placeholder={t('solicitudCambios.descriptionPlaceholder')}
+            class={`${field} resize-y`}
+          ></textarea>
+          <p class="text-xs text-secondary-gray">{t('solicitudCambios.descriptionHint')}</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label for="deadline" class={label}>{t('solicitudCambios.deadline')}</label>
+            <input type="date" id="deadline" name="deadline" class={field} />
+          </div>
+          <div class="space-y-2">
+            <label for="reference_url" class={label}>{t('solicitudCambios.reference')}</label>
+            <input
+              type="url"
+              id="reference_url"
+              name="reference_url"
+              maxlength="500"
+              placeholder={t('solicitudCambios.referencePlaceholder')}
+              class={field}
+            />
+          </div>
+        </div>
+
+        <!-- Honeypot anti-spam: invisible para personas, los bots lo rellenan. -->
+        <div class="absolute -left-[9999px] w-px h-px overflow-hidden" aria-hidden="true">
+          <label for="website">{t('solicitudCambios.honeypotLabel')}</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        </div>
+
+        <p class="text-xs text-secondary-gray">{t('solicitudCambios.requiredHint')}</p>
+        <p id="form-msg" class="hidden text-sm font-bold text-center" role="status" aria-live="polite"></p>
+
+        <button
+          type="submit"
+          id="submit-btn"
+          class="bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2"
+        >
+          <ClipboardList size={18} />
+          <span data-submit-label>{t('solicitudCambios.submit')}</span>
+          <Send size={18} />
+        </button>
+      </form>
+    </section>
+  </main>
+
+</Layout>
+
+<script>
+  function initChangeRequestForm(): void {
+    const form = document.getElementById('change-request-form') as HTMLFormElement | null;
+    const msg = document.getElementById('form-msg') as HTMLParagraphElement | null;
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+    if (!form || !msg || !btn || form.dataset.bound === 'true') return;
+    form.dataset.bound = 'true';
+
+    const labelEl = btn.querySelector<HTMLSpanElement>('[data-submit-label]');
+    const texts = {
+      sending: form.dataset.msgSending ?? '…',
+      success: form.dataset.msgSuccess ?? '',
+      errorPrefix: form.dataset.msgErrorPrefix ?? '',
+      genericError: form.dataset.msgGenericError ?? '',
+      connectionError: form.dataset.msgConnectionError ?? '',
+      submit: form.dataset.msgSubmit ?? '',
+    };
+    const setLabel = (text: string) => {
+      if (labelEl) labelEl.textContent = text;
+      else btn.textContent = text;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const payload: Record<string, string> = {};
+      data.forEach((value, key) => {
+        payload[key] = String(value);
+      });
+
+      // Si la página no está en la lista, se concatena el detalle libre.
+      const page = payload.page ?? '';
+      const detail = (payload.page_detail ?? '').trim();
+      payload.page = page === 'otra' ? detail : detail ? `${page} — ${detail}` : page;
+
+      btn.disabled = true;
+      setLabel(texts.sending);
+      msg.className = 'hidden';
+
+      try {
+        const res = await fetch('/api/change-requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const json = (await res.json()) as { success: boolean; message?: string; code?: string };
+
+        if (json.success) {
+          msg.textContent = json.code ? `${texts.success} (${json.code})` : texts.success;
+          msg.className = 'text-sm font-bold text-center text-forest';
+          form.reset();
+        } else {
+          msg.textContent = texts.errorPrefix + (json.message || texts.genericError);
+          msg.className = 'text-sm font-bold text-center text-red-500';
+        }
+      } catch {
+        msg.textContent = texts.connectionError;
+        msg.className = 'text-sm font-bold text-center text-red-500';
+      } finally {
+        btn.disabled = false;
+        setLabel(texts.submit);
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initChangeRequestForm);
+</script>
+
+<style>
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+  }
+</style>

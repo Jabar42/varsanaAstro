@@ -12,9 +12,11 @@ import { ClientRouter } from 'astro:transitions';
 export interface Props {
   title?: string;
   description?: string;
+  /** Rutas internas (no indexables): añade <meta name="robots" content="noindex,nofollow">. */
+  noindex?: boolean;
 }
 
-const { title = 'Varsana Eco Yoga Aldea', description = '' } = Astro.props;
+const { title = 'Varsana Eco Yoga Aldea', description = '', noindex = false } = Astro.props;
 
 // URL del WebSocket del agente de atención: var de runtime del Worker
 // (`PUBLIC_HERMES_WS_URL` en wrangler.jsonc), no constante de build. Sin var,
@@ -56,6 +58,7 @@ const alternateEn = new URL(localizePath('en', Astro.originPathname), site).href
     <link rel="canonical" href={canonicalUrl} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
     <link rel="preload" as="font" type="font/woff2" href="/fonts/proza-libre/proza-libre-latin-700-normal.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter/inter-latin-400-normal.woff2" crossorigin />
 
