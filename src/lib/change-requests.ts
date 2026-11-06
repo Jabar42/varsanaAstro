@@ -123,7 +123,11 @@ export async function hashIp(ip: string): Promise<string> {
     .join('');
 }
 
-/** Código legible del día: VC-YYMMDD-NN (NN = consecutivo diario). */
+/**
+ * Código legible del día: VC-YYMMDD-NN (NN = consecutivo diario).
+ * Se toma el último código DEL DÍA (por id, no por COUNT): borrar una
+ * solicitud no debe repetir un código ya usado (la columna es UNIQUE).
+ */
 export async function nextCode(db: D1Database): Promise<string> {
   const now = new Date();
   const yy = String(now.getUTCFullYear()).slice(2);
@@ -131,10 +135,12 @@ export async function nextCode(db: D1Database): Promise<string> {
   const dd = String(now.getUTCDate()).padStart(2, '0');
   const prefix = `VC-${yy}${mm}${dd}`;
   const row = await db
-    .prepare("SELECT COUNT(*) AS n FROM change_requests WHERE code LIKE ?")
+    .prepare('SELECT code FROM change_requests WHERE code LIKE ? ORDER BY id DESC LIMIT 1')
     .bind(`${prefix}-%`)
-    .first<{ n: number }>();
-  return `${prefix}-${String((row?.n ?? 0) + 1).padStart(2, '0')}`;
+    .first<{ code: string }>();
+  const last = row ? Number.parseInt(row.code.split('-')[2] ?? '0', 10) : 0;
+  const next = Number.isFinite(last) ? last + 1 : 1;
+  return `${prefix}-${String(next).padStart(2, '0')}`;
 }
 
 export async function countRecentByIp(db: D1Database, ipHash: string, minutes = 10): Promise<number> {
