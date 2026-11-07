@@ -33,6 +33,13 @@ const {
 
 const hasImages = !!images && images.length > 0;
 
+// Igual que TextSection: los textos con varios párrafos (separados por línea en
+// blanco) se renderizan como párrafos reales en vez de un bloque único.
+const paragraphs = String(description ?? '')
+  .split(/\n{2,}/)
+  .map((p) => p.trim())
+  .filter(Boolean);
+
 function getYouTubeEmbed(url: string): string {
   const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
   return match ? `https://www.youtube.com/embed/${match[1]}` : url;
@@ -152,9 +159,9 @@ const hasBackground = !!background && !fullBleed;
         {title}
       </h2>
 
-      <p class="text-lg md:text-xl text-secondary-gray leading-relaxed">
-        {description}
-      </p>
+      <div class="text-lg md:text-xl text-secondary-gray leading-relaxed space-y-4">
+        {paragraphs.map((p) => <p>{p}</p>)}
+      </div>
 
       {ctaLabel && (
         <a

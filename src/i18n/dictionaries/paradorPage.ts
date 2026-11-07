@@ -1,23 +1,24 @@
 /** Textos de la página /parador-el-elefante. */
 export const es = {
-  metaTitle: 'Parador el Elefante | Varsana Eco Yoga Aldea',
+  metaTitle: 'Centro Cultural y Parador El Elefante Feliz | Varsana Eco Yoga Aldea',
   metaDescription:
-    'Una parada para renovar el cuerpo y el espíritu. Bebidas artesanales, snacks vegetarianos y un espacio de descanso con vista a las montañas del Sumapaz.',
+    'Alimentación consciente y natural en la Vía Sumapaz, Granada, Cundinamarca. Centro Cultural y Parador El Elefante Feliz, una extensión de Varsana.',
   banner: {
-    title: 'Parador el Elefante',
+    title: 'Centro Cultural y Parador El Elefante Feliz',
     subtitle:
-      'Una parada para renovar el cuerpo y el espíritu. Bebidas artesanales, snacks vegetarianos y un espacio de descanso con vista a las montañas del Sumapaz.',
+      'Alimentación consciente y natural, un espacio saludable en la Vía Sumapaz, en conexión con la madre Tierra. • Más que comida, una experiencia saludable •',
     badge: 'Parador de montaña',
+    imageAlt: 'Centro Cultural y Parador El Elefante Feliz en la Vía Sumapaz',
   },
   breadcrumb: {
     home: 'Inicio',
     alimentacion: 'Alimentación',
-    parador: 'Parador el Elefante',
+    parador: 'El Elefante Feliz',
   },
-  sectionBadge: 'Parador el Elefante',
-  heading: 'El descanso del viajero consciente',
+  sectionBadge: 'El Elefante Feliz',
+  heading: 'Un espacio para alimentar, aprender y reconectar.',
   text:
-    'Un espacio acogedor para hacer una pausa, recargar energías y disfrutar de bebidas artesanales rodeado de naturaleza. El parador es el punto de encuentro perfecto antes o después de recorrer los senderos de Varsana.',
+    'En el corazón de la vía Sumapaz, en Granada, Cundinamarca, existe un lugar donde la alimentación consciente, la cultura y la naturaleza se encuentran.\n\nEl Elefante Feliz es una extensión de Varsana, con una historia que se remonta a 1983. Inspirado en una filosofía de respeto por la vida, servicio, conciencia y armonía con nuestro entorno, queremos compartir una forma diferente de relacionarnos con la alimentación y la naturaleza.\n\nSomos un espacio de encuentro que invita a disfrutar de la gastronomía lacto-vegetariana, descubrir productos artesanales, aprender saberes tradicionales y vivir experiencias que nos acercan a una vida más saludable y consciente.\n\nVen a compartir, aprender y disfrutar. Aquí siempre hay algo nuevo por descubrir.',
   services: [
     'Bebidas calientes y frías',
     'Snacks y pasabocas vegetarianos',
@@ -31,24 +32,25 @@ export const es = {
 };
 
 export const en = {
-  metaTitle: 'El Elefante Rest Stop | Varsana Eco Yoga Village',
+  metaTitle: 'El Elefante Feliz Cultural Centre & Rest Stop | Varsana Eco Yoga Village',
   metaDescription:
-    'A stop to renew body and spirit. Artisan drinks, vegetarian snacks and a resting space with views of the Sumapaz mountains.',
+    'Conscious, natural food on the Sumapaz road, Granada, Cundinamarca. El Elefante Feliz Cultural Centre & Rest Stop, an extension of Varsana.',
   banner: {
-    title: 'El Elefante Rest Stop',
+    title: 'El Elefante Feliz Cultural Centre & Rest Stop',
     subtitle:
-      'A stop to renew body and spirit. Artisan drinks, vegetarian snacks and a resting space with views of the Sumapaz mountains.',
+      'Conscious, natural food: a healthy space on the Sumapaz road, in connection with Mother Earth. • More than food, a healthy experience •',
     badge: 'Mountain rest stop',
+    imageAlt: 'El Elefante Feliz cultural centre on the Sumapaz road',
   },
   breadcrumb: {
     home: 'Home',
     alimentacion: 'Food',
-    parador: 'El Elefante Rest Stop',
+    parador: 'El Elefante Feliz',
   },
-  sectionBadge: 'El Elefante Rest Stop',
-  heading: 'A rest for the conscious traveler',
+  sectionBadge: 'El Elefante Feliz',
+  heading: 'A place to nourish, learn and reconnect.',
   text:
-    'A cozy space to pause, recharge and enjoy artisan drinks surrounded by nature. The rest stop is the perfect meeting point before or after walking the trails of Varsana.',
+    'In the heart of the Sumapaz road, in Granada, Cundinamarca, there is a place where conscious food, culture and nature meet.\n\nEl Elefante Feliz is an extension of Varsana, with a history that goes back to 1983. Inspired by a philosophy of respect for life, service, awareness and harmony with our surroundings, we want to share a different way of relating to food and nature.\n\nWe are a meeting place that invites you to enjoy lacto-vegetarian cuisine, discover handmade products, learn traditional knowledge and live experiences that bring us closer to a healthier, more conscious life.\n\nCome to share, learn and enjoy. There is always something new to discover here.',
   services: [
     'Hot and cold drinks',
     'Vegetarian snacks and bites',

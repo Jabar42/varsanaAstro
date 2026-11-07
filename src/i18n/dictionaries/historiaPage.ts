@@ -6,7 +6,7 @@ export const es = {
   bannerSubtitle: 'Conoce el origen y la esencia de Varsana Eco Yoga Aldea',
   breadcrumbHome: 'Inicio',
   breadcrumbHistoria: 'Nuestra Historia',
-  introText: 'En Varsana Ecoaldea converge la vida, es un lugar de dialogo e integracion de las emociones, es un proyecto enfocado en la espiritualidad y ecologia. Esta ubicado en las estribaciones del paramo de Sumapaz, a menos de dos horas de Bogota. En un terreno de siete hectareas, en Granada – Cundinamarca, es un area concebida como una aldea sostenible inspirada en la sabiduria ancestral y milenaria de la india, para recuperar la relacion con la naturaleza y la conciencia interior.',
+  introText: 'Varsana es una ecoaldea que nació en 1967, en las faldas del páramo de Sumapaz, en Granada, Cundinamarca, a menos de dos horas de Bogotá. Son siete hectáreas pensadas como una aldea sostenible, inspirada en la sabiduría ancestral de la India.\n\nNuestra práctica espiritual se basa en la práctica Vaisnava. Aquí estudiamos las escrituras védicas, meditamos y practicamos Hatha, Karma, Jnana y Bhakti Yoga, como parte de nuestro camino interior.\n\nCuidamos la madre tierra con las manos: construimos con materiales amigables con el medio ambiente, sembramos en nuestra Huerta productos 100% orgánicos, hacemos compost con nuestros desechos orgánicos y creamos arte consciente con elementos naturales y reciclados.\n\nSi algo de esto resuena contigo, hay un lugar aquí.',
   timeline: {
     heading: 'Varsana Ecoaldea en el tiempo',
     subtitle: 'Casi seis decadas de comunidad, espiritualidad y conexion con la naturaleza',
@@ -35,7 +35,7 @@ export const es = {
   },
   principios: {
     title: 'Un lugar guiado por principios',
-    description: 'En sus jardines se vive una filosofia de vida basada en la no violencia, el respeto por todos los seres vivos y el cuidado del planeta. Las huertas organicas, los sistemas de permacultura, el uso responsable del agua, los espacios de descanso y contemplacion reflejan un compromiso con la sostenibilidad y el bienestar.',
+    description: 'En Varsana nos inspiran cuatro principios: compasión (daya) a través de una dieta lacto-vegetariana, honestidad (satyam) evitando los juegos de azar, autocontrol (tapas) sin alcohol, tabaco, drogas, y pureza (saucam) en las relaciones responsables.\n\nNo son una condición que deben cumplir quienes nos visitan: las compartimos y esperamos que sean de inspiración y no de imposición.\n\nEstos principios son parte de nuestro diario vivir y se traducen en el trabajo en la huerta, el cuidado del entorno, el arte, el cocinar de manera consciente y los diferentes espacios creados para conectar con nuestro ser interior.',
   },
   inspiracion: {
     title: 'Inspiracion y practica',
@@ -58,7 +58,7 @@ export const en = {
   bannerSubtitle: 'Discover the origin and essence of Varsana Eco Yoga Village',
   breadcrumbHome: 'Home',
   breadcrumbHistoria: 'Our Story',
-  introText: 'Life converges at Varsana Eco-village: it is a place of dialogue and emotional integration, a project focused on spirituality and ecology. It is located in the foothills of the Sumapaz páramo, less than two hours from Bogotá. On seven hectares of land in Granada, Cundinamarca, it is an area conceived as a sustainable village inspired by the ancestral, millennia-old wisdom of India, created to restore our relationship with nature and inner awareness.',
+  introText: 'Varsana is an eco-village founded in 1967, on the slopes of the Sumapaz páramo in Granada, Cundinamarca, less than two hours from Bogotá. Seven hectares conceived as a sustainable village, inspired by the ancestral wisdom of India.\n\nOur spiritual practice is based on Vaishnavism. Here we study the Vedic scriptures, meditate and practise Hatha, Karma, Jnana and Bhakti Yoga as part of our inner path.\n\nWe care for Mother Earth with our hands: we build with environmentally friendly materials, we grow 100% organic produce in our garden, we compost our organic waste and we create conscious art from natural and recycled materials.\n\nIf any of this resonates with you, there is a place for you here.',
   timeline: {
     heading: 'Varsana Eco-village through time',
     subtitle: 'Almost six decades of community, spirituality and connection with nature',
@@ -87,7 +87,7 @@ export const en = {
   },
   principios: {
     title: 'A place guided by principles',
-    description: 'In its gardens, a philosophy of life based on non-violence, respect for all living beings and care for the planet is lived every day. The organic gardens, permaculture systems, responsible use of water, and spaces for rest and contemplation reflect a commitment to sustainability and well-being.',
+    description: 'In Varsana we are inspired by four principles: compassion (daya) through a lacto-vegetarian diet, honesty (satyam) by avoiding gambling, self-control (tapas) without alcohol, tobacco or drugs, and purity (saucam) in responsible relationships.\n\nThey are not a condition visitors must meet: we share them and hope they are an inspiration rather than an imposition.\n\nThese principles are part of our daily life and translate into work in the garden, care for our surroundings, art, conscious cooking and the different spaces created to connect with our inner being.',
   },
   inspiracion: {
     title: 'Inspiration and practice',
