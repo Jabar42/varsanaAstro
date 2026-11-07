@@ -1,81 +1,160 @@
 ---
-import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
-import { es as dict } from '@/src/i18n/dictionaries/paradorPage';
+/**
+ * Centro Cultural y Parador El Elefante Feliz.
+ *
+ * El contenido viene íntegro del documento del equipo (VC-261107-01): intro + 8
+ * secciones. Aquí solo se decide la presentación; el orden y los textos viven en
+ * el diccionario (paradorPage.ts), sin reinterpretarlos.
+ */
+import { getLocale, localizePath } from '@/src/i18n/utils';
+import { es as paradorEs, en as paradorEn, type Block } from '@/src/i18n/dictionaries/paradorPage';
 
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
-import { Coffee, MapPin, CheckCircle2 } from 'lucide-react';
+import { MapPin, Mail, Phone, Instagram, Facebook, CheckCircle2, Map } from 'lucide-react';
 
 const locale = getLocale(Astro);
-const t = useTranslations(locale);
 const l = (path: string) => localizePath(locale, path);
+const d = locale === 'en' ? paradorEn : paradorEs;
 
-// Se itera por índice para que t() resuelva cada servicio en el idioma actual.
-const servicios = dict.services.map((_, i) => t(`paradorPage.services.${i}`));
+const HERO_IMAGE = '/api/images/1794031599086-banner-parador-elefante-feliz.jpg';
+
+const contactIcon = (label: string) => {
+  const key = label.toLowerCase();
+  if (key.includes('whatsapp') || key.includes('tel')) return Phone;
+  if (key.includes('correo') || key.includes('mail')) return Mail;
+  if (key.includes('instagram')) return Instagram;
+  if (key.includes('facebook')) return Facebook;
+  if (key.includes('maps')) return Map;
+  return MapPin;
+};
+
+const blocksOf = (blocks: Block[]) => blocks;
 ---
 
-<Layout title={t('paradorPage.metaTitle')} description={t('paradorPage.metaDescription')}>
+<Layout title={d.metaTitle} description={d.metaDescription}>
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
     <PageBanner
-      title={t('paradorPage.banner.title')}
-      subtitle={t('paradorPage.banner.subtitle')}
-      badge={t('paradorPage.banner.badge')}
-      image="/api/images/1794031599086-banner-parador-elefante-feliz.jpg"
-      imageAlt={t('paradorPage.banner.imageAlt')}
+      title={d.banner.title}
+      subtitle={d.banner.subtitle}
+      badge={d.banner.badge}
+      image={HERO_IMAGE}
+      imageAlt={d.banner.imageAlt}
       breadcrumb={[
-        { label: t('paradorPage.breadcrumb.home'), url: l('/') },
-        { label: t('paradorPage.breadcrumb.alimentacion'), url: l('/alimentacion') },
-        { label: t('paradorPage.breadcrumb.parador'), url: l('/parador-el-elefante') },
+        { label: d.breadcrumb.home, url: l('/') },
+        { label: d.breadcrumb.alimentacion, url: l('/alimentacion') },
+        { label: d.breadcrumb.parador, url: l('/parador-el-elefante') },
       ]}
     />
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16 mb-24">
-      <div class="space-y-8">
-        <div>
-          <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold mb-6">
-            <Coffee size={16} />
-            <span>{t('paradorPage.sectionBadge')}</span>
+    <!-- Intro -->
+    <section class="max-w-4xl mx-auto mt-16 md:mt-20 space-y-6">
+      <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest text-near-black">
+        {d.intro.title}
+      </h2>
+      {d.intro.blocks.map((block) => (
+        <>
+          {block.type === 'p' && (
+            <p class="text-lg text-secondary-gray leading-relaxed">{block.text}</p>
+          )}
+          {block.type === 'lead' && (
+            <p class="text-xl md:text-2xl font-display text-near-black">{block.text}</p>
+          )}
+          {block.type === 'quote' && (
+            <p class="text-lg text-near-black border-l-4 border-rausch/40 pl-5 italic">{block.text}</p>
+          )}
+          {block.type === 'note' && (
+            <div class="rounded-2xl bg-sacred-sand/50 border border-sacred-sand p-6 space-y-2">
+              <p class="font-bold text-near-black">{block.title}</p>
+              <p class="text-secondary-gray leading-relaxed">{block.text}</p>
+            </div>
+          )}
+        </>
+      ))}
+    </section>
+
+    <!-- Secciones del documento del equipo -->
+    <div class="max-w-4xl mx-auto mt-20 space-y-20 pb-16">
+      {d.sections.map((section) => (
+        <section class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold">
+              {section.kicker}
+            </span>
+            <span class="h-px flex-1 bg-sacred-sand"></span>
           </div>
-          <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
-            {t('paradorPage.heading')}
+
+          <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold font-display tracking-tightest text-near-black leading-tight">
+            {section.title}
           </h2>
-          <p class="text-secondary-gray text-lg leading-relaxed">
-            {t('paradorPage.text')}
-          </p>
-        </div>
 
-        <ul class="space-y-3">
-          {servicios.map((s) => (
-            <li class="flex items-center gap-3 text-lg">
-              <CheckCircle2 className="text-saffron shrink-0" size={22} />
-              <span>{s}</span>
-            </li>
+          {blocksOf(section.blocks).map((block) => (
+            <>
+              {block.type === 'lead' && (
+                <p class="text-xl md:text-2xl font-display text-near-black">{block.text}</p>
+              )}
+              {block.type === 'p' && (
+                <p class="text-lg text-secondary-gray leading-relaxed">{block.text}</p>
+              )}
+              {block.type === 'h3' && (
+                <h3 class="text-xl md:text-2xl font-bold font-display text-near-black pt-4">
+                  {block.text}
+                </h3>
+              )}
+              {block.type === 'ul' && (
+                <ul class="space-y-2">
+                  {block.items.map((item) => (
+                    <li class="flex items-start gap-3 text-lg text-secondary-gray">
+                      <CheckCircle2 className="text-saffron shrink-0 mt-1" size={20} />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {block.type === 'note' && (
+                <div class="rounded-2xl bg-sacred-sand/50 border border-sacred-sand p-6 space-y-2">
+                  <p class="font-bold text-near-black">{block.title}</p>
+                  <p class="text-secondary-gray leading-relaxed">{block.text}</p>
+                </div>
+              )}
+              {block.type === 'quote' && (
+                <p class="text-lg md:text-xl text-near-black border-l-4 border-rausch/40 pl-5 italic">
+                  {block.text}
+                </p>
+              )}
+            </>
           ))}
-        </ul>
 
-        <div class="flex items-center gap-3 text-secondary-gray">
-          <MapPin size={18} className="text-saffron shrink-0" />
-          <span>{t('paradorPage.location')}</span>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <img
-          src="https://picsum.photos/seed/parador-1/600/800"
-          class="rounded-3xl shadow-md aspect-3/4 object-cover"
-          alt={t('paradorPage.image1Alt')}
-          referrerpolicy="no-referrer"
-          loading="lazy"
-        />
-        <img
-          src="https://picsum.photos/seed/parador-2/600/800"
-          class="rounded-3xl shadow-md mt-8 aspect-3/4 object-cover"
-          alt={t('paradorPage.image2Alt')}
-          referrerpolicy="no-referrer"
-          loading="lazy"
-        />
-      </div>
+          {section.contact && (
+            <div class="rounded-2xl bg-lotus-white shadow-airbnb p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-5">
+              {section.contact.map((row) => {
+                const Icon = contactIcon(row.label);
+                return (
+                  <div class="flex items-start gap-3">
+                    <Icon className="text-rausch shrink-0 mt-1" size={20} />
+                    <div>
+                      <p class="text-xs font-bold uppercase tracking-wide text-secondary-gray">{row.label}</p>
+                      {row.href ? (
+                        <a
+                          href={row.href}
+                          class="text-near-black hover:text-rausch transition-colors"
+                          target={row.href.startsWith('http') ? '_blank' : undefined}
+                          rel={row.href.startsWith('http') ? 'noopener' : undefined}
+                        >
+                          {row.value}
+                        </a>
+                      ) : (
+                        <p class="text-near-black">{row.value}</p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      ))}
     </div>
   </main>
 
