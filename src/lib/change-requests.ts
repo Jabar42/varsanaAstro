@@ -2,11 +2,9 @@
  * Solicitudes de cambio al sitio (formulario /solicitud-cambios).
  *
  * Reglas de dominio:
- * - El vocabulario de `type` y `priority` es CERRADO: es lo que hace que las
- *   solicitudes lleguen estructuradas y filtrables. Si se agrega un valor,
- *   debe agregarse en TYPES / PRIORITIES, en el diccionario
- *   `solicitudCambios.ts` y en el <select> de la página.
- * - El `area` es libre a propósito (las áreas internas cambian).
+ * - El formulario público solo pide una descripción libre; los campos
+ *   estructurados se rellenan con valores predeterminados para el equipo.
+ * - Se aceptan también los campos del formulario anterior durante transición.
  * - Todo texto se recorta y se limita; nada entra a D1 sin pasar por validate().
  */
 
@@ -201,19 +199,16 @@ export function isValidContact(value: string): boolean {
 export function validate(raw: Record<string, unknown>): ValidationResult {
   const name = clamp(str(raw.requester_name), LIMITS.requester_name);
   const contact = clamp(str(raw.requester_contact), LIMITS.requester_contact);
-  const title = clamp(str(raw.title), LIMITS.title);
   const description = clamp(str(raw.description), LIMITS.description);
-  const type = str(raw.type) as ChangeRequestType;
+  const title = clamp(str(raw.title) || description.split(/[.!?\n]/, 1)[0] || description, LIMITS.title);
+  const type = (str(raw.type) || 'otro') as ChangeRequestType;
   const priority = (str(raw.priority) || 'media') as ChangeRequestPriority;
   const deadline = clamp(str(raw.deadline), LIMITS.deadline);
   const referenceUrl = clamp(str(raw.reference_url), LIMITS.reference_url);
 
-  if (!name) return { ok: false, message: 'Falta el nombre del solicitante' };
-  if (!contact) return { ok: false, message: 'Falta un email o WhatsApp de contacto' };
-  if (!isValidContact(contact)) return { ok: false, message: 'El contacto no es un email ni un teléfono válido' };
+  if (contact && !isValidContact(contact)) return { ok: false, message: 'El contacto no es un email ni un teléfono válido' };
   if (!TYPES.includes(type)) return { ok: false, message: 'Tipo de cambio inválido' };
-  if (!title) return { ok: false, message: 'Falta el título de la solicitud' };
-  if (description.length < 10) return { ok: false, message: 'La descripción es demasiado corta' };
+  if (!description) return { ok: false, message: 'Escribe qué necesitas cambiar' };
   if (!PRIORITIES.includes(priority)) return { ok: false, message: 'Prioridad inválida' };
   if (deadline && !/^\d{4}-\d{2}-\d{2}$/.test(deadline)) return { ok: false, message: 'Fecha límite inválida' };
   if (referenceUrl && !/^https?:\/\//i.test(referenceUrl)) {
@@ -314,24 +309,6 @@ function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-const PRIORITY_LABEL: Record<ChangeRequestPriority, string> = {
-  baja: '🟢 Baja',
-  media: '🟡 Media',
-  alta: '🟠 Alta',
-  urgente: '🔴 Urgente',
-};
-
-const TYPE_LABEL: Record<ChangeRequestType, string> = {
-  contenido: 'Contenido nuevo',
-  correccion: 'Corrección de texto',
-  imagen: 'Imagen / foto',
-  precio_fechas: 'Precio o fechas',
-  evento: 'Evento o pasadía',
-  funcionalidad: 'Funcionalidad del sitio',
-  error: 'Error técnico',
-  otro: 'Otro',
-};
-
 /** Mensaje estructurado para el chat del equipo. */
 export function buildChangeRequestMessage(
   input: ChangeRequestInput,
@@ -346,16 +323,10 @@ export function buildChangeRequestMessage(
   const lines = [
     `🛠️ <b>Nueva solicitud de cambio</b> — <code>${escapeHtml(code)}</code>`,
     '',
-    `<b>Solicita:</b> ${escapeHtml(input.requester_name)}${input.area ? ` (${escapeHtml(input.area)})` : ''}`,
-    `<b>Contacto:</b> ${escapeHtml(input.requester_contact)}`,
-    `<b>Tipo:</b> ${TYPE_LABEL[input.type]}`,
-    `<b>Prioridad:</b> ${PRIORITY_LABEL[input.priority]}`,
-    `<b>Página:</b> ${input.page ? escapeHtml(input.page) : 'No especificada'}`,
-    input.deadline ? `<b>Fecha límite:</b> ${escapeHtml(input.deadline)}` : '',
+    input.requester_name ? `<b>Solicita:</b> ${escapeHtml(input.requester_name)}` : '',
+    input.requester_contact ? `<b>Contacto:</b> ${escapeHtml(input.requester_contact)}` : '',
     '',
-    `<b>${escapeHtml(input.title)}</b>`,
     escapeHtml(input.description.slice(0, 1200)),
-    input.reference_url ? `\n🔗 ${escapeHtml(input.reference_url)}` : '',
     ...(adjuntos.length ? ['', `<b>Adjuntos (${adjuntos.length}):</b>`, ...adjuntos] : []),
   ];
   return lines.filter((l) => l !== '').join('\n');
