@@ -45,6 +45,31 @@ const label = 'text-sm font-bold text-near-black';
         data-msg-submit={t('solicitudCambios.submit')}
       >
         <div class="space-y-2">
+          <label for="requester_name" class={label}>{t('solicitudCambios.requesterName')}</label>
+          <input
+            type="text"
+            id="requester_name"
+            name="requester_name"
+            maxlength="120"
+            autocomplete="name"
+            placeholder={t('solicitudCambios.requesterNamePlaceholder')}
+            class={field}
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label for="page" class={label}>{t('solicitudCambios.page')}</label>
+          <input
+            type="text"
+            id="page"
+            name="page"
+            maxlength="200"
+            placeholder={t('solicitudCambios.pagePlaceholder')}
+            class={field}
+          />
+        </div>
+
+        <div class="space-y-2">
           <label for="description" class={`${label} text-lg`}>{t('solicitudCambios.formDescription')}</label>
           <textarea
             id="description"

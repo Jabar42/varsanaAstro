@@ -324,7 +324,7 @@ export function buildChangeRequestMessage(
     `🛠️ <b>Nueva solicitud de cambio</b> — <code>${escapeHtml(code)}</code>`,
     '',
     input.requester_name ? `<b>Solicita:</b> ${escapeHtml(input.requester_name)}` : '',
-    input.requester_contact ? `<b>Contacto:</b> ${escapeHtml(input.requester_contact)}` : '',
+    input.page ? `<b>En el sitio:</b> ${escapeHtml(input.page)}` : '',
     '',
     escapeHtml(input.description.slice(0, 1200)),
     ...(adjuntos.length ? ['', `<b>Adjuntos (${adjuntos.length}):</b>`, ...adjuntos] : []),
