@@ -3,8 +3,8 @@ import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
 import Layout from '@/src/layouts/Layout.astro';
 import PageBanner from '@/src/components/PageBanner.astro';
 import {
-  Leaf, Info, CheckCircle2, Wallet, Flower2, MapPin, Monitor,
-  MessageCircle, GraduationCap,
+  Leaf, Info, CheckCircle2, Wallet, Monitor,
+  MessageCircle, GraduationCap, BookOpen,
 } from 'lucide-react';
 import { es as yogaEs, en as yogaEn } from '@/src/i18n/dictionaries/yogaPage';
 
@@ -15,15 +15,15 @@ const dict = locale === 'en' ? yogaEn : yogaEs;
 
 const BANNER_IMAGE = '/api/images/1786986725378-yoga-banner.webp';
 const IMG_CLASE = '/api/images/1786986726696-yoga-clase.webp';
-// Placeholders: reemplazar cuando lleguen las imágenes reales
-const IMG_INCLUYE = '';
-const IMG_INVERSION = '';
+// Fotos de las dos carpetas enviadas en VC-261126-04; origen en docs/change-requests/.
+const IMG_INCLUYE = '/api/images/yoga-inbound-practica-incluye-20261125.webp';
+const IMG_INVERSION = '/api/images/yoga-inbound-clase-grupal-20261125.webp';
 
 const WHATSAPP_URL = 'https://wa.me/573214538242';
 
 const introParagraphs = dict.introParagraphs;
-const locationIcons = [Leaf, MapPin];
-const locations = dict.locations.map((loc, i) => ({ ...loc, icon: locationIcons[i] ?? MapPin }));
+const locationIcons = [Leaf, BookOpen];
+const locations = dict.locations.map((loc, i) => ({ ...loc, icon: locationIcons[i] ?? Leaf }));
 const includes = dict.includes.items;
 const faqs = dict.faq.items;
 ---
@@ -32,16 +32,18 @@ const faqs = dict.faq.items;
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
     <!-- Page Banner -->
-    <PageBanner
-      title={t('yogaPage.bannerTitle')}
-      subtitle={t('yogaPage.bannerSubtitle')}
-      image={BANNER_IMAGE}
-      breadcrumb={[
-        { label: t('yogaPage.breadcrumbHome'), url: l('/') },
-        { label: t('yogaPage.breadcrumbExperiencias'), url: l('/experiencias') },
-        { label: t('yogaPage.breadcrumbYoga'), url: l('/experiencias/yoga') },
-      ]}
-    />
+    <div id="banner">
+      <PageBanner
+        title={t('yogaPage.bannerTitle')}
+        subtitle={t('yogaPage.bannerSubtitle')}
+        image={BANNER_IMAGE}
+        breadcrumb={[
+          { label: t('yogaPage.breadcrumbHome'), url: l('/') },
+          { label: t('yogaPage.breadcrumbExperiencias'), url: l('/experiencias') },
+          { label: t('yogaPage.breadcrumbYoga'), url: l('/experiencias/yoga') },
+        ]}
+      />
+    </div>
 
     <!-- CTA row -->
     <div class="flex flex-wrap justify-center gap-4 mt-8 mb-16">
@@ -49,14 +51,11 @@ const faqs = dict.faq.items;
         <MessageCircle size={22} />
         {t('yogaPage.ctaWhatsapp')}
       </a>
-      <a href={l('/experiencias/yoga-terapeutico')} class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
-        <GraduationCap size={22} />
-        {t('yogaPage.ctaCertification')}
-      </a>
+
     </div>
 
     <!-- Introducción -->
-    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <section id="yoga-en-varsana" class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <div class="space-y-5">
         <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">{t('yogaPage.introHeading')}</h2>
         {introParagraphs.map((p) => (
@@ -71,8 +70,8 @@ const faqs = dict.faq.items;
       />
     </section>
 
-    <!-- Modalidad y lugares -->
-    <section class="mb-24 bg-light-surface rounded-[32px] p-8 md:p-16">
+    <!-- Modalidad presencial -->
+    <section id="modalidad-presencial" class="mb-24 bg-light-surface rounded-[32px] p-8 md:p-16">
       <div class="max-w-3xl mx-auto mb-12 text-center">
         <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('yogaPage.modalidad.heading')}</h2>
         <p class="text-gray-500 text-lg">
@@ -82,25 +81,29 @@ const faqs = dict.faq.items;
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
           <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
-            <Monitor size={24} />
+            <!-- Lucide does not include a yoga-pose icon in the installed version. -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="4" r="2" />
+              <path d="M12 8v7M8 9l-3 5H2m14-5 3 5h3M8 13l4 2 4-2M12 15l-6 2c-3 1-3 4 0 4h12c3 0 3-3 0-4l-6-2M7 21l10-3M17 21 7 18" />
+            </svg>
           </div>
           <h3 class="text-xl font-bold tracking-tightest">{t('yogaPage.modalidad.cardTitle')}</h3>
           <p class="text-gray-500 text-sm leading-relaxed">{t('yogaPage.modalidad.cardText')}</p>
         </div>
         {locations.map((loc) => (
-          <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
+          <a href={l(loc.href)} class="block p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-rausch">
             <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
               <loc.icon size={24} />
             </div>
             <h3 class="text-xl font-bold tracking-tightest">{loc.name}</h3>
             <p class="text-gray-500 text-sm leading-relaxed">{loc.address}</p>
-          </div>
+          </a>
         ))}
       </div>
     </section>
 
     <!-- Qué incluye -->
-    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <section id="incluye" class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       <div class="space-y-8">
         <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('yogaPage.includes.heading')}</h2>
         <p class="text-gray-600 text-lg leading-relaxed">
@@ -115,38 +118,28 @@ const faqs = dict.faq.items;
           ))}
         </ul>
       </div>
-      {IMG_INCLUYE ? (
-        <img
-          src={IMG_INCLUYE}
-          alt={t('yogaPage.includes.imageAlt')}
-          class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
-          decoding="async"
-        />
-      ) : (
-        <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
-          <Flower2 size={48} />
-          <p class="font-medium">IMG_INCLUYE</p>
-          <p class="text-sm">{t('yogaPage.placeholderNote')}</p>
-        </div>
-      )}
+      <img
+        src={IMG_INCLUYE}
+        alt={t('yogaPage.includes.imageAlt')}
+        width="1200"
+        height="1200"
+        class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
+        loading="lazy"
+        decoding="async"
+      />
     </section>
 
     <!-- Inversión -->
-    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      {IMG_INVERSION ? (
-        <img
-          src={IMG_INVERSION}
-          alt={t('yogaPage.inversion.imageAlt')}
-          class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
-          decoding="async"
-        />
-      ) : (
-        <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
-          <Flower2 size={48} />
-          <p class="font-medium">IMG_INVERSION</p>
-          <p class="text-sm">{t('yogaPage.placeholderNote')}</p>
-        </div>
-      )}
+    <section id="inversion" class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <img
+        src={IMG_INVERSION}
+        alt={t('yogaPage.inversion.imageAlt')}
+        width="1200"
+        height="901"
+        class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
+        loading="lazy"
+        decoding="async"
+      />
       <div class="space-y-8">
         <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('yogaPage.inversion.heading')}</h2>
         <div class="space-y-4">
@@ -183,16 +176,26 @@ const faqs = dict.faq.items;
     </section>
 
     <!-- FAQ -->
-    <section class="max-w-3xl mx-auto mb-24 space-y-12">
+    <section id="preguntas-frecuentes" class="max-w-3xl mx-auto mb-24 space-y-12">
       <div class="text-center">
         <h2 class="text-3xl font-bold tracking-tightest mb-4">{t('yogaPage.faq.heading')}</h2>
         <p class="text-gray-500">{t('yogaPage.faq.subtitle')}</p>
       </div>
       <div class="space-y-6">
-        {faqs.map((q) => (
+        {faqs.map((q, i) => (
           <div class="flex items-start gap-4 border-b border-sacred-sand pb-6">
             <CheckCircle2 className="text-rausch shrink-0 mt-1" size={20} />
-            <span class="text-lg font-medium">{q}</span>
+            <div class="space-y-4">
+              <h3 class="text-lg font-medium">{q}</h3>
+              {i === 0 && (
+                <div class="space-y-4 text-gray-600 leading-relaxed">
+                  <p>{dict.faq.firstAnswer.text}</p>
+                  <ul class="list-disc pl-6 space-y-2">
+                    {dict.faq.firstAnswer.items.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>

@@ -1,0 +1,44 @@
+{
+  "request": "VC-261126-04",
+  "selection": "Una foto de práctica de yoga por carpeta, en el orden enviado. Sin marcas de agua superpuestas. Optimización WebP sin cambiar el contenido.",
+  "images": [
+    {
+      "folder": "incluye",
+      "id": "1NUcvgMm9p44tRVNFNFJmqNOqYFf_GeEK",
+      "name": "04F95D06-A8DF-4FFB-BEC4-099B205B2D8D.JPG",
+      "sheet_index": 1,
+      "output": "yoga-inbound-practica-incluye-20261125.webp",
+      "original_dimensions": [
+        1440,
+        1440
+      ],
+      "output_dimensions": [
+        1200,
+        1200
+      ],
+      "bytes": 126104,
+      "source_url": "https://drive.google.com/file/d/1NUcvgMm9p44tRVNFNFJmqNOqYFf_GeEK/view",
+      "public_url": "https://varsana-co.iaforchange.workers.dev/api/images/yoga-inbound-practica-incluye-20261125.webp",
+      "sha256": "f186525bf5ba01511fcf9af8c6aa0a2c0ca93cfa0a07a82d1bdbc01ad2418aea"
+    },
+    {
+      "folder": "inversion",
+      "id": "1p6Nh1mBX9Z0tYwhSEXf9_19qiHgAUZKY",
+      "name": "473347487_18445868038068690_6741929646741654018_n.jpg",
+      "sheet_index": 4,
+      "output": "yoga-inbound-clase-grupal-20261125.webp",
+      "original_dimensions": [
+        1440,
+        1081
+      ],
+      "output_dimensions": [
+        1200,
+        901
+      ],
+      "bytes": 109284,
+      "source_url": "https://drive.google.com/file/d/1p6Nh1mBX9Z0tYwhSEXf9_19qiHgAUZKY/view",
+      "public_url": "https://varsana-co.iaforchange.workers.dev/api/images/yoga-inbound-clase-grupal-20261125.webp",
+      "sha256": "ae4d45e33ab8ef385ebc465bdc9f9c1ab3c7911330c20c053b490ab0abdc8051"
+    }
+  ]
+}
