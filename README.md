@@ -1,6 +1,6 @@
 # Varsana Eco Yoga Aldea — sitio web
 
-Sitio de [Varsana](https://varsana.com) construido con **Astro 6** en modo SSR y desplegado en **Cloudflare Workers** (worker `varsana-co`), con **D1** (órdenes e inventario), **R2** (imágenes) y pagos con **Bold**.
+Sitio de [Varsana](https://varsana-co.iaforchange.workers.dev) construido con **Astro 6** en modo SSR y desplegado en **Cloudflare Workers** (worker `varsana-co`), con **D1** (órdenes e inventario), **R2** (imágenes) y pagos con **Bold**.
 
 ## Requisitos
 
@@ -20,7 +20,9 @@ npm run dev                 # http://localhost:3000
 | `npm run dev` | Servidor de desarrollo |
 | `npm run build` | Build de producción en `dist/` |
 | `npm run lint` | `astro check` (tipos) + lint de clases Tailwind |
-| `npm run deploy` | Build + `wrangler deploy` |
+| `npm run test:bold` | Regresiones de autenticación, estados y webhook Bold |
+
+**Publicación:** sólo commit + push a `main`; Cloudflare Git Integration despliega automáticamente. Nunca ejecutar `npm run deploy` ni `wrangler deploy` manual. Verificar después el Worker canónico.
 
 ## Idiomas
 
@@ -37,3 +39,4 @@ Las colecciones viven en `src/content/` (`events`, `pasadias`, `blog`, `hospedaj
 - `CLAUDE.md` — arquitectura, endpoints, variables de entorno
 - `DESIGN.md` — sistema de diseño (tokens en `src/styles/design-tokens.css`)
 - `docs/` — integración con Bold, emails transaccionales, decisiones
+- [`docs/bold-payments.md`](docs/bold-payments.md) — contrato vigente, cambio de cuenta y ambientes de Bold

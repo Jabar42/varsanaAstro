@@ -13,6 +13,7 @@
   },
   "vars": {
     "ENVIRONMENT": "staging",
+    "BOLD_ENVIRONMENT": "production",
     "PUBLIC_DONATION_URL": "https://donar.varsana.com",
     "PUBLIC_HERMES_WS_URL": "wss://varsana.syberloop.com"
   },

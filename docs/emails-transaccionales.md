@@ -5,7 +5,7 @@
 Cuando un pago es aprobado por Bold, el sistema dispara dos notificaciones:
 
 ```
-Pago aprobado (webhook o verify-payment)
+Pago aprobado (sólo webhook autenticado y validado contra D1)
   │
   ├─ 1. Telegram → admin (nueva venta)
   │     Formato: resumen con cliente, evento, fecha, total, orden
@@ -16,7 +16,9 @@ Pago aprobado (webhook o verify-payment)
         └─ Si falla → Telegram → admin (alerta de fallo)
 ```
 
-Ambos canales usan `await Promise.allSettled` antes del `return` del webhook para garantizar ejecucion completa en el entorno serverless de Vercel.
+La aplicación corre en Cloudflare Workers. Las notificaciones nacen únicamente de una transición de pago autorizada por el webhook; su entrega externa puede fallar y debe revisarse en logs. Ver [el contrato Bold vigente](./bold-payments.md).
+
+Los secretos se leen por llamada de `cloudflare:workers.env`, no de variables de compilación. Email exige clave y remitente runtime, mantiene idempotencia por orden y limita el intento a 10 s; Telegram limita cada intento a 5 s y mantiene el contrato sin excepciones. Los errores son genéricos y no imprimen respuestas del proveedor ni URLs con token. El timeout no garantiza que el proveedor no haya aceptado previamente el mensaje.
 
 ## Archivos
 
@@ -26,7 +28,7 @@ Ambos canales usan `await Promise.allSettled` antes del `return` del webhook par
 | `src/lib/telegram.ts` | `sendTelegramMessage`, `buildSaleMessage`, `buildEmailErrorMessage` |
 | `src/emails/OrderConfirmationEmail.tsx` | Plantilla React Email con Tailwind |
 | `src/pages/api/webhook/bold.ts` | Punto principal: resuelve titulo, dispara Telegram + email |
-| `src/pages/api/verify-payment.ts` | Fallback: mismo patron que el webhook |
+| `src/pages/api/verify-payment.ts` | Sólo lectura de estado D1; nunca dispara notificaciones |
 
 ## Variables de entorno
 
@@ -47,9 +49,9 @@ Si `TELEGRAM_BOT_TOKEN` o `TELEGRAM_CHAT_ID` no estan definidas, las notificacio
 
 1. Bold envia notificacion `SALE_APPROVED` al webhook
 2. El webhook verifica la firma HMAC-SHA256
-3. Busca la orden en Supabase por `bold_order_id`
-4. Verifica idempotencia: si ya esta `paid`, retorna 200 y termina
-5. Actualiza la orden a `status = 'paid'`
+3. Busca la orden en D1 por `data.metadata.reference` (`bold_order_id`)
+4. Compara importe/moneda y comprueba la transición permitida
+5. Actualiza condicionalmente a `status = 'paid'`; un duplicado no vuelve a notificar
 6. Resuelve el titulo del contenido desde Markdown via `getEntry('events' | 'pasadias', contentId)`
 7. Envia notificacion Telegram al admin: `sendTelegramMessage(buildSaleMessage(...))`
 8. Envia email al cliente: `sendOrderConfirmationEmail(orderData)`
@@ -58,7 +60,7 @@ Si `TELEGRAM_BOT_TOKEN` o `TELEGRAM_CHAT_ID` no estan definidas, las notificacio
 
 ### Verify-payment (`POST /api/verify-payment`)
 
-Mismo flujo que el webhook (pasos 6-9), llamado desde la pagina de exito (`/pago/exito`) como fallback si el webhook aun no ha llegado. La idempotencia de Resend (`idempotencyKey`) previene emails duplicados si ambos caminos se ejecutan.
+Consulta de sólo lectura por compatibilidad: recibe `boldOrderId` y devuelve el estado de D1. Ignora cualquier `boldTxStatus` del cliente. No confirma pagos, no libera inventario ni envía correos o avisos. La página de resultados consulta `order-status` mientras espera el webhook.
 
 ## Plantilla de email
 
@@ -112,7 +114,7 @@ Para grupos: agrega el bot al grupo, envia un mensaje, y usa `getUpdates` para o
 
 ## Verificacion de dominio en Resend
 
-Para enviar correos a destinatarios reales, el dominio `varsana.co` debe estar verificado en [resend.com/domains](https://resend.com/domains). Esto requiere agregar registros DNS (MX, TXT, DKIM).
+Para enviar correos a destinatarios reales, verificar en [resend.com/domains](https://resend.com/domains) el dominio del remitente autorizado configurado en `RESEND_FROM_EMAIL`. No asumir un dominio por el nombre del proyecto; la configuración DNS debe corresponder a un dominio controlado por Varsana.
 
 **Durante desarrollo**, usar el sandbox de Resend:
 
@@ -122,39 +124,39 @@ Para enviar correos a destinatarios reales, el dominio `varsana.co` debe estar v
 
 **En produccion**:
 
-- `from`: `'Varsana Eco Yoga Aldea <reservas@varsana.co>'`
-- Requiere dominio `varsana.co` verificado en Resend
+- `from`: valor autorizado de `RESEND_FROM_EMAIL`
+- Requiere verificar el dominio de ese remitente en Resend
 
 ## Idempotencia
 
 Proteccion contra emails duplicados en dos niveles:
 
-1. **Aplicacion**: El webhook verifica `existingOrder.status === 'paid'` antes de procesar — si ya se proceso, retorna 200 sin enviar emails
+1. **Aplicacion**: sólo quien consigue el UPDATE condicional `pending → paid` en D1 envía las notificaciones. La lectura previa no es la protección contra carreras.
 2. **Resend**: `idempotencyKey: 'order-confirmation/<boldOrderId>'` — si el mismo key se usa dos veces con el mismo payload, Resend devuelve la respuesta original sin reenviar
 
-Esto cubre el caso donde webhook y verify-payment intentan procesar la misma orden.
+Esto excluye duplicados y entregas concurrentes del webhook. `verify-payment` no participa en los envíos. No hay outbox durable: un crash después del UPDATE puede perder una notificación; no se debe prometer entrega exactamente una vez.
 
 ## Manejo de errores
 
 | Punto de fallo | Comportamiento |
 |----------------|---------------|
 | `getEntry()` falla (contenido eliminado) | Usa `content_id` con guiones reemplazados como titulo |
-| `render()` falla (bug en plantilla) | Lanza error, capturado por `Promise.allSettled`, alerta Telegram |
+| `render()` falla (bug en plantilla) | El webhook captura la excepción y trata de enviar una alerta Telegram |
 | `ticket_details` es null o malformado | `normalizeTickets` aplica fallback: `[{ label: 'Reserva', amount, quantity: 1 }]` |
-| `resend.emails.send()` falla | Lanza error → `Promise.allSettled` lo captura → alerta Telegram |
+| `resend.emails.send()` falla | El webhook captura la excepción y trata de enviar una alerta Telegram |
 | `TELEGRAM_BOT_TOKEN` no definido | `sendTelegramMessage` retorna sin hacer nada |
 | `fetch` a Telegram falla | Error loggeado, nunca lanza |
 
-En todos los casos, el webhook retorna 200 a Bold. Las notificaciones nunca bloquean la respuesta del webhook.
+Después de una transición válida, el handler espera los intentos de notificación antes de responder; la latencia externa puede demorar la respuesta. Los fallos capturados no revierten un pago confirmado. Fallos de firma, payload, correlación, importe/moneda o persistencia pueden devolver errores HTTP; no siempre responde 200.
 
 ## Probar en desarrollo
 
 1. **Previsualizar plantilla**: `npm run email:dev` → `http://localhost:3001`
 2. **Probar envio sandbox**:
-   - Cambiar `from` a `'Varsana <onboarding@resend.dev>'` en `src/lib/email.ts`
+   - Usar `RESEND_FROM_EMAIL='Varsana <onboarding@resend.dev>'` en el entorno de pruebas aislado
    - El destino debe ser el email del owner de la cuenta Resend
-   - Hacer una compra de prueba con Bold en modo test
-   - Verificar que el webhook recibe `SALE_APPROVED` y el email llega
+   - Hacer una compra simulada con llaves de pruebas y `BOLD_ENVIRONMENT=test`, sólo con Worker/D1/notificaciones aislados
+   - Usar **Probar el webhook** en el comprobante de Bold y verificar `SALE_APPROVED` y entrega del email
 3. **Probar sin Telegram**: comentar `TELEGRAM_BOT_TOKEN` en `.env`, verificar que el email se envia y Telegram simplemente se omite
 4. **Probar fallo de email**: usar un `from` invalido, verificar que llega `⚠️ Email de confirmacion fallo` por Telegram
-5. **Restaurar `from`** a `'Varsana Eco Yoga Aldea <reservas@varsana.co>'` antes de deploy a produccion
+5. Mantener el Worker canónico en `BOLD_ENVIRONMENT=production` con remitente y llaves autorizados; no modificar sus secretos para ejecutar pruebas.

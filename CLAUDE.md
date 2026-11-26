@@ -8,7 +8,7 @@ Guía para Claude Code en el repositorio varsanaAstro.
 npm install              # Instalar dependencias
 npm run dev              # Dev server (port 3000)
 npm run build            # Build producción
-npm run deploy           # Build + deploy a Cloudflare Workers
+npm run test:bold        # Regresiones de pagos Bold
 npm run lint             # astro check (tipos en .astro/.ts) + lint de clases Tailwind
 ```
 
@@ -52,7 +52,7 @@ Tres colecciones en `src/content/` (Zod + Markdoc):
 |----------|--------|---------|
 | `/api/checkout` | POST | Crea orden Bold + reserva stock en D1 |
 | `/api/webhook/bold` | POST | Recibe webhooks de Bold (HMAC-SHA256) |
-| `/api/verify-payment` | POST | Verifica pago via redirect de Bold |
+| `/api/verify-payment` | POST | Sólo consulta estado D1; ignora estado del redirect, nunca confirma pagos |
 | `/api/order-status` | GET | Consulta estado de orden en D1 |
 | `/api/events` | GET | Lista eventos futuros (usado por el agente) |
 | `/api/pasadias` | GET | Lista pasadías (usado por el agente) |
@@ -80,7 +80,8 @@ El sitio usa `@tp3/chat-widget` (v0.2.0, npm) conectado al plugin `hermes-webcha
 ```bash
 BOLD_API_KEY            # Bold public key (secret)
 BOLD_SECRET_KEY         # Bold secret key (secret, para HMAC)
-PUBLIC_SITE_URL         # URL canónica (varsana.co)
+BOLD_ENVIRONMENT        # production (default) o test explícito; no inferir de ENVIRONMENT
+PUBLIC_SITE_URL         # URL canónica (varsana-co.iaforchange.workers.dev)
 RESEND_API_KEY          # Resend para emails transaccionales (secret)
 RESEND_FROM_EMAIL       # Email remitente
 TELEGRAM_BOT_TOKEN      # Notificaciones admin (secret)
@@ -107,5 +108,9 @@ El agente Ananda (perfil Hermes `varsana-servicio-al-cliente`) consulta los endp
 ### Agregar un evento nuevo
 
 1. Crear `src/content/events/<slug>.mdoc` con frontmatter y contenido markdown
-2. `npm run build && npx wrangler deploy`
+2. Tests + lint + build; commit y push a `main` (Cloudflare Git Integration)
 3. El agente lo detecta automáticamente en la próxima consulta
+
+### Pagos y publicación
+
+Leer `docs/bold-payments.md`. Sólo el webhook autenticado con referencia/importe/moneda válidos muta estados de pago. El navegador sólo consulta. No existe una tercera llave de webhook. `test` sólo en un Worker con D1/notificaciones separados. **Nunca `npm run deploy` ni `wrangler deploy` manual**: publicar por commit + push `main` y verificar `https://varsana-co.iaforchange.workers.dev`.

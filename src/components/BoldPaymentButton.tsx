@@ -213,8 +213,8 @@ function openBoldCheckout(
     throw new Error(unavailableMessage);
   }
 
-  // Nota: payload.apiKey viene del servidor. Confirmar con Bold que es una
-  // clave pública antes de asumir que exponerla al cliente es seguro (Seg 1).
+  // Bold identifica el comercio con esta llave pública. La llave secreta
+  // permanece en el servidor y nunca forma parte de este payload.
   const checkout = new window.BoldCheckout({
     orderId: payload.orderId,
     currency: payload.currency,
@@ -318,33 +318,48 @@ export default function BoldPaymentButton({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ------------------------------------------------------------------
-  // 2. Handle payment result from redirection URL params
-  //    (when user lands back on this page after a redirect checkout)
+  // 2. El redirect solo identifica la orden; su estado NO prueba un pago.
+  //    Únicamente mostramos éxito tras consultar el estado confirmado en D1.
   // ------------------------------------------------------------------
-  // FIX Bug 3: dep array vacío — solo ejecutar al montar.
-  // onSuccess/onError se llaman a través de refs para no re-ejecutar este
-  // effect si el padre recrea los callbacks entre renders.
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const boldOrderId = params.get("bold-order-id");
-    const boldTxStatus = params.get("bold-tx-status");
+    const url = new URL(window.location.href);
+    const boldOrderId = url.searchParams.get("bold-order-id");
+    if (!boldOrderId) return;
 
-    if (boldOrderId && boldTxStatus) {
-      if (boldTxStatus === "approved") {
-        setPhase("success");
-        onSuccessRef.current?.(boldOrderId);
-      } else {
+    const controller = new AbortController();
+    let active = true;
+    setPhase("loading");
+    void fetch(`/api/order-status?bold-order-id=${encodeURIComponent(boldOrderId)}`, {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = (await response.json()) as { status?: string };
+        if (!active) return;
+        if (result.status === "paid") {
+          setPhase("success");
+          onSuccessRef.current?.(boldOrderId);
+        } else if (result.status === "failed" || result.status === "refunded") {
+          setPhase("error");
+          setErrorMsg(tx.paymentFailed);
+        } else {
+          // Mantener la referencia y el polling en la página de resultados.
+          const prefix = locale === "en" ? "/en" : "";
+          window.location.assign(`${prefix}/pago/exito?bold-order-id=${encodeURIComponent(boldOrderId)}`);
+        }
+      })
+      .catch((error: unknown) => {
+        if (!active) return;
         setPhase("error");
-        setErrorMsg(
-          boldTxStatus === "declined" || boldTxStatus === "failed"
-            ? tx.paymentFailed
-            : tx.statusNotify.replace("{status}", boldTxStatus),
-        );
-      }
+        setErrorMsg(tx.serverError);
+        onErrorRef.current?.(error instanceof Error ? error : new Error(tx.serverError));
+      });
 
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, "", cleanUrl);
-    }
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ------------------------------------------------------------------

@@ -7,6 +7,58 @@
  * porque es inyectado por el runtime de Workers via `context.locals.runtime.env`.
  */
 
+export interface PendingOrderReservation {
+  orderId: string;
+  contentType: string;
+  contentId: string;
+  eventDate: string;
+  stockMax: number;
+  quantity: number;
+  amount: number;
+  customerEmail: string;
+  customerName: string;
+  ticketDetails: string;
+}
+
+/**
+ * Una sola transacción D1: inicializar, reservar, crear orden y leer disponibilidad.
+ * INSERT de orden depende de changes() del UPDATE inmediatamente anterior:
+ * sin cupos no crea orden; si INSERT falla, D1 revierte también la reserva y el init.
+ * No separar estas sentencias ni intercalar escrituras entre UPDATE e INSERT.
+ */
+export async function createOrderAndReserve(
+  db: D1Database,
+  order: PendingOrderReservation,
+): Promise<{ success: boolean; available?: number; requested?: number }> {
+  const { contentType, contentId, eventDate, stockMax, quantity } = order;
+  const results = await db.batch([
+    db.prepare(
+      `INSERT INTO inventory (content_type, content_id, event_date, stock_max, stock_reserved)
+       SELECT ?, ?, ?, ?, 0 WHERE ? >= ?
+       ON CONFLICT(content_type, content_id, event_date) DO NOTHING`
+    ).bind(contentType, contentId, eventDate, stockMax, stockMax, quantity),
+    db.prepare(
+      `UPDATE inventory
+       SET stock_reserved = stock_reserved + ?, updated_at = datetime('now')
+       WHERE content_type = ? AND content_id = ? AND event_date = ?
+         AND (stock_max - stock_reserved) >= ?`
+    ).bind(quantity, contentType, contentId, eventDate, quantity),
+    db.prepare(
+      `INSERT INTO orders (bold_order_id, content_type, content_id, event_date,
+         customer_email, customer_name, amount, currency, status, quantity, ticket_details)
+       SELECT ?, ?, ?, ?, ?, ?, ?, 'COP', 'pending', ?, ? WHERE changes() = 1`
+    ).bind(order.orderId, contentType, contentId, eventDate, order.customerEmail,
+      order.customerName, order.amount, quantity, order.ticketDetails),
+    db.prepare(
+      `SELECT stock_max - stock_reserved AS available FROM inventory
+       WHERE content_type = ? AND content_id = ? AND event_date = ?`
+    ).bind(contentType, contentId, eventDate),
+  ]);
+  if (results[2].meta.changes === 1) return { success: true };
+  const stock = results[3].results[0] as { available: number } | undefined;
+  return { success: false, available: stock?.available ?? stockMax, requested: quantity };
+}
+
 export interface InventoryRow {
   max: number;
   reserved: number;

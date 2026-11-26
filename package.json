@@ -13,7 +13,8 @@
     "export:theme": "node scripts/export-theme.mjs",
     "lint": "astro check && bash scripts/lint-tailwind.sh",
     "email:dev": "email dev --dir src/emails --port 3001",
-    "typecheck": "astro check"
+    "typecheck": "astro check",
+    "test:bold": "tsx --test scripts/test-bold*.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",

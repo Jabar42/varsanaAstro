@@ -1,9 +1,26 @@
 ---
 name: payment-integration-bold
-description: "Complete reference for the Bold Payment Gateway integration in the Varsana website. Covers checkout flow, database schema, webhook handling, and inventory management."
+description: "Mantener pagos Bold de Varsana: webhook autenticado, D1, ambientes aislados y rotación segura."
 ---
 
-# Bold Payment Gateway Integration
+# Bold en Varsana — contrato vigente
+
+**Fuente de verdad:** [docs/bold-payments.md](../../docs/bold-payments.md). Leer antes de modificar pagos.
+
+- Runtime actual: Cloudflare Workers + D1, no Supabase/PostgreSQL.
+- Sólo un webhook autenticado puede confirmar pagos, tras comparar referencia, importe y moneda.
+- `verify-payment` y `order-status` son de sólo lectura. El redirect del navegador no acredita pagos.
+- Dos llaves de Botón de pagos: `BOLD_API_KEY` y `BOLD_SECRET_KEY`. No existe una tercera `BOLD_WEBHOOK_SECRET` en el contrato actual.
+- `BOLD_ENVIRONMENT=production` por defecto; `test` debe habilitarse explícitamente y sólo en un Worker con D1 y notificaciones aisladas. `ENVIRONMENT=staging` no activa pruebas.
+- En producción el webhook exige secreto no vacío; en pruebas usa HMAC con clave vacía según Bold. El checkout siempre requiere ambas llaves.
+- Pruebas: `npm run test:bold`, `npm run lint`, `npm run build`, `git diff --check`. Probar handlers reales con bindings simulados; no sustituye una compra y webhook reales de la cuenta nueva.
+- Nunca exponer secretos en Telegram, logs, argv ni git. Rotar el par conjuntamente.
+- Publicar sólo mediante commit y push `main`; verificar el Worker canónico `https://varsana-co.iaforchange.workers.dev`. Nunca deploy manual.
+
+<details>
+<summary>Archivo histórico de mayo de 2026 — NO ejecutar ni usar como contrato</summary>
+
+# Bold Payment Gateway Integration (histórico)
 
 This skill documents the full Bold Payment Gateway integration for the Varsana website. Use it when you need to understand, debug, or extend the payment system.
 
@@ -172,3 +189,5 @@ SELECT * FROM inventory WHERE content_type = 'event' AND content_id = 'event-id-
 **See also:** [`publish-new-event`](../publish-new-event/SKILL.md), [`publish-new-pasadia`](../publish-new-pasadia/SKILL.md)
 
 *This guide is based on the project's implementation as of May 2026. For updates, refer to the latest source files.*
+
+</details>

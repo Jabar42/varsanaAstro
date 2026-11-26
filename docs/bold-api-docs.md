@@ -1,3 +1,7 @@
+# Transcripción histórica de Bold — no es el contrato del proyecto
+
+Consultar [el contrato vigente de Varsana](./bold-payments.md) y la documentación oficial enlazada allí. Esta copia se conserva como referencia histórica; no define credenciales, ambientes ni autorización de pagos.
+
 ¿Cómo integrar tu Botón de pagos Bold manualmente?
 En esta guía se explica cómo añadir a tu sitio web un botón de pagos con el diseño de Bold que se ve como el siguiente:
 

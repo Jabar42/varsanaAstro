@@ -14,6 +14,8 @@ declare namespace Cloudflare {
     ASSETS: Fetcher;
     // Variables (wrangler.jsonc vars)
     ENVIRONMENT: string;
+    /** Explicit Bold mode; absent defaults to production (not ENVIRONMENT). */
+    BOLD_ENVIRONMENT?: 'production' | 'test';
     PUBLIC_DONATION_URL: string;
     /** URL wss:// del gateway del agente de chat (túnel cloudflared). */
     PUBLIC_HERMES_WS_URL: string;
