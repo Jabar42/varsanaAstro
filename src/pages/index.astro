@@ -57,7 +57,9 @@ const discoveryCards = [
   </section>
 
   <!-- Discovery: columnata de arcos -->
-  <section class="bg-sand-deep py-16 md:py-20 overflow-hidden">
+  <!-- Sin aire abajo: los arcos apoyan sobre la sección oscura y la cúpula
+       de esa sección sube por detrás de ellos (ver .colonnade). -->
+  <section class="bg-sand-deep pt-16 md:pt-20 overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
       <div class="mb-12 md:mb-16" data-reveal-group>
         <p class="eyebrow mb-4">{t('home.discoverSubtitle')}</p>
@@ -168,6 +170,8 @@ const discoveryCards = [
      Móvil: carrusel con snap. Escritorio: cinco arcos que ceden
      espacio al que recibe el cursor o el foco. */
   .colonnade {
+    position: relative;
+    z-index: 1;
     display: flex;
     gap: 0.875rem;
     margin-inline: -1.5rem;
