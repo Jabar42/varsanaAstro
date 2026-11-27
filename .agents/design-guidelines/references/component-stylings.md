@@ -15,7 +15,7 @@ Cards are the dominant content container. They sit on Lotus White with the Airbn
 
 Three variants share the same base: 16px radius (`--radius-DEFAULT`), bold Inter (600 weight), 12px vertical / 24px horizontal padding.
 
-- **Primary**: Rausch Red (`#52185B`) background, Lotus White text. For main CTAs, form submissions, checkout. Hover: `rausch-dark` (`#3A1241`).
+- **Primary** (`.btn`): Forest Dark (`#5A7A04`) background, white text. For main CTAs, form submissions, checkout. Hover and active: Forest Deep (`#435C03`). Focus: 2px Forest Dark outline with offset. Disabled: Light Surface background, Secondary Gray text, `not-allowed` cursor. Variants: `.btn-outline` (secondary, Forest Dark border and text), `.btn-light` (over photos and dark sections), `.btn-sm`, `.btn-lg`, `.btn-block`, `.btn-arrow`. Buttons are never purple.
 - **Secondary**: Forest Prana (`#779B05`) or Saffron Wisdom (`#F7941E`) background, Lotus White text. For supporting actions, filters, category tags. Hover: `forest-dark` or `saffron-light`.
 - **Ghost**: Transparent background, Near Black 2px border, Near Black text. For tertiary actions, "learn more" links, navigation items.
 

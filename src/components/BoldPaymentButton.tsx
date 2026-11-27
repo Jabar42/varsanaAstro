@@ -447,8 +447,8 @@ export default function BoldPaymentButton({
   if (phase === "success") {
     return (
       <div className="rounded-xl bg-forest/10 border border-forest/20 p-4 text-center">
-        <p className="text-forest font-semibold">{tx.successTitle}</p>
-        <p className="text-forest/80 text-sm mt-1">{tx.successMessage}</p>
+        <p className="text-forest-deep font-semibold">{tx.successTitle}</p>
+        <p className="text-forest-deep text-sm mt-1">{tx.successMessage}</p>
       </div>
     );
   }
@@ -467,7 +467,7 @@ export default function BoldPaymentButton({
             setPhase("idle");
             setErrorMsg(null);
           }}
-          className="w-full cursor-pointer rounded-xl bg-sacred-sand px-4 py-3 font-semibold text-near-black transition-colors hover:bg-sacred-sand/50"
+          className="btn btn-outline btn-block"
         >
           {tx.retry}
         </button>
@@ -527,7 +527,7 @@ export default function BoldPaymentButton({
             min={minDate}
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
+            className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-forest-dark focus:outline-none focus:ring-2 focus:ring-forest-dark/20"
           />
         </div>
       )}
@@ -545,7 +545,7 @@ export default function BoldPaymentButton({
                 : tx.selectQuantity}
             </p>
             {hasVolumeDiscount && quantity > 0 && (
-              <p className="text-xs text-forest mt-0.5">
+              <p className="text-xs text-forest-deep mt-0.5">
                 {discountApplied
                   ? tx.discountApplied
                   : tx.buyForDiscount.replace(
@@ -602,7 +602,7 @@ export default function BoldPaymentButton({
           onChange={(e) =>
             setCustomerData((prev) => ({ ...prev, email: e.target.value }))
           }
-          className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
+          className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-forest-dark focus:outline-none focus:ring-2 focus:ring-forest-dark/20"
         />
         <input
           type="text"
@@ -613,7 +613,7 @@ export default function BoldPaymentButton({
           onChange={(e) =>
             setCustomerData((prev) => ({ ...prev, fullName: e.target.value }))
           }
-          className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
+          className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-forest-dark focus:outline-none focus:ring-2 focus:ring-forest-dark/20"
         />
         <input
           type="tel"
@@ -623,13 +623,13 @@ export default function BoldPaymentButton({
           onChange={(e) =>
             setCustomerData((prev) => ({ ...prev, phone: e.target.value }))
           }
-          className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-rausch focus:outline-none"
+          className="w-full rounded-md border border-sacred-sand px-3 py-2 text-sm focus:border-forest-dark focus:outline-none focus:ring-2 focus:ring-forest-dark/20"
         />
         {errorMsg && <p className="text-xs text-rausch">{errorMsg}</p>}
         <button
           onClick={handleReserve}
           disabled={!canSubmit}
-          className="w-full cursor-pointer rounded-xl bg-rausch px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-rausch/90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn btn-block"
         >
           {!boldReady
             ? tx.loadingGateway

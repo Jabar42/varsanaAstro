@@ -8,7 +8,6 @@ import {
   Mail,
   MapPin,
   ChevronRight,
-  Sparkles,
   Clock,
   Car,
   Bus,
@@ -21,7 +20,7 @@ const l = (p: string) => localizePath(locale, p);
 
 <Layout title={t('contacto.title')} description={t('contacto.subtitle')}>
 
-  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8">
     <!-- Page Banner -->
     <PageBanner
       title={t('contacto.heading')}
@@ -34,21 +33,21 @@ const l = (p: string) => localizePath(locale, p);
     />
 
     <!-- Contact Info Cards -->
-    <section class="mt-8 mb-24 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <section class="pt-12 md:pt-16 grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
       <!-- WhatsApp -->
       <a
         href="https://wa.me/573214538242"
         target="_blank"
         rel="noopener noreferrer"
-        class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600 group"
+        class="channel group"
       >
-        <div class="w-14 h-14 bg-saffron/10 rounded-2xl flex items-center justify-center text-saffron mx-auto group-hover:bg-saffron group-hover:text-white transition-colors duration-300">
-          <MessageCircle size={28} />
+        <div class="channel__icon bg-forest/10 text-forest-deep">
+          <MessageCircle size={24} />
         </div>
-        <h3 class="text-xl font-bold font-display tracking-tightest">{t('contacto.whatsapp')}</h3>
-        <p class="text-secondary-gray text-sm">{t('contacto.whatsappDesc')}</p>
-        <p class="text-near-black font-bold font-display">+57 321 4538242</p>
-        <span class="inline-flex items-center gap-1 text-saffron text-sm font-bold group-hover:gap-2 transition-all">
+        <h3 class="text-xl font-bold font-display">{t('contacto.whatsapp')}</h3>
+        <p class="text-secondary-gray text-sm leading-relaxed">{t('contacto.whatsappDesc')}</p>
+        <p class="channel__value">+57 321 4538242</p>
+        <span class="channel__cta text-rausch">
           {t('contacto.whatsappCta')}
           <ChevronRight size={14} />
         </span>
@@ -57,39 +56,39 @@ const l = (p: string) => localizePath(locale, p);
       <!-- Email -->
       <a
         href="mailto:contacto@varsana.com"
-        class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600 group"
+        class="channel group"
       >
-        <div class="w-14 h-14 bg-rausch/10 rounded-2xl flex items-center justify-center text-rausch mx-auto group-hover:bg-rausch group-hover:text-white transition-colors duration-300">
-          <Mail size={28} />
+        <div class="channel__icon bg-forest/10 text-forest-deep">
+          <Mail size={24} />
         </div>
-        <h3 class="text-xl font-bold font-display tracking-tightest">{t('contacto.emailLabel')}</h3>
-        <p class="text-secondary-gray text-sm">{t('contacto.emailDesc')}</p>
-        <p class="text-near-black font-bold font-display">contacto@varsana.com</p>
-        <span class="inline-flex items-center gap-1 text-rausch text-sm font-bold group-hover:gap-2 transition-all">
+        <h3 class="text-xl font-bold font-display">{t('contacto.emailLabel')}</h3>
+        <p class="text-secondary-gray text-sm leading-relaxed">{t('contacto.emailDesc')}</p>
+        <p class="channel__value">contacto@varsana.com</p>
+        <span class="channel__cta text-rausch">
           {t('contacto.emailCta')}
           <ChevronRight size={14} />
         </span>
       </a>
 
       <!-- Location -->
-      <div class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600 group">
-        <div class="w-14 h-14 bg-forest/10 rounded-2xl flex items-center justify-center text-forest mx-auto group-hover:bg-forest group-hover:text-white transition-colors duration-300">
-          <MapPin size={28} />
+      <div class="channel channel--static">
+        <div class="channel__icon bg-saffron/10 text-saffron-deep">
+          <MapPin size={24} />
         </div>
-        <h3 class="text-xl font-bold font-display tracking-tightest">{t('contacto.visit')}</h3>
-        <p class="text-secondary-gray text-sm">{t('contacto.visitDesc')}</p>
-        <p class="text-near-black font-bold font-display leading-relaxed">
+        <h3 class="text-xl font-bold font-display">{t('contacto.visit')}</h3>
+        <p class="text-secondary-gray text-sm leading-relaxed">{t('contacto.visitDesc')}</p>
+        <p class="channel__value leading-relaxed">
           {t('contactoPage.addressLine1')}<br />{t('contactoPage.addressLine2')}
         </p>
-        <span class="inline-flex items-center gap-1 text-forest text-sm font-bold">
+        <span class="channel__cta text-forest-deep">
           {t('contacto.visitCountry')}
         </span>
       </div>
     </section>
 
     <!-- Google Maps -->
-    <section class="mb-24">
-      <div class="aspect-2/1 rounded-[32px] overflow-hidden shadow-airbnb">
+    <section class="pt-6 lg:pt-8">
+      <div class="aspect-4/3 md:aspect-21/9 rounded-3xl overflow-hidden ring-1 ring-near-black/5 bg-sand-deep">
         <iframe
           src="https://maps.google.com/maps?ll=4.5255247,-74.3549159&q=Varsana+Eco+Yoga+Village+Granada+Cundinamarca&z=15&output=embed"
           width="100%"
@@ -103,23 +102,21 @@ const l = (p: string) => localizePath(locale, p);
     </section>
 
     <!-- Contact Form -->
-    <section class="mb-24 max-w-2xl mx-auto">
-      <div class="text-center mb-10">
-        <div class="inline-flex items-center gap-2 bg-rausch/10 text-rausch px-4 py-2 rounded-full text-sm font-bold mb-6">
-          <Sparkles size={16} />
-          <span>{t('contacto.formBadge')}</span>
-        </div>
-        <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+    <section class="py-20 md:py-28 grid lg:grid-cols-12 gap-y-10 gap-x-12 items-start">
+      <div class="lg:col-span-5 lg:sticky lg:top-32" data-reveal-group>
+        <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+        <p class="eyebrow mb-4">{t('contacto.formBadge')}</p>
+        <h2 class="display-lg font-bold font-display text-near-black">
           {t('contacto.formHeading')}
         </h2>
-        <p class="text-secondary-gray text-lg">
+        <p class="mt-6 text-secondary-gray text-lg md:text-xl leading-relaxed max-w-md">
           {t('contacto.formSubtitle')}
         </p>
       </div>
 
       <form
         id="contact-form"
-        class="relative bg-lotus-white rounded-[24px] shadow-airbnb p-8 md:p-12 space-y-6"
+        class="lg:col-span-7 relative bg-lotus-white rounded-3xl ring-1 ring-near-black/5 p-6 md:p-10 lg:p-12 space-y-6"
         data-msg-sending={t('contactoPage.sending')}
         data-msg-success={t('contactoPage.success')}
         data-msg-error-prefix={t('contactoPage.errorPrefix')}
@@ -129,36 +126,36 @@ const l = (p: string) => localizePath(locale, p);
       >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="space-y-2">
-            <label for="nombre" class="text-sm font-bold text-near-black">{t('contacto.formName')}</label>
+            <label for="nombre" class="block text-sm font-semibold text-near-black">{t('contacto.formName')}</label>
             <input
               type="text"
               id="nombre"
               name="nombre"
               required
               placeholder={t('contacto.formNamePlaceholder')}
-              class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all"
+              class="w-full rounded-2xl border border-near-black/15 px-4 py-3.5 bg-sacred-sand/60 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-forest-dark focus:ring-2 focus:ring-forest/30 transition-colors duration-300"
             />
           </div>
           <div class="space-y-2">
-            <label for="email" class="text-sm font-bold text-near-black">{t('contacto.formEmail')}</label>
+            <label for="email" class="block text-sm font-semibold text-near-black">{t('contacto.formEmail')}</label>
             <input
               type="email"
               id="email"
               name="email"
               required
               placeholder={t('contacto.formEmailPlaceholder')}
-              class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all"
+              class="w-full rounded-2xl border border-near-black/15 px-4 py-3.5 bg-sacred-sand/60 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-forest-dark focus:ring-2 focus:ring-forest/30 transition-colors duration-300"
             />
           </div>
         </div>
         <div class="space-y-2">
-          <label for="mensaje" class="text-sm font-bold text-near-black">{t('contacto.formMessage')}</label>
+          <label for="mensaje" class="block text-sm font-semibold text-near-black">{t('contacto.formMessage')}</label>
           <textarea
             id="mensaje"
             name="mensaje"
             rows={5}
             placeholder={t('contacto.formMessagePlaceholder')}
-            class="w-full rounded-xl border border-sacred-sand px-4 py-3 bg-sacred-sand/50 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-rausch focus:ring-2 focus:ring-rausch/10 transition-all resize-y"
+            class="w-full rounded-2xl border border-near-black/15 px-4 py-3.5 bg-sacred-sand/60 text-near-black placeholder:text-secondary-gray focus:outline-none focus:border-forest-dark focus:ring-2 focus:ring-forest/30 transition-colors duration-300 resize-y"
           ></textarea>
         </div>
 
@@ -172,61 +169,60 @@ const l = (p: string) => localizePath(locale, p);
         <button
           type="submit"
           id="submit-btn"
-          class="bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2"
+          class="btn btn-lg w-full sm:w-auto"
         >
           <span data-submit-label>{t('contacto.formSubmit')}</span>
           <Send size={18} />
         </button>
       </form>
     </section>
+  </div>
 
-    <!-- How to Get Here -->
-    <section class="mb-16 bg-light-surface rounded-2xl p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-8">
-        <div>
-          <div class="inline-flex items-center gap-2 bg-forest/10 text-forest px-4 py-2 rounded-full text-sm font-bold mb-6">
-            <MapPin size={16} />
-            <span>{t('contacto.howToBadge')}</span>
-          </div>
-          <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+  <!-- How to Get Here -->
+  <section class="bg-sand-deep py-20 md:py-28 -mb-20">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-12 lg:gap-x-20 items-center">
+      <div class="lg:col-span-7">
+        <div data-reveal-group>
+          <p class="eyebrow mb-4">{t('contacto.howToBadge')}</p>
+          <h2 class="display-md font-bold font-display text-near-black">
             {t('contacto.howToHeading')}
           </h2>
-          <p class="text-secondary-gray text-lg">
+          <p class="mt-5 text-secondary-gray text-lg md:text-xl leading-relaxed max-w-xl">
             {t('contacto.howToSubtitle')}
           </p>
         </div>
 
-        <div class="space-y-6">
-          <div class="flex gap-4">
-            <div class="w-10 h-10 rounded-xl bg-forest/10 flex items-center justify-center text-forest shrink-0 mt-1">
+        <div class="mt-10 border-t border-near-black/10" data-reveal-group>
+          <div class="route">
+            <div class="route__icon bg-forest/10 text-forest-deep">
               <Car size={20} />
             </div>
             <div>
-              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">{t('contacto.byCar')}</h4>
+              <h4 class="font-bold text-lg font-display mb-1">{t('contacto.byCar')}</h4>
               <p class="text-secondary-gray leading-relaxed">
                 {t('contacto.byCarDesc')}
               </p>
             </div>
           </div>
 
-          <div class="flex gap-4">
-            <div class="w-10 h-10 rounded-xl bg-saffron/10 flex items-center justify-center text-saffron shrink-0 mt-1">
+          <div class="route">
+            <div class="route__icon bg-forest/10 text-forest-deep">
               <Bus size={20} />
             </div>
             <div>
-              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">{t('contacto.byBus')}</h4>
+              <h4 class="font-bold text-lg font-display mb-1">{t('contacto.byBus')}</h4>
               <p class="text-secondary-gray leading-relaxed">
                 {t('contacto.byBusDesc')}
               </p>
             </div>
           </div>
 
-          <div class="flex gap-4">
-            <div class="w-10 h-10 rounded-xl bg-rausch/10 flex items-center justify-center text-rausch shrink-0 mt-1">
+          <div class="route">
+            <div class="route__icon bg-saffron/10 text-saffron-deep">
               <Clock size={20} />
             </div>
             <div>
-              <h4 class="font-bold text-lg font-display tracking-tightest mb-1">{t('contacto.arrivalTime')}</h4>
+              <h4 class="font-bold text-lg font-display mb-1">{t('contacto.arrivalTime')}</h4>
               <p class="text-secondary-gray leading-relaxed">
                 {t('contacto.arrivalTimeDesc')}
               </p>
@@ -235,17 +231,19 @@ const l = (p: string) => localizePath(locale, p);
         </div>
       </div>
 
-      <div class="relative aspect-3/4 rounded-[32px] overflow-hidden shadow-airbnb">
-        <img
-          src="https://picsum.photos/seed/road-varsana/800/1067"
-          alt={t('contactoPage.roadImageAlt')}
-          class="w-full h-full object-cover"
-          referrerpolicy="no-referrer"
-          loading="lazy"
-        />
+      <div class="lg:col-span-5">
+        <div class="arch parallax shimmer aspect-4/5 w-full max-w-sm lg:max-w-none mx-auto" data-reveal="mask">
+          <img
+            src="https://picsum.photos/seed/road-varsana/800/1067"
+            alt={t('contactoPage.roadImageAlt')}
+            class="w-full h-full object-cover"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+          />
+        </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
 </Layout>
 
@@ -311,7 +309,93 @@ const l = (p: string) => localizePath(locale, p);
 </script>
 
 <style>
-  h1, h2, h3, h4 {
+  h3, h4 {
     letter-spacing: -0.02em;
+  }
+
+  /* Canales de contacto: misma familia que las tarjetas del sitio
+     (24px, borde sutil, hover que eleva). */
+  .channel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    height: 100%;
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    background: var(--color-lotus-white);
+    box-shadow: 0 0 0 1px rgb(34 34 34 / 0.06);
+    transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+  }
+
+  a.channel:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 0 1px rgb(34 34 34 / 0.06), 0 28px 48px -28px rgb(23 35 15 / 0.45);
+  }
+
+  .channel__icon,
+  .route__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    border-radius: var(--radius-DEFAULT);
+  }
+
+  .channel__icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .channel__value {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-near-black);
+    overflow-wrap: anywhere;
+  }
+
+  .channel__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .channel__cta :global(svg) {
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  a.channel:hover .channel__cta :global(svg) {
+    transform: translateX(4px);
+  }
+
+  /* Cómo llegar: filas separadas por una línea, no tarjetas. */
+  .route {
+    display: flex;
+    gap: 1.25rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid rgb(34 34 34 / 0.1);
+  }
+
+  .route__icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-top: 0.125rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .channel,
+    .channel__cta :global(svg) {
+      transition: none;
+    }
+    a.channel:hover,
+    a.channel:hover .channel__cta :global(svg) {
+      transform: none;
+    }
   }
 </style>

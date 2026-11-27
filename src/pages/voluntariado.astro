@@ -31,229 +31,274 @@ const faqs = dict.faq.items;
 
 <Layout title={t('voluntariadoPage.metaTitle')} description={t('voluntariadoPage.metaDescription')}>
 
-  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
+  <main>
     <!-- Page Banner -->
-    <PageBanner
-      title={t('voluntariadoPage.bannerTitle')}
-      subtitle={t('voluntariadoPage.bannerSubtitle')}
-      image={BANNER_IMAGE}
-      breadcrumb={[
-        { label: t('voluntariadoPage.breadcrumbHome'), url: l('/') },
-        { label: t('voluntariadoPage.breadcrumbVoluntariado'), url: l('/voluntariado') },
-      ]}
-    />
-
-    <!-- CTA row -->
-    <div class="flex flex-wrap justify-center gap-4 mt-8 mb-16">
-      <a href={l('/contacto')} class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg inline-block">
-        {t('voluntariadoPage.ctaInscribe')}
-      </a>
-      <a href="#actividades" class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-block">
-        {t('voluntariadoPage.ctaActivities')}
-      </a>
+    <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8">
+      <PageBanner
+        title={t('voluntariadoPage.bannerTitle')}
+        subtitle={t('voluntariadoPage.bannerSubtitle')}
+        image={BANNER_IMAGE}
+        breadcrumb={[
+          { label: t('voluntariadoPage.breadcrumbHome'), url: l('/') },
+          { label: t('voluntariadoPage.breadcrumbVoluntariado'), url: l('/voluntariado') },
+        ]}
+      />
     </div>
 
-    <!-- Introducción -->
-    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-5">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">{t('voluntariadoPage.introHeading')}</h2>
-        {introParagraphs.map((p) => (
-          <p class="text-gray-600 text-lg leading-relaxed">{p}</p>
-        ))}
+    <!-- Introducción + CTA -->
+    <section class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-16 items-center">
+        <div class="lg:col-span-7" data-reveal-group>
+          <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+          <h2 class="display-lg font-bold font-display text-near-black">{t('voluntariadoPage.introHeading')}</h2>
+          <div class="mt-8 space-y-5 max-w-2xl">
+            {introParagraphs.map((p) => (
+              <p class="lead-first text-secondary-gray text-lg leading-relaxed">{p}</p>
+            ))}
+          </div>
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a href={l('/contacto')} class="btn btn-lg btn-arrow">
+              {t('voluntariadoPage.ctaInscribe')}
+            </a>
+            <a href="#actividades" class="btn btn-lg btn-outline">
+              {t('voluntariadoPage.ctaActivities')}
+            </a>
+          </div>
+        </div>
+        <div class="lg:col-span-5">
+          <div class="arch parallax shimmer aspect-4/5 w-full max-w-md mx-auto lg:mr-0" data-reveal="mask">
+            <img
+              src={IMG_INTRO}
+              alt={t('voluntariadoPage.introImageAlt')}
+              class="w-full h-full object-cover"
+              decoding="async"
+            />
+          </div>
+        </div>
       </div>
-      <img
-        src={IMG_INTRO}
-        alt={t('voluntariadoPage.introImageAlt')}
-        class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
-        decoding="async"
-      />
     </section>
 
     <!-- Qué harás como voluntario -->
-    <section id="actividades" class="mb-24">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <img
-          src={IMG_ACTIVIDADES}
-          alt={t('voluntariadoPage.activities.imageAlt')}
-          class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover order-2 lg:order-1"
-          decoding="async"
-        />
-        <div class="order-1 lg:order-2">
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('voluntariadoPage.activities.heading')}</h2>
-          <p class="text-gray-500 text-lg mb-6">
+    <section id="actividades" class="bg-sand-deep py-20 md:py-28 scroll-mt-20">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-16 items-start">
+        <div class="lg:col-span-5 order-2 lg:order-1 lg:sticky lg:top-28" data-reveal>
+          <img
+            src={IMG_ACTIVIDADES}
+            alt={t('voluntariadoPage.activities.imageAlt')}
+            class="rounded-3xl w-full aspect-4/5 object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="lg:col-span-7 order-1 lg:order-2" data-reveal-group>
+          <h2 class="display-md font-bold font-display text-near-black">{t('voluntariadoPage.activities.heading')}</h2>
+          <p class="mt-5 text-secondary-gray text-lg leading-relaxed max-w-xl">
             {t('voluntariadoPage.activities.subtitle')}
           </p>
-          <ul class="space-y-4">
+          <ul class="mt-8 border-t border-near-black/10">
             {activities.map((item) => (
-              <li class="flex items-start gap-4 text-lg font-medium">
-                <CheckCircle2 className="text-rausch shrink-0 mt-1" size={24} />
+              <li class="flex items-start gap-4 py-4 border-b border-near-black/10 text-lg font-medium">
+                <CheckCircle2 className="text-forest-dark shrink-0 mt-0.5" size={24} />
                 <span>{item}</span>
               </li>
             ))}
           </ul>
-          <div class="pt-6">
-            <div class="flex items-start gap-4 p-6 bg-light-surface rounded-2xl border border-sacred-sand">
-              <Info className="text-rausch shrink-0 mt-1" size={24} />
-              <p class="text-sm text-gray-600">
-                {t('voluntariadoPage.activities.note')}
-              </p>
-            </div>
+          <div class="mt-8 flex items-start gap-4 p-6 bg-lotus-white rounded-2xl ring-1 ring-near-black/5">
+            <Info className="text-saffron-deep shrink-0 mt-0.5" size={22} />
+            <p class="text-sm text-secondary-gray leading-relaxed">
+              {t('voluntariadoPage.activities.note')}
+            </p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Incluye -->
-    <section class="mb-24 bg-light-surface rounded-[32px] p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-8">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('voluntariadoPage.includes.heading')}</h2>
-        <ul class="space-y-4">
-          {includes.map((item) => (
-            <li class="flex items-start gap-4 text-lg font-medium">
-              <CheckCircle2 className="text-rausch shrink-0 mt-1" size={24} />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div class="space-y-4">
-        <img
-          src={IMG_INCLUYE}
-          alt={t('voluntariadoPage.includes.imageAlt')}
-          class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
-          decoding="async"
-        />
+    <section class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-16 items-center">
+        <div class="lg:col-span-7" data-reveal-group>
+          <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+          <h2 class="display-md font-bold font-display text-near-black">{t('voluntariadoPage.includes.heading')}</h2>
+          <ul class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-10 border-t border-near-black/10">
+            {includes.map((item) => (
+              <li class="flex items-start gap-3 py-4 border-b border-near-black/10 font-medium">
+                <CheckCircle2 className="text-forest-dark shrink-0 mt-0.5" size={22} />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="lg:col-span-5" data-reveal>
+          <img
+            src={IMG_INCLUYE}
+            alt={t('voluntariadoPage.includes.imageAlt')}
+            class="rounded-3xl w-full aspect-square object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
       </div>
     </section>
 
     <!-- Aporte de manutención -->
-    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-8">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('voluntariadoPage.aporte.heading')}</h2>
-        <p class="text-gray-600 text-lg leading-relaxed">
-          {t('voluntariadoPage.aporte.text')}
-        </p>
-        <div class="space-y-4">
-          {priceTiers.map((tier) => (
-            <div class="flex items-center justify-between gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand shadow-airbnb">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch shrink-0">
-                  <Wallet size={24} />
-                </div>
-                <span class="font-bold text-lg">{tier.range}</span>
-              </div>
-              <div class="text-right">
-                <span class="block font-bold text-rausch text-lg">{tier.price}</span>
-                <span class="text-sm text-gray-500">{tier.per}</span>
-              </div>
-            </div>
-          ))}
+    <section class="bg-sand-deep py-20 md:py-28">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-16 items-center">
+        <div class="lg:col-span-5" data-reveal>
+          <img
+            src={IMG_APORTE}
+            alt={t('voluntariadoPage.aporte.imageAlt')}
+            class="rounded-3xl w-full aspect-4/5 object-cover"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
-        <div class="flex items-start gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand">
-          <Clock className="text-rausch shrink-0 mt-1" size={24} />
-          <div>
-            <p class="font-bold text-lg mb-1">{t('voluntariadoPage.aporte.checkinTitle')}</p>
-            <p class="text-gray-600">{t('voluntariadoPage.aporte.checkinText')}</p>
+        <div class="lg:col-span-7" data-reveal-group>
+          <h2 class="display-md font-bold font-display text-near-black">{t('voluntariadoPage.aporte.heading')}</h2>
+          <p class="mt-5 text-secondary-gray text-lg leading-relaxed max-w-xl">
+            {t('voluntariadoPage.aporte.text')}
+          </p>
+          <div class="mt-8 bg-lotus-white rounded-3xl ring-1 ring-near-black/5 divide-y divide-near-black/10">
+            {priceTiers.map((tier) => (
+              <div class="flex items-center justify-between gap-4 px-5 py-5 md:px-8">
+                <div class="flex items-center gap-4 min-w-0">
+                  <div class="w-11 h-11 bg-forest/10 rounded-xl flex items-center justify-center text-forest-deep shrink-0">
+                    <Wallet size={22} />
+                  </div>
+                  <span class="font-bold text-lg">{tier.range}</span>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="block font-display font-bold text-forest-deep text-xl md:text-2xl">{tier.price}</span>
+                  <span class="text-sm text-secondary-gray">{tier.per}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="mt-6 flex items-start gap-4 px-5 md:px-8">
+            <Clock className="text-saffron-deep shrink-0 mt-1" size={22} />
+            <div>
+              <p class="font-bold text-lg mb-1">{t('voluntariadoPage.aporte.checkinTitle')}</p>
+              <p class="text-secondary-gray">{t('voluntariadoPage.aporte.checkinText')}</p>
+            </div>
           </div>
         </div>
       </div>
-      <img
-        src={IMG_APORTE}
-        alt={t('voluntariadoPage.aporte.imageAlt')}
-        class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
-        decoding="async"
-      />
     </section>
 
     <!-- Recomendaciones -->
-    <section class="mb-24 bg-light-surface rounded-[32px] p-8 md:p-16">
-      <div class="max-w-3xl mx-auto mb-12 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('voluntariadoPage.recommendations.heading')}</h2>
-        <p class="text-gray-500 text-lg">
-          {t('voluntariadoPage.recommendations.subtitle')}
-        </p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 max-w-4xl mx-auto">
-        {recommendations.map((item) => (
-          <div class="flex items-start gap-3">
-            <Backpack className="text-saffron shrink-0 mt-1" size={22} />
-            <span class="text-lg font-medium">{item}</span>
+    <section class="on-dark py-20 md:py-28">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-y-6 gap-x-16 items-end" data-reveal-group>
+          <div class="lg:col-span-7">
+            <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+            <h2 class="display-lg font-bold font-display text-white">{t('voluntariadoPage.recommendations.heading')}</h2>
           </div>
-        ))}
+          <p class="lg:col-span-5 lg:pb-2 text-sacred-sand/75 text-lg leading-relaxed">
+            {t('voluntariadoPage.recommendations.subtitle')}
+          </p>
+        </div>
+        <div class="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 border-t border-sacred-sand/15" data-reveal>
+          {recommendations.map((item) => (
+            <div class="flex items-start gap-3 py-5 border-b border-sacred-sand/15">
+              <Backpack className="text-saffron shrink-0 mt-0.5" size={22} />
+              <span class="text-lg font-medium">{item}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
 
     <!-- Práctica y vida en Varsana -->
-    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-5">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">{t('voluntariadoPage.practica.heading')}</h2>
-        <p class="text-gray-600 text-lg leading-relaxed">
-          {t('voluntariadoPage.practica.paragraph1')}
-        </p>
-        <p class="text-gray-600 text-lg leading-relaxed">
-          {t('voluntariadoPage.practica.paragraph2')}
-        </p>
-        <div class="flex items-start gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand shadow-airbnb pt-4">
-          <Sun className="text-saffron shrink-0 mt-1" size={24} />
-          <p class="text-sm text-gray-600">
-            {t('voluntariadoPage.practica.note')}
+    <section class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-16 items-center">
+        <div class="lg:col-span-6" data-reveal-group>
+          <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+          <h2 class="display-md font-bold font-display text-near-black">{t('voluntariadoPage.practica.heading')}</h2>
+          <p class="mt-6 text-secondary-gray text-lg leading-relaxed">
+            {t('voluntariadoPage.practica.paragraph1')}
           </p>
+          <p class="mt-5 text-secondary-gray text-lg leading-relaxed">
+            {t('voluntariadoPage.practica.paragraph2')}
+          </p>
+          <div class="mt-8 flex items-start gap-4 p-6 bg-sand-deep rounded-2xl">
+            <Sun className="text-saffron-deep shrink-0 mt-0.5" size={22} />
+            <p class="text-sm text-secondary-gray leading-relaxed">
+              {t('voluntariadoPage.practica.note')}
+            </p>
+          </div>
+        </div>
+        <div class="lg:col-span-6" data-reveal>
+          <img
+            src={IMG_PRACTICA}
+            alt={t('voluntariadoPage.practica.imageAlt')}
+            class="rounded-3xl w-full aspect-4/3 lg:aspect-square object-cover"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </div>
-      <img
-        src={IMG_PRACTICA}
-        alt={t('voluntariadoPage.practica.imageAlt')}
-        class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
-        decoding="async"
-      />
     </section>
 
     <!-- FAQ -->
-    <section class="max-w-3xl mx-auto mb-24 space-y-12">
-      <div class="text-center">
-        <h2 class="text-3xl font-bold tracking-tightest mb-4">{t('voluntariadoPage.faq.heading')}</h2>
-        <p class="text-gray-500">{t('voluntariadoPage.faq.subtitle')}</p>
-      </div>
-      <div class="space-y-6">
-        {faqs.map((faq) => (
-          <div class="border-b border-sacred-sand pb-6">
-            <h4 class="font-bold text-lg mb-2">{faq.question}</h4>
-            <p class="text-gray-600">{faq.answer}</p>
-            {faq.bullets.length > 0 && (
-              <ul class="mt-4 space-y-3">
-                {faq.bullets.map((b) => (
-                  <li class="flex items-start gap-3">
-                    <CheckCircle2 className="text-rausch shrink-0 mt-1.5" size={18} />
-                    <span class="text-gray-600">{b}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
+    <section class="bg-sand-deep py-20 md:py-28">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-16 items-start">
+        <div class="lg:col-span-4 lg:sticky lg:top-28" data-reveal-group>
+          <h2 class="display-md font-bold font-display text-near-black">{t('voluntariadoPage.faq.heading')}</h2>
+          <p class="mt-4 text-secondary-gray text-lg">{t('voluntariadoPage.faq.subtitle')}</p>
+        </div>
+        <div class="lg:col-span-8 border-t border-near-black/10" data-reveal>
+          {faqs.map((faq) => (
+            <div class="border-b border-near-black/10 py-7">
+              <h4 class="font-display font-bold text-xl mb-3">{faq.question}</h4>
+              <p class="text-secondary-gray leading-relaxed">{faq.answer}</p>
+              {faq.bullets.length > 0 && (
+                <ul class="mt-4 space-y-3">
+                  {faq.bullets.map((b) => (
+                    <li class="flex items-start gap-3">
+                      <CheckCircle2 className="text-forest-dark shrink-0 mt-1" size={18} />
+                      <span class="text-secondary-gray leading-relaxed">{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </section>
 
-    <!-- CTA final -->
-    <section class="mb-24 bg-rausch rounded-[32px] p-10 md:p-16 text-center text-white shadow-airbnb">
-      <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('voluntariadoPage.final.heading')}</h2>
-      <p class="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-        {t('voluntariadoPage.final.text')}
-      </p>
-      <a href={l('/contacto')} class="inline-block bg-white text-rausch px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
-        {t('voluntariadoPage.final.cta')}
-      </a>
+    <!-- CTA final: cúpula que se apoya en el footer (-mb-20 anula su margen) -->
+    <section class="closing-dome pt-20 md:pt-28 -mb-20">
+      <div class="on-dark arch-wide mx-3 md:mx-12 lg:mx-20 px-6 pt-28 md:pt-36 pb-14 text-center">
+        <div class="max-w-2xl mx-auto" data-reveal-group>
+          <h2 class="display-lg font-bold font-display text-white">{t('voluntariadoPage.final.heading')}</h2>
+          <p class="mt-6 text-sacred-sand/75 text-lg md:text-xl leading-relaxed">
+            {t('voluntariadoPage.final.text')}
+          </p>
+          <a href={l('/contacto')} class="btn btn-lg btn-light btn-arrow mt-10">
+            {t('voluntariadoPage.final.cta')}
+          </a>
+        </div>
+        <!-- Nota legal -->
+        <p class="mt-14 pt-8 border-t border-sacred-sand/15 text-sm text-sacred-sand/75 max-w-2xl mx-auto">
+          {t('voluntariadoPage.legalNote')}
+        </p>
+      </div>
     </section>
-
-    <!-- Nota legal -->
-    <p class="text-sm text-gray-400 text-center max-w-2xl mx-auto">
-      {t('voluntariadoPage.legalNote')}
-    </p>
   </main>
 </Layout>
 
 <style>
-  h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
+  /* Entradilla: el primer párrafo abre con la tipografía de titulares */
+  .lead-first:first-child {
+    color: var(--color-near-black);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  /* La cúpula de cierre se funde con el footer */
+  .closing-dome {
+    background: linear-gradient(to bottom, transparent 60%, var(--color-forest-night) 60%);
   }
 </style>

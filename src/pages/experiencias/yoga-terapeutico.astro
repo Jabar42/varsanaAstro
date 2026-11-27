@@ -29,191 +29,229 @@ const faqs = dict.faq.items;
 
 <Layout title={t('yogaTerapeuticoPage.metaTitle')} description={t('yogaTerapeuticoPage.metaDescription')}>
 
-  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
+  <main>
     <!-- Page Banner -->
-    <PageBanner
-      title={t('yogaTerapeuticoPage.bannerTitle')}
-      subtitle={t('yogaTerapeuticoPage.bannerSubtitle')}
-      image={BANNER_IMAGE}
-      breadcrumb={[
-        { label: t('yogaTerapeuticoPage.breadcrumbHome'), url: l('/') },
-        { label: t('yogaTerapeuticoPage.breadcrumbExperiencias'), url: l('/experiencias') },
-        { label: t('yogaTerapeuticoPage.breadcrumbYoga'), url: l('/experiencias/yoga') },
-        { label: t('yogaTerapeuticoPage.breadcrumbCertificacion'), url: l('/experiencias/yoga-terapeutico') },
-      ]}
-    />
-
-    <!-- CTA row -->
-    <div class="flex flex-wrap justify-center gap-4 mt-8 mb-16">
-      <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg inline-flex items-center gap-2">
-        <MessageCircle size={22} />
-        {t('yogaTerapeuticoPage.ctaWhatsapp')}
-      </a>
-      <a href={l('/experiencias/yoga')} class="border border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
-        <BookOpen size={22} />
-        {t('yogaTerapeuticoPage.ctaBack')}
-      </a>
+    <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8">
+      <PageBanner
+        title={t('yogaTerapeuticoPage.bannerTitle')}
+        subtitle={t('yogaTerapeuticoPage.bannerSubtitle')}
+        image={BANNER_IMAGE}
+        breadcrumb={[
+          { label: t('yogaTerapeuticoPage.breadcrumbHome'), url: l('/') },
+          { label: t('yogaTerapeuticoPage.breadcrumbExperiencias'), url: l('/experiencias') },
+          { label: t('yogaTerapeuticoPage.breadcrumbYoga'), url: l('/experiencias/yoga') },
+          { label: t('yogaTerapeuticoPage.breadcrumbCertificacion'), url: l('/experiencias/yoga-terapeutico') },
+        ]}
+      />
     </div>
 
-    <!-- Introducción -->
-    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-5">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-6">{t('yogaTerapeuticoPage.introHeading')}</h2>
-        {introParagraphs.map((p) => (
-          <p class="text-gray-600 text-lg leading-relaxed">{p}</p>
-        ))}
-      </div>
-      {IMG_INTRO ? (
-        <img
-          src={IMG_INTRO}
-          alt={t('yogaTerapeuticoPage.introImageAlt')}
-          class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
-          decoding="async"
-        />
-      ) : (
-        <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
-          <Flower2 size={48} />
-          <p class="font-medium">IMG_INTRO</p>
-          <p class="text-sm">{t('yogaTerapeuticoPage.placeholderNote')}</p>
+    <!-- Introducción + CTA -->
+    <section class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-16 items-center">
+        <div class="lg:col-span-7" data-reveal-group>
+          <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+          <h2 class="display-lg font-bold font-display text-near-black">{t('yogaTerapeuticoPage.introHeading')}</h2>
+          <div class="mt-8 space-y-5 max-w-2xl">
+            {introParagraphs.map((p) => (
+              <p class="lead-first text-secondary-gray text-lg leading-relaxed">{p}</p>
+            ))}
+          </div>
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="btn btn-lg">
+              <MessageCircle size={20} />
+              {t('yogaTerapeuticoPage.ctaWhatsapp')}
+            </a>
+            <a href={l('/experiencias/yoga')} class="btn btn-lg btn-outline">
+              <BookOpen size={20} />
+              {t('yogaTerapeuticoPage.ctaBack')}
+            </a>
+          </div>
         </div>
-      )}
+        <div class="lg:col-span-5">
+          {IMG_INTRO ? (
+            <div class="arch parallax shimmer aspect-4/5 w-full max-w-md mx-auto lg:mr-0" data-reveal="mask">
+              <img
+                src={IMG_INTRO}
+                alt={t('yogaTerapeuticoPage.introImageAlt')}
+                class="w-full h-full object-cover"
+                decoding="async"
+              />
+            </div>
+          ) : (
+          <div class="arch aspect-4/5 max-w-md mx-auto lg:mr-0 pt-16 border border-dashed border-near-black/20 bg-sand-deep w-full flex flex-col items-center justify-center gap-3 px-6 text-center text-secondary-gray">
+            <Flower2 size={48} />
+            <p class="font-medium">IMG_INTRO</p>
+            <p class="text-sm">{t('yogaTerapeuticoPage.placeholderNote')}</p>
+          </div>
+          )}
+        </div>
+      </div>
     </section>
 
     <!-- Modalidad y lugar -->
-    <section class="mb-24 bg-light-surface rounded-[32px] p-8 md:p-16">
-      <div class="max-w-3xl mx-auto mb-12 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('yogaTerapeuticoPage.modalidad.heading')}</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
-          <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
-            <Monitor size={24} />
-          </div>
-          <h3 class="text-xl font-bold tracking-tightest">{t('yogaTerapeuticoPage.modalidad.cardTitle')}</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">{t('yogaTerapeuticoPage.modalidad.cardText')}</p>
+    <section class="bg-sand-deep py-20 md:py-28">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-16 items-start">
+        <div class="lg:col-span-4" data-reveal-group>
+          <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+          <h2 class="display-md font-bold font-display text-near-black">{t('yogaTerapeuticoPage.modalidad.heading')}</h2>
         </div>
-        <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover transition-shadow space-y-4">
-          <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
-            <MapPin size={24} />
+        <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6" data-reveal-group>
+          <div class="p-8 bg-lotus-white rounded-3xl ring-1 ring-near-black/5">
+            <div class="w-12 h-12 bg-forest/10 rounded-xl flex items-center justify-center text-forest-deep">
+              <Monitor size={24} />
+            </div>
+            <h3 class="mt-6 text-xl font-bold font-display">{t('yogaTerapeuticoPage.modalidad.cardTitle')}</h3>
+            <p class="mt-3 text-secondary-gray text-sm leading-relaxed">{t('yogaTerapeuticoPage.modalidad.cardText')}</p>
           </div>
-          <h3 class="text-xl font-bold tracking-tightest">{t('yogaTerapeuticoPage.modalidad.locationName')}</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">{t('yogaTerapeuticoPage.modalidad.locationAddress')}</p>
+          <div class="p-8 bg-lotus-white rounded-3xl ring-1 ring-near-black/5">
+            <div class="w-12 h-12 bg-forest/10 rounded-xl flex items-center justify-center text-forest-deep">
+              <MapPin size={24} />
+            </div>
+            <h3 class="mt-6 text-xl font-bold font-display">{t('yogaTerapeuticoPage.modalidad.locationName')}</h3>
+            <p class="mt-3 text-secondary-gray text-sm leading-relaxed">{t('yogaTerapeuticoPage.modalidad.locationAddress')}</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Qué incluye -->
-    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-8">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('yogaTerapeuticoPage.includes.heading')}</h2>
-        <ul class="space-y-4">
-          {includes.map((item) => (
-            <li class="flex items-start gap-4 text-lg font-medium">
-              <CheckCircle2 className="text-rausch shrink-0 mt-1" size={24} />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      {IMG_INCLUYE ? (
-        <img
-          src={IMG_INCLUYE}
-          alt={t('yogaTerapeuticoPage.includes.imageAlt')}
-          class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
-          decoding="async"
-        />
-      ) : (
-        <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
-          <Flower2 size={48} />
-          <p class="font-medium">IMG_INCLUYE</p>
-          <p class="text-sm">{t('yogaTerapeuticoPage.placeholderNote')}</p>
+    <section class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-16 items-center">
+        <div class="lg:col-span-7" data-reveal-group>
+          <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+          <h2 class="display-md font-bold font-display text-near-black">{t('yogaTerapeuticoPage.includes.heading')}</h2>
+          <ul class="mt-8 border-t border-near-black/10">
+            {includes.map((item) => (
+              <li class="flex items-start gap-4 py-4 border-b border-near-black/10 text-lg font-medium">
+                <CheckCircle2 className="text-forest-dark shrink-0 mt-0.5" size={24} />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-      )}
+        <div class="lg:col-span-5" data-reveal>
+          {IMG_INCLUYE ? (
+            <img
+              src={IMG_INCLUYE}
+              alt={t('yogaTerapeuticoPage.includes.imageAlt')}
+              class="rounded-3xl w-full aspect-square object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+          <div class="rounded-3xl aspect-square border border-dashed border-near-black/20 bg-sand-deep w-full flex flex-col items-center justify-center gap-3 px-6 text-center text-secondary-gray">
+            <Flower2 size={48} />
+            <p class="font-medium">IMG_INCLUYE</p>
+            <p class="text-sm">{t('yogaTerapeuticoPage.placeholderNote')}</p>
+          </div>
+          )}
+        </div>
+      </div>
     </section>
 
     <!-- Inversión -->
-    <section class="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      {IMG_INVERSION ? (
-        <img
-          src={IMG_INVERSION}
-          alt={t('yogaTerapeuticoPage.inversion.imageAlt')}
-          class="rounded-[32px] shadow-airbnb w-full aspect-square object-cover"
-          decoding="async"
-        />
-      ) : (
-        <div class="rounded-[32px] border-2 border-dashed border-gray-300 bg-light-surface w-full aspect-square flex flex-col items-center justify-center gap-3 text-gray-400">
-          <Flower2 size={48} />
-          <p class="font-medium">IMG_INVERSION</p>
-          <p class="text-sm">{t('yogaTerapeuticoPage.placeholderNote')}</p>
+    <section class="bg-sand-deep py-20 md:py-28">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-16 items-center">
+        <div class="lg:col-span-5" data-reveal>
+          {IMG_INVERSION ? (
+            <img
+              src={IMG_INVERSION}
+              alt={t('yogaTerapeuticoPage.inversion.imageAlt')}
+              class="rounded-3xl w-full aspect-4/3 lg:aspect-4/5 object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+          <div class="rounded-3xl aspect-4/3 lg:aspect-4/5 border border-dashed border-near-black/20 bg-sand-deep w-full flex flex-col items-center justify-center gap-3 px-6 text-center text-secondary-gray">
+            <Flower2 size={48} />
+            <p class="font-medium">IMG_INVERSION</p>
+            <p class="text-sm">{t('yogaTerapeuticoPage.placeholderNote')}</p>
+          </div>
+          )}
         </div>
-      )}
-      <div class="space-y-8">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest">{t('yogaTerapeuticoPage.inversion.heading')}</h2>
-        <div class="space-y-4">
-          {priceTiers.map((tier) => (
-            <div class="flex items-center justify-between gap-4 p-6 bg-lotus-white rounded-2xl border border-sacred-sand shadow-airbnb">
-              <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch shrink-0">
-                  <GraduationCap size={24} />
+        <div class="lg:col-span-7" data-reveal-group>
+          <h2 class="display-md font-bold font-display text-near-black">{t('yogaTerapeuticoPage.inversion.heading')}</h2>
+          <div class="mt-8 bg-lotus-white rounded-3xl ring-1 ring-near-black/5 divide-y divide-near-black/10">
+            {priceTiers.map((tier) => (
+              <div class="flex items-center justify-between gap-4 px-5 py-5 md:px-8">
+                <div class="flex items-center gap-4 min-w-0">
+                  <div class="w-11 h-11 bg-forest/10 rounded-xl flex items-center justify-center text-forest-deep shrink-0">
+                    <GraduationCap size={22} />
+                  </div>
+                  <span class="font-bold text-lg">{tier.title}</span>
                 </div>
-                <span class="font-bold text-lg">{tier.title}</span>
+                <div class="text-right shrink-0">
+                  <span class="block font-display font-bold text-forest-deep text-xl md:text-2xl">{tier.price}</span>
+                </div>
               </div>
-              <div class="text-right">
-                <span class="block font-bold text-rausch text-lg">{tier.price}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div class="flex items-start gap-4 p-6 bg-light-surface rounded-2xl border border-sacred-sand">
-          <Wallet className="text-rausch shrink-0 mt-1" size={24} />
-          <p class="text-sm text-gray-600">
-            {t('yogaTerapeuticoPage.inversion.note')}
-          </p>
+            ))}
+          </div>
+          <div class="mt-6 flex items-start gap-4 px-5 md:px-8">
+            <Wallet className="text-saffron-deep shrink-0 mt-0.5" size={22} />
+            <p class="text-sm text-secondary-gray leading-relaxed">
+              {t('yogaTerapeuticoPage.inversion.note')}
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- FAQ -->
-    <section class="max-w-3xl mx-auto mb-24 space-y-12">
-      <div class="text-center">
-        <h2 class="text-3xl font-bold tracking-tightest mb-4">{t('yogaTerapeuticoPage.faq.heading')}</h2>
-        <p class="text-gray-500">{t('yogaTerapeuticoPage.faq.subtitle')}</p>
-      </div>
-      <div class="space-y-6">
-        {faqs.map((q) => (
-          <div class="flex items-start gap-4 border-b border-sacred-sand pb-6">
-            <CheckCircle2 className="text-rausch shrink-0 mt-1" size={20} />
-            <span class="text-lg font-medium">{q}</span>
-          </div>
-        ))}
-      </div>
-      <div class="text-center">
-        <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-rausch font-bold hover:underline">
-          <MessageCircle size={20} />
-          {t('yogaTerapeuticoPage.faq.cta')}
-        </a>
+    <section class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-y-10 gap-x-16 items-start">
+        <div class="lg:col-span-4 lg:sticky lg:top-28" data-reveal-group>
+          <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+          <h2 class="display-md font-bold font-display text-near-black">{t('yogaTerapeuticoPage.faq.heading')}</h2>
+          <p class="mt-4 text-secondary-gray text-lg">{t('yogaTerapeuticoPage.faq.subtitle')}</p>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="mt-8 inline-flex items-center gap-2 text-rausch font-semibold underline underline-offset-4 decoration-rausch/30 hover:decoration-rausch transition-colors duration-300">
+            <MessageCircle size={20} />
+            {t('yogaTerapeuticoPage.faq.cta')}
+          </a>
+        </div>
+        <div class="lg:col-span-8 border-t border-near-black/10" data-reveal>
+          {faqs.map((q) => (
+            <div class="flex items-start gap-4 border-b border-near-black/10 py-6">
+              <CheckCircle2 className="text-forest-dark shrink-0 mt-1" size={20} />
+              <span class="text-lg md:text-xl font-display font-bold">{q}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
 
-    <!-- CTA final -->
-    <section class="mb-24 bg-rausch rounded-[32px] p-10 md:p-16 text-center text-white shadow-airbnb">
-      <div class="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-6">
-        <Users size={28} />
+    <!-- CTA final: cúpula que se apoya en el footer (-mb-20 anula su margen) -->
+    <section class="closing-dome -mb-20">
+      <div class="on-dark arch-wide mx-3 md:mx-12 lg:mx-20 px-6 pt-24 md:pt-28 pb-16 md:pb-20 text-center">
+        <div class="max-w-2xl mx-auto" data-reveal-group>
+          <div class="w-14 h-14 bg-saffron/10 text-saffron rounded-xl flex items-center justify-center mx-auto mb-8">
+            <Users size={28} />
+          </div>
+          <h2 class="display-lg font-bold font-display text-white">{t('yogaTerapeuticoPage.final.heading')}</h2>
+          <p class="mt-6 text-sacred-sand/75 text-lg md:text-xl leading-relaxed">
+            {t('yogaTerapeuticoPage.final.text')}
+          </p>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="btn btn-lg btn-light mt-10">
+            <MessageCircle size={20} />
+            {t('yogaTerapeuticoPage.final.cta')}
+          </a>
+        </div>
       </div>
-      <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('yogaTerapeuticoPage.final.heading')}</h2>
-      <p class="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
-        {t('yogaTerapeuticoPage.final.text')}
-      </p>
-      <a href={WHATSAPP_URL} target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-white text-rausch px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-transform shadow-lg">
-        <MessageCircle size={22} />
-        {t('yogaTerapeuticoPage.final.cta')}
-      </a>
     </section>
   </main>
 </Layout>
 
 <style>
-  h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
+  /* Entradilla: el primer párrafo abre con la tipografía de titulares */
+  .lead-first:first-child {
+    color: var(--color-near-black);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  /* La cúpula de cierre se funde con el footer */
+  .closing-dome {
+    background: linear-gradient(to bottom, transparent 60%, var(--color-forest-night) 60%);
   }
 </style>

@@ -69,9 +69,9 @@ const huertaCategories = dict.huerta.categories.map((_, i) => ({
 }));
 
 const accentStyles: Record<Accent, { iconBg: string; iconText: string; topBorder: string }> = {
-  saffron: { iconBg: 'bg-saffron/10', iconText: 'text-saffron', topBorder: 'border-t-saffron/20' },
-  rausch: { iconBg: 'bg-rausch/10', iconText: 'text-rausch', topBorder: 'border-t-rausch/20' },
-  forest: { iconBg: 'bg-forest/10', iconText: 'text-forest', topBorder: 'border-t-forest/20' },
+  saffron: { iconBg: 'bg-saffron/10', iconText: 'text-saffron-deep', topBorder: 'border-t-saffron/20' },
+  rausch: { iconBg: 'bg-forest/10', iconText: 'text-forest-deep', topBorder: 'border-t-forest/20' },
+  forest: { iconBg: 'bg-forest/10', iconText: 'text-forest-deep', topBorder: 'border-t-forest/20' },
 };
 ---
 
@@ -90,37 +90,39 @@ const accentStyles: Record<Accent, { iconBg: string; iconText: string; topBorder
     />
 
     <!-- CTA row -->
-    <div class="flex flex-wrap justify-center gap-4 mt-8 mb-24">
-      <a href={l('/restaurante-campestre')} class="bg-forest text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-forest-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2">
+    <div class="flex flex-wrap gap-4 mt-8">
+      <a href={l('/restaurante-campestre')} class="btn btn-lg btn-arrow">
         {t('alimentacionPage.cta.restaurante')}
-        <ChevronRight size={20} />
       </a>
-      <a href={l('/parador-el-elefante')} class="border-2 border-near-black px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors">
+      <a href={l('/parador-el-elefante')} class="btn btn-lg btn-outline">
         {t('alimentacionPage.cta.parador')}
       </a>
     </div>
 
     <!-- Philosophy Cards -->
-    <section id="filosofia" class="mb-24">
-      <div class="mb-14 text-center max-w-2xl mx-auto">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tightest mb-4">
-          {t('alimentacionPage.philosophy.heading')}
-        </h2>
-        <p class="text-secondary-gray text-lg leading-relaxed">
+    <section id="filosofia" class="py-20 md:py-28 scroll-mt-24">
+      <div class="grid lg:grid-cols-12 gap-y-6 gap-x-12 items-end mb-12 md:mb-16" data-reveal-group>
+        <div class="lg:col-span-7">
+          <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+          <h2 class="display-lg font-bold font-display text-near-black">
+            {t('alimentacionPage.philosophy.heading')}
+          </h2>
+        </div>
+        <p class="lg:col-span-5 lg:pb-2 text-lg md:text-xl text-secondary-gray leading-relaxed">
           {t('alimentacionPage.philosophy.subtitle')}
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8" data-reveal-group>
         {philosophyItems.map((item) => {
           const s = accentStyles[item.accent];
           return (
-            <div class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600 group">
-              <div class={`w-14 h-14 ${s.iconBg} rounded-2xl flex items-center justify-center ${s.iconText} mx-auto group-hover:scale-110 transition-transform duration-300`}>
+            <div class="bg-lotus-white rounded-3xl ring-1 ring-near-black/5 p-8 md:p-10 flex flex-col gap-5">
+              <div class={`w-14 h-14 ${s.iconBg} rounded-2xl flex items-center justify-center ${s.iconText}`}>
                 <item.icon size={28} />
               </div>
-              <h3 class="text-xl font-bold font-display tracking-tightest">{item.title}</h3>
-              <p class="text-secondary-gray text-sm leading-relaxed">{item.description}</p>
+              <h3 class="text-2xl font-bold font-display mt-4">{item.title}</h3>
+              <p class="text-secondary-gray leading-relaxed">{item.description}</p>
             </div>
           );
         })}
@@ -128,74 +130,81 @@ const accentStyles: Record<Accent, { iconBg: string; iconText: string; topBorder
     </section>
 
     <!-- La Huerta -->
-    <section id="huerta" class="mb-24 bg-light-surface rounded-2xl p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-8">
-        <div>
-          <div class="inline-flex items-center gap-2 bg-forest/10 text-forest px-4 py-2 rounded-full text-sm font-bold mb-6">
-            <Sprout size={16} />
-            <span>{t('alimentacionPage.huerta.badge')}</span>
-          </div>
-          <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
-            {t('alimentacionPage.huerta.heading')}
-          </h2>
-          <p class="text-secondary-gray text-lg leading-relaxed">
-            {t('alimentacionPage.huerta.text')}
-          </p>
-        </div>
-
-        <div class="space-y-4">
-          {huertaCategories.map((cat) => (
-            <div>
-              <h3 class="font-bold text-forest mb-2">{cat.title}</h3>
-              <p class="text-secondary-gray">{cat.items}</p>
+    <section id="huerta" class="bleed bg-sand-deep py-20 md:py-28 scroll-mt-24">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-x-12 gap-y-14 items-center">
+        <div class="lg:col-span-5 order-last lg:order-none">
+          <div class="relative pb-10 md:pb-14">
+            <div class="arch parallax aspect-4/5 w-[88%] mr-auto bg-forest-night" data-reveal="mask">
+              <img
+                src="https://picsum.photos/seed/huerta-veggies/600/800"
+                class="w-full h-full object-cover"
+                alt={t('alimentacionPage.huerta.veggiesImageAlt')}
+                referrerpolicy="no-referrer"
+                loading="lazy"
+              />
             </div>
-          ))}
+            <img
+              src="https://picsum.photos/seed/huerta-harvest/600/800"
+              class="absolute bottom-0 right-0 w-[42%] aspect-3/4 object-cover rounded-3xl ring-8 ring-sand-deep"
+              alt={t('alimentacionPage.huerta.harvestImageAlt')}
+              referrerpolicy="no-referrer"
+              loading="lazy"
+              data-reveal
+            />
+          </div>
         </div>
-      </div>
 
-      <div class="grid grid-cols-2 gap-4">
-        <img
-          src="https://picsum.photos/seed/huerta-veggies/600/800"
-          class="rounded-3xl shadow-md aspect-3/4 object-cover"
-          alt={t('alimentacionPage.huerta.veggiesImageAlt')}
-          referrerpolicy="no-referrer"
-          loading="lazy"
-        />
-        <img
-          src="https://picsum.photos/seed/huerta-harvest/600/800"
-          class="rounded-3xl shadow-md mt-8 aspect-3/4 object-cover"
-          alt={t('alimentacionPage.huerta.harvestImageAlt')}
-          referrerpolicy="no-referrer"
-          loading="lazy"
-        />
+        <div class="lg:col-span-6 lg:col-start-7 space-y-10" data-reveal-group>
+          <div>
+            <p class="eyebrow mb-5">{t('alimentacionPage.huerta.badge')}</p>
+            <h2 class="display-lg font-bold font-display mb-6">
+              {t('alimentacionPage.huerta.heading')}
+            </h2>
+            <p class="text-secondary-gray text-lg md:text-xl leading-relaxed">
+              {t('alimentacionPage.huerta.text')}
+            </p>
+          </div>
+
+          <div class="divide-y divide-near-black/10 border-y border-near-black/10">
+            {huertaCategories.map((cat) => (
+              <div class="py-5 grid sm:grid-cols-3 gap-x-6 gap-y-1">
+                <h3 class="font-bold font-display text-lg text-forest-deep">{cat.title}</h3>
+                <p class="sm:col-span-2 text-secondary-gray leading-relaxed">{cat.items}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Qué esperar (meals) -->
-    <section class="mb-24">
-      <div class="mb-14 text-center max-w-2xl mx-auto">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display tracking-tightest mb-4">
-          {t('alimentacionPage.meals.heading')}
-        </h2>
-        <p class="text-secondary-gray text-lg leading-relaxed">
-          {t('alimentacionPage.meals.subtitle')}
-        </p>
+    <section class="py-20 md:py-28 grid grid-cols-1 lg:grid-cols-12 gap-x-12 gap-y-12">
+      <div class="lg:col-span-5">
+        <div class="lg:sticky lg:top-32" data-reveal-group>
+          <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+          <h2 class="display-lg font-bold font-display mb-6">
+            {t('alimentacionPage.meals.heading')}
+          </h2>
+          <p class="text-secondary-gray text-lg md:text-xl leading-relaxed">
+            {t('alimentacionPage.meals.subtitle')}
+          </p>
+        </div>
       </div>
 
-      <div class="max-w-3xl mx-auto space-y-4">
+      <div class="lg:col-span-7 border-t border-near-black/10" data-reveal-group>
         {mealItems.map((meal) => {
           const s = accentStyles[meal.accent];
           return (
-            <div class={`bg-lotus-white rounded-[20px] shadow-airbnb p-6 flex gap-5 items-start hover:scale-[1.01] transition-all duration-600 group border-t-2 ${s.topBorder}`}>
-              <div class={`w-12 h-12 ${s.iconBg} rounded-xl flex items-center justify-center ${s.iconText} shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+            <div class="border-b border-near-black/10 py-7 flex gap-5 items-start">
+              <div class={`w-12 h-12 ${s.iconBg} rounded-2xl flex items-center justify-center ${s.iconText} shrink-0`}>
                 <meal.icon size={22} />
               </div>
-              <div class="space-y-1 grow">
-                <div class="flex items-center gap-3 flex-wrap">
-                  <h3 class="text-lg font-bold font-display tracking-tightest">{meal.name}</h3>
-                  <span class="text-xs text-secondary-gray bg-sacred-sand px-2.5 py-0.5 rounded-full font-medium">{meal.time}</span>
+              <div class="grow">
+                <div class="flex items-baseline justify-between gap-3 flex-wrap mb-2">
+                  <h3 class="text-xl md:text-2xl font-bold font-display">{meal.name}</h3>
+                  <span class="eyebrow">{meal.time}</span>
                 </div>
-                <p class="text-secondary-gray text-sm leading-relaxed">{meal.description}</p>
+                <p class="text-secondary-gray leading-relaxed">{meal.description}</p>
               </div>
             </div>
           );
@@ -204,44 +213,38 @@ const accentStyles: Record<Accent, { iconBg: string; iconText: string; topBorder
     </section>
 
     <!-- Principios -->
-    <section class="mb-24">
-      <div class="mb-14 text-center max-w-2xl mx-auto">
-        <div class="inline-flex items-center gap-2 bg-rausch/10 text-rausch px-4 py-2 rounded-full text-sm font-bold mb-6">
-          <Sparkles size={16} />
-          <span>{t('alimentacionPage.principles.badge')}</span>
-        </div>
-        <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest mb-4">
+    <section class="pb-20 md:pb-28">
+      <div class="mb-12 md:mb-16 max-w-3xl" data-reveal-group>
+        <p class="eyebrow mb-5">{t('alimentacionPage.principles.badge')}</p>
+        <h2 class="display-md font-bold font-display">
           {t('alimentacionPage.principles.heading')}
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10" data-reveal-group>
         {principleItems.map((p) => (
-          <div class="bg-lotus-white rounded-[24px] shadow-airbnb p-8 text-center space-y-4 hover:scale-[1.02] transition-all duration-600">
-            <div class="w-14 h-14 bg-forest/10 rounded-2xl flex items-center justify-center text-forest mx-auto">
-              <p.icon size={28} />
-            </div>
-            <h3 class="text-xl font-bold font-display tracking-tightest">{p.title}</h3>
-            <p class="text-secondary-gray text-sm leading-relaxed">{p.description}</p>
+          <div class="border-t-2 border-forest-dark pt-6 space-y-3">
+            <p.icon size={28} className="text-forest-deep" />
+            <h3 class="text-xl font-bold font-display pt-2">{p.title}</h3>
+            <p class="text-secondary-gray leading-relaxed">{p.description}</p>
           </div>
         ))}
       </div>
     </section>
 
     <!-- CTA -->
-    <section class="mb-16 bg-near-black rounded-2xl p-10 md:p-16 text-center space-y-6">
-      <h2 class="text-3xl md:text-4xl font-bold font-display tracking-tightest text-white">
+    <section class="on-dark arch-wide px-6 pt-24 pb-14 md:px-16 md:pt-32 md:pb-20 text-center" data-reveal-group>
+      <h2 class="display-lg font-bold font-display max-w-3xl mx-auto">
         {t('alimentacionPage.finalCta.heading')}
       </h2>
-      <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+      <p class="text-sacred-sand/75 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mt-6">
         {t('alimentacionPage.finalCta.text')}
       </p>
-      <div class="flex flex-wrap gap-4 justify-center pt-4">
-        <a href={l('/events')} class="bg-rausch text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-300 shadow-lg inline-flex items-center gap-2">
+      <div class="flex flex-wrap gap-4 justify-center mt-10">
+        <a href={l('/events')} class="btn btn-lg btn-light btn-arrow">
           {t('alimentacionPage.finalCta.events')}
-          <ChevronRight size={20} />
         </a>
-        <a href={l('/voluntariado')} class="border-2 border-white/20 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:border-white/40 hover:bg-white/5 transition-all">
+        <a href={l('/voluntariado')} class="btn btn-lg btn-outline border-sacred-sand/40 text-sacred-sand">
           {t('alimentacionPage.finalCta.volunteer')}
         </a>
       </div>
@@ -250,8 +253,3 @@ const accentStyles: Record<Accent, { iconBg: string; iconText: string; topBorder
 
 </Layout>
 
-<style>
-  h1, h2, h3 {
-    letter-spacing: -0.02em;
-  }
-</style>

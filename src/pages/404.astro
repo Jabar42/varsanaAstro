@@ -5,7 +5,6 @@ import Layout from '@/src/layouts/Layout.astro';
 import { useTranslations, getLocale, localizePath } from '@/src/i18n/utils';
 import {
   Compass,
-  ArrowRight,
   Calendar,
   Leaf,
   MessageCircle,
@@ -18,84 +17,93 @@ const l = (path: string) => localizePath(locale, path);
 
 <Layout title={t('notFound.title')} description={t('notFound.text')}>
 
-  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12 lg:py-20">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-12 md:pt-20">
 
-    <section class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-16 items-center min-h-[60vh]">
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-y-12 gap-x-12 lg:gap-x-20 items-center">
 
-      <div class="space-y-8 max-w-xl">
-        <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold">
-          <Compass size={16} />
-          <span>{t('notFoundPage.badge')}</span>
+      <!-- El umbral vacío: el 404 dentro del arco -->
+      <div class="lg:col-span-5 lg:order-2">
+        <div class="threshold arch on-dark">
+          <Compass size={56} className="text-saffron" strokeWidth={1} />
+          <p class="threshold__number font-display font-bold select-none">
+            404
+          </p>
         </div>
+      </div>
 
-        <p class="text-[8rem] md:text-[10rem] lg:text-[12rem] font-display font-bold leading-none tracking-tightest text-rausch/15 select-none">
-          404
-        </p>
+      <div class="lg:col-span-7 lg:order-1">
+        <p class="eyebrow mb-5">{t('notFoundPage.badge')}</p>
 
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-display tracking-tightest leading-tight text-near-black">
+        <h1 class="display-xl font-bold font-display text-near-black">
           {t('notFound.heading')}
         </h1>
 
-        <p class="text-secondary-gray text-lg md:text-xl leading-relaxed max-w-lg">
+        <p class="mt-6 text-secondary-gray text-lg md:text-xl leading-relaxed max-w-lg">
           {t('notFound.text')}
         </p>
 
-        <a
-          href={l('/')}
-          class="inline-flex items-center gap-3 bg-rausch text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-rausch-dark hover:scale-105 transition-all duration-600 ease-in-out shadow-lg min-h-14"
-        >
+        <a href={l('/')} class="btn btn-lg btn-arrow mt-10">
           {t('notFound.cta')}
-          <ArrowRight size={20} />
         </a>
       </div>
 
-      <div class="hidden lg:flex items-center justify-center relative w-72 h-72">
-        <div class="absolute w-64 h-64 rounded-full bg-saffron/10 blur-3xl"></div>
-        <Compass size={180} className="text-saffron/40 relative z-10" strokeWidth={0.8} />
-      </div>
-
     </section>
 
-    <section class="mt-16 lg:mt-8 max-w-3xl">
-      <div class="bg-lotus-white rounded-[32px] shadow-airbnb p-8 md:p-12 space-y-6">
-        <h2 class="text-xl md:text-2xl font-bold font-display tracking-tightest text-near-black">
-          {t('notFound.suggestTitle')}
-        </h2>
+    <section class="mt-20 md:mt-28 pt-10 border-t border-near-black/10 grid lg:grid-cols-12 gap-y-6 gap-x-12 items-center">
+      <h2 class="lg:col-span-5 text-xl md:text-2xl font-bold font-display text-near-black">
+        {t('notFound.suggestTitle')}
+      </h2>
 
-        <div class="flex flex-wrap gap-4">
-          <a
-            href={l('/events')}
-            class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-sacred-sand hover:bg-saffron/10 text-near-black font-semibold transition-all duration-600 ease-in-out hover:scale-105 min-h-13"
-          >
-            <Calendar size={20} className="text-saffron" />
-            {t('nav.events')}
-          </a>
+      <div class="lg:col-span-7 flex flex-wrap gap-3 lg:justify-end">
+        <a href={l('/events')} class="btn btn-outline">
+          <Calendar size={18} />
+          {t('nav.events')}
+        </a>
 
-          <a
-            href={l('/pasadias')}
-            class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-sacred-sand hover:bg-forest/10 text-near-black font-semibold transition-all duration-600 ease-in-out hover:scale-105 min-h-13"
-          >
-            <Leaf size={20} className="text-forest" />
-            {t('nav.pasadias')}
-          </a>
+        <a href={l('/pasadias')} class="btn btn-outline">
+          <Leaf size={18} />
+          {t('nav.pasadias')}
+        </a>
 
-          <a
-            href={l('/contacto')}
-            class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-sacred-sand hover:bg-rausch/10 text-near-black font-semibold transition-all duration-600 ease-in-out hover:scale-105 min-h-13"
-          >
-            <MessageCircle size={20} className="text-rausch" />
-            {t('nav.contact')}
-          </a>
-        </div>
+        <a href={l('/contacto')} class="btn btn-outline">
+          <MessageCircle size={18} />
+          {t('nav.contact')}
+        </a>
       </div>
     </section>
 
-  </main>
+  </div>
 
 </Layout>
 
 <style>
-  h1, h2 {
+  h2 {
     letter-spacing: -0.02em;
+  }
+
+  .threshold {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    aspect-ratio: 4 / 5;
+    width: 100%;
+    max-width: 15rem;
+    margin-inline: auto;
+    padding-bottom: 12%;
+  }
+
+  .threshold__number {
+    font-size: clamp(4rem, 2rem + 8vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--color-sacred-sand);
+  }
+
+  @media (min-width: 1024px) {
+    .threshold {
+      max-width: 26rem;
+    }
   }
 </style>

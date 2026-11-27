@@ -39,9 +39,39 @@ const canonicalURL = new URL(Astro.originPathname, Astro.site || 'https://varsan
     {author && <meta property="article:author" content={author} />}
   </Fragment>
 
-  <main class="max-w-7xl mx-auto px-0 md:px-12 lg:px-20 py-0 md:py-8">
+  <article class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-10 md:pt-16">
+    <!-- Cabecera editorial: titular a la izquierda, datos a la derecha -->
+    <header class="grid lg:grid-cols-12 gap-y-6 gap-x-12 items-end pb-10 md:pb-14">
+      <div class="lg:col-span-8">
+        <span class="rule-saffron mb-8" aria-hidden="true"></span>
+        <h1 class="display-lg font-bold font-display text-near-black">{title}</h1>
+      </div>
+      <div class="lg:col-span-4 lg:pb-2 space-y-5">
+        <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-secondary-gray">
+          <div class="flex items-center gap-2">
+            <Calendar size={18} className="text-saffron-deep" />
+            <span>{formattedDate}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <User size={18} className="text-saffron-deep" />
+            <span>{author}</span>
+          </div>
+        </div>
+
+        {tags.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag: string) => (
+              <span class="bg-sand-deep text-rausch text-sm px-4 py-1.5 rounded-full font-medium">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+
     <!-- Hero Image -->
-    <div class="md:rounded-[24px] overflow-hidden relative h-75 md:h-100 lg:h-125 shadow-airbnb">
+    <div class="arch-wide shimmer relative h-75 md:h-100 lg:h-125">
       <img
         src={image}
         alt={title}
@@ -50,73 +80,63 @@ const canonicalURL = new URL(Astro.originPathname, Astro.site || 'https://varsan
       />
     </div>
 
-    <div class="px-6 md:px-0 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
-      <!-- Main Content -->
-      <div class="lg:col-span-2 space-y-8">
-        <div class="border-b border-sacred-sand pb-8">
-          <h1 class="text-4xl md:text-5xl font-bold tracking-tightest mb-4 font-display">{title}</h1>
-          <div class="flex flex-wrap gap-6 text-sm font-medium text-gray-500">
-            <div class="flex items-center gap-2">
-              <Calendar size={18} className="text-saffron" />
-              <span>{formattedDate}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <User size={18} className="text-saffron" />
-              <span>{author}</span>
-            </div>
-          </div>
-        </div>
-
-        {tags.length > 0 && (
-          <div class="flex flex-wrap gap-2">
-            {tags.map((tag: string) => (
-              <span class="bg-sacred-sand text-rausch text-sm px-4 py-1.5 rounded-full font-medium">
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <!-- Article Body -->
-        <div class="max-w-none">
-          <Content />
-        </div>
+    <div class="pt-12 md:pt-16 grid grid-cols-1 lg:grid-cols-12 gap-x-12 gap-y-14">
+      <!-- Article Body -->
+      <div class="article-body lg:col-span-8 max-w-none">
+        <Content />
       </div>
 
       <!-- Sidebar -->
-      <div class="relative">
-        <div class="sticky top-28 bg-lotus-white border border-sacred-sand rounded-[24px] p-6 shadow-airbnb space-y-4">
-          <h3 class="font-bold text-lg">{t('blogPost.aboutAuthor')}</h3>
+      <aside class="relative lg:col-span-4">
+        <div class="sticky top-28 bg-lotus-white ring-1 ring-near-black/5 rounded-3xl p-6 md:p-8 space-y-5">
+          <h3 class="eyebrow">{t('blogPost.aboutAuthor')}</h3>
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+            <div class="w-12 h-12 bg-sand-deep rounded-full flex items-center justify-center overflow-hidden shrink-0">
               <img src="https://picsum.photos/seed/author/100/100" alt={author} class="w-full h-full object-cover" />
             </div>
             <div>
-              <p class="font-bold text-sm">{author}</p>
-              <p class="text-gray-500 text-xs">{t('blogPost.authorCommunity')}</p>
+              <p class="font-bold font-display">{author}</p>
+              <p class="text-secondary-gray text-xs">{t('blogPost.authorCommunity')}</p>
             </div>
           </div>
 
-          <div class="border-t border-sacred-sand pt-4">
-            <p class="text-gray-500 text-sm">
+          <div class="border-t border-near-black/10 pt-5">
+            <p class="text-secondary-gray text-sm leading-relaxed">
               {t('blogPost.sidebarText')}
             </p>
           </div>
 
-          <a href={l('/blog')} class="block text-center text-rausch font-bold text-sm underline mt-4">
+          <a href={l('/blog')} class="btn btn-outline btn-sm btn-block">
             {t('blogPost.backToBlog')}
           </a>
         </div>
-      </div>
+      </aside>
     </div>
-  </main>
+  </article>
 </Layout>
 
 <style>
-  h1, h2, h3, h4 {
+  /* El cuerpo viene del CMS con sus propias clases; aquí solo se afinan
+     enlaces, citas y la capitular del primer párrafo. */
+  .article-body :global(h2),
+  .article-body :global(h3),
+  .article-body :global(h4) {
     letter-spacing: -0.02em;
   }
-  .lead-dropcap::first-letter {
+  .article-body :global(a) {
+    color: var(--color-rausch);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: rgb(82 24 91 / 0.3);
+    transition: text-decoration-color 0.3s var(--ease-out);
+  }
+  .article-body :global(a:hover) {
+    text-decoration-color: var(--color-rausch);
+  }
+  .article-body :global(img) {
+    border-radius: var(--radius-md);
+  }
+  .article-body :global(.lead-dropcap)::first-letter {
     float: left;
     font-family: "Proza Libre", sans-serif;
     font-size: 4.5rem;
@@ -124,6 +144,6 @@ const canonicalURL = new URL(Astro.originPathname, Astro.site || 'https://varsan
     line-height: 0.75;
     margin-right: 0.5rem;
     margin-top: 0.25rem;
-    color: var(--color-rausch, #52185b);
+    color: var(--color-saffron-deep);
   }
 </style>

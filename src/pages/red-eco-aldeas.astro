@@ -36,56 +36,58 @@ const aldeas = (locale === 'en' ? redEn : redEs).aldeas.map((aldea, i) => ({
 }));
 
 const accentStyles: Record<Accent, { iconBg: string; iconText: string; badge: string; topBorder: string }> = {
-  saffron: { iconBg: 'bg-saffron/10', iconText: 'text-saffron', badge: 'bg-saffron/10 text-saffron', topBorder: 'border-t-saffron/20' },
-  rausch: { iconBg: 'bg-rausch/10', iconText: 'text-rausch', badge: 'bg-rausch/10 text-rausch', topBorder: 'border-t-rausch/20' },
-  forest: { iconBg: 'bg-forest/10', iconText: 'text-forest', badge: 'bg-forest/10 text-forest', topBorder: 'border-t-forest/20' },
+  saffron: { iconBg: 'bg-saffron/10', iconText: 'text-saffron-deep', badge: 'bg-saffron/10 text-saffron-deep', topBorder: 'border-t-near-black/10' },
+  rausch: { iconBg: 'bg-forest/10', iconText: 'text-forest-deep', badge: 'bg-forest/10 text-forest-deep', topBorder: 'border-t-near-black/10' },
+  forest: { iconBg: 'bg-forest/10', iconText: 'text-forest-deep', badge: 'bg-forest/10 text-forest-deep', topBorder: 'border-t-near-black/10' },
 };
 ---
 
 <Layout title={t('red.title')} description={t('red.subtitle')}>
 
-  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-12">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-14 md:pt-20 pb-4">
     <!-- Hero -->
-    <section class="mb-20 text-center max-w-3xl mx-auto">
-      <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold mb-6">
-        <Globe size={16} />
-        <span>{t('red.badge')}</span>
+    <section class="grid lg:grid-cols-12 gap-y-8 gap-x-12 items-end pb-14 md:pb-20">
+      <div class="lg:col-span-8">
+        <p class="eyebrow mb-5">{t('red.badge')}</p>
+        <h1 class="display-xl font-bold font-display text-near-black">
+          {t('red.heading')}
+        </h1>
       </div>
-      <h1 class="text-4xl md:text-6xl font-bold tracking-tightest leading-tight mb-6">
-        {t('red.heading')}
-      </h1>
-      <p class="text-secondary-gray text-xl leading-relaxed">
-        {t('red.subtitle')}
-      </p>
+      <div class="lg:col-span-4 lg:pb-3">
+        <span class="rule-saffron mb-6" aria-hidden="true"></span>
+        <p class="text-secondary-gray text-lg md:text-xl leading-relaxed">
+          {t('red.subtitle')}
+        </p>
+      </div>
     </section>
 
     <!-- Eco-village Cards Grid -->
-    <section class="mb-16">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <section>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-reveal-group>
         {aldeas.map((aldea) => {
           const s = accentStyles[aldea.accent] ?? accentStyles.forest;
           return (
-            <div class="bg-lotus-white rounded-[24px] shadow-airbnb overflow-hidden flex flex-col h-full group hover:scale-[1.02] transition-all duration-600 cursor-pointer">
-              <div class="aspect-4/3 overflow-hidden relative">
+            <div class="bg-lotus-white rounded-3xl ring-1 ring-near-black/5 overflow-hidden flex flex-col h-full group">
+              <div class="aspect-4/3 overflow-hidden relative shimmer">
                 <img
                   src={aldea.image}
                   alt={aldea.name}
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  class="aldea-image w-full h-full object-cover"
                   referrerpolicy="no-referrer"
                   loading="lazy"
                 />
-                <div class="absolute top-4 left-4 flex items-center gap-1.5 bg-lotus-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-sm">
-                  <MapPin size={12} className="text-rausch" />
-                  <span class="text-secondary-gray truncate max-w-45">{aldea.location}</span>
+                <div class="absolute top-4 left-4 flex items-center gap-1.5 bg-lotus-white px-3 py-1.5 rounded-full text-xs font-bold">
+                  <MapPin size={12} className="text-forest-deep" />
+                  <span class="text-forest-deep truncate max-w-45">{aldea.location}</span>
                 </div>
               </div>
 
-              <div class="p-6 flex flex-col grow space-y-4">
+              <div class="p-6 md:p-7 flex flex-col grow space-y-4">
                 <div class="flex items-center gap-3">
-                  <div class={`w-10 h-10 ${s.iconBg} rounded-xl flex items-center justify-center ${s.iconText}`}>
+                  <div class={`w-11 h-11 ${s.iconBg} rounded-2xl flex items-center justify-center shrink-0 ${s.iconText}`}>
                     <aldea.icon size={20} />
                   </div>
-                  <h3 class="text-xl font-bold font-display tracking-tightest">{aldea.name}</h3>
+                  <h3 class="text-2xl font-bold font-display leading-tight">{aldea.name}</h3>
                 </div>
 
                 <p class="text-secondary-gray text-sm leading-relaxed grow">{aldea.description}</p>
@@ -94,7 +96,7 @@ const accentStyles: Record<Accent, { iconBg: string; iconText: string; badge: st
                   <ul class="space-y-1.5">
                     {aldea.features.map((feat) => (
                       <li class="flex items-center gap-2 text-sm text-secondary-gray">
-                        <CheckCircle2 size={14} className="text-forest shrink-0" />
+                        <CheckCircle2 size={14} className="text-forest-dark shrink-0" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -113,17 +115,35 @@ const accentStyles: Record<Accent, { iconBg: string; iconText: string; badge: st
     </section>
 
     <!-- Info note -->
-    <section class="text-center pb-12">
+    <section class="pt-14 md:pt-16 flex items-center gap-5">
+      <span class="rule-saffron shrink-0" aria-hidden="true"></span>
       <p class="text-secondary-gray text-sm italic">
         {t('red.upcomingNote')}
       </p>
     </section>
-  </main>
+  </div>
 
 </Layout>
 
 <style>
-  h1, h2, h3 {
+  h3 {
     letter-spacing: -0.02em;
+  }
+
+  .aldea-image {
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  .group:hover .aldea-image {
+    transform: scale(1.06);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aldea-image {
+      transition: none;
+    }
+    .group:hover .aldea-image {
+      transform: none;
+    }
   }
 </style>

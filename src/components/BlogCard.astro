@@ -12,9 +12,11 @@ interface Props {
   author: string;
   tags?: string[];
   slug: string;
+  /** Solo presentación: tarjeta protagonista (más alta, titular mayor). */
+  featured?: boolean;
 }
 
-const { title, description, image, date, author, tags = [], slug } = Astro.props;
+const { title, description, image, date, author, tags = [], slug, featured = false } = Astro.props;
 
 const formattedDate = formatDate(date, locale, {
   day: 'numeric',
@@ -23,35 +25,34 @@ const formattedDate = formatDate(date, locale, {
 });
 ---
 
-<a href={l(`/blog/${slug}`)} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
-  <div class="aspect-16/10 overflow-hidden relative shimmer">
+<a href={l(`/blog/${slug}`)} class:list={['card group', featured && 'card--featured']}>
+  <div class="card__media shimmer">
     <img
       src={image}
       alt={title}
-      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      class="card__image"
       referrerpolicy="no-referrer"
       loading="lazy"
     />
   </div>
 
-  <div class="p-6 flex flex-col grow space-y-3">
-    <div class="space-y-1">
-      <div class="flex items-center gap-3 text-sm text-gray-500">
-        <p class="text-saffron font-semibold uppercase tracking-wider text-xs">{formattedDate}</p>
-        <span>·</span>
-        <p>{author}</p>
-      </div>
-      <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{title}</h3>
+  <div class="card__body">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-secondary-gray">
+      <p class="text-saffron-deep font-semibold uppercase tracking-[0.14em] text-xs">{formattedDate}</p>
+      <span aria-hidden="true">·</span>
+      <p>{author}</p>
     </div>
 
-    <p class="text-gray-600 line-clamp-2 text-sm leading-relaxed">
+    <h3 class="card__title font-bold font-display">{title}</h3>
+
+    <p class="card__text text-secondary-gray leading-relaxed">
       {description}
     </p>
 
     {tags.length > 0 && (
-      <div class="flex flex-wrap gap-2 pt-2 mt-auto">
+      <div class="flex flex-wrap gap-2 pt-4 mt-auto border-t border-near-black/10">
         {tags.slice(0, 3).map((tag) => (
-          <span class="bg-sacred-sand text-rausch text-xs px-3 py-1 rounded-full font-medium">
+          <span class="bg-sand-deep text-rausch text-xs px-3 py-1 rounded-full font-medium">
             {tag}
           </span>
         ))}
@@ -61,7 +62,98 @@ const formattedDate = formatDate(date, locale, {
 </a>
 
 <style>
-  h3 {
+  /* Misma familia que EventCard: radio 24px, borde sutil, hover que eleva. */
+  .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-lotus-white);
+    box-shadow: 0 0 0 1px rgb(34 34 34 / 0.06);
+    transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 0 1px rgb(34 34 34 / 0.06), 0 28px 48px -28px rgb(23 35 15 / 0.45);
+  }
+
+  .card__media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    flex: none;
+  }
+
+  .card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  .card:hover .card__image {
+    transform: scale(1.06);
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: 0.75rem;
+    padding: 1.5rem;
+  }
+
+  .card__title {
+    font-size: 1.5rem;
+    line-height: 1.2;
     letter-spacing: -0.02em;
+  }
+
+  .card__text {
+    font-size: 0.875rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  /* Protagonista: en escritorio la foto ocupa el alto sobrante y el
+     titular sube de escala. */
+  @media (min-width: 1024px) {
+    .card--featured .card__media {
+      flex: 1 1 auto;
+      aspect-ratio: auto;
+      min-height: 22rem;
+    }
+    .card--featured .card__image {
+      position: absolute;
+      inset: 0;
+    }
+    .card--featured .card__body {
+      flex: 0 1 auto;
+      padding: 2rem 2.25rem 2.25rem;
+    }
+    .card--featured .card__title {
+      font-size: clamp(1.75rem, 1.3rem + 1.9vw, 2.875rem);
+      line-height: 1.1;
+    }
+    .card--featured .card__text {
+      font-size: 1.0625rem;
+      max-width: 40rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .card__image {
+      transition: none;
+    }
+    .card:hover,
+    .card:hover .card__image {
+      transform: none;
+    }
   }
 </style>

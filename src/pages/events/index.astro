@@ -25,15 +25,15 @@ const upcomingEvents = await getUpcomingEvents(locale);
     />
 
     {upcomingEvents.length > 0 ? (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 mt-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 py-16 md:py-24" data-reveal-group>
         {upcomingEvents.map((event) => (
-          <EventCard {...event.data} slug={event.id} />
+          <div><EventCard {...event.data} slug={event.id} /></div>
         ))}
       </div>
     ) : (
-      <div class="py-20 text-center bg-gray-50 rounded-3xl">
-        <p class="text-2xl font-medium text-gray-400">{t('events.noEvents')}</p>
-        <a href={l('/')} class="mt-6 inline-block text-rausch font-bold underline">{t('events.backHome')}</a>
+      <div class="my-16 md:my-24 on-dark arch-wide px-6 pt-28 pb-16 md:pt-36 md:pb-20 text-center">
+        <p class="display-md font-display font-bold max-w-2xl mx-auto">{t('events.noEvents')}</p>
+        <a href={l('/')} class="btn btn-light btn-arrow mt-8">{t('events.backHome')}</a>
       </div>
     )}
   </main>

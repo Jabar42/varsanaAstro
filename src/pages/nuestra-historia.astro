@@ -26,13 +26,12 @@ const l = (path: string) => localizePath(locale, path);
     <Timeline />
   </main>
 
-  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
-    <SplitSection
-      title={t('historiaPage.principios.title')}
-      description={t('historiaPage.principios.description')}
-      videoUrl="https://www.youtube.com/watch?v=O6WYfE--_k8"
-    />
-  </main>
+  <SplitSection
+    title={t('historiaPage.principios.title')}
+    description={t('historiaPage.principios.description')}
+    videoUrl="https://www.youtube.com/watch?v=O6WYfE--_k8"
+    tone="dark"
+  />
 
   <SplitSection
     title={t('historiaPage.inspiracion.title')}
@@ -42,7 +41,7 @@ const l = (path: string) => localizePath(locale, path);
     imageSrc="/api/images/1785285876570-inspiracion-practica.webp"
     imageAlt={t('historiaPage.inspiracion.imageAlt')}
     reversed
-    background="bg-light-surface"
+    background="bg-sand-deep"
   />
 
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">

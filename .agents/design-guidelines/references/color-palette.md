@@ -4,13 +4,13 @@
 
 Three primary brand colors anchor the identity:
 
-- **Rausch Red** (`#52185B`): The dominant CTA and brand accent. A deep, warm purple that conveys grounded spirituality. Use for primary buttons, links, and key brand moments.
+- **Rausch** (`#52185B`): The logo's deep, warm purple. Reserved for the logo, text links and small labels — never for buttons or backgrounds.
 - **Saffron Wisdom** (`#F7941E`): The spiritual accent. Evokes marigold garlands, monk robes, and sacred fire. Use for highlights, tags, yoga-related elements, and hover glows.
 - **Forest Prana** (`#779B05`): The nature accent. Represents the surrounding farmland, orchards, and eco-conscious values. Use for nature activities, volunteering, and secondary CTAs.
 
 ## Light Tones (For Gradients & Hover States)
 
-- **Rausch Red Light** (`#97448E`): Lifted purple for hover states and gradient stops.
+- **Rausch Light** (`#97448E`): Lifted purple for text-link hover states.
 - **Saffron Wisdom Light** (`#FAAF3E`): Warm glow for saffron hover states.
 - **Forest Prana Light** (`#95AD02`): Brightened green for hover and accents.
 
@@ -56,7 +56,7 @@ Cards lift on hover with `scale(1.02)` and a warm saffron-tinted shadow expansio
 
 ## Usage Rules
 
-- Use Rausch Red for buttons, links, and primary actions. Never use it for large background areas.
+- Use Forest Dark (`#5A7A04`) for buttons and primary actions (hover Forest Deep `#435C03`). Use Rausch only for text links and small labels, never for buttons or background areas.
 - Use Saffron Wisdom for highlights, tags, and spiritual elements.
 - Use Forest Prana for nature-related content, volunteering, and eco-themed sections.
 - Near Black is the default text color; Secondary Gray for supporting text.

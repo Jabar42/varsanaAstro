@@ -35,61 +35,64 @@ const host_name = 'Varsana';
     <meta name="twitter:card" content="summary_large_image" />
   </Fragment>
 
-  <div class="max-w-7xl mx-auto px-0 md:px-12 lg:px-20 py-0 md:py-8">
-    <!-- Photo Gallery -->
-    {fotos && fotos.length > 0 && (
-      <div class="md:rounded-[24px] overflow-hidden relative h-75 md:h-125 lg:h-150 shadow-airbnb" data-gallery>
-        {fotos.map((foto, i) => (
-          <img
-            src={foto}
-            alt={t('hospedajeDetail.gallery.photoAlt', { name: nombre, n: i + 1 })}
-            class:list={['w-full h-full object-cover absolute inset-0 transition-opacity duration-500', { 'opacity-100 z-10': i === 0, 'opacity-0 z-0': i !== 0 }]}
-            data-gallery-img={i}
-            referrerpolicy="no-referrer"
-          />
-        ))}
-        {fotos.length > 1 && (
-          <>
-            <button data-gallery-prev class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-md" aria-label={t('hospedajeDetail.gallery.prev')}>
-              <ChevronLeft size={20} />
-            </button>
-            <button data-gallery-next class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors shadow-md" aria-label={t('hospedajeDetail.gallery.next')}>
-              <ChevronRight size={20} />
-            </button>
-            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-              {fotos.map((_, i) => (
-                <button data-gallery-dot={i} class:list={['w-2.5 h-2.5 rounded-full transition-all', i === 0 ? 'bg-white w-6' : 'bg-white/60']} aria-label={t('hospedajeDetail.gallery.goTo', { n: i + 1 })} />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    )}
+  <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-10 pb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[auto_1fr] gap-x-12 xl:gap-x-16 gap-y-10">
+      <!-- Photo Gallery: la habitación se mira a través del arco -->
+      {fotos && fotos.length > 0 && (
+        <div class="lg:col-start-8 lg:col-span-5 lg:row-start-1">
+          <div class="arch shimmer relative aspect-4/5 max-h-[34rem] w-full mx-auto bg-forest-night" data-gallery>
+            {fotos.map((foto, i) => (
+              <img
+                src={foto}
+                alt={t('hospedajeDetail.gallery.photoAlt', { name: nombre, n: i + 1 })}
+                class:list={['w-full h-full object-cover absolute inset-0 transition-opacity duration-500', { 'opacity-100 z-10': i === 0, 'opacity-0 z-0': i !== 0 }]}
+                data-gallery-img={i}
+                referrerpolicy="no-referrer"
+              />
+            ))}
+            {fotos.length > 1 && (
+              <>
+                <button data-gallery-prev class="absolute left-3 top-[62%] -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-lotus-white/85 text-forest-night backdrop-blur-sm flex items-center justify-center hover:bg-lotus-white transition-colors duration-300" aria-label={t('hospedajeDetail.gallery.prev')}>
+                  <ChevronLeft size={20} />
+                </button>
+                <button data-gallery-next class="absolute right-3 top-[62%] -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-lotus-white/85 text-forest-night backdrop-blur-sm flex items-center justify-center hover:bg-lotus-white transition-colors duration-300" aria-label={t('hospedajeDetail.gallery.next')}>
+                  <ChevronRight size={20} />
+                </button>
+                <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+                  {fotos.map((_, i) => (
+                    <button data-gallery-dot={i} class:list={['w-2.5 h-2.5 rounded-full transition-all', i === 0 ? 'bg-white w-6' : 'bg-white/60']} aria-label={t('hospedajeDetail.gallery.goTo', { n: i + 1 })} />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
-    <div class="px-6 md:px-0 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
       <!-- Main Content Column -->
-      <div class="lg:col-span-2 space-y-8">
-        <div class="border-b border-sacred-sand pb-8">
-          <h1 class="text-4xl md:text-6xl font-bold tracking-tightest mb-4 font-display">{nombre}</h1>
-          <div class="flex flex-wrap gap-6 text-sm font-medium">
-            <div class="flex items-center gap-2">
-              <Users size={18} className="text-saffron" />
+      <div class="lg:col-start-1 lg:col-span-7 lg:row-start-1 lg:row-span-2 space-y-10">
+        <div class="lg:pt-10">
+          <span class="rule-saffron mb-8" aria-hidden="true"></span>
+          <h1 class="display-xl font-bold font-display text-near-black">{nombre}</h1>
+          <div class="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium">
+            <div class="flex items-start gap-2">
+              <Users size={18} className="text-saffron-deep shrink-0" />
               <span>{num_huespedes}</span>
             </div>
-            <div class="flex items-center gap-2">
-              <Clock size={18} className="text-saffron" />
+            <div class="flex items-start gap-2">
+              <Clock size={18} className="text-saffron-deep shrink-0" />
               <span>{check_in_out}</span>
             </div>
           </div>
         </div>
 
         <!-- Host Info -->
-        <div class="flex items-center justify-between border-b border-sacred-sand pb-8">
+        <div class="flex items-center justify-between gap-6 border-y border-near-black/10 py-6">
           <div class="space-y-1">
-            <h2 class="text-2xl font-bold font-display">{t('hospedajeDetail.host.offeredBy', { name: host_name })}</h2>
+            <h2 class="text-xl md:text-2xl font-bold font-display">{t('hospedajeDetail.host.offeredBy', { name: host_name })}</h2>
             <p class="text-secondary-gray text-sm">{t('hospedajeDetail.host.tagline')}</p>
           </div>
-          <div class="w-14 h-14 bg-sacred-sand rounded-full flex items-center justify-center overflow-hidden">
+          <div class="w-14 h-14 shrink-0 bg-sand-deep rounded-full flex items-center justify-center overflow-hidden">
             <img src="/logo/LogoPrincipal.svg" alt={host_name} class="w-full h-full object-cover" />
           </div>
         </div>
@@ -101,12 +104,12 @@ const host_name = 'Varsana';
 
         <!-- Included Services -->
         {servicios_incluidos && servicios_incluidos.length > 0 && (
-          <div class="border-t border-sacred-sand pt-8">
-            <h3 class="text-2xl font-bold mb-6 font-display">{t('hospedajeDetail.includedServices')}</h3>
-            <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="border-t border-near-black/10 pt-10">
+            <h3 class="display-md font-bold mb-8 font-display">{t('hospedajeDetail.includedServices')}</h3>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
               {servicios_incluidos.map((service) => (
-                <li class="flex items-center gap-3">
-                  <Check size={18} className="text-saffron shrink-0" />
+                <li class="flex items-start gap-3">
+                  <Check size={18} className="text-forest-deep shrink-0 mt-1" />
                   <span>{service}</span>
                 </li>
               ))}
@@ -115,47 +118,42 @@ const host_name = 'Varsana';
         )}
 
         <!-- Important Note -->
-        <div class="border-t border-sacred-sand pt-8">
-          <div class="flex items-start gap-3 p-6 bg-saffron/5 rounded-2xl border border-saffron/20">
-            <AlertTriangle size={20} className="text-saffron shrink-0 mt-0.5" />
-            <div>
-              <h3 class="font-bold text-lg mb-2 font-display">{t('hospedajeDetail.keepInMind')}</h3>
-              <p class="text-secondary-gray whitespace-pre-line leading-relaxed">{ten_en_cuenta}</p>
-            </div>
+        <div class="flex items-start gap-4 p-6 md:p-8 bg-sand-deep rounded-3xl">
+          <AlertTriangle size={20} className="text-saffron-deep shrink-0 mt-1" />
+          <div>
+            <h3 class="font-bold text-lg mb-2 font-display">{t('hospedajeDetail.keepInMind')}</h3>
+            <p class="text-secondary-gray whitespace-pre-line leading-relaxed">{ten_en_cuenta}</p>
           </div>
         </div>
       </div>
 
       <!-- Sticky Price Card Column -->
-      <div class="relative">
-        <div class="sticky top-28 bg-lotus-white border border-sacred-sand rounded-[24px] p-6 shadow-airbnb space-y-6">
+      <div class="relative lg:col-start-8 lg:col-span-5 lg:row-start-2">
+        <div class="sticky top-28 bg-lotus-white ring-1 ring-near-black/5 rounded-3xl p-6 md:p-8 space-y-6">
           <div>
-            <span class="text-3xl font-bold tracking-tightest font-display">{priceLabel}</span>
+            <span class="text-3xl md:text-4xl font-bold font-display">{priceLabel}</span>
             <span class="text-secondary-gray text-base font-normal">{t('hospedajeDetail.price.perPersonNight')}</span>
           </div>
 
           <!-- Booking Details Box -->
-          <div class="border border-sacred-sand rounded-xl overflow-hidden">
-            <div class="grid grid-cols-2 border-b border-sacred-sand">
-              <div class="p-3 border-r border-sacred-sand">
-                <p class="text-xs font-bold uppercase">{t('hospedajeDetail.price.guests')}</p>
-                <p class="text-sm">{num_huespedes}</p>
+          <div class="border border-near-black/10 rounded-2xl overflow-hidden">
+            <div class="grid grid-cols-2 border-b border-near-black/10">
+              <div class="p-4 border-r border-near-black/10">
+                <p class="text-xs font-bold uppercase tracking-wide text-secondary-gray">{t('hospedajeDetail.price.guests')}</p>
+                <p class="text-sm mt-1">{num_huespedes}</p>
               </div>
-              <div class="p-3">
-                <p class="text-xs font-bold uppercase">{t('hospedajeDetail.price.nights')}</p>
-                <p class="text-sm">{noches}</p>
+              <div class="p-4">
+                <p class="text-xs font-bold uppercase tracking-wide text-secondary-gray">{t('hospedajeDetail.price.nights')}</p>
+                <p class="text-sm mt-1">{noches}</p>
               </div>
             </div>
-            <div class="p-3">
-              <p class="text-xs font-bold uppercase">{t('hospedajeDetail.price.checkInOut')}</p>
-              <p class="text-sm text-secondary-gray">{check_in_out}</p>
+            <div class="p-4">
+              <p class="text-xs font-bold uppercase tracking-wide text-secondary-gray">{t('hospedajeDetail.price.checkInOut')}</p>
+              <p class="text-sm mt-1">{check_in_out}</p>
             </div>
           </div>
 
-          <a
-            href={l('/contacto')}
-            class="block text-center bg-rausch text-white px-6 py-4 rounded-xl font-bold text-lg hover:bg-rausch-dark transition-all duration-300 shadow-md"
-          >
+          <a href={l('/contacto')} class="btn btn-lg btn-block btn-arrow">
             {t('hospedajeDetail.price.cta')}
           </a>
 
@@ -207,8 +205,3 @@ const host_name = 'Varsana';
   });
 </script>
 
-<style>
-  h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
-  }
-</style>

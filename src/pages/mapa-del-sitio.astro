@@ -13,7 +13,6 @@ import {
   Store,
   Heart,
   Leaf,
-  MapPin,
   Info,
   ArrowUpRight,
 } from 'lucide-react';
@@ -57,56 +56,112 @@ const groups = (locale === 'en' ? sitemapEn : sitemapEs).groups.map((group, gi) 
 
 <Layout title={t('sitemap.title')} description={t('sitemap.subtitle')}>
 
-  <main class="max-w-3xl mx-auto px-6 md:px-12 lg:px-20 py-12">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-14 md:pt-20 pb-4">
     <!-- Hero -->
-    <section class="mb-16 text-center">
-      <div class="inline-flex items-center gap-2 bg-saffron/10 text-saffron px-4 py-2 rounded-full text-sm font-bold mb-6">
-        <MapPin size={16} />
-        <span>{t('sitemap.badge')}</span>
+    <section class="grid lg:grid-cols-12 gap-y-8 gap-x-12 items-end pb-14 md:pb-20">
+      <div class="lg:col-span-8">
+        <p class="eyebrow mb-5">{t('sitemap.badge')}</p>
+        <h1 class="display-xl font-bold font-display text-near-black">
+          {t('sitemap.heading')}
+        </h1>
       </div>
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tightest leading-tight mb-4">
-        {t('sitemap.heading')}
-      </h1>
-      <p class="text-secondary-gray text-lg">
-        {t('sitemap.subtitle')}
-      </p>
+      <div class="lg:col-span-4 lg:pb-3">
+        <span class="rule-saffron mb-6" aria-hidden="true"></span>
+        <p class="text-secondary-gray text-lg md:text-xl leading-relaxed">
+          {t('sitemap.subtitle')}
+        </p>
+      </div>
     </section>
 
-    <!-- Link Groups -->
-    <section class="space-y-16 pb-20">
+    <!-- Link Groups: índice en dos columnas, filas separadas por una línea -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-20 gap-y-14 md:gap-y-20">
       {groups.map((group) => (
-        <div>
-          <h2 class="text-2xl font-bold font-display tracking-tightest mb-6 text-near-black">
+        <div data-reveal>
+          <h2 class="text-2xl md:text-3xl font-bold font-display mb-5 text-near-black">
             {group.heading}
           </h2>
-          <div class="space-y-3">
+          <div class="border-t border-near-black/15">
             {group.links.map((link) => (
-              <a
-                href={link.href}
-                class="flex items-center gap-5 bg-lotus-white rounded-[20px] shadow-airbnb px-6 py-5 hover:scale-[1.01] transition-all duration-300 group"
-              >
-                <div class="w-10 h-10 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch shrink-0 group-hover:bg-rausch group-hover:text-white transition-colors duration-300">
+              <a href={link.href} class="index-row group">
+                <div class="index-row__icon">
                   <link.icon size={20} />
                 </div>
                 <div class="grow min-w-0">
-                  <h3 class="font-bold font-display tracking-tightest text-near-black group-hover:text-rausch transition-colors">
+                  <h3 class="index-row__label font-bold font-display text-lg text-near-black">
                     {link.label}
                   </h3>
-                  <p class="text-sm text-secondary-gray truncate">{link.description}</p>
+                  <p class="text-sm text-secondary-gray">{link.description}</p>
                 </div>
-                <ArrowUpRight size={18} className="text-secondary-gray shrink-0 group-hover:text-rausch transition-colors" />
+                <ArrowUpRight size={18} className="index-row__arrow shrink-0" />
               </a>
             ))}
           </div>
         </div>
       ))}
     </section>
-  </main>
+  </div>
 
 </Layout>
 
 <style>
-  h1, h2, h3 {
+  h2, h3 {
     letter-spacing: -0.02em;
+  }
+
+  .index-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.125rem 0.25rem;
+    border-bottom: 1px solid rgb(34 34 34 / 0.1);
+    transition: padding 0.4s var(--ease-out);
+  }
+
+  .index-row__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-DEFAULT);
+    background: rgb(119 155 5 / 0.1);
+    color: var(--color-forest-deep);
+    transition: background-color 0.3s var(--ease-out), color 0.3s var(--ease-out);
+  }
+
+  .index-row__label {
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .index-row :global(.index-row__arrow) {
+    color: var(--color-secondary-gray);
+    transition: transform 0.3s var(--ease-out), color 0.3s var(--ease-out);
+  }
+
+  .index-row:hover .index-row__icon,
+  .index-row:focus-visible .index-row__icon {
+    background: var(--color-forest-dark);
+    color: var(--color-lotus-white);
+  }
+
+  .index-row:hover .index-row__label,
+  .index-row:focus-visible .index-row__label {
+    color: var(--color-forest-deep);
+  }
+
+  .index-row:hover :global(.index-row__arrow),
+  .index-row:focus-visible :global(.index-row__arrow) {
+    color: var(--color-forest-deep);
+    transform: translate(3px, -3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .index-row :global(.index-row__arrow) {
+      transition: none;
+    }
+    .index-row:hover :global(.index-row__arrow) {
+      transform: none;
+    }
   }
 </style>

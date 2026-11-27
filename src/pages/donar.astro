@@ -20,7 +20,7 @@ const impactAreas = (locale === 'en' ? donarEn : donarEs).impactAreas.map((area,
 
 <Layout title={t('donar.title')} description={t('donar.subtitle')}>
 
-  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8">
 
     <!-- Page Banner -->
     <PageBanner
@@ -32,112 +32,164 @@ const impactAreas = (locale === 'en' ? donarEn : donarEs).impactAreas.map((area,
       ]}
     />
 
-    <!-- CTA row -->
-    <div class="flex flex-wrap justify-center gap-4 mt-8 mb-24">
-      <a
-        href="#donar"
-        class="bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition-all duration-300 shadow-lg inline-block"
-      >
-        {t('donar.ctaDonate')}
-      </a>
-      <a
-        href={l('/nosotros')}
-        class="border border-near-black px-10 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-colors inline-block"
-      >
-        {t('donar.ctaAbout')}
-      </a>
-    </div>
-
     <!-- What Donations Support -->
-    <section class="mb-24">
-      <div class="mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold tracking-tightest mb-4">{t('donar.impactHeading')}</h2>
-        <p class="text-gray-500 text-lg">{t('donar.impactSubtitle')}</p>
+    <section class="py-20 md:py-28">
+      <div class="grid lg:grid-cols-12 gap-y-8 gap-x-12 items-end">
+        <div class="lg:col-span-7">
+          <span class="rule-saffron mb-8" aria-hidden="true"></span>
+          <h2 class="display-lg font-bold font-display text-near-black">{t('donar.impactHeading')}</h2>
+        </div>
+        <div class="lg:col-span-5 lg:pb-2">
+          <p class="text-secondary-gray text-lg md:text-xl leading-relaxed">{t('donar.impactSubtitle')}</p>
+          <!-- CTA row -->
+          <div class="flex flex-wrap gap-3 mt-8">
+            <a href="#donar" class="btn btn-lg">
+              {t('donar.ctaDonate')}
+            </a>
+            <a href={l('/nosotros')} class="btn btn-lg btn-outline btn-arrow">
+              {t('donar.ctaAbout')}
+            </a>
+          </div>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mt-14 md:mt-20" data-reveal-group>
         {impactAreas.map((area) => (
-          <div class="p-8 bg-lotus-white border border-sacred-sand rounded-[24px] shadow-airbnb hover:shadow-airbnb-hover hover:scale-[1.02] transition-all duration-600 ease-in-out space-y-4">
-            <div class="w-12 h-12 bg-rausch/10 rounded-xl flex items-center justify-center text-rausch">
+          <div class="p-8 bg-lotus-white rounded-3xl ring-1 ring-near-black/5">
+            <div class="w-13 h-13 bg-forest/10 rounded-2xl flex items-center justify-center text-forest-deep mb-6">
               <area.icon size={24} />
             </div>
-            <h3 class="text-xl font-bold tracking-tightest">{area.title}</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">{area.description}</p>
+            <h3 class="text-xl md:text-2xl font-bold font-display mb-3">{area.title}</h3>
+            <p class="text-secondary-gray leading-relaxed">{area.description}</p>
           </div>
         ))}
       </div>
     </section>
+  </div>
 
-    <!-- Image + Text Split -->
-    <section class="mb-24 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-      <div class="w-full lg:w-1/2 grid grid-cols-2 gap-4">
-        <img
-          src="https://picsum.photos/seed/huerta-donar/600/800"
-          alt={t('donarPage.huertaImageAlt')}
-          class="rounded-3xl shadow-airbnb w-full h-full object-cover aspect-3/4"
-          referrerpolicy="no-referrer"
-        />
-        <img
-          src="https://picsum.photos/seed/templo-donar/600/800"
-          alt={t('donarPage.temploImageAlt')}
-          class="rounded-3xl shadow-airbnb w-full h-full object-cover aspect-3/4 mt-8"
-          referrerpolicy="no-referrer"
-        />
+  <!-- Image + Text Split -->
+  <section class="bg-sand-deep py-20 md:py-28">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-12 lg:gap-x-20 items-center">
+      <div class="lg:col-span-6 story-media">
+        <div class="story-media__arch arch parallax shimmer" data-reveal="mask">
+          <img
+            src="https://picsum.photos/seed/huerta-donar/600/800"
+            alt={t('donarPage.huertaImageAlt')}
+            class="w-full h-full object-cover"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+          />
+        </div>
+        <div class="story-media__inset shimmer" data-reveal>
+          <img
+            src="https://picsum.photos/seed/templo-donar/600/800"
+            alt={t('donarPage.temploImageAlt')}
+            class="w-full h-full object-cover"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+          />
+        </div>
       </div>
 
-      <div class="w-full lg:w-1/2 space-y-6 lg:space-y-8">
-        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display text-near-black leading-tight">
+      <div class="lg:col-span-6" data-reveal-group>
+        <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+        <h2 class="display-md font-bold font-display text-near-black">
           {t('donarPage.storyHeadingLine1')}<br />{t('donarPage.storyHeadingLine2')}
         </h2>
-        <p class="text-lg text-gray-500 leading-relaxed max-w-lg">
+        <p class="mt-6 text-lg md:text-xl text-secondary-gray leading-relaxed max-w-lg">
           {t('donar.storyText1')}
         </p>
-        <p class="text-lg text-gray-500 leading-relaxed max-w-lg">
+        <p class="mt-4 text-lg md:text-xl text-secondary-gray leading-relaxed max-w-lg">
           {t('donar.storyText2')}
         </p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- CTA Banner -->
-    <section id="donar" class="bg-near-black rounded-[32px] md:rounded-[40px] p-8 md:p-16 lg:p-24 text-white flex flex-col lg:flex-row items-center justify-between gap-12 overflow-hidden relative shadow-airbnb text-center lg:text-left">
-      <div class="space-y-8 z-10 max-w-2xl">
-        <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tightest">
+  <!-- CTA Banner: sección oscura pegada al footer (-mb-20 anula su margen) -->
+  <section id="donar" class="on-dark -mb-20 pt-20 md:pt-28 overflow-hidden scroll-mt-24">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 grid grid-cols-1 lg:grid-cols-12 gap-y-14 gap-x-12 items-end">
+      <div class="lg:col-span-7 pb-0 lg:pb-28">
+        <h2 class="display-lg font-bold font-display text-white">
           {t('donar.ctaBannerTitle')}
         </h2>
-        <p class="text-gray-400 text-lg md:text-xl leading-relaxed">
+        <p class="mt-6 text-sacred-sand/75 text-lg md:text-xl leading-relaxed max-w-xl">
           {t('donar.ctaBannerText')}
         </p>
-        <div class="flex flex-wrap gap-4 md:gap-6 justify-center lg:justify-start">
+        <div class="flex flex-wrap gap-3 mt-10">
           <a
             href={import.meta.env.PUBLIC_DONATION_URL || '#'}
-            class="w-full sm:w-auto bg-rausch hover:bg-rausch-dark text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-lg transition-all duration-300 hover:shadow-lg active:scale-95 inline-block text-center"
+            class="btn btn-lg btn-light btn-arrow w-full sm:w-auto"
           >
             {t('donar.ctaBannerDonate')}
           </a>
           <a
             href={l('/nosotros')}
-            class="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/20 px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-lg transition-all duration-300 inline-block text-center"
+            class="btn btn-lg btn-outline btn-outline-light w-full sm:w-auto"
           >
             {t('donar.ctaBannerMore')}
           </a>
         </div>
       </div>
 
-      <div class="relative w-full lg:w-1/2 aspect-video rounded-3xl overflow-hidden shadow-airbnb rotate-0 lg:rotate-2 hover:rotate-0 transition-transform duration-500">
-        <img
-          src="https://picsum.photos/seed/donar-cta/1200/750"
-          alt={t('donarPage.comunidadImageAlt')}
-          class="w-full h-full object-cover"
-          referrerpolicy="no-referrer"
-        />
+      <div class="lg:col-span-5">
+        <div class="arch shimmer aspect-4/5 w-full max-w-xs lg:max-w-sm mx-auto lg:ml-auto lg:mr-0">
+          <img
+            src="https://picsum.photos/seed/donar-cta/1200/750"
+            alt={t('donarPage.comunidadImageAlt')}
+            class="w-full h-full object-cover"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+          />
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-  </main>
 </Layout>
 
 <style>
-  h1, h2, h3 {
+  h3 {
     letter-spacing: -0.02em;
+  }
+
+  /* Arco protagonista + una foto menor que se le apoya: reemplaza la
+     pareja de fotos desfasadas. */
+  .story-media {
+    position: relative;
+    padding: 0 3rem 3rem 0;
+    max-width: 30rem;
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .story-media__arch {
+    aspect-ratio: 4 / 5;
+  }
+
+  .story-media__inset {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 44%;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 0 6px var(--color-sand-deep);
+  }
+
+  /* Secundario sobre fondo oscuro: no existe en el sistema compartido. */
+  .btn-outline-light {
+    border-color: rgb(250 249 246 / 0.4);
+    color: var(--color-sacred-sand);
+  }
+  .btn-outline-light:hover,
+  .btn-outline-light:active {
+    background: var(--color-lotus-white);
+    border-color: var(--color-lotus-white);
+    color: var(--color-forest-night);
+  }
+  .btn-outline-light:focus-visible {
+    outline-color: var(--color-lotus-white);
   }
 </style>

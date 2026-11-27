@@ -183,18 +183,22 @@ components:
 
 The Varsana design system evolves the warm, photography-forward foundation of Airbnb into a **Spiritual Sanctuary**. It maintains the clean, airy feel of a travel magazine but infuses it with a "soulful" atmosphere inspired by Hindu tradition, yoga, and wellness.
 
-The foundation shifts from pure white to **Sacred Sand** (`#FAF9F6`) — a warmer, more organic off-white that reduces digital glare and feels like natural linen. The iconic **Rausch Red** (`#52185B`) anchors primary actions, while **Saffron Wisdom** (`#F7941E`) and **Forest Prana** (`#779B05`) represent spiritual energy and nature.
+The foundation shifts from pure white to **Sacred Sand** (`#FAF9F6`) — a warmer, more organic off-white that reduces digital glare and feels like natural linen. **Forest** anchors every action: buttons are Forest Dark (`#5A7A04`) with white text and deepen to Forest Deep (`#435C03`) on hover and press — white on Forest Prana (`#779B05`) fails AA, so the base green is never a button fill. **Saffron Wisdom** (`#F7941E`) is the only "light" in the palette (accent words, rules, labels; Saffron Deep `#AD5600` on light backgrounds). **Rausch** (`#52185B`) is reserved for the logo, text links and small labels — never a button or a background.
 
 **Key Characteristics:**
 - **Sacred Sand Canvas** — softer, more organic feel than pure white
 - **Dual Typography** — Proza Libre for soulful headings, Inter for crisp body text
 - **Spiritual Accents** — Saffron for highlights and yoga tags, Forest for nature and volunteering
 - **Organic Geometry** — 24–32px border-radius and subtle squircle shapes
+- **The Threshold (El umbral)** — the half-round arch of Varsana's domes is the signature shape: one protagonist image per section sits in an arch (`.arch`, `.arch-wide`); cards stay rectangular
+- **Dark Sections** — Forest Night (`#17230F`) with sand text (`.on-dark`) instead of colored backgrounds
 - **Breathable Spacing** — increased whitespace (~20% more than standard layouts) for calm
-- **Slow Transitions** — 0.6–0.8s ease-in-out for graceful, soothing motion
+- **Slow Transitions** — 0.3s for controls, 0.6–0.9s for reveals; scroll reveals (`data-reveal`) are CSS + one IntersectionObserver and stay static under `prefers-reduced-motion`
 
 ## Using This Design System
 
 The YAML frontmatter above is the **machine-readable single source of truth** for design tokens. It generates `src/styles/design-tokens.css` via `npm run export:theme`. Never edit that CSS file by hand.
+
+Shared classes built on these tokens live in `src/styles/global.css` (`.btn` and variants, `.arch`, `.on-dark`, `.eyebrow`, `.display-*`, `.accent`, the reveal system). Use them instead of repeating utility strings. `npm run lint:design` validates this file (structure, references, AA contrast of every component).
 
 For detailed implementation guidance — color roles, typography hierarchy, component specs, layout principles, and do's/don'ts — see [`.agents/design-guidelines/SKILL.md`](.agents/design-guidelines/SKILL.md).

@@ -8,28 +8,28 @@ const { type = 'info', title } = Astro.props;
 
 const variants = {
   info: {
-    border: 'border-l-rausch',
-    bg: 'bg-rausch/5',
-    icon: 'text-rausch',
+    border: 'border-l-forest-night',
+    bg: 'bg-sand-deep',
+    icon: 'text-forest-night',
   },
   tip: {
-    border: 'border-l-forest',
-    bg: 'bg-forest/5',
-    icon: 'text-forest',
+    border: 'border-l-forest-dark',
+    bg: 'bg-forest/10',
+    icon: 'text-forest-deep',
   },
   warning: {
     border: 'border-l-saffron',
-    bg: 'bg-saffron/5',
-    icon: 'text-saffron',
+    bg: 'bg-saffron/10',
+    icon: 'text-saffron-deep',
   },
 };
 
 const v = variants[type];
 ---
 
-<div class={`border-l-4 ${v.border} ${v.bg} rounded-[16px] p-6 my-8`}>
+<div class={`border-l-2 ${v.border} ${v.bg} rounded-r-2xl p-6 md:p-8 my-8`}>
   {title && (
-    <p class="font-bold text-base text-near-black mb-2">{title}</p>
+    <p class="font-bold font-display text-lg text-near-black mb-2">{title}</p>
   )}
   <div class="text-secondary-gray text-base leading-relaxed">
     <slot />

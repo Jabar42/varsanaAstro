@@ -39,8 +39,7 @@ The DESIGN.md YAML frontmatter is the single source of truth for design tokens. 
 | Command | Purpose |
 |---------|---------|
 | `npm run export:theme` | Regenerate `src/styles/design-tokens.css` from DESIGN.md |
-| `npm run export:theme:tailwind` | Export Tailwind v3 JSON snapshot to `src/styles/tailwind.theme.json` |
-| `npm run lint:design` | Lint DESIGN.md for structural errors and WCAG contrast warnings |
+| `npm run lint:design` | Lint DESIGN.md: structure, token references and WCAG AA contrast of every component |
 
 **When to regenerate tokens:**
 - After adding or renaming a color in DESIGN.md
@@ -54,7 +53,10 @@ The DESIGN.md YAML frontmatter is the single source of truth for design tokens. 
 
 | Aspect | Key Values |
 |--------|------------|
-| Primary Brand | Rausch Red (`#52185B`), Saffron Wisdom (`#F7941E`), Forest Prana (`#779B05`) |
+| Primary Brand | Forest (`#779B05`; buttons Forest Dark `#5A7A04`, hover Forest Deep `#435C03`), Saffron Wisdom (`#F7941E`; Saffron Deep `#AD5600` for text on light), Rausch (`#52185B`; logo, text links and small labels only) |
+| Buttons | `.btn` (+ `.btn-outline`, `.btn-light`, `.btn-sm`, `.btn-lg`, `.btn-block`, `.btn-arrow`) from `src/styles/global.css` — always green, never purple |
+| Signature | Half-round arch (`.arch`, `.arch-wide`) for one protagonist image per section; dark sections use `.on-dark` (Forest Night `#17230F`) |
+| Motion | `data-reveal` / `data-reveal-group` (rise, `fade`, `mask`, `draw`); static under `prefers-reduced-motion` |
 | Neutral Scale | Near Black (`#222222`), Secondary Gray (`#6A6A6A`), Sacred Sand (`#FAF9F6`), Lotus White (`#FFFFFF`) |
 | Fonts | **Headings:** Proza Libre (`--font-display`), **UI & Body:** Inter (`--font-sans`) |
 | Card Radius | 24px–32px (`--radius-md` / `--radius-lg`) |
@@ -70,9 +72,10 @@ The DESIGN.md YAML frontmatter is the single source of truth for design tokens. 
 
 - Use Sacred Sand as the default page background — never pure white for large surfaces
 - Pair Proza Libre headings with Inter body text — never mix font roles
-- Apply the Airbnb shadow to all elevated cards and containers
+- Give cards a hairline border and reserve the Airbnb shadow for hover and truly elevated containers
 - Maintain the 8px spacing rhythm — all spacing values should be multiples of 8px
-- Favor slow 0.6–0.8s ease-in-out transitions over abrupt changes
+- Favor slow transitions: 0.3s on controls, 0.6–0.9s on reveals
+- Use the shared `.btn` classes for every button; use `.btn-light` over photos and dark sections
 - Use organic Lucide icons (Leaf, Flower2, Sun) over geometric or technical ones
 - Ensure 44px minimum touch targets on mobile
 - Bump vertical spacing ~20% above what feels "standard" — the design should breathe
@@ -80,7 +83,10 @@ The DESIGN.md YAML frontmatter is the single source of truth for design tokens. 
 ### Don't
 
 - Don't use pure black (`#000`) for text — Near Black (`#222222`) is the darkest allowed value
-- Don't use Rausch Red for large background areas — reserve it for CTAs and accent moments
+- Don't use Rausch for buttons or backgrounds — it belongs to the logo, text links and small labels
+- Don't put white text on Forest Prana (`#779B05`) — it fails AA; use Forest Dark or Forest Deep
+- Don't use Saffron (`#F7941E`) for text on light backgrounds — use Saffron Deep
+- Don't turn card grids or galleries into arches — one arch per section
 - Don't mix more than two brand colors (Rausch, Saffron, Forest) in a single view
 - Don't use border-radius below 16px for buttons — 16px is the minimum
 - Don't use fast transitions (under 0.3s) — the brand feels slow, graceful, and deliberate

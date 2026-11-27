@@ -34,31 +34,31 @@ const getSocialIcon = (platform: string) => {
 };
 ---
 
-<article class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
-  <a href={l(`/nosotros/${member.id}`)} class="block">
-  <div class="aspect-square overflow-hidden relative shimmer">
-    <img
-      src={imagen}
-      alt={nombre}
-      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-      referrerpolicy="no-referrer"
-      loading="lazy"
-    />
-  </div>
-
-  <div class="p-6">
-    <div class="space-y-1">
-      <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{nombre}</h3>
-      <p class="text-sm text-saffron font-semibold uppercase tracking-wider truncate">{rol}</p>
+<article class="card group">
+  <a href={l(`/nosotros/${member.id}`)} class="card__link">
+    <div class="card__media shimmer">
+      <img
+        src={imagen}
+        alt={nombre}
+        class="card__image"
+        referrerpolicy="no-referrer"
+        loading="lazy"
+      />
     </div>
 
-    <p class="text-gray-600 line-clamp-3 text-sm leading-relaxed mt-3">
-      {descripcion.slice(0, 150)}{descripcion.length > 150 ? '...' : ''}
-    </p>
+    <div class="px-6 pt-6 space-y-2">
+      <p class="text-xs text-saffron-deep font-semibold uppercase tracking-[0.14em] line-clamp-2">{rol}</p>
+      <h3 class="text-2xl font-bold leading-tight font-display">{nombre}</h3>
+      <p class="text-secondary-gray line-clamp-3 text-sm leading-relaxed pt-1">
+        {descripcion.slice(0, 150)}{descripcion.length > 150 ? '...' : ''}
+      </p>
+    </div>
+  </a>
 
+  <div class="px-6 pb-6 pt-4 mt-auto">
     {/* Social links */}
     {enlaces_sociales && enlaces_sociales.length > 0 && (
-      <div class="flex items-center gap-3 pt-2">
+      <div class="flex items-center gap-2 -ml-2">
         {enlaces_sociales.map((enlace) => {
           const Icon = getSocialIcon(enlace.plataforma);
           return (
@@ -66,7 +66,7 @@ const getSocialIcon = (platform: string) => {
               href={enlace.url}
               target="_blank"
               rel="noopener noreferrer"
-              class="text-gray-400 hover:text-saffron transition-colors"
+              class="w-9 h-9 rounded-full flex items-center justify-center text-secondary-gray hover:bg-forest/10 hover:text-forest-deep transition-colors duration-300"
               title={enlace.plataforma}
             >
               <Icon size={18} />
@@ -78,27 +78,83 @@ const getSocialIcon = (platform: string) => {
 
     {/* Contact info */}
     {(correo || telefono) && (
-    <div class="pt-3 mt-1 border-t border-sacred-sand space-y-2">
+    <div class="pt-4 mt-3 border-t border-near-black/10 space-y-2">
       {correo && (
-        <div class="flex items-center gap-2 text-sm text-gray-600">
-          <Mail size={14} className="text-saffron" />
-          <a href={`mailto:${correo}`} class="hover:text-saffron">{correo}</a>
+        <div class="flex items-center gap-2 text-sm text-secondary-gray">
+          <Mail size={14} className="text-saffron-deep shrink-0" />
+          <a href={`mailto:${correo}`} class="hover:text-forest-deep transition-colors break-all">{correo}</a>
         </div>
       )}
       {telefono && (
-        <div class="flex items-center gap-2 text-sm text-gray-600">
-          <Phone size={14} className="text-saffron" />
-          <a href={`tel:${telefono}`} class="hover:text-saffron">{telefono}</a>
+        <div class="flex items-center gap-2 text-sm text-secondary-gray">
+          <Phone size={14} className="text-saffron-deep shrink-0" />
+          <a href={`tel:${telefono}`} class="hover:text-forest-deep transition-colors">{telefono}</a>
         </div>
       )}
     </div>
     )}
   </div>
-  </a>
 </article>
 
 <style>
+  /* Misma familia que EventCard: radio 24px, borde sutil, hover que eleva.
+     El enlace al perfil cubre foto y texto; redes y contacto quedan fuera
+     (HTML no admite un <a> dentro de otro). */
+  .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-lotus-white);
+    box-shadow: 0 0 0 1px rgb(34 34 34 / 0.06);
+    transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 0 1px rgb(34 34 34 / 0.06), 0 28px 48px -28px rgb(23 35 15 / 0.45);
+  }
+
+  .card__link {
+    display: block;
+  }
+
+  .card__link:focus-visible {
+    outline-offset: -3px;
+    border-radius: var(--radius-md);
+  }
+
+  .card__media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+
+  .card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  .card:hover .card__image {
+    transform: scale(1.06);
+  }
+
   h3 {
     letter-spacing: -0.02em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .card__image {
+      transition: none;
+    }
+    .card:hover,
+    .card:hover .card__image {
+      transform: none;
+    }
   }
 </style>

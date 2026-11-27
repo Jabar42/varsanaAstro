@@ -47,55 +47,58 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
     <meta name="twitter:card" content="summary_large_image" />
   </Fragment>
 
-  <div class="max-w-7xl mx-auto px-0 md:px-12 lg:px-20 py-0 md:py-8">
-    <!-- Photography-first Header -->
-    <div class="md:rounded-[24px] overflow-hidden relative h-75 md:h-125 lg:h-150 shadow-airbnb">
-      <img
-        src={image}
-        alt={title}
-        class="w-full h-full object-cover"
-        referrerpolicy="no-referrer"
-      />
-    </div>
+  <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-10 pb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-[auto_1fr] gap-x-12 xl:gap-x-16 gap-y-10">
+      <!-- Photography-first Header: la foto se mira a través del arco -->
+      <div class="lg:col-start-8 lg:col-span-5 lg:row-start-1">
+        <div class="arch shimmer aspect-4/5 max-h-[34rem] w-full mx-auto bg-forest-night">
+          <img
+            src={image}
+            alt={title}
+            class="w-full h-full object-cover"
+            referrerpolicy="no-referrer"
+          />
+        </div>
+      </div>
 
-    <div class="px-6 md:px-0 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
       <!-- Main Content Column -->
-      <div class="lg:col-span-2 space-y-8">
-        <div class="border-b border-sacred-sand pb-8">
-          <h1 class="text-4xl md:text-6xl font-bold tracking-tightest mb-4 font-display">{title}</h1>
-          <div class="flex flex-wrap gap-6 text-sm font-medium">
+      <div class="lg:col-start-1 lg:col-span-7 lg:row-start-1 lg:row-span-2 space-y-10">
+        <div class="lg:pt-10">
+          <span class="rule-saffron mb-8" aria-hidden="true"></span>
+          <h1 class="display-xl font-bold font-display text-near-black">{title}</h1>
+          <div class="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm font-medium">
             <div class="flex items-center gap-2">
-              <Calendar size={18} className="text-saffron" />
+              <Calendar size={18} className="text-saffron-deep shrink-0" />
               <span>{formattedStart}{formattedEnd ? ` — ${formattedEnd}` : ''}</span>
             </div>
             <div class="flex items-center gap-2">
-              <MapPin size={18} className="text-saffron" />
+              <MapPin size={18} className="text-saffron-deep shrink-0" />
               <span>{location}</span>
             </div>
           </div>
         </div>
 
         <!-- Countdown -->
-        <div class="border-b border-sacred-sand pb-8" id="event-countdown" data-event-date={event_start.toISOString()} data-locale={locale} style="display:none">
-          <p class="text-sm font-semibold text-secondary-gray mb-2">{t('eventDetail.countdownTitle')}</p>
-          <div class="flex gap-4 text-center">
-            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-days">00</span><p class="text-xs text-secondary-gray">{t('eventDetail.days')}</p></div>
-            <span class="text-2xl font-bold text-sacred-sand">:</span>
-            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-hours">00</span><p class="text-xs text-secondary-gray">{t('eventDetail.hours')}</p></div>
-            <span class="text-2xl font-bold text-sacred-sand">:</span>
-            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-mins">00</span><p class="text-xs text-secondary-gray">{t('eventDetail.mins')}</p></div>
-            <span class="text-2xl font-bold text-sacred-sand">:</span>
-            <div><span class="text-3xl font-bold font-display text-rausch" id="cd-secs">00</span><p class="text-xs text-secondary-gray">{t('eventDetail.secs')}</p></div>
+        <div class="bg-sand-deep rounded-3xl p-6 md:p-8" id="event-countdown" data-event-date={event_start.toISOString()} data-locale={locale} style="display:none">
+          <p class="eyebrow mb-4">{t('eventDetail.countdownTitle')}</p>
+          <div class="flex gap-4 md:gap-6 text-center">
+            <div><span class="text-3xl md:text-4xl font-bold font-display text-forest-deep tabular-nums" id="cd-days">00</span><p class="text-xs text-secondary-gray mt-1">{t('eventDetail.days')}</p></div>
+            <span class="text-2xl md:text-3xl font-bold text-near-black/20">:</span>
+            <div><span class="text-3xl md:text-4xl font-bold font-display text-forest-deep tabular-nums" id="cd-hours">00</span><p class="text-xs text-secondary-gray mt-1">{t('eventDetail.hours')}</p></div>
+            <span class="text-2xl md:text-3xl font-bold text-near-black/20">:</span>
+            <div><span class="text-3xl md:text-4xl font-bold font-display text-forest-deep tabular-nums" id="cd-mins">00</span><p class="text-xs text-secondary-gray mt-1">{t('eventDetail.mins')}</p></div>
+            <span class="text-2xl md:text-3xl font-bold text-near-black/20">:</span>
+            <div><span class="text-3xl md:text-4xl font-bold font-display text-forest-deep tabular-nums" id="cd-secs">00</span><p class="text-xs text-secondary-gray mt-1">{t('eventDetail.secs')}</p></div>
           </div>
         </div>
 
         <!-- Host Info -->
-        <div class="flex items-center justify-between border-b border-sacred-sand pb-8">
+        <div class="flex items-center justify-between gap-6 border-y border-near-black/10 py-6">
           <div class="space-y-1">
-            <h2 class="text-2xl font-bold font-display">{t('eventDetail.organizedBy', { host: host_name })}</h2>
+            <h2 class="text-xl md:text-2xl font-bold font-display">{t('eventDetail.organizedBy', { host: host_name })}</h2>
             <p class="text-secondary-gray text-sm">{host_tagline}</p>
           </div>
-          <div class="w-14 h-14 bg-sacred-sand rounded-full flex items-center justify-center overflow-hidden">
+          <div class="w-14 h-14 shrink-0 bg-sand-deep rounded-full flex items-center justify-center overflow-hidden">
              <img src={host_image || '/logo/LogoPrincipal.svg'} alt={t('eventDetail.hostImageAlt', { host: host_name })} class="w-full h-full object-cover" />
           </div>
         </div>
@@ -108,23 +111,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
       </div>
 
       <!-- Sticky Price Card Column -->
-      <div class="relative">
-        <div class="sticky top-28 bg-lotus-white border border-sacred-sand rounded-[24px] p-6 shadow-airbnb space-y-6">
+      <div class="relative lg:col-start-8 lg:col-span-5 lg:row-start-2">
+        <div class="sticky top-28 bg-lotus-white ring-1 ring-near-black/5 rounded-3xl p-6 md:p-8 space-y-6">
           <div>
-            <span class="text-3xl font-bold tracking-tightest font-display">${basePrice ? basePrice.amount.toLocaleString(numberLocale) : '—'}</span>
+            <span class="text-3xl md:text-4xl font-bold font-display">${basePrice ? basePrice.amount.toLocaleString(numberLocale) : '—'}</span>
             <span class="text-secondary-gray text-base font-normal">{t('events.perPerson')}</span>
           </div>
 
           <!-- Booking Details Box -->
-          <div class="border border-sacred-sand rounded-xl overflow-hidden">
-            <div class="grid grid-cols-2 border-b border-sacred-sand">
-              <div class="p-3 border-r border-sacred-sand">
-                <p class="text-xs font-bold uppercase">{t('events.date')}</p>
-                <p class="text-sm">{shortStart}</p>
+          <div class="border border-near-black/10 rounded-2xl overflow-hidden">
+            <div class="grid grid-cols-2">
+              <div class="p-4 border-r border-near-black/10">
+                <p class="text-xs font-bold uppercase tracking-wide text-secondary-gray">{t('events.date')}</p>
+                <p class="text-sm mt-1">{shortStart}</p>
               </div>
-              <div class="p-3">
-                <p class="text-xs font-bold uppercase">{t('events.spots')}</p>
-                <p class="text-sm">{t('eventDetail.people', { n: stock_max })}</p>
+              <div class="p-4">
+                <p class="text-xs font-bold uppercase tracking-wide text-secondary-gray">{t('events.spots')}</p>
+                <p class="text-sm mt-1">{t('eventDetail.people', { n: stock_max })}</p>
               </div>
             </div>
           </div>
@@ -201,8 +204,3 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://varsana.
   document.addEventListener('astro:before-swap', stopCountdown);
 </script>
 
-<style>
-  h1, h2, h3, h4 {
-    letter-spacing: -0.02em;
-  }
-</style>
