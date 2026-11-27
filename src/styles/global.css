@@ -153,14 +153,16 @@
      Familia forest. Los estados viven aquí: no repetir hover/focus
      en cada página. */
   .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.625rem;
     min-height: 3rem;
     padding: 0.875rem 1.75rem;
+    overflow: hidden;
     border: 1.5px solid transparent;
-    border-radius: var(--radius-DEFAULT);
+    border-radius: var(--radius-full);
     font-family: var(--font-sans);
     font-size: 1rem;
     font-weight: 600;
@@ -168,8 +170,17 @@
     text-align: center;
     text-decoration: none;
     cursor: pointer;
-    background: var(--color-forest-dark);
+    /* Relieve: el degradado solo oscurece hacia abajo (el contraste del
+       texto nunca baja del que valida DESIGN.md), filo de luz arriba y
+       sombra corta debajo. */
+    background-color: var(--color-forest-dark);
+    background-image: linear-gradient(to bottom, rgb(23 35 15 / 0), rgb(23 35 15 / 0.2));
+    background-origin: border-box;
     color: var(--color-lotus-white);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      0 1px 1px rgb(23 35 15 / 0.25),
+      0 6px 14px -8px rgb(23 35 15 / 0.55);
     transition:
       background-color 0.3s var(--ease-out),
       color 0.3s var(--ease-out),
@@ -177,14 +188,37 @@
       box-shadow 0.3s var(--ease-out),
       transform 0.3s var(--ease-out);
   }
+  /* Destello azafrán: cruza el botón una vez al entrar el cursor. La
+     transición vive solo en :hover, así al salir vuelve sin verse. */
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 38%,
+      color-mix(in srgb, var(--color-saffron-light) 55%, transparent) 50%,
+      transparent 62%
+    );
+    transform: translateX(-110%);
+    pointer-events: none;
+  }
+  .btn:hover::before {
+    transform: translateX(110%);
+    transition: transform 0.9s var(--ease-out);
+  }
   .btn:hover {
-    background: var(--color-forest-deep);
-    box-shadow: 0 10px 24px -12px rgb(23 35 15 / 0.55);
+    background-color: var(--color-forest-deep);
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      0 2px 2px rgb(23 35 15 / 0.2),
+      0 14px 24px -12px rgb(23 35 15 / 0.6);
   }
   .btn:active {
-    background: var(--color-forest-deep);
-    transform: scale(0.98);
-    box-shadow: none;
+    background-color: var(--color-forest-deep);
+    transform: translateY(0) scale(0.98);
+    box-shadow: inset 0 2px 4px rgb(23 35 15 / 0.35);
   }
   .btn:focus-visible {
     outline: 2px solid var(--color-forest-dark);
@@ -192,33 +226,44 @@
   }
   .btn:disabled,
   .btn[aria-disabled="true"] {
-    background: var(--color-light-surface);
+    background-color: var(--color-light-surface);
+    background-image: none;
     border-color: transparent;
     color: var(--color-secondary-gray);
     cursor: not-allowed;
     box-shadow: none;
     transform: none;
   }
+  .btn:disabled::before,
+  .btn[aria-disabled="true"]::before {
+    content: none;
+  }
 
   .btn-outline {
-    background: transparent;
+    --disc: var(--color-forest-dark);
+    background-color: transparent;
+    background-image: none;
     border-color: var(--color-forest-dark);
     color: var(--color-forest-dark);
+    box-shadow: none;
   }
   .btn-outline:hover,
   .btn-outline:active {
-    background: var(--color-forest-dark);
+    --disc: var(--color-saffron);
+    background-color: var(--color-forest-dark);
     color: var(--color-lotus-white);
   }
 
   /* Sobre fotos y fondos oscuros */
   .btn-light {
-    background: var(--color-lotus-white);
+    --disc: var(--color-forest-dark);
+    background-color: var(--color-lotus-white);
+    background-image: linear-gradient(to bottom, rgb(23 35 15 / 0), rgb(23 35 15 / 0.07));
     color: var(--color-forest-night);
   }
   .btn-light:hover,
   .btn-light:active {
-    background: var(--color-sacred-sand);
+    background-color: var(--color-sacred-sand);
     color: var(--color-forest-deep);
   }
   .btn-light:focus-visible {
@@ -226,11 +271,13 @@
   }
 
   .btn-sm {
+    --disc-size: 1.625rem;
     min-height: 2.75rem;
     padding: 0.625rem 1.25rem;
     font-size: 0.875rem;
   }
   .btn-lg {
+    --disc-size: 2.25rem;
     min-height: 3.5rem;
     padding: 1rem 2.25rem;
     font-size: 1.0625rem;
@@ -239,20 +286,31 @@
     width: 100%;
   }
 
-  /* Flecha que avanza al pasar el cursor (máscara: no agrega texto) */
+  /* Flecha en disco: un círculo con la flecha calada (máscara: no agrega
+     texto y el color sale de los tokens). Avanza al pasar el cursor. */
+  .btn-arrow {
+    padding-right: 0.5rem;
+  }
   .btn-arrow::after {
     content: "";
-    width: 1.125rem;
-    height: 1.125rem;
+    width: var(--disc-size, 2rem);
+    height: var(--disc-size, 2rem);
     flex: none;
-    background: currentColor;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E")
-      center / contain no-repeat;
-    transition: transform 0.3s var(--ease-out);
+    margin-block: -0.5rem;
+    border-radius: 50%;
+    background: var(--disc, var(--color-saffron));
+    mask:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E")
+        center / 54% no-repeat,
+      linear-gradient(#000, #000);
+    mask-composite: exclude;
+    transition:
+      transform 0.4s var(--ease-out),
+      background-color 0.3s var(--ease-out);
   }
   .btn-arrow:hover::after,
   .group:hover .btn-arrow::after {
-    transform: translateX(4px);
+    transform: translateX(3px) rotate(-45deg);
   }
 
   /* ── El arco ─────────────────────────────────────────────────
@@ -490,6 +548,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn:hover,
+  .btn:active {
+    transform: none;
+  }
+  .btn::before {
+    content: none;
+  }
   .shimmer {
     animation: none;
   }

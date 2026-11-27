@@ -78,31 +78,42 @@ const siteUrl = Astro.site?.origin || 'https://varsana.com';
 )}
 
 <style>
-  /* Marco: el arco queda inscrito en un panel; las enjutas (las dos esquinas
-     de arriba) llevan anillos concéntricos al arco en vez de quedar vacías. */
+  /* Halo: tres líneas azafrán acompañan la curva del arco sobre la arena,
+     cada vez más tenues hacia afuera, y se desvanecen hacia la base. El
+     margen del marco es el espacio que ocupan: nunca salen de la columna. */
   .page-banner-frame {
+    --halo: clamp(0.875rem, 2.6vw, 2.25rem);
     --r: min(50cqw, 15rem);
-    --ring: color-mix(in srgb, var(--color-saffron) 55%, transparent);
+    --k: 0.25;
     position: relative;
     container-type: inline-size;
-    background-color: var(--frame-bg, var(--color-forest-night));
+    padding: var(--halo) var(--halo) 0;
   }
 
-  .page-banner-frame__rings {
+  .page-banner-frame__rings,
+  .page-banner-frame__rings::before,
+  .page-banner-frame__rings::after {
     position: absolute;
-    inset: 0;
+    inset: var(--i) var(--i) 0;
+    border: 1.5px solid color-mix(in srgb, var(--color-saffron) var(--a), transparent);
+    border-bottom: 0;
+    border-radius: calc(var(--r) + var(--halo) - var(--i)) calc(var(--r) + var(--halo) - var(--i)) 0 0;
     pointer-events: none;
-    --rings:
-      transparent calc(var(--r) + 0.8rem + var(--w1)),
-      var(--ring) calc(var(--r) + 0.8rem + var(--w1) + 0.5px) calc(var(--r) + 0.8rem + var(--w1) + 1.5px),
-      transparent calc(var(--r) + 0.8rem + var(--w1) + 2px) calc(var(--r) + 1.9rem + var(--w2)),
-      var(--ring) calc(var(--r) + 1.9rem + var(--w2) + 0.5px) calc(var(--r) + 1.9rem + var(--w2) + 1.5px),
-      transparent calc(var(--r) + 1.9rem + var(--w2) + 2px) calc(var(--r) + 3.3rem + var(--w3)),
-      var(--ring) calc(var(--r) + 3.3rem + var(--w3) + 0.5px) calc(var(--r) + 3.3rem + var(--w3) + 1.5px),
-      transparent calc(var(--r) + 3.3rem + var(--w3) + 2px);
-    background:
-      radial-gradient(circle at var(--r) var(--r), var(--rings)) left top / 50% 100% no-repeat,
-      radial-gradient(circle at calc(100% - var(--r)) var(--r), var(--rings)) right top / 50% 100% no-repeat;
+  }
+  .page-banner-frame__rings {
+    --i: calc(var(--w3) * var(--k));
+    --a: 30%;
+    mask-image: linear-gradient(to bottom, #000 30%, transparent 85%);
+  }
+  .page-banner-frame__rings::before {
+    content: "";
+    --i: calc(var(--halo) * 0.3 + var(--w2) * var(--k));
+    --a: 55%;
+  }
+  .page-banner-frame__rings::after {
+    content: "";
+    --i: calc(var(--halo) * 0.62 + var(--w1) * var(--k));
+    --a: 90%;
   }
 
   .page-banner-frame > .page-banner {

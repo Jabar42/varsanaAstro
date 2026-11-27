@@ -60,7 +60,7 @@ The DESIGN.md YAML frontmatter is the single source of truth for design tokens. 
 | Neutral Scale | Near Black (`#222222`), Secondary Gray (`#6A6A6A`), Sacred Sand (`#FAF9F6`), Lotus White (`#FFFFFF`) |
 | Fonts | **Headings:** Proza Libre (`--font-display`), **UI & Body:** Inter (`--font-sans`) |
 | Card Radius | 24px–32px (`--radius-md` / `--radius-lg`) |
-| Button Radius | 16px (`--radius-DEFAULT`) |
+| Button Radius | píldora (`--radius-full`), clase `.btn` |
 | Shadows | Airbnb-style layered shadow (`--shadow-airbnb`) |
 | Spacing | 8px base, vertical spacing inflated ~20% vs standard layouts |
 

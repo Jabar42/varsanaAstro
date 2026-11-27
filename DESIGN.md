@@ -94,43 +94,43 @@ components:
     backgroundColor: "{colors.forest-dark}"
     textColor: "{colors.lotus-white}"
     typography: button
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.full}"
     padding: "14px 28px"
   button-primary-hover:
     backgroundColor: "{colors.forest-deep}"
     textColor: "{colors.lotus-white}"
     typography: button
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.full}"
     padding: "14px 28px"
   button-primary-active:
     backgroundColor: "{colors.forest-deep}"
     textColor: "{colors.lotus-white}"
     typography: button
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.full}"
     padding: "14px 28px"
   button-primary-disabled:
     backgroundColor: "{colors.light-surface}"
     textColor: "{colors.secondary-gray}"
     typography: button
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.full}"
     padding: "14px 28px"
   button-secondary:
     backgroundColor: "{colors.sacred-sand}"
     textColor: "{colors.forest-dark}"
     typography: button
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.full}"
     padding: "14px 28px"
   button-secondary-hover:
     backgroundColor: "{colors.forest-dark}"
     textColor: "{colors.lotus-white}"
     typography: button
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.full}"
     padding: "14px 28px"
   button-on-dark:
     backgroundColor: "{colors.lotus-white}"
     textColor: "{colors.forest-night}"
     typography: button
-    rounded: "{rounded.DEFAULT}"
+    rounded: "{rounded.full}"
     padding: "14px 28px"
   surface-night:
     backgroundColor: "{colors.forest-night}"
