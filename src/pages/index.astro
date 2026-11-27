@@ -255,14 +255,14 @@ const discoveryCards = [
        se repite acá, con más especificidad, junto al ensanche del hover. */
     .colonnade .colonnade__arch {
       transition:
-        flex-grow 0.7s var(--ease-out),
+        flex 0.7s var(--ease-out),
         opacity 0.9s var(--ease-out) var(--rd, 0ms),
         transform 0.9s var(--ease-out) var(--rd, 0ms);
     }
 
     .colonnade__arch:hover,
     .colonnade__arch:focus-visible {
-      flex-grow: 1.7;
+      flex: 1.7 1 0;
     }
   }
 
