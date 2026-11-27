@@ -262,6 +262,33 @@
     overflow: hidden;
   }
 
+  /* Eco: una línea azafrán concéntrica acompaña a los arcos con foto, para
+     que el aire alrededor del arco sea parte de la pieza. El recorte abre
+     margen a los lados y arriba, y corta la línea en la base (arco abierto). */
+  .arch:where(.parallax, .shimmer) {
+    outline: 1.5px solid var(--color-saffron);
+    outline-offset: 0.625rem;
+    clip-path: inset(-1.5rem -1.5rem 0);
+  }
+
+  /* Cúpula: la sección oscura no empieza con un corte recto sino con una
+     curva que se monta sobre la sección anterior. */
+  .dome-top {
+    --dome: clamp(1.75rem, 6vw, 5.5rem);
+    position: relative;
+  }
+  .dome-top::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(100% - 1px);
+    height: var(--dome);
+    background: var(--color-forest-night);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    pointer-events: none;
+  }
+
   /* Palabra de acento en titulares */
   .accent {
     font-style: italic;
@@ -342,7 +369,7 @@
   html.js [data-reveal="mask"] {
     opacity: 1;
     transform: none;
-    clip-path: inset(100% 0 0 0);
+    clip-path: inset(100% -1.5rem 0);
     transition: clip-path 1.2s var(--ease-in-out) var(--rd, 0ms);
   }
   html.js [data-reveal="mask"] > img {
@@ -365,7 +392,7 @@
   html.js [data-reveal].is-in {
     opacity: 1;
     transform: none;
-    clip-path: inset(0 0 0 0);
+    clip-path: inset(-1.5rem -1.5rem 0);
   }
   html.js [data-reveal="mask"].is-in > img {
     transform: none;

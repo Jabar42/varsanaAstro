@@ -32,6 +32,8 @@ const siteUrl = Astro.site?.origin || 'https://varsana.com';
 
 <!-- Cúpula: la foto se mira a través de un arco ancho; el título se apoya
      abajo a la izquierda, como en el hero de inicio. -->
+<div class="page-banner-frame">
+<span class="page-banner-frame__rings" aria-hidden="true"></span>
 <header class="page-banner arch-wide shimmer">
   <img
     src={image}
@@ -57,6 +59,7 @@ const siteUrl = Astro.site?.origin || 'https://varsana.com';
     </p>
   </div>
 </header>
+</div>
 
 <!-- JSON-LD BreadcrumbList structured data -->
 {breadcrumb && breadcrumb.length > 0 && (
@@ -75,6 +78,37 @@ const siteUrl = Astro.site?.origin || 'https://varsana.com';
 )}
 
 <style>
+  /* Marco: el arco queda inscrito en un panel; las enjutas (las dos esquinas
+     de arriba) llevan anillos concéntricos al arco en vez de quedar vacías. */
+  .page-banner-frame {
+    --r: min(50cqw, 15rem);
+    --ring: color-mix(in srgb, var(--color-saffron) 55%, transparent);
+    position: relative;
+    container-type: inline-size;
+    background-color: var(--frame-bg, var(--color-forest-night));
+  }
+
+  .page-banner-frame__rings {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    --rings:
+      transparent calc(var(--r) + 0.8rem),
+      var(--ring) calc(var(--r) + 0.8rem + 0.5px) calc(var(--r) + 0.8rem + 1.5px),
+      transparent calc(var(--r) + 0.8rem + 2px) calc(var(--r) + 1.9rem),
+      var(--ring) calc(var(--r) + 1.9rem + 0.5px) calc(var(--r) + 1.9rem + 1.5px),
+      transparent calc(var(--r) + 1.9rem + 2px) calc(var(--r) + 3.3rem),
+      var(--ring) calc(var(--r) + 3.3rem + 0.5px) calc(var(--r) + 3.3rem + 1.5px),
+      transparent calc(var(--r) + 3.3rem + 2px);
+    background:
+      radial-gradient(circle at var(--r) var(--r), var(--rings)) left top / 50% 100% no-repeat,
+      radial-gradient(circle at calc(100% - var(--r)) var(--r), var(--rings)) right top / 50% 100% no-repeat;
+  }
+
+  .page-banner-frame > .page-banner {
+    border-radius: var(--r) var(--r) 0 0;
+  }
+
   .page-banner {
     position: relative;
     display: flex;

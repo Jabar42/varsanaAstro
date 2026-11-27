@@ -72,6 +72,7 @@ const hasMultiple = allItems.length > 1;
      lo escribe el script) abre el recorte de .hero-banner. -->
 <div class="hero" data-hero>
 <div class="hero__stage">
+<span class="hero__rings" aria-hidden="true"></span>
 <section class="hero-banner" data-hero-banner data-interval={String(interval)} aria-roledescription="carousel">
   {allItems.map((item, i) => (
     <div
@@ -277,6 +278,8 @@ const hasMultiple = allItems.length > 1;
 
   .hero__stage {
     position: relative;
+    container-type: inline-size;
+    background: var(--color-forest-night);
     height: calc(100svh - var(--hh, 6.5rem));
     min-height: 32rem;
     max-height: 62rem;
@@ -293,6 +296,30 @@ const hasMultiple = allItems.length > 1;
       position: sticky;
       top: var(--hh, 6.5rem);
     }
+  }
+
+  /* Enjutas: anillos concéntricos al arco en las esquinas que deja libres.
+     Se apagan a medida que el arco se abre. */
+  .hero__rings {
+    --r: calc(50cqw - 4vw);
+    --ring: color-mix(in srgb, var(--color-saffron) 55%, transparent);
+    --g1: clamp(0.9rem, 2.2cqw, 2rem);
+    --g2: clamp(2.1rem, 5cqw, 4.5rem);
+    --g3: clamp(3.6rem, 8.4cqw, 7.5rem);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: calc(1 - var(--p) * 1.6);
+    background: radial-gradient(
+      circle at 50% calc(1rem + var(--r)),
+      transparent calc(var(--r) + var(--g1)),
+      var(--ring) calc(var(--r) + var(--g1) + 0.5px) calc(var(--r) + var(--g1) + 1.5px),
+      transparent calc(var(--r) + var(--g1) + 2px) calc(var(--r) + var(--g2)),
+      var(--ring) calc(var(--r) + var(--g2) + 0.5px) calc(var(--r) + var(--g2) + 1.5px),
+      transparent calc(var(--r) + var(--g2) + 2px) calc(var(--r) + var(--g3)),
+      var(--ring) calc(var(--r) + var(--g3) + 0.5px) calc(var(--r) + var(--g3) + 1.5px),
+      transparent calc(var(--r) + var(--g3) + 2px)
+    );
   }
 
   .hero-banner {
