@@ -33,7 +33,7 @@ const siteUrl = Astro.site?.origin || 'https://varsana.com';
 <!-- Cúpula: la foto se mira a través de un arco ancho; el título se apoya
      abajo a la izquierda, como en el hero de inicio. -->
 <div class="page-banner-frame">
-<span class="page-banner-frame__rings" aria-hidden="true"></span>
+<span class="page-banner-frame__rings ripple" aria-hidden="true"></span>
 <header class="page-banner arch-wide shimmer">
   <img
     src={image}
@@ -93,13 +93,13 @@ const siteUrl = Astro.site?.origin || 'https://varsana.com';
     inset: 0;
     pointer-events: none;
     --rings:
-      transparent calc(var(--r) + 0.8rem),
-      var(--ring) calc(var(--r) + 0.8rem + 0.5px) calc(var(--r) + 0.8rem + 1.5px),
-      transparent calc(var(--r) + 0.8rem + 2px) calc(var(--r) + 1.9rem),
-      var(--ring) calc(var(--r) + 1.9rem + 0.5px) calc(var(--r) + 1.9rem + 1.5px),
-      transparent calc(var(--r) + 1.9rem + 2px) calc(var(--r) + 3.3rem),
-      var(--ring) calc(var(--r) + 3.3rem + 0.5px) calc(var(--r) + 3.3rem + 1.5px),
-      transparent calc(var(--r) + 3.3rem + 2px);
+      transparent calc(var(--r) + 0.8rem + var(--w1)),
+      var(--ring) calc(var(--r) + 0.8rem + var(--w1) + 0.5px) calc(var(--r) + 0.8rem + var(--w1) + 1.5px),
+      transparent calc(var(--r) + 0.8rem + var(--w1) + 2px) calc(var(--r) + 1.9rem + var(--w2)),
+      var(--ring) calc(var(--r) + 1.9rem + var(--w2) + 0.5px) calc(var(--r) + 1.9rem + var(--w2) + 1.5px),
+      transparent calc(var(--r) + 1.9rem + var(--w2) + 2px) calc(var(--r) + 3.3rem + var(--w3)),
+      var(--ring) calc(var(--r) + 3.3rem + var(--w3) + 0.5px) calc(var(--r) + 3.3rem + var(--w3) + 1.5px),
+      transparent calc(var(--r) + 3.3rem + var(--w3) + 2px);
     background:
       radial-gradient(circle at var(--r) var(--r), var(--rings)) left top / 50% 100% no-repeat,
       radial-gradient(circle at calc(100% - var(--r)) var(--r), var(--rings)) right top / 50% 100% no-repeat;

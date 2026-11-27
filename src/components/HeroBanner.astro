@@ -72,7 +72,7 @@ const hasMultiple = allItems.length > 1;
      lo escribe el script) abre el recorte de .hero-banner. -->
 <div class="hero" data-hero>
 <div class="hero__stage">
-<span class="hero__rings" aria-hidden="true"></span>
+<span class="hero__rings ripple" aria-hidden="true"></span>
 <section class="hero-banner" data-hero-banner data-interval={String(interval)} aria-roledescription="carousel">
   {allItems.map((item, i) => (
     <div
@@ -312,13 +312,13 @@ const hasMultiple = allItems.length > 1;
     opacity: calc(1 - var(--p) * 1.6);
     background: radial-gradient(
       circle at 50% calc(1rem + var(--r)),
-      transparent calc(var(--r) + var(--g1)),
-      var(--ring) calc(var(--r) + var(--g1) + 0.5px) calc(var(--r) + var(--g1) + 1.5px),
-      transparent calc(var(--r) + var(--g1) + 2px) calc(var(--r) + var(--g2)),
-      var(--ring) calc(var(--r) + var(--g2) + 0.5px) calc(var(--r) + var(--g2) + 1.5px),
-      transparent calc(var(--r) + var(--g2) + 2px) calc(var(--r) + var(--g3)),
-      var(--ring) calc(var(--r) + var(--g3) + 0.5px) calc(var(--r) + var(--g3) + 1.5px),
-      transparent calc(var(--r) + var(--g3) + 2px)
+      transparent calc(var(--r) + var(--g1) + var(--w1)),
+      var(--ring) calc(var(--r) + var(--g1) + var(--w1) + 0.5px) calc(var(--r) + var(--g1) + var(--w1) + 1.5px),
+      transparent calc(var(--r) + var(--g1) + var(--w1) + 2px) calc(var(--r) + var(--g2) + var(--w2)),
+      var(--ring) calc(var(--r) + var(--g2) + var(--w2) + 0.5px) calc(var(--r) + var(--g2) + var(--w2) + 1.5px),
+      transparent calc(var(--r) + var(--g2) + var(--w2) + 2px) calc(var(--r) + var(--g3) + var(--w3)),
+      var(--ring) calc(var(--r) + var(--g3) + var(--w3) + 0.5px) calc(var(--r) + var(--g3) + var(--w3) + 1.5px),
+      transparent calc(var(--r) + var(--g3) + var(--w3) + 2px)
     );
   }
 
