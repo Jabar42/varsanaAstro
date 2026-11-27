@@ -249,12 +249,20 @@ const discoveryCards = [
       min-width: 0;
       max-width: none;
       height: clamp(24rem, 40vw, 34rem);
-      transition: flex 0.7s var(--ease-out);
+    }
+
+    /* El reveal (html.js [data-reveal]) pisa `transition` en estos arcos:
+       se repite acá, con más especificidad, junto al ensanche del hover. */
+    .colonnade .colonnade__arch {
+      transition:
+        flex-grow 0.7s var(--ease-out),
+        opacity 0.9s var(--ease-out) var(--rd, 0ms),
+        transform 0.9s var(--ease-out) var(--rd, 0ms);
     }
 
     .colonnade__arch:hover,
     .colonnade__arch:focus-visible {
-      flex: 1.7 1 0;
+      flex-grow: 1.7;
     }
   }
 
@@ -298,7 +306,7 @@ const discoveryCards = [
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .colonnade__arch,
+    .colonnade .colonnade__arch,
     .colonnade__arch img {
       transition: none;
     }
