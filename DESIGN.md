@@ -10,14 +10,18 @@ colors:
   secondary: "#F7941E"
   saffron: "#F7941E"
   saffron-light: "#FAAF3E"
+  saffron-deep: "#AD5600"
   forest: "#779B05"
   forest-dark: "#5A7A04"
   forest-light: "#95AD02"
+  forest-deep: "#435C03"
+  forest-night: "#17230F"
   near-black: "#222222"
   secondary-gray: "#6A6A6A"
   sacred-sand: "#FAF9F6"
   lotus-white: "#FFFFFF"
   light-surface: "#ECECEC"
+  sand-deep: "#F1ECE1"
 
 typography:
   hero-heading:
@@ -87,23 +91,53 @@ components:
     textColor: "{colors.secondary-gray}"
     typography: metadata
   button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.lotus-white}"
-    typography: button
-    rounded: "{rounded.DEFAULT}"
-    padding: "12px 24px"
-  button-primary-hover:
-    backgroundColor: "{colors.rausch-dark}"
-    textColor: "{colors.lotus-white}"
-    typography: button
-    rounded: "{rounded.DEFAULT}"
-    padding: "12px 24px"
-  button-secondary:
     backgroundColor: "{colors.forest-dark}"
     textColor: "{colors.lotus-white}"
     typography: button
     rounded: "{rounded.DEFAULT}"
-    padding: "12px 24px"
+    padding: "14px 28px"
+  button-primary-hover:
+    backgroundColor: "{colors.forest-deep}"
+    textColor: "{colors.lotus-white}"
+    typography: button
+    rounded: "{rounded.DEFAULT}"
+    padding: "14px 28px"
+  button-primary-active:
+    backgroundColor: "{colors.forest-deep}"
+    textColor: "{colors.lotus-white}"
+    typography: button
+    rounded: "{rounded.DEFAULT}"
+    padding: "14px 28px"
+  button-primary-disabled:
+    backgroundColor: "{colors.light-surface}"
+    textColor: "{colors.secondary-gray}"
+    typography: button
+    rounded: "{rounded.DEFAULT}"
+    padding: "14px 28px"
+  button-secondary:
+    backgroundColor: "{colors.sacred-sand}"
+    textColor: "{colors.forest-dark}"
+    typography: button
+    rounded: "{rounded.DEFAULT}"
+    padding: "14px 28px"
+  button-secondary-hover:
+    backgroundColor: "{colors.forest-dark}"
+    textColor: "{colors.lotus-white}"
+    typography: button
+    rounded: "{rounded.DEFAULT}"
+    padding: "14px 28px"
+  button-on-dark:
+    backgroundColor: "{colors.lotus-white}"
+    textColor: "{colors.forest-night}"
+    typography: button
+    rounded: "{rounded.DEFAULT}"
+    padding: "14px 28px"
+  surface-night:
+    backgroundColor: "{colors.forest-night}"
+    textColor: "{colors.sacred-sand}"
+  surface-sand-deep:
+    backgroundColor: "{colors.sand-deep}"
+    textColor: "{colors.near-black}"
   button-saffron:
     backgroundColor: "{colors.saffron}"
     textColor: "{colors.near-black}"
@@ -130,6 +164,13 @@ components:
     padding: "4px 12px"
   icon-nature:
     textColor: "{colors.forest}"
+  heading-accent:
+    textColor: "{colors.saffron-deep}"
+    typography: section-title
+  heading-accent-on-dark:
+    backgroundColor: "{colors.forest-night}"
+    textColor: "{colors.saffron}"
+    typography: section-title
   link:
     textColor: "{colors.rausch}"
     typography: body

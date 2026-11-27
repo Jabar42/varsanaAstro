@@ -9,18 +9,18 @@ const l = (path: string) => localizePath(locale, path);
 const switchUrl = localizePath(otherLocale, Astro.originPathname + Astro.url.search);
 ---
 
-<footer class="bg-near-black mt-16 px-6 py-12 md:px-12 lg:px-20">
+<footer class="on-dark mt-20 px-6 py-16 md:px-12 lg:px-20">
   <div class="max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-near-black/30">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-sacred-sand/15">
       <div class="flex flex-col gap-4">
         <img src="/logo/LogoPrincipal.svg" alt="Varsana" class="w-24" />
-        <p class="text-sm text-gray-400 leading-relaxed max-w-52">
+        <p class="text-sm text-sacred-sand/70 leading-relaxed max-w-52">
           {t('footer.tagline')}
         </p>
       </div>
       <div class="space-y-4">
-        <h4 class="font-bold text-sm uppercase tracking-wider text-white">{t('footer.community')}</h4>
-        <ul class="space-y-3 text-sm text-gray-400">
+        <h4 class="font-sans font-semibold text-xs uppercase tracking-[0.14em] text-saffron">{t('footer.community')}</h4>
+        <ul class="space-y-3 text-sm text-sacred-sand/70">
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.varsanaOrg')}</li>
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.socialProjects')}</li>
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.organicAgriculture')}</li>
@@ -29,8 +29,8 @@ const switchUrl = localizePath(otherLocale, Astro.originPathname + Astro.url.sea
         </ul>
       </div>
       <div class="space-y-4">
-        <h4 class="font-bold text-sm uppercase tracking-wider text-white">{t('footer.about')}</h4>
-        <ul class="space-y-3 text-sm text-gray-400">
+        <h4 class="font-sans font-semibold text-xs uppercase tracking-[0.14em] text-saffron">{t('footer.about')}</h4>
+        <ul class="space-y-3 text-sm text-sacred-sand/70">
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.ourStory')}</li>
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.philosophy')}</li>
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.gallery')}</li>
@@ -38,8 +38,8 @@ const switchUrl = localizePath(otherLocale, Astro.originPathname + Astro.url.sea
         </ul>
       </div>
       <div class="space-y-4">
-        <h4 class="font-bold text-sm uppercase tracking-wider text-white">{t('footer.contact')}</h4>
-        <ul class="space-y-3 text-sm text-gray-400">
+        <h4 class="font-sans font-semibold text-xs uppercase tracking-[0.14em] text-saffron">{t('footer.contact')}</h4>
+        <ul class="space-y-3 text-sm text-sacred-sand/70">
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">+57 321 4538242</li>
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">contacto@varsana.com</li>
           <li class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.location')}</li>
@@ -49,19 +49,19 @@ const switchUrl = localizePath(otherLocale, Astro.originPathname + Astro.url.sea
     </div>
 
     <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-      <div class="flex flex-wrap justify-center gap-2 text-gray-500">
+      <div class="flex flex-wrap justify-center gap-2 text-sacred-sand/60">
         <span>{t('footer.copyright')}</span>
         <span>·</span>
-        <span class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">{t('footer.privacy')}</span>
+        <span class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.privacy')}</span>
         <span>·</span>
-        <span class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">{t('footer.terms')}</span>
+        <span class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.terms')}</span>
         <span>·</span>
-        <a href={l('/mapa-del-sitio')} class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">{t('footer.sitemap')}</a>
+        <a href={l('/mapa-del-sitio')} class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.sitemap')}</a>
         <span>·</span>
-        <a href={l('/design-system')} class="hover:text-gray-300 hover:underline cursor-pointer transition-colors">{t('footer.designSystem')}</a>
+        <a href={l('/design-system')} class="hover:text-white hover:underline cursor-pointer transition-colors">{t('footer.designSystem')}</a>
       </div>
 
-      <div class="flex items-center gap-6 font-semibold text-gray-400">
+      <div class="flex items-center gap-6 font-semibold text-sacred-sand/70">
         <a href={switchUrl} hreflang={otherLocale} lang={otherLocale} data-astro-reload data-astro-prefetch="false" class="flex items-center gap-2 hover:text-white hover:underline cursor-pointer transition-colors">
 
           <Globe size={16} />
@@ -71,7 +71,7 @@ const switchUrl = localizePath(otherLocale, Astro.originPathname + Astro.url.sea
           <span>$</span>
           <span>COP</span>
         </div>
-        <div class="flex items-center gap-4 text-gray-400">
+        <div class="flex items-center gap-4 text-sacred-sand/70">
           <Facebook size={18} className="hover:text-white cursor-pointer transition-colors" />
           <Instagram size={18} className="hover:text-white cursor-pointer transition-colors" />
           <Youtube size={18} className="hover:text-white cursor-pointer transition-colors" />

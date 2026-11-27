@@ -23,14 +23,16 @@ const iconMap: Record<string, LucideIcon> = {
 };
 ---
 
-<h2 class="text-3xl md:text-4xl font-display font-bold tracking-tightest text-near-black text-center mb-2">{t('historiaPage.timeline.heading')}</h2>
-<p class="text-secondary-gray text-center mb-8 max-w-xl mx-auto">{t('historiaPage.timeline.subtitle')}</p>
+<h2 class="display-md font-display font-bold text-near-black text-center mb-3">{t('historiaPage.timeline.heading')}</h2>
+<p class="text-secondary-gray text-center mb-12 max-w-xl mx-auto">{t('historiaPage.timeline.subtitle')}</p>
 
 <div class="timeline">
   <!-- Mobile: linea vertical -->
-  <div class="timeline__line md:hidden" aria-hidden="true"></div>
+  <div class="timeline__line md:hidden" data-reveal="draw-y" aria-hidden="true"></div>
 
-  <div class="timeline__items">
+  <div class="timeline__hline hidden md:block" data-reveal="draw" aria-hidden="true"></div>
+
+  <div class="timeline__items" data-reveal-group>
     {items.map((item) => {
       const IconComponent = iconMap[item.icon] ?? Calendar;
       return (
@@ -70,6 +72,7 @@ const iconMap: Record<string, LucideIcon> = {
       var(--color-saffron, #f7941e) 90%,
       transparent 100%
     );
+    transform-origin: top;
   }
 
   .timeline__items {
@@ -107,7 +110,7 @@ const iconMap: Record<string, LucideIcon> = {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-saffron, #f7941e);
+    color: var(--color-saffron-deep, #ad5600);
     transition: all 0.3s ease;
     box-shadow: 0 0 0 4px var(--color-sacred-sand, #faf9f6);
   }
@@ -151,8 +154,7 @@ const iconMap: Record<string, LucideIcon> = {
     }
 
     /* Linea horizontal que cruza por el centro de los dots */
-    .timeline__items::before {
-      content: '';
+    .timeline__hline {
       position: absolute;
       left: 2.5%;
       right: 2.5%;
@@ -166,6 +168,7 @@ const iconMap: Record<string, LucideIcon> = {
         transparent 100%
       );
       z-index: 0;
+      transform-origin: left;
     }
 
     .timeline__item {

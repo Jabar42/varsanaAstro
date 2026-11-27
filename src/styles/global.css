@@ -30,12 +30,13 @@
   src: url("/fonts/proza-libre/proza-libre-latin-700-normal.woff2")
     format("woff2");
 }
+/* Itálica: solo para la palabra de acento de los titulares (.accent) */
 @font-face {
   font-family: "Proza Libre";
-  font-style: normal;
-  font-display: block;
-  font-weight: 800;
-  src: url("/fonts/proza-libre/proza-libre-latin-800-normal.woff2")
+  font-style: italic;
+  font-display: swap;
+  font-weight: 500;
+  src: url("/fonts/proza-libre/proza-libre-latin-500-italic.woff2")
     format("woff2");
 }
 
@@ -77,6 +78,12 @@
     @apply bg-sacred-sand text-near-black font-sans antialiased;
   }
 
+  /* 100vw incluye la barra de scroll: sin esto las secciones a sangre
+     (.bleed) provocan scroll horizontal en escritorio. */
+  html {
+    overflow-x: clip;
+  }
+
   h1,
   h2,
   h3,
@@ -84,6 +91,21 @@
   h5,
   h6 {
     @apply font-display font-bold tracking-tight;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-saffron-light);
+    color: var(--color-near-black);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-forest-dark);
+    outline-offset: 3px;
   }
 }
 
@@ -100,16 +122,269 @@
 
 /* Chat widget — varsana palette overrides */
 :root {
-  --chat-primary: #52185b;
-  --chat-primary-fg: #faf9f6;
-  --chat-primary-hover: #3a1241;
-  --chat-bot-bubble: #f7f2f9;
+  --chat-primary: #5a7a04;
+  --chat-primary-fg: #ffffff;
+  --chat-primary-hover: #435c03;
+  --chat-bot-bubble: #f1ece1;
   --chat-bot-text: #222222;
   --chat-font-heading: "Proza Libre", sans-serif;
   --chat-font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --chat-border: #e8dce8;
-  --chat-code-bg: rgba(82, 24, 91, 0.08);
-  --chat-close-btn-bg: rgba(250, 249, 246, 0.15);
+  --chat-border: #e4dfd3;
+  --chat-code-bg: rgba(90, 122, 4, 0.1);
+  --chat-chip-hover-bg: rgba(90, 122, 4, 0.1);
+  --chat-close-btn-bg: rgba(255, 255, 255, 0.15);
+
+  /* Curvas de movimiento compartidas */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   «El umbral» — piezas compartidas del sistema visual
+   ══════════════════════════════════════════════════════════════ */
+@layer components {
+  /* ── Botones ─────────────────────────────────────────────────
+     Familia forest. Los estados viven aquí: no repetir hover/focus
+     en cada página. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    min-height: 3rem;
+    padding: 0.875rem 1.75rem;
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-DEFAULT);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    background: var(--color-forest-dark);
+    color: var(--color-lotus-white);
+    transition:
+      background-color 0.3s var(--ease-out),
+      color 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out),
+      box-shadow 0.3s var(--ease-out),
+      transform 0.3s var(--ease-out);
+  }
+  .btn:hover {
+    background: var(--color-forest-deep);
+    box-shadow: 0 10px 24px -12px rgb(23 35 15 / 0.55);
+  }
+  .btn:active {
+    background: var(--color-forest-deep);
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+  .btn:focus-visible {
+    outline: 2px solid var(--color-forest-dark);
+    outline-offset: 3px;
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    background: var(--color-light-surface);
+    border-color: transparent;
+    color: var(--color-secondary-gray);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border-color: var(--color-forest-dark);
+    color: var(--color-forest-dark);
+  }
+  .btn-outline:hover,
+  .btn-outline:active {
+    background: var(--color-forest-dark);
+    color: var(--color-lotus-white);
+  }
+
+  /* Sobre fotos y fondos oscuros */
+  .btn-light {
+    background: var(--color-lotus-white);
+    color: var(--color-forest-night);
+  }
+  .btn-light:hover,
+  .btn-light:active {
+    background: var(--color-sacred-sand);
+    color: var(--color-forest-deep);
+  }
+  .btn-light:focus-visible {
+    outline-color: var(--color-lotus-white);
+  }
+
+  .btn-sm {
+    min-height: 2.75rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+  }
+  .btn-lg {
+    min-height: 3.5rem;
+    padding: 1rem 2.25rem;
+    font-size: 1.0625rem;
+  }
+  .btn-block {
+    width: 100%;
+  }
+
+  /* Flecha que avanza al pasar el cursor (máscara: no agrega texto) */
+  .btn-arrow::after {
+    content: "";
+    width: 1.125rem;
+    height: 1.125rem;
+    flex: none;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .btn-arrow:hover::after,
+  .group:hover .btn-arrow::after {
+    transform: translateX(4px);
+  }
+
+  /* ── El arco ─────────────────────────────────────────────────
+     Medio punto arriba, base recta. El radio enorme se recorta solo
+     a la mitad del ancho. */
+  .arch {
+    border-radius: 9999px 9999px 0 0;
+    overflow: hidden;
+  }
+  /* Variante baja para piezas anchas (banners): hombros redondeados. */
+  .arch-wide {
+    border-radius: min(50vw, 15rem) min(50vw, 15rem) 0 0;
+    overflow: hidden;
+  }
+
+  /* Palabra de acento en titulares */
+  .accent {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-saffron-deep);
+  }
+  .on-dark .accent {
+    color: var(--color-saffron);
+  }
+
+  /* Etiqueta pequeña sobre un titular */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-saffron-deep);
+  }
+  .on-dark .eyebrow {
+    color: var(--color-saffron);
+  }
+
+  /* Titular editorial: escala fluida, interlínea apretada */
+  .display-xl {
+    font-size: clamp(2.5rem, 1.2rem + 5.6vw, 5.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+  }
+  .display-lg {
+    font-size: clamp(2.125rem, 1.3rem + 3.6vw, 4.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+  .display-md {
+    font-size: clamp(1.75rem, 1.3rem + 1.9vw, 2.875rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  /* Sección a sangre desde dentro de un contenedor centrado */
+  .bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
+  /* Fondo oscuro del sistema */
+  .on-dark {
+    background: var(--color-forest-night);
+    color: var(--color-sacred-sand);
+  }
+
+  /* Regla azafrán: el único «brillo» del sistema */
+  .rule-saffron {
+    display: block;
+    width: 3.5rem;
+    height: 2px;
+    background: var(--color-saffron);
+    transform-origin: left;
+  }
+}
+
+/* ── Aparición al hacer scroll ─────────────────────────────────
+   Solo se oculta contenido si hay JS (html.js) y el usuario no pidió
+   reducir movimiento. src/scripts/reveal.ts agrega .is-in. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 1.75rem, 0);
+    transition:
+      opacity 0.9s var(--ease-out) var(--rd, 0ms),
+      transform 0.9s var(--ease-out) var(--rd, 0ms);
+  }
+  html.js [data-reveal="fade"] {
+    transform: none;
+  }
+  /* Máscara: la imagen se descubre de abajo hacia arriba */
+  html.js [data-reveal="mask"] {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 1.2s var(--ease-in-out) var(--rd, 0ms);
+  }
+  html.js [data-reveal="mask"] > img {
+    transform: scale(1.12);
+    transition: transform 1.6s var(--ease-out) var(--rd, 0ms);
+  }
+  /* Línea que se dibuja */
+  html.js [data-reveal="draw"] {
+    opacity: 1;
+    transform: scaleX(0);
+    transition: transform 1s var(--ease-in-out) var(--rd, 0ms);
+  }
+
+  html.js [data-reveal="draw-y"] {
+    opacity: 1;
+    transform: scaleY(0);
+    transition: transform 1.4s var(--ease-in-out) var(--rd, 0ms);
+  }
+
+  html.js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 0 0);
+  }
+  html.js [data-reveal="mask"].is-in > img {
+    transform: none;
+  }
+
+  /* Parallax leve, sin JS, donde el navegador lo soporta */
+  @supports (animation-timeline: view()) {
+    .parallax > img {
+      scale: 1.12;
+      animation: parallax-y linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
+@keyframes parallax-y {
+  from { translate: 0 -4%; }
+  to { translate: 0 4%; }
 }
 
 @layer utilities {
@@ -131,10 +406,16 @@
 .shimmer {
   background: linear-gradient(
     90deg,
-    var(--color-light-surface, #ececec) 0%,
-    #f5f5f5 45%,
-    var(--color-light-surface, #ececec) 90%
+    var(--color-sand-deep, #f1ece1) 0%,
+    #f8f5ee 45%,
+    var(--color-sand-deep, #f1ece1) 90%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+  }
 }

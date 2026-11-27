@@ -48,6 +48,12 @@ const alternateEn = new URL(localizePath('en', Astro.originPathname), site).href
         font-weight: 700;
       }
     </style>
+    <script is:inline>
+      // Habilita las apariciones solo si hay JS; ClientRouter reemplaza los
+      // atributos de <html> en cada navegación, por eso se repite tras el swap.
+      document.documentElement.classList.add('js');
+      document.addEventListener('astro:after-swap', () => document.documentElement.classList.add('js'));
+    </script>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/logo/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
@@ -81,6 +87,10 @@ const alternateEn = new URL(localizePath('en', Astro.originPathname), site).href
       brandSubtitle="Asistente virtual"
       welcomeMessage="🙏 ¡Bienvenida a Varsana Eco Yoga Aldea! Soy Ananda, tu asistente virtual. ¿En qué puedo ayudarte?"
       client:load />
+
+    <script>
+      import '@/src/scripts/reveal';
+    </script>
 
     <!-- Grain texture overlay — SVG noise filter for handmade/earthy feel -->
     <svg aria-hidden="true" class="grain-overlay" transition:persist>

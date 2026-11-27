@@ -39,22 +39,22 @@ const showCountdown = daysUntil > 0 && daysUntil <= 90;
 const numberLocale = locale === 'en' ? 'en-US' : 'es-CO';
 ---
 
-<a href={l(`/events/${slug}`)} class="bg-lotus-white rounded-lg shadow-airbnb overflow-hidden flex flex-col h-full transition-transform duration-300 hover:scale-[1.02] cursor-pointer group">
-  <div class="aspect-16/10 overflow-hidden relative shimmer">
+<a href={l(`/events/${slug}`)} class="card group">
+  <div class="aspect-4/3 overflow-hidden relative shimmer">
     <img
       src={image}
       alt={title}
-      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+      class="card__image"
       referrerpolicy="no-referrer"
       loading="lazy"
     />
     {showCountdown && (
-      <div class="absolute top-4 right-4 bg-rausch text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+      <div class="absolute top-4 right-4 bg-forest-night text-white px-3 py-1 rounded-full text-xs font-bold">
         {daysUntil === 1 ? t('cards.tomorrow') : t('cards.daysLeft', { n: daysUntil })}
       </div>
     )}
     {currentPrice?.label && currentPrice.label !== 'General' && (
-      <div class="absolute top-4 left-4 bg-lotus-white px-3 py-1 rounded-full text-xs font-bold shadow-sm text-rausch">
+      <div class="absolute top-4 left-4 bg-lotus-white px-3 py-1 rounded-full text-xs font-bold text-forest-deep">
         {currentPrice.label}
       </div>
     )}
@@ -62,25 +62,25 @@ const numberLocale = locale === 'en' ? 'en-US' : 'es-CO';
 
   <div class="p-6 flex flex-col grow space-y-3">
     <div class="space-y-1">
-      <p class="text-saffron font-semibold text-sm uppercase tracking-wider">{formattedDate}</p>
+      <p class="text-saffron-deep font-semibold text-xs uppercase tracking-[0.14em]">{formattedDate}</p>
       <h3 class="text-2xl font-bold tracking-tightest leading-tight font-display">{title}</h3>
     </div>
 
-    <p class="text-gray-600 line-clamp-2 text-sm leading-relaxed">
+    <p class="text-secondary-gray line-clamp-2 text-sm leading-relaxed">
       {description}
     </p>
 
-    <div class="pt-4 mt-auto border-t border-sacred-sand">
+    <div class="pt-4 mt-auto border-t border-near-black/10">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-xs text-saffron uppercase font-bold tracking-widest">
+          <p class="text-xs text-saffron-deep uppercase font-bold tracking-widest">
             {currentPrice?.label || t('cards.price')}
           </p>
           <p class="text-xl font-bold tracking-tightest">
             ${currentPrice?.amount.toLocaleString(numberLocale) || '0'}
           </p>
         </div>
-        <span class="bg-rausch text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-rausch-dark transition-colors shadow-sm">
+        <span class="btn btn-sm btn-arrow">
           {t('cards.reserve')}
         </span>
       </div>
@@ -89,7 +89,50 @@ const numberLocale = locale === 'en' ? 'en-US' : 'es-CO';
 </a>
 
 <style>
+  /* La tarjeta entera es el enlace: el «botón» interno solo acompaña el hover. */
+  .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-lotus-white);
+    box-shadow: 0 0 0 1px rgb(34 34 34 / 0.06);
+    transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 0 1px rgb(34 34 34 / 0.06), 0 28px 48px -28px rgb(23 35 15 / 0.45);
+  }
+
+  .card:hover :global(.btn) {
+    background: var(--color-forest-deep);
+  }
+
+  .card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  .card:hover .card__image {
+    transform: scale(1.06);
+  }
+
   h3 {
     letter-spacing: -0.02em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .card__image {
+      transition: none;
+    }
+    .card:hover,
+    .card:hover .card__image {
+      transform: none;
+    }
   }
 </style>

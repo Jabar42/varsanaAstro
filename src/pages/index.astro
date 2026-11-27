@@ -34,124 +34,96 @@ const discoveryCards = [
 
 <Layout title={t('home.pageTitle')} description={t('home.metaDescription')}>
 
-
   <HeroBanner items={featuredItems} />
 
-  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pb-8">
+  <!-- Brand Message -->
+  <section class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-36">
+    <div class="grid lg:grid-cols-12 gap-y-10 gap-x-12 items-end" data-reveal-group>
+      <div class="lg:col-span-8">
+        <span class="rule-saffron mb-8" data-reveal="draw" aria-hidden="true"></span>
+        <h2 class="display-lg font-bold font-display text-near-black">
+          {t('home.taglinePart1')} <span class="accent">{t('home.taglinePart2')}</span>
+        </h2>
+      </div>
+      <div class="lg:col-span-4 lg:pb-2">
+        <p class="text-lg md:text-xl text-secondary-gray leading-relaxed">
+          {t('home.subtitle')}
+        </p>
+        <a href={l('/nosotros')} class="btn btn-lg btn-arrow mt-8">
+          {t('home.ctaCommunity')}
+        </a>
+      </div>
+    </div>
+  </section>
 
-    <!-- Brand Message -->
-    <section class="py-20 md:py-28 text-center">
-      <h2 class="text-3xl md:text-5xl lg:text-6xl font-bold font-display text-near-black leading-tight max-w-4xl mx-auto px-4">
-        {t('home.taglinePart1')} <span class="text-saffron">{t('home.taglinePart2')}</span>
-      </h2>
-      <p class="mt-6 text-lg md:text-xl text-gray-500 max-w-2xl mx-auto">
-        {t('home.subtitle')}
-      </p>
-      <a
-        href={l('/nosotros')}
-        class="mt-10 inline-block bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark transition-all duration-300 hover:scale-105"
-      >
-        {t('home.ctaCommunity')}
-      </a>
-    </section>
+  <!-- Discovery: columnata de arcos -->
+  <section class="bg-sand-deep py-20 md:py-28 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20">
+      <div class="mb-12 md:mb-16" data-reveal-group>
+        <p class="eyebrow mb-4">{t('home.discoverSubtitle')}</p>
+        <h2 class="display-lg font-bold font-display text-near-black">
+          {t('home.discoverTitle')}
+        </h2>
+      </div>
 
-    <!-- Discovery Cards -->
-    <section class="py-20 md:py-28">
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold font-display text-near-black text-center">
-        {t('home.discoverTitle')}
-      </h2>
-      <p class="text-lg text-gray-500 text-center mt-3 mb-10 md:mb-14">
-        {t('home.discoverSubtitle')}
-      </p>
-
-      <!-- Mobile: horizontal slider -->
-      <div class="flex sm:hidden overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-6 px-6 py-2 overscroll-x-contain">
+      <div class="colonnade no-scrollbar" data-reveal-group>
         {discoveryCards.map((card) => (
-          <a
-            href={card.href}
-            draggable="false"
-            class="group w-[40vw] shrink-0 snap-start select-none"
-          >
-            <div class="aspect-1/2 overflow-hidden rounded-lg relative shadow-airbnb transition-shadow duration-500">
-              <img
-                src={card.image}
-                alt={card.title}
-                draggable="false"
-                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
-              />
-              <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent pointer-events-none rounded-b-lg" />
-              <div class="absolute bottom-0 left-0 right-0 p-3 flex items-end justify-between">
-                <span class="text-white font-bold text-sm">{card.title}</span>
-                <ArrowUpRight color="white" size={18} strokeWidth={2.5} />
-              </div>
-            </div>
+          <a href={card.href} draggable="false" class="colonnade__arch arch group">
+            <img
+              src={card.image}
+              alt={card.title}
+              draggable="false"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="colonnade__label">
+              <span>{card.title}</span>
+              <ArrowUpRight color="white" size={20} strokeWidth={2.25} />
+            </span>
           </a>
         ))}
       </div>
+    </div>
+  </section>
 
-      <!-- Tablet/Desktop: responsive grid -->
-      <div class="hidden sm:grid grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-        {discoveryCards.map((card) => (
-          <a
-            href={card.href}
-            class="group block"
-          >
-            <div class="aspect-1/2 overflow-hidden rounded-2xl relative">
-              <img
-                src={card.image}
-                alt={card.title}
-                class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-              />
-              <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent pointer-events-none rounded-b-2xl" />
-              <div class="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between">
-                <span class="text-white font-bold text-lg">{card.title}</span>
-                <ArrowUpRight color="white" size={20} strokeWidth={2.5} />
-              </div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-
-
-
-    <!-- Featured Events Grid -->
-    <section class="mb-20">
-      <div class="flex items-end justify-between mb-10">
-        <div class="space-y-2">
-          <h2 class="text-4xl md:text-5xl font-bold tracking-tightest font-display">{t('home.upcomingTitle')}</h2>
-          <p class="text-gray-500 text-lg">{t('home.upcomingSubtitle')}</p>
+  <!-- Featured Events Grid -->
+  {featuredEvents.length > 0 && (
+    <section class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
+      <div class="flex items-end justify-between gap-8 mb-12" data-reveal-group>
+        <div>
+          <h2 class="display-md font-bold font-display text-near-black">{t('home.upcomingTitle')}</h2>
+          <p class="mt-3 text-secondary-gray text-lg">{t('home.upcomingSubtitle')}</p>
         </div>
-        <a href={l('/events')} class="hidden md:block text-near-black font-semibold underline underline-offset-4 hover:text-rausch transition-colors">
+        <a href={l('/events')} class="hidden md:block shrink-0 text-rausch font-semibold underline underline-offset-4 decoration-rausch/30 hover:decoration-rausch transition-colors duration-300">
           {t('home.viewAllEvents')}
         </a>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-reveal-group>
         {featuredEvents.map((event) => (
-          <EventCard {...event.data} slug={event.id} />
+          <div><EventCard {...event.data} slug={event.id} /></div>
         ))}
       </div>
 
-      <div class="mt-12 text-center md:hidden">
-        <a href={l('/events')} class="inline-block w-full py-4 border border-near-black rounded-xl font-bold hover:bg-gray-50 transition-colors">
+      <div class="mt-10 md:hidden">
+        <a href={l('/events')} class="btn btn-outline btn-block">
           {t('home.viewAllEvents')}
         </a>
       </div>
     </section>
+  )}
 
-    <!-- About Video Section -->
-    <SplitSection
-      title={t('home.aboutTitle')}
-      description={t('home.aboutText')}
-      ctaLabel={t('home.aboutCta')}
-      ctaUrl={l('/nosotros')}
-      videoUrl="https://www.youtube.com/watch?v=2TXMwJ7FHgY"
-      imageAlt={t('home.aboutVideoAlt')}
-      reversed
-    />
-
-  </main>
+  <!-- About Video Section -->
+  <SplitSection
+    title={t('home.aboutTitle')}
+    description={t('home.aboutText')}
+    ctaLabel={t('home.aboutCta')}
+    ctaUrl={l('/nosotros')}
+    videoUrl="https://www.youtube.com/watch?v=2TXMwJ7FHgY"
+    imageAlt={t('home.aboutVideoAlt')}
+    tone="dark"
+    reversed
+  />
 
   <!-- Huerta Split Banner -->
   <SplitSection
@@ -162,39 +134,173 @@ const discoveryCards = [
     imageSrc="/api/images/1785287604008-huerta-section.webp"
     imageAlt={t('home.huertaImageAlt')}
     background="bg-forest/10"
-    ctaVariant="forest"
     reversed
   />
 
-  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pb-8">
-
-    <!-- Photo Gallery Section -->
-
-
-    <!-- Call to Action -->
-    <section class="mt-24 bg-near-black rounded-[32px] md:rounded-lg p-8 md:p-16 lg:p-24 text-white flex flex-col lg:flex-row items-center justify-between gap-12 overflow-hidden relative shadow-airbnb text-center lg:text-left">
-      <div class="space-y-8 z-10 max-w-2xl">
-        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tightest">
+  <!-- Call to Action: el sitio se cierra con otro arco, pegado al footer
+       (-mb-20 anula el margen superior del footer). -->
+  <section class="final-cta pt-20 md:pt-28 -mb-20">
+    <div class="final-cta__arch">
+      <img
+        src="/api/images/1785287866166-cta-transformacion.webp"
+        alt={t('home.ctaImageAlt')}
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+      />
+      <div class="final-cta__content" data-reveal-group>
+        <h1 class="display-lg font-bold font-display text-white">
           {t('home.ctaFinalTitle')}
         </h1>
-        <p class="text-gray-400 text-lg md:text-xl leading-relaxed">
+        <p class="mt-6 text-sacred-sand/85 text-lg md:text-xl leading-relaxed max-w-xl mx-auto">
           {t('home.ctaFinalText')}
         </p>
-        <div class="flex flex-wrap gap-4 md:gap-6 justify-center lg:justify-start">
-          <a href={l('/contacto')} class="w-full sm:w-auto bg-rausch hover:bg-rausch-dark text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-bold text-lg transition-all hover:shadow-lg active:scale-95 text-center no-underline">
-            {t('home.ctaContact')}
-          </a>
-        </div>
+        <a href={l('/contacto')} class="btn btn-lg btn-light btn-arrow mt-10">
+          {t('home.ctaContact')}
+        </a>
       </div>
-      <div class="relative w-full lg:w-1/2 aspect-video rounded-3xl overflow-hidden shadow-airbnb rotate-0 lg:rotate-2 hover:rotate-0 transition-transform duration-500">
-        <img
-          src="/api/images/1785287866166-cta-transformacion.webp"
-          alt={t('home.ctaImageAlt')}
-
-          class="w-full h-full object-cover"
-          referrerpolicy="no-referrer"
-        />
-      </div>
-    </section>
-  </main>
+    </div>
+  </section>
 </Layout>
+
+<style>
+  /* ── Columnata ───────────────────────────────────────────────
+     Móvil: carrusel con snap. Escritorio: cinco arcos que ceden
+     espacio al que recibe el cursor o el foco. */
+  .colonnade {
+    display: flex;
+    gap: 0.875rem;
+    margin-inline: -1.5rem;
+    padding-inline: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.5rem;
+    overscroll-behavior-x: contain;
+  }
+
+  .colonnade__arch {
+    position: relative;
+    flex: 0 0 62vw;
+    max-width: 17rem;
+    height: clamp(22rem, 105vw, 28rem);
+    scroll-snap-align: start;
+    user-select: none;
+    background: var(--color-forest-night);
+  }
+
+  .colonnade__arch img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  .colonnade__arch::after {
+    content: "";
+    position: absolute;
+    inset: 45% 0 0;
+    background: linear-gradient(to top, rgb(23 35 15 / 0.85), rgb(23 35 15 / 0));
+    pointer-events: none;
+  }
+
+  .colonnade__label {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    color: white;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .colonnade__label :global(svg) {
+    flex: none;
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .colonnade__arch:hover .colonnade__label :global(svg),
+  .colonnade__arch:focus-visible .colonnade__label :global(svg) {
+    transform: translate(3px, -3px);
+  }
+
+  .colonnade__arch:hover img,
+  .colonnade__arch:focus-visible img {
+    transform: scale(1.06);
+  }
+
+  @media (min-width: 768px) {
+    .colonnade {
+      gap: 1.25rem;
+      margin-inline: 0;
+      padding-inline: 0;
+      overflow: visible;
+    }
+
+    .colonnade__arch {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: none;
+      height: clamp(24rem, 40vw, 34rem);
+      transition: flex-grow 0.7s var(--ease-out);
+    }
+
+    .colonnade__arch:hover,
+    .colonnade__arch:focus-visible {
+      flex-grow: 1.7;
+    }
+  }
+
+  /* ── Cierre ─────────────────────────────────────────────────── */
+  .final-cta {
+    background: linear-gradient(to bottom, var(--color-sacred-sand) 50%, var(--color-forest-night) 50%);
+  }
+
+  .final-cta__arch {
+    position: relative;
+    display: grid;
+    place-items: end center;
+    min-height: clamp(34rem, 88svh, 46rem);
+    margin-inline: clamp(0.75rem, 4vw, 4rem);
+    overflow: hidden;
+    border-radius: 50vw 50vw 0 0;
+    background: var(--color-forest-night);
+  }
+
+  .final-cta__arch img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .final-cta__arch::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(23 35 15) 0%, rgb(23 35 15 / 0.7) 38%, rgb(23 35 15 / 0.15) 75%);
+  }
+
+  .final-cta__content {
+    position: relative;
+    z-index: 1;
+    max-width: 46rem;
+    padding: 0 1.5rem 4.5rem;
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .colonnade__arch,
+    .colonnade__arch img {
+      transition: none;
+    }
+  }
+</style>

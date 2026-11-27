@@ -13,6 +13,17 @@ const paragraphs = String(text ?? '')
   .filter(Boolean);
 ---
 
-<section class="max-w-3xl mx-auto py-16 md:py-24 space-y-5">
+<section class="text-section max-w-3xl mx-auto py-16 md:py-24 space-y-5" data-reveal-group>
   {paragraphs.map((p) => <p class="text-secondary-gray text-lg leading-relaxed">{p}</p>)}
 </section>
+
+<style>
+  /* El primer párrafo abre como entradilla */
+  .text-section > p:first-child {
+    color: var(--color-near-black);
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 1.1rem + 1.1vw, 1.875rem);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+</style>

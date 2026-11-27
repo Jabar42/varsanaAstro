@@ -81,12 +81,12 @@ function menuItemClass(href: string) {
   const active = matches(href);
 
   return `block px-4 py-2 text-sm whitespace-nowrap hover:bg-sacred-sand transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-saffron ${
-    active ? 'text-rausch font-semibold' : 'text-near-black'
+    active ? 'text-forest-dark font-semibold' : 'text-near-black'
   }`;
 }
 ---
 
-<nav aria-label="Navegacion principal" class="bg-lotus-white border-t border-sacred-sand py-2">
+<nav aria-label="Navegacion principal" class="border-t border-near-black/5 py-2">
   <!-- ========== Mobile ========== -->
   <div class="flex min-[900px]:hidden items-center justify-between">
     {mobilePrimary.map((item) => (
@@ -99,8 +99,8 @@ function menuItemClass(href: string) {
             aria-haspopup="true"
             class={`${triggerBase} ${
               isActive(item)
-                ? 'border-near-black opacity-100'
-                : 'border-transparent opacity-60'
+                ? 'border-forest-dark text-forest-dark opacity-100'
+                : 'border-transparent opacity-70'
             }`}
           >
             <item.icon className={iconClasses} strokeWidth={1.5} />
@@ -123,8 +123,8 @@ function menuItemClass(href: string) {
           href={item.href}
           class={`${triggerBase} ${
             isActive(item)
-              ? 'border-near-black opacity-100'
-              : 'border-transparent opacity-60'
+              ? 'border-forest-dark text-forest-dark opacity-100'
+              : 'border-transparent opacity-70'
           }`}
         >
           <item.icon className={iconClasses} strokeWidth={1.5} />
@@ -139,7 +139,7 @@ function menuItemClass(href: string) {
         data-dropdown-trigger
         aria-expanded="false"
         aria-haspopup="true"
-        class={`${triggerBase} border-transparent opacity-60`}
+        class={`${triggerBase} border-transparent opacity-70`}
       >
         <Menu className={iconClasses} strokeWidth={1.5} />
         <span class={labelClasses}>{t('nav.menu')}</span>
@@ -170,8 +170,8 @@ function menuItemClass(href: string) {
             aria-haspopup="true"
             class={`${triggerBase} ${
               isActive(item)
-                ? 'border-near-black opacity-100'
-                : 'border-transparent opacity-60 hover:opacity-100 hover:border-saffron'
+                ? 'border-forest-dark text-forest-dark opacity-100'
+                : 'border-transparent opacity-70 hover:opacity-100 hover:border-saffron'
             }`}
           >
             <item.icon className={iconClasses} strokeWidth={1.5} />
@@ -194,8 +194,8 @@ function menuItemClass(href: string) {
           href={item.href}
           class={`${triggerBase} ${
             isActive(item)
-              ? 'border-near-black opacity-100'
-              : 'border-transparent opacity-60 hover:opacity-100 hover:border-saffron'
+              ? 'border-forest-dark text-forest-dark opacity-100'
+              : 'border-transparent opacity-70 hover:opacity-100 hover:border-saffron'
           }`}
         >
           <item.icon className={iconClasses} strokeWidth={1.5} />

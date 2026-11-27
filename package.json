@@ -11,6 +11,7 @@
     "deploy": "npm run build && wrangler deploy",
     "generate-types": "wrangler types",
     "export:theme": "node scripts/export-theme.mjs",
+    "lint:design": "node scripts/lint-design.mjs",
     "lint": "astro check && bash scripts/lint-tailwind.sh",
     "email:dev": "email dev --dir src/emails --port 3001",
     "typecheck": "astro check",

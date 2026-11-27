@@ -36,29 +36,29 @@ const iconSvg = icons[icon] || icons.sprout;
 
 <Layout title={`${title} | Varsana Eco Yoga Aldea`}>
   <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
-    <div class="flex flex-col items-center text-center max-w-lg mx-auto">
-      <div class="w-20 h-20 bg-saffron/10 rounded-full flex items-center justify-center mb-8">
-        <svg width="36" height="36" viewBox="0 0 24 24" class="text-saffron" set:html={iconSvg} />
+    <div class="flex flex-col items-center text-center max-w-lg mx-auto" data-reveal-group>
+      <div class="w-24 h-28 bg-saffron/10 arch flex items-center justify-center mb-8">
+        <svg width="36" height="36" viewBox="0 0 24 24" class="text-saffron-deep mt-3" set:html={iconSvg} />
       </div>
 
-      <span class="inline-block bg-saffron/10 text-saffron font-bold text-sm px-4 py-1.5 rounded-full mb-6 tracking-wide">
+      <span class="inline-block eyebrow mb-4">
         {comingSoon}
       </span>
 
-      <h1 class="text-3xl md:text-5xl font-bold font-display text-near-black leading-tight mb-6">
+      <h1 class="display-lg font-bold font-display text-near-black mb-6">
         {title}
       </h1>
 
-      <p class="text-lg text-gray-500 leading-relaxed mb-4">
+      <p class="text-lg text-secondary-gray leading-relaxed mb-4">
         {description}
       </p>
-      <p class="text-base text-gray-400 leading-relaxed mb-10">
+      <p class="text-base text-secondary-gray leading-relaxed mb-10">
         {stayTuned}
       </p>
 
       <a
         href={locale === 'en' ? '/en/' : '/'}
-        class="inline-block bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark transition-all duration-300 hover:scale-105 shadow-lg"
+        class="btn btn-lg btn-arrow"
       >
         {backHome}
       </a>

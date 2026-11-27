@@ -8,14 +8,18 @@
   --color-secondary: #f7941e;
   --color-saffron: #f7941e;
   --color-saffron-light: #faaf3e;
+  --color-saffron-deep: #ad5600;
   --color-forest: #779b05;
   --color-forest-dark: #5a7a04;
   --color-forest-light: #95ad02;
+  --color-forest-deep: #435c03;
+  --color-forest-night: #17230f;
   --color-near-black: #222222;
   --color-secondary-gray: #6a6a6a;
   --color-sacred-sand: #faf9f6;
   --color-lotus-white: #ffffff;
   --color-light-surface: #ececec;
+  --color-sand-deep: #f1ece1;
   --font-display: "Proza Libre", sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: 8px;
