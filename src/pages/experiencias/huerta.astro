@@ -1,11 +1,42 @@
 ---
-import ComingSoon from '@/src/components/ComingSoon.astro';
+import { getLocale, useTranslations, localizePath } from '@/src/i18n/utils';
+import Layout from '@/src/layouts/Layout.astro';
+import PageBanner from '@/src/components/PageBanner.astro';
+
+const locale = getLocale(Astro);
+const t = useTranslations(locale);
+const l = (path: string) => localizePath(locale, path);
 ---
 
-<ComingSoon
-  titleEs="Huerta"
-  titleEn="Garden"
-  descriptionEs="Conéctate con la tierra en nuestra huerta orgánica. Aprende sobre agricultura sostenible, siembra consciente y el arte de cultivar alimentos con amor."
-  descriptionEn="Connect with the earth in our organic garden. Learn about sustainable agriculture, conscious planting, and the art of growing food with love."
-  icon="sprout"
-/>
+<Layout title={t('huertaPage.metaTitle')} description={t('huertaPage.description')}>
+  <main class="max-w-7xl mx-auto px-6 md:px-12 lg:px-20 pt-6 md:pt-8 pb-12">
+    <div id="banner">
+      <PageBanner
+        title={t('huertaPage.title')}
+        subtitle={t('huertaPage.subtitle')}
+        image="/api/images/huerta-varsana-banner-20261127.webp"
+        imageAlt={t('huertaPage.imageAlt')}
+        breadcrumb={[
+          { label: t('huertaPage.breadcrumbHome'), url: l('/') },
+          { label: t('huertaPage.breadcrumbExperiences'), url: l('/experiencias') },
+          { label: t('huertaPage.breadcrumbGarden'), url: l('/experiencias/huerta') },
+        ]}
+      />
+    </div>
+
+    <!-- Solo se recibió el encabezado: no anunciar una experiencia aún sin definir. -->
+    <section class="max-w-2xl mx-auto text-center py-16 space-y-6" aria-labelledby="estado-huerta">
+      <h2 id="estado-huerta" class="text-2xl font-bold font-display text-near-black">
+        {t('huertaPage.comingSoon')}
+      </h2>
+      <p class="text-lg text-secondary-gray leading-relaxed">{t('huertaPage.description')}</p>
+      <p class="text-secondary-gray">{t('huertaPage.stayTuned')}</p>
+      <a
+        href={l('/')}
+        class="inline-block bg-rausch text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-rausch-dark transition-all duration-300 hover:scale-105 shadow-lg"
+      >
+        {t('huertaPage.backHome')}
+      </a>
+    </section>
+  </main>
+</Layout>

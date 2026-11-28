@@ -1,0 +1,107 @@
+{
+  "requests": [
+    "VC-261127-01",
+    "VC-261127-02",
+    "VC-261127-03",
+    "VC-261127-04"
+  ],
+  "base_commit": "ee113426aadb9f0cac39b3c51bba1b5501c8a78d",
+  "prior_verification": "Producción conserva 2 fotos picsum de comunidad, 3 fotos picsum en alimentación y Huerta sin encabezado. Historial de main sin estos cambios. Rama redesign/el-umbral se deja intacta.",
+  "images": [
+    {
+      "code": "VC-261127-01",
+      "key": "practica-comunidad-encuentro-20261127.webp",
+      "url": "/api/images/practica-comunidad-encuentro-20261127.webp",
+      "source": "https://drive.usercontent.google.com/download?id=1Js5Gax_TPgY_uJXAGBU76PaITa0Kp4EN&export=download&confirm=t",
+      "source_original_name": "practica-drive",
+      "source_sha256": "5edd9bee91f02d08b3babcd570255697b7a739912ea6cb3f9cbd529f8553fee5",
+      "width": 1200,
+      "height": 900,
+      "bytes": 143976,
+      "sha256": "7f27ac926abcb7c0677b77d7183839ea157d10e0966f1c21f62fa810d24331f4",
+      "quality": 54,
+      "crop": null,
+      "note": "Primera imagen de comunidad, original de Drive."
+    },
+    {
+      "code": "VC-261127-01",
+      "key": "practica-comunidad-festival-20261127.webp",
+      "url": "/api/images/practica-comunidad-festival-20261127.webp",
+      "source": "https://varsana-co.iaforchange.workers.dev/api/change-requests/attachments/change-requests/2026/11/27/VC-261127-01-01-6d0a70e2.jpg",
+      "source_original_name": "festival.jfif",
+      "source_sha256": "7a73bda7264ee02849fb5b2b93f719b75455ce5d55ef87d28ef62cfa23df31a2",
+      "width": 1200,
+      "height": 800,
+      "bytes": 148966,
+      "sha256": "c6a3f31abbd1ce5764130c298e91923b0c90f9cacaed73993dc674844bd722bc",
+      "quality": 54,
+      "crop": null,
+      "note": "Segunda imagen de comunidad, festival adjunto."
+    },
+    {
+      "code": "VC-261127-02",
+      "key": "alimentacion-mesa-verduras-20261127.webp",
+      "url": "/api/images/alimentacion-mesa-verduras-20261127.webp",
+      "source": "https://varsana-co.iaforchange.workers.dev/api/change-requests/attachments/change-requests/2026/11/27/VC-261127-02-01-10f86a1d.png",
+      "source_original_name": "Puesto orgánico lleno de color.png",
+      "source_sha256": "984555d09014512bfad9961bb6e1076be01c73d35c6527cfef8ea5497290ebf9",
+      "width": 1200,
+      "height": 447,
+      "bytes": 144652,
+      "sha256": "cd10da9e4564c0ee41a1bf8b2c6f8117e1609619a22dad9325126a195a229812",
+      "quality": 66,
+      "crop": [
+        0,
+        450,
+        1537,
+        1023
+      ],
+      "note": "Versión editada por el equipo sin las dos personas; se prioriza la mesa con verduras. No se publica el original con personas."
+    },
+    {
+      "code": "VC-261127-03",
+      "key": "alimentacion-huerta-cosecha-20261127.webp",
+      "url": "/api/images/alimentacion-huerta-cosecha-20261127.webp",
+      "source": "https://drive.usercontent.google.com/download?id=15-TLoTmZmCCZbqcJl1vI2HmktDbuMJ-H&export=download&confirm=t",
+      "source_original_name": "huerta-drive",
+      "source_sha256": "855f20704f007d94373ed41ae94a4e5273bd215796531b12a150a3ffcbb7dfa3",
+      "width": 900,
+      "height": 1200,
+      "bytes": 145198,
+      "sha256": "be89405ecab14ed14e4deb662928665f6108b8a2fc5038990411ae44fc781a72",
+      "quality": 74,
+      "crop": null,
+      "note": "Primera imagen de huerta, de Drive."
+    },
+    {
+      "code": "VC-261127-03",
+      "key": "alimentacion-huerta-productos-20261127.webp",
+      "url": "/api/images/alimentacion-huerta-productos-20261127.webp",
+      "source": "https://varsana-co.iaforchange.workers.dev/api/change-requests/attachments/change-requests/2026/11/27/VC-261127-03-01-9dda1ac5.jpg",
+      "source_original_name": "2 (1).JPG",
+      "source_sha256": "05150f79c305db0ce2a9818d1be352e650c18111af69b3cd387851d7568d28b8",
+      "width": 1200,
+      "height": 800,
+      "bytes": 137586,
+      "sha256": "f963c9b5aecff68b48270dd6dbde1ff5a0dac93b5b112e075bfcecae67b61434",
+      "quality": 78,
+      "crop": null,
+      "note": "Segunda imagen de huerta, adjunto."
+    },
+    {
+      "code": "VC-261127-04",
+      "key": "huerta-varsana-banner-20261127.webp",
+      "url": "/api/images/huerta-varsana-banner-20261127.webp",
+      "source": "https://varsana-co.iaforchange.workers.dev/api/change-requests/attachments/change-requests/2026/11/27/VC-261127-04-01-bfbb535b.webp",
+      "source_original_name": "Huerto-casero-lleno-de-vida.webp",
+      "source_sha256": "132dc9ebca3322a01612b091e79afbe04234043b351d127a2382f58c290f352f",
+      "width": 920,
+      "height": 520,
+      "bytes": 116138,
+      "sha256": "0fcaec13dbf5c0af33dc2f15ebb90d7858f9f89d763cfc43b2922340b24765b5",
+      "quality": 78,
+      "crop": null,
+      "note": "Imagen de encabezado recibida del equipo; no se afirma que sea una fotografía documental de Varsana."
+    }
+  ]
+}

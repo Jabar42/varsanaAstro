@@ -82,6 +82,8 @@ const accentStyles: Record<Accent, { iconBg: string; iconText: string; topBorder
     <PageBanner
       title={t('alimentacionPage.banner.title')}
       subtitle={t('alimentacionPage.banner.subtitle')}
+      image="/api/images/alimentacion-mesa-verduras-20261127.webp"
+      imageAlt={t('alimentacionPage.banner.imageAlt')}
       badge={t('alimentacionPage.banner.badge')}
       breadcrumb={[
         { label: t('alimentacionPage.breadcrumb.home'), url: l('/') },
@@ -155,15 +157,19 @@ const accentStyles: Record<Accent, { iconBg: string; iconText: string; topBorder
 
       <div class="grid grid-cols-2 gap-4">
         <img
-          src="https://picsum.photos/seed/huerta-veggies/600/800"
+          src="/api/images/alimentacion-huerta-cosecha-20261127.webp"
+          width="900"
+          height="1200"
           class="rounded-3xl shadow-md aspect-3/4 object-cover"
           alt={t('alimentacionPage.huerta.veggiesImageAlt')}
           referrerpolicy="no-referrer"
           loading="lazy"
         />
         <img
-          src="https://picsum.photos/seed/huerta-harvest/600/800"
-          class="rounded-3xl shadow-md mt-8 aspect-3/4 object-cover"
+          src="/api/images/alimentacion-huerta-productos-20261127.webp"
+          width="1200"
+          height="800"
+          class="rounded-3xl shadow-md mt-8 aspect-3/4 object-cover object-left"
           alt={t('alimentacionPage.huerta.harvestImageAlt')}
           referrerpolicy="no-referrer"
           loading="lazy"

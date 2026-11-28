@@ -8,6 +8,7 @@ export const es = {
     subtitle:
       'En nuestra mesa, cada alimento cuenta una historia de amor por la tierra. Practicamos una cocina vegetariana que nutre el cuerpo, honra la naturaleza y eleva el espíritu.',
     badge: 'Alimentación consciente',
+    imageAlt: 'Mesa de verduras, frutas y flores del puesto de alimentación',
   },
   breadcrumb: {
     home: 'Inicio',
@@ -44,8 +45,8 @@ export const es = {
     heading: 'Nuestra huerta orgánica',
     text:
       'En nuestra huerta agroecológica cultivamos una diversidad de alimentos y plantas que reflejan nuestro compromiso con la biodiversidad, la alimentación consciente y el cuidado de la tierra. Cada cultivo es sembrado y cuidado mediante prácticas sostenibles, respetando los ciclos naturales y promoviendo la regeneración del suelo.',
-    veggiesImageAlt: 'Huerta orgánica de Varsana',
-    harvestImageAlt: 'Cosecha de vegetales orgánicos',
+    veggiesImageAlt: 'Cosecha de hortalizas en la huerta de Varsana',
+    harvestImageAlt: 'Selección de verduras y frutas en el puesto de alimentación',
     categories: [
       { title: 'Hortalizas de hoja', items: 'Lechuga, Acelga, Kale, Espinaca, Mostaza de hoja' },
       { title: 'Hortalizas y cultivos de temporada', items: 'Maíz (Mazorca tierna), Calabaza' },
@@ -128,6 +129,7 @@ export const en = {
     subtitle:
       'At our table, every meal tells a story of love for the earth. We practice a vegetarian cuisine that nourishes the body, honors nature and uplifts the spirit.',
     badge: 'Conscious eating',
+    imageAlt: 'Vegetables, fruit and flowers on the food stall table',
   },
   breadcrumb: {
     home: 'Home',
@@ -164,8 +166,8 @@ export const en = {
     heading: 'Our organic garden',
     text:
       'In our agroecological garden we grow a diversity of foods and plants that reflect our commitment to biodiversity, conscious eating and care for the earth. Every crop is planted and tended using sustainable practices, respecting natural cycles and promoting soil regeneration.',
-    veggiesImageAlt: 'Organic garden at Varsana',
-    harvestImageAlt: 'Harvest of organic vegetables',
+    veggiesImageAlt: 'Vegetable harvest in the Varsana garden',
+    harvestImageAlt: 'Selection of vegetables and fruit at the food stall',
     categories: [
       { title: 'Leafy greens', items: 'Lettuce, Swiss chard, Kale, Spinach, Mustard greens' },
       { title: 'Seasonal vegetables and crops', items: 'Corn (sweet corn), Squash' },

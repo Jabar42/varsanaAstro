@@ -41,8 +41,8 @@ export const es = {
     heading: 'Crecer juntos en el camino espiritual',
     text: 'La práctica espiritual en Varsana no es solitaria. La comunidad es el espejo donde vemos nuestro progreso y el soporte que nos sostiene en los momentos difíciles. Compartimos comidas conscientes, círculos de palabra y celebraciones que nutren el alma colectiva.',
     cta: 'Únete como voluntario',
-    image1Alt: 'Comunidad en Varsana',
-    image2Alt: 'Ceremonia en Varsana',
+    image1Alt: 'Encuentro de la comunidad en el templo de Varsana',
+    image2Alt: 'Celebración comunitaria en el templo de Varsana',
   },
 };
 
@@ -88,7 +88,7 @@ export const en = {
     heading: 'Growing together on the spiritual path',
     text: 'Spiritual practice at Varsana is not a solitary one. The community is the mirror in which we see our progress and the support that holds us in difficult moments. We share conscious meals, talking circles and celebrations that nourish the collective soul.',
     cta: 'Join as a volunteer',
-    image1Alt: 'Community at Varsana',
-    image2Alt: 'Ceremony at Varsana',
+    image1Alt: 'Community gathering at the Varsana temple',
+    image2Alt: 'Community celebration at the Varsana temple',
   },
 } satisfies typeof es;
