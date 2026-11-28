@@ -72,7 +72,13 @@ const hasMultiple = allItems.length > 1;
      lo escribe el script) abre el recorte de .hero-banner. -->
 <div class="hero" data-hero>
 <div class="hero__stage">
-<span class="hero__rings ripple" aria-hidden="true"></span>
+<!-- Cielo: estrellas en las enjutas y planetas que recorren los anillos como
+     órbitas (los viajes de Gopa Kumar por los planetas). Decorativo. -->
+<span class="hero__rings ripple" aria-hidden="true">
+  <i class="hero__orbit hero__orbit--1"><b class="hero__planet hero__planet--ringed"></b></i>
+  <i class="hero__orbit hero__orbit--2"><b class="hero__planet hero__planet--moon"></b></i>
+  <i class="hero__orbit hero__orbit--3"><b class="hero__planet hero__planet--far"></b></i>
+</span>
 <section class="hero-banner" data-hero-banner data-interval={String(interval)} aria-roledescription="carousel">
   {allItems.map((item, i) => (
     <div
@@ -320,6 +326,131 @@ const hasMultiple = allItems.length > 1;
       var(--ring) calc(var(--r) + var(--g3) + var(--w3) + 0.5px) calc(var(--r) + var(--g3) + var(--w3) + 1.5px),
       transparent calc(var(--r) + var(--g3) + var(--w3) + 2px)
     );
+  }
+
+  .hero__rings {
+    overflow: hidden;
+  }
+
+  /* Estrellas: dos capas de puntos; una titila despacio. */
+  .hero__rings::before,
+  .hero__rings::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .hero__rings::before {
+    background:
+      radial-gradient(circle at 7.1% 57.7%, color-mix(in srgb, var(--color-sacred-sand) 85%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 12.8% 30.9%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 2.0% 66.4%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 1.4px, transparent 2.1px),
+      radial-gradient(circle at 12.7% 39.4%, color-mix(in srgb, var(--color-sacred-sand) 85%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 57.1% 31.2%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 37.2% 27.3%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 1.4px, transparent 2.1px),
+      radial-gradient(circle at 88.9% 33.1%, color-mix(in srgb, var(--color-sacred-sand) 85%, transparent) 0 1.1px, transparent 1.8px),
+      radial-gradient(circle at 6.6% 6.6%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 19.3% 9.1%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 1.1px, transparent 1.8px),
+      radial-gradient(circle at 16.7% 67.4%, color-mix(in srgb, var(--color-sacred-sand) 85%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 85.7% 5.7%, color-mix(in srgb, var(--color-sacred-sand) 85%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 6.1% 22.4%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 1.4px, transparent 2.1px),
+      radial-gradient(circle at 6.3% 65.9%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 88.9% 9.9%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 97.2% 28.7%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 97.0% 69.1%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 1.1px, transparent 1.8px),
+      radial-gradient(circle at 3.3% 1.8%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 1.4px, transparent 2.1px),
+      radial-gradient(circle at 78.1% 43.1%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 61.8% 28.4%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 1.1px, transparent 1.8px),
+      radial-gradient(circle at 86.7% 5.3%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 9.7% 1.0%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 20.9% 43.4%, color-mix(in srgb, var(--color-sacred-sand) 85%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 21.0% 59.6%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 1.1px, transparent 1.8px),
+      radial-gradient(circle at 79.9% 52.1%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 1.1px, transparent 1.8px),
+      radial-gradient(circle at 82.5% 11.1%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 1.4px, transparent 2.1px),
+      radial-gradient(circle at 16.7% 49.0%, color-mix(in srgb, var(--color-sacred-sand) 85%, transparent) 0 0.8px, transparent 1.5px);
+  }
+  .hero__rings::after {
+    background:
+      radial-gradient(circle at 22.3% 29.8%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 13.5% 56.6%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 1.1px, transparent 1.8px),
+      radial-gradient(circle at 4.4% 55.5%, color-mix(in srgb, var(--color-sacred-sand) 85%, transparent) 0 1.1px, transparent 1.8px),
+      radial-gradient(circle at 34.4% 37.6%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 4.9% 34.3%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 1.4px, transparent 2.1px),
+      radial-gradient(circle at 10.5% 58.6%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 17.2% 30.9%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 99.4% 52.3%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 80.8% 56.6%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 14.5% 2.5%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 9.5% 2.9%, color-mix(in srgb, var(--color-sacred-sand) 85%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 32.6% 16.5%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 45.8% 31.2%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 1.4px, transparent 2.1px),
+      radial-gradient(circle at 18.2% 37.1%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 17.1% 12.9%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 1.1px, transparent 1.8px),
+      radial-gradient(circle at 51.8% 18.9%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 77.2% 17.7%, color-mix(in srgb, var(--color-sacred-sand) 55%, transparent) 0 0.6px, transparent 1.3px),
+      radial-gradient(circle at 50.6% 8.4%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 11.2% 49.2%, color-mix(in srgb, var(--color-sacred-sand) 70%, transparent) 0 0.8px, transparent 1.5px),
+      radial-gradient(circle at 81.0% 22.8%, color-mix(in srgb, var(--color-sacred-sand) 100%, transparent) 0 0.8px, transparent 1.5px);
+  }
+
+  /* Órbita: un brazo sin tamaño en el centro del arco; al girar lleva al
+     planeta por su anillo. Solo se ve en las enjutas: el resto del recorrido
+     queda detrás de la foto o fuera del escenario. */
+  .hero__orbit {
+    position: absolute;
+    left: 50%;
+    top: calc(1rem + var(--r));
+    width: 0;
+    height: 0;
+    rotate: var(--a0);
+  }
+  .hero__orbit--1 { --a0: -139deg; --d: calc(var(--r) + var(--g2) + var(--w2)); --t: 260s; }
+  .hero__orbit--2 { --a0: -44deg; --d: calc(var(--r) + var(--g1) + var(--w1)); --t: 190s; }
+  .hero__orbit--3 { --a0: -36deg; --d: calc(var(--r) + var(--g3) + var(--w3)); --t: 340s; }
+
+  .hero__planet {
+    position: absolute;
+    left: var(--d);
+    top: 0;
+    width: var(--s);
+    height: var(--s);
+    translate: -50% -50%;
+    border-radius: 50%;
+  }
+  .hero__planet--ringed {
+    --s: clamp(0.8rem, 1.5cqw, 1.35rem);
+    background: radial-gradient(circle at 35% 30%, var(--color-saffron-light), var(--color-saffron) 55%, var(--color-saffron-deep));
+  }
+  .hero__planet--ringed::after {
+    content: "";
+    position: absolute;
+    inset: 28% -55%;
+    border: 1.5px solid color-mix(in srgb, var(--color-sacred-sand) 75%, transparent);
+    border-radius: 50%;
+    rotate: 20deg;
+  }
+  .hero__planet--moon {
+    --s: clamp(0.5rem, 0.9cqw, 0.8rem);
+    background: radial-gradient(circle at 35% 30%, var(--color-sacred-sand), color-mix(in srgb, var(--color-sacred-sand) 55%, var(--color-forest-night)));
+  }
+  .hero__planet--far {
+    --s: clamp(0.4rem, 0.7cqw, 0.6rem);
+    background: var(--color-forest-night);
+    border: 1.5px solid var(--color-saffron-light);
+  }
+
+  @keyframes hero-orbit {
+    to { rotate: calc(var(--a0) + 360deg); }
+  }
+  @keyframes hero-twinkle {
+    50% { opacity: 0.35; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__orbit {
+      animation: hero-orbit var(--t) linear infinite;
+    }
+    .hero__rings::after {
+      animation: hero-twinkle 5s ease-in-out infinite;
+    }
   }
 
   .hero-banner {
